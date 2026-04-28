@@ -6,6 +6,9 @@
   <title>ANARCHISM.AFRICA — afrofuturist 360°</title>
   <meta name="description" content="An afrofuturist 360° platform for afro-anarchism: films, articles, events, music, books, merch, community." />
   <meta name="theme-color" content="#0a0a0a" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -197,5 +200,10 @@
 <script src="js/logo.js"></script>
 <script src="js/app.js"></script>
 <script src="js/chat.js"></script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  }
+</script>
 </body>
 </html>

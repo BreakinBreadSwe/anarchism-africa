@@ -349,20 +349,41 @@
   // ---- ambassadors ------------------------------------------------------
   async function renderAmb () {
     const list = $('#amb-list'); list.innerHTML = '';
+    list.classList.add('anim-stagger');
     const items = await AA.getAmbassadors();
+    // try to map ambassadors to their chat user ids by name
+    const chatUsers = (window.AA_CHAT_FOLLOW?.users() || []);
     items.forEach(a => {
+      const matchUser = chatUsers.find(u => u.name === a.name) || { id: 'amb_' + a.id, name: a.name, city: a.city, role: 'ambassador' };
+      const isFollowing = window.AA_CHAT_FOLLOW?.isFollowing(matchUser.id);
       const row = document.createElement('div');
       row.className = 'amb-row';
       row.innerHTML = `
         <div class="avatar">${a.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div>
-        <div style="flex:1">
+        <div style="flex:1;min-width:0">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
             <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;text-transform:none;letter-spacing:0">${a.name}</h3>
             <span class="status-pill ${a.status}">${a.status}</span>
           </div>
           <div class="meta">${a.city}, ${a.country} · reach ~${a.reach||0}</div>
           <p style="margin:8px 0 0">${a.pitch}</p>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn ${isFollowing ? 'ghost' : 'primary'}" data-follow="${matchUser.id}">${isFollowing ? '✓ Following' : 'Follow'}</button>
+            <button class="btn ghost" data-msg="${matchUser.id}">Message</button>
+          </div>
         </div>`;
+      row.querySelector('[data-follow]').addEventListener('click', e => {
+        const now = window.AA_CHAT_FOLLOW.toggle(matchUser.id);
+        e.target.textContent = now ? '✓ Following' : 'Follow';
+        e.target.classList.toggle('primary', !now);
+        e.target.classList.toggle('ghost', now);
+      });
+      row.querySelector('[data-msg]').addEventListener('click', () => {
+        if (!window.AA_CHAT_FOLLOW.isFollowing(matchUser.id)) window.AA_CHAT_FOLLOW.toggle(matchUser.id);
+        window.AA_CHAT?.open();
+        // hop to DMs tab
+        const dmTab = document.querySelector('.chat-tabs [data-tab="dm"]'); dmTab?.click();
+      });
       list.appendChild(row);
     });
   }

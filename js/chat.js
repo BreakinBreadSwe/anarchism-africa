@@ -279,20 +279,23 @@
   }
 
   function pickFollowToDM () {
-    const ids = store.following;
-    if (!ids.length) { alert('Follow some users first.'); return; }
-    // simple inline picker
-    const list = $('#dm-list');
-    list.innerHTML = '<div style="padding:10px;color:var(--muted);font-size:.8rem">Tap a user to start a chat:</div>';
-    ids.forEach(id => {
-      const u = userById(id);
-      const row = document.createElement('div');
-      row.className = 'thread';
-      row.innerHTML = `<div class="avatar">${initials(u.name)}</div><div class="meta"><b>${u.name}</b><span>${u.city} · ${u.role}</span></div>`;
-      row.addEventListener('click', () => openDM(id));
-      list.appendChild(row);
-    });
+    openUserPicker({ title: 'New direct message', onPick: (u) => openDM(u.id) });
   }
+
+  // ---------- follow / unfollow ----------
+  function toggleFollow (userId) {
+    const i = store.following.indexOf(userId);
+    if (i >= 0) store.following.splice(i, 1);
+    else store.following.unshift(userId);
+    saveStore(store);
+    return i < 0;
+  }
+  window.AA_CHAT_FOLLOW = {
+    isFollowing: (id) => store.following.includes(id),
+    toggle: toggleFollow,
+    list: () => store.following.slice(),
+    users: () => SEED_USERS.slice()
+  };
 
   function openDM (id) {
     activeThread = id;
@@ -340,10 +343,18 @@
   }
 
   function createGroupPrompt () {
-    const name = prompt('Group name?');
-    if (!name) return;
-    const g = { id: 'g' + Date.now(), name, members: store.following.slice(0, 3), emoji: '◯' };
-    store.groups.unshift(g); saveStore(store); renderGroupList();
+    openUserPicker({
+      title: 'Pick group members',
+      multi: true,
+      preselected: store.following.slice(0, 3),
+      onPick: (ids) => {
+        if (!ids.length) return;
+        const name = window.prompt('Group name?', 'Untitled circle') || 'Untitled circle';
+        const emojis = ['◯','★','✦','☉','☽','✳','♢','◐'];
+        const g = { id: 'g' + Date.now(), name, members: ids, emoji: emojis[Math.floor(Math.random()*emojis.length)] };
+        store.groups.unshift(g); saveStore(store); renderGroupList();
+      }
+    });
   }
 
   function openGroup (id) {
@@ -492,19 +503,91 @@
     renderThread(shareTarget === 'dm' ? 'dm-body' : 'grp-body', activeThread);
   }
 
-  // ---------- share user ----------
+  // ---------- share user (proper modal picker) ----------
   function shareUserPrompt (kind) {
     if (!activeThread && kind !== 'ai') { alert('Open a chat first.'); return; }
-    const id = prompt('Share which user? (type their name)\n' + SEED_USERS.map(u => '  · ' + u.name).join('\n'));
-    if (!id) return;
-    const u = SEED_USERS.find(x => x.name.toLowerCase().includes(id.toLowerCase()));
-    if (!u) return alert('No match.');
-    if (kind === 'ai') return; // skip
-    const t = store.threads[activeThread] = store.threads[activeThread] || [];
-    t.push({ from: 'me', shareUser: u.id, ts: Date.now() });
-    saveStore(store);
-    renderThread(kind === 'dm' ? 'dm-body' : 'grp-body', activeThread);
+    if (kind === 'ai') return;
+    openUserPicker({
+      title: 'Share a user',
+      onPick: (u) => {
+        const t = store.threads[activeThread] = store.threads[activeThread] || [];
+        t.push({ from: 'me', shareUser: u.id, ts: Date.now() });
+        saveStore(store);
+        renderThread(kind === 'dm' ? 'dm-body' : 'grp-body', activeThread);
+      }
+    });
   }
+
+  // Reusable user-picker modal — used by share-user, group create, and follows
+  function openUserPicker ({ title = 'Pick a user', onPick, multi = false, preselected = [] } = {}) {
+    let modal = document.getElementById('aa-user-picker');
+    if (modal) modal.remove();
+    modal = document.createElement('div');
+    modal.id = 'aa-user-picker';
+    modal.className = 'modal open';
+    const selected = new Set(preselected);
+    modal.innerHTML = `
+      <div class="panel" style="max-width:520px">
+        <div class="panel-body" style="padding:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <h2 style="margin:0;font-size:1.1rem">${title}</h2>
+            <button class="btn ghost" data-act="close" style="padding:6px 10px;font-size:.75rem">Close</button>
+          </div>
+          <input type="text" id="aa-up-q" placeholder="Search users…" style="width:100%;padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit;margin-bottom:10px"/>
+          <div id="aa-up-list" style="max-height:50vh;overflow-y:auto;display:grid;gap:6px"></div>
+          ${multi ? '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn primary" data-act="confirm">Confirm</button></div>' : ''}
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    function row (u) {
+      const r = document.createElement('div');
+      r.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--bg)';
+      const checked = selected.has(u.id);
+      r.innerHTML = `
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--red));display:grid;place-items:center;color:#fff;font-weight:700;font-size:.78rem;flex:0 0 auto">${initials(u.name)}</div>
+        <div style="flex:1;min-width:0">
+          <b style="display:block;font-size:.9rem">${u.name}</b>
+          <span style="color:var(--muted);font-size:.75rem">${u.city || ''} · ${u.role || ''}</span>
+        </div>
+        ${multi ? `<input type="checkbox" data-id="${u.id}" ${checked ? 'checked':''} style="width:18px;height:18px"/>` : ''}`;
+      r.addEventListener('click', e => {
+        if (multi) {
+          const cb = r.querySelector('input');
+          if (e.target !== cb) cb.checked = !cb.checked;
+          if (cb.checked) selected.add(u.id); else selected.delete(u.id);
+        } else {
+          onPick && onPick(u);
+          close();
+        }
+      });
+      return r;
+    }
+    function render (filter = '') {
+      const list = $('#aa-up-list', modal);
+      list.innerHTML = '';
+      const f = filter.toLowerCase();
+      SEED_USERS
+        .filter(u => !f || (u.name + ' ' + (u.city||'') + ' ' + (u.role||'')).toLowerCase().includes(f))
+        .forEach(u => list.appendChild(row(u)));
+    }
+    render();
+    $('#aa-up-q', modal).addEventListener('input', e => render(e.target.value));
+    function close () { modal.remove(); document.body.style.overflow = ''; }
+    modal.addEventListener('click', e => {
+      if (e.target === modal) close();
+      if (e.target.dataset.act === 'close') close();
+      if (e.target.dataset.act === 'confirm') {
+        const ids = Array.from(selected);
+        onPick && onPick(ids);
+        close();
+      }
+    });
+    setTimeout(() => $('#aa-up-q', modal).focus(), 50);
+  }
+  // expose for app.js (used by ambassadors / community follow buttons)
+  window.AA_USER_PICKER = openUserPicker;
 
   // ---------- live call (WebRTC stub) ----------
   // Production: drop-in providers — LiveKit, Daily.co, Agora, 100ms, Whereby.

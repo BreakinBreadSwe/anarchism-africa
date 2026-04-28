@@ -317,6 +317,39 @@
     if (tab === 'crowdfund')   renderCrowdfund();
   }
 
+  // -------- MINI PLAYER (sticky across tabs) -----------------------------
+  const MP = (function () {
+    let audio = null, current = null;
+    const ui = {
+      bar: $('#mini-player'), play: $('#mp-play'), close: $('#mp-close'),
+      title: $('#mp-title'), artist: $('#mp-artist'), progress: $('#mp-bar')
+    };
+    function play (song) {
+      if (audio && current?.id === song.id) {
+        if (audio.paused) audio.play(); else audio.pause();
+        return;
+      }
+      if (audio) { audio.pause(); audio.src = ''; }
+      audio = new Audio(song.audio);
+      current = song;
+      ui.title.textContent  = song.title;
+      ui.artist.textContent = song.artist;
+      ui.bar?.classList.add('show');
+      ui.play.textContent = '⏸'; ui.play.classList.add('playing');
+      audio.play().catch(() => {});
+      audio.addEventListener('timeupdate', () => {
+        if (!audio.duration) return;
+        ui.progress.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      });
+      audio.addEventListener('pause', () => { ui.play.textContent = '▶'; ui.play.classList.remove('playing'); });
+      audio.addEventListener('play',  () => { ui.play.textContent = '⏸'; ui.play.classList.add('playing'); });
+      audio.addEventListener('ended', () => { ui.bar?.classList.remove('show'); current = null; });
+    }
+    ui.play?.addEventListener('click',  () => { if (audio) (audio.paused ? audio.play() : audio.pause()); });
+    ui.close?.addEventListener('click', () => { audio?.pause(); ui.bar?.classList.remove('show'); current = null; });
+    return { play, get current () { return current; } };
+  })();
+
   function audioRow (s) {
     const row = document.createElement('div');
     row.className = 'audio-row';
@@ -326,15 +359,8 @@
         <h3>${s.title}</h3>
         <div class="meta">${s.artist} · ${Math.floor(s.duration/60)}:${String(s.duration%60).padStart(2,'0')}</div>
       </div>`;
-    const a = new Audio(s.audio);
     const btn = row.querySelector('.play');
-    btn.addEventListener('click', () => {
-      if (a.paused) {
-        document.querySelectorAll('audio').forEach(x => x !== a && x.pause());
-        a.play(); btn.classList.add('playing'); btn.textContent = '⏸';
-      } else { a.pause(); btn.classList.remove('playing'); btn.textContent = '▶'; }
-    });
-    a.addEventListener('ended', () => { btn.classList.remove('playing'); btn.textContent = '▶'; });
+    btn.addEventListener('click', () => MP.play(s));
     return row;
   }
 

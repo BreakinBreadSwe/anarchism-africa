@@ -95,6 +95,32 @@
     async getCampaigns () { return (await loadSeed()).campaigns; },
     async getGrants ()    { return (await loadSeed()).grants; },
 
+    // marketplace -----------------------------------------------------
+    async getAlliedShops () { return (await loadSeed()).external_shops || []; },
+    async getServices ()    {
+      const seed = (await loadSeed()).services || [];
+      const local = JSON.parse(localStorage.getItem('aa.userOfferings.services') || '[]');
+      return [...local, ...seed];
+    },
+    async getSeminars ()    {
+      const seed = (await loadSeed()).seminars || [];
+      const local = JSON.parse(localStorage.getItem('aa.userOfferings.seminars') || '[]');
+      return [...local, ...seed];
+    },
+    async getJobs ()        {
+      const seed = (await loadSeed()).jobs || [];
+      const local = JSON.parse(localStorage.getItem('aa.userOfferings.jobs') || '[]');
+      return [...local, ...seed];
+    },
+    async postOffering (kind, item) {
+      const key = 'aa.userOfferings.' + kind;
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      const out = { ...item, id: kind[0] + Date.now(), ts: Date.now(), userPosted: true };
+      list.unshift(out);
+      localStorage.setItem(key, JSON.stringify(list));
+      return out;
+    },
+
     // mailing list -----------------------------------------------------
     async subscribe (email, name = '') {
       if (cfg().backend === 'vercel') {

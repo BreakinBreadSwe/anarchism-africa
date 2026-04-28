@@ -29,10 +29,40 @@
       <button data-mode="system" title="System">◐</button>
       <button data-mode="dark"   title="Dark" class="active">☾</button>
     </div>
+    <button class="btn ghost icon-only" id="customize-open" title="Customize colors" aria-label="Customize">◐◐</button>
     <button class="btn ghost" id="role-toggle">Sign in</button>
     <a class="btn primary" href="admin.html">Studio</a>
   </div>
 </header>
+
+<!-- CUSTOMIZE THEME SHEET ------------------------------------------------- -->
+<aside class="customize-sheet" id="customize-sheet" aria-hidden="true">
+  <div class="customize-head">
+    <h3>Customize colours</h3>
+    <button class="btn ghost" id="customize-close">Close</button>
+  </div>
+  <div class="customize-body">
+    <div class="form-row">
+      <label>Quick presets</label>
+      <div class="preset-list" id="preset-list"></div>
+    </div>
+    <div class="form-row">
+      <label>My saved themes</label>
+      <div class="preset-list" id="user-preset-list"></div>
+    </div>
+    <div class="form-row">
+      <label>Edit tokens</label>
+      <div id="customize-tokens"></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end">
+      <input type="text" id="preset-name" placeholder="Name your theme — e.g. 'Marrakech Sunset'" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/>
+      <button class="btn primary" id="preset-save">Save preset</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn ghost" id="customize-reset">Reset to BLACKOUT</button>
+    </div>
+  </div>
+</aside>
 
 <!-- TABS -->
 <nav class="tabs" id="tabs">
@@ -108,15 +138,29 @@
   <div class="grid" id="books-grid"></div>
 </section>
 
-<!-- MERCH ----------------------------------------------------------------- -->
+<!-- MERCH / MARKETPLACE --------------------------------------------------- -->
 <section class="view" id="view-merch">
   <div class="section-head">
     <div>
-      <h2>Giftshop</h2>
-      <p class="lead">Print-on-demand only — no warehouses, organic cottons, certified providers. Each item carbon-tracked.</p>
+      <h2>Marketplace</h2>
+      <p class="lead">A horizontal octopus: in-house POD, allied shops worldwide, services, seminars, jobs. Punk · pan-african · ecological.</p>
     </div>
+    <button class="btn primary" id="post-offering">+ Post offering</button>
   </div>
+
+  <div class="subtabs" id="merch-subtabs">
+    <button class="subtab active" data-sub="inhouse">In-house ·  POD</button>
+    <button class="subtab" data-sub="allied">Allied shops</button>
+    <button class="subtab" data-sub="services">Services</button>
+    <button class="subtab" data-sub="seminars">Seminars</button>
+    <button class="subtab" data-sub="jobs">Jobs</button>
+  </div>
+
   <div class="grid" id="merch-grid"></div>
+  <div class="grid" id="allied-grid" hidden></div>
+  <div class="grid" id="services-grid" hidden></div>
+  <div class="grid" id="seminars-grid" hidden></div>
+  <div class="grid" id="jobs-grid" hidden></div>
 </section>
 
 <!-- COMMUNITY ------------------------------------------------------------- -->

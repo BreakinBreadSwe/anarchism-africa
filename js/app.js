@@ -438,6 +438,248 @@
     });
   }
 
+  // ---- MARKETPLACE sub-tabs ---------------------------------------------
+  function showSub (sub) {
+    document.querySelectorAll('#merch-subtabs .subtab').forEach(b => b.classList.toggle('active', b.dataset.sub === sub));
+    const grids = { inhouse:'#merch-grid', allied:'#allied-grid', services:'#services-grid', seminars:'#seminars-grid', jobs:'#jobs-grid' };
+    Object.values(grids).forEach(id => { const el = $(id); if (el) el.hidden = true; });
+    const target = $(grids[sub]); if (target) { target.hidden = false; target.classList.add('grid', 'anim-stagger'); }
+    if (sub === 'allied'   && !$('#allied-grid').children.length)   renderAllied();
+    if (sub === 'services' && !$('#services-grid').children.length) renderServices();
+    if (sub === 'seminars' && !$('#seminars-grid').children.length) renderSeminars();
+    if (sub === 'jobs'     && !$('#jobs-grid').children.length)     renderJobs();
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('#merch-subtabs .subtab'); if (b) showSub(b.dataset.sub);
+  });
+
+  function shopCard (s) {
+    const el = document.createElement('div');
+    el.className = 'card shop-card';
+    el.innerHTML = `
+      <div class="thumb" style="background-image:url(${s.image})"><span class="badge">SHOP</span></div>
+      <div class="body">
+        <span class="city">${s.city}, ${s.country}</span>
+        <h3>${s.name}</h3>
+        <p class="summary">${s.what}</p>
+        <div style="margin-top:10px"><button class="btn primary">Visit shop ↗</button></div>
+      </div>`;
+    el.addEventListener('click', () => window.open(s.url, '_blank', 'noopener'));
+    return el;
+  }
+  function serviceCard (s) {
+    const el = document.createElement('div');
+    el.className = 'card service-card';
+    el.innerHTML = `
+      <div class="thumb" style="background-image:url(${s.image})"><span class="badge">SERVICE</span></div>
+      <div class="body">
+        <h3>${s.title}</h3>
+        <div class="meta">${s.by} · ${s.city} · ${s.category}</div>
+        <p class="summary">${s.summary}</p>
+        <span class="rate">${s.rate}</span>
+      </div>`;
+    el.addEventListener('click', () => alert(`Contact ${s.by} via Direct messages — opening chat…`));
+    return el;
+  }
+  function seminarCard (s) {
+    const el = document.createElement('div');
+    el.className = 'card seminar-card';
+    const dt = new Date(s.starts_at);
+    el.innerHTML = `
+      <div class="thumb" style="background-image:url(${s.image})"><span class="badge">${s.format === 'online' ? 'ONLINE' : s.format.toUpperCase()}</span></div>
+      <div class="body">
+        <span class="when">${dt.toLocaleDateString(undefined,{ month:'short', day:'numeric'})} · ${dt.toLocaleTimeString(undefined,{hour:'2-digit', minute:'2-digit'})}</span>
+        <h3>${s.title}</h3>
+        <div class="meta">hosted by ${s.host}</div>
+        <p class="summary">${s.summary}</p>
+        <span class="fee">${s.fee}</span>
+      </div>`;
+    el.addEventListener('click', () => alert(`RSVP'd to "${s.title}" (demo)`));
+    return el;
+  }
+  function jobCard (j) {
+    const el = document.createElement('div');
+    el.className = 'card job-card';
+    el.innerHTML = `
+      <div class="thumb" style="background-image:url(${j.image})"><span class="badge">JOB</span></div>
+      <div class="body">
+        <h3>${j.title}</h3>
+        <div class="meta">${j.org} · ${j.city}</div>
+        <p class="summary">${j.summary}</p>
+        <span class="comp">${j.comp}</span>
+      </div>`;
+    el.addEventListener('click', () => alert(`Apply at ${j.org} — opening chat to ${j.org}…`));
+    return el;
+  }
+  async function renderAllied () {
+    const g = $('#allied-grid'); g.innerHTML = ''; g.classList.add('grid', 'anim-stagger');
+    (await AA.getAlliedShops()).forEach(s => g.appendChild(shopCard(s)));
+  }
+  async function renderServices () {
+    const g = $('#services-grid'); g.innerHTML = ''; g.classList.add('grid', 'anim-stagger');
+    (await AA.getServices()).forEach(s => g.appendChild(serviceCard(s)));
+  }
+  async function renderSeminars () {
+    const g = $('#seminars-grid'); g.innerHTML = ''; g.classList.add('grid', 'anim-stagger');
+    (await AA.getSeminars()).forEach(s => g.appendChild(seminarCard(s)));
+  }
+  async function renderJobs () {
+    const g = $('#jobs-grid'); g.innerHTML = ''; g.classList.add('grid', 'anim-stagger');
+    (await AA.getJobs()).forEach(j => g.appendChild(jobCard(j)));
+  }
+
+  // ---- POST OFFERING modal ----------------------------------------------
+  const postBtn = $('#post-offering');
+  if (postBtn) postBtn.addEventListener('click', () => {
+    openModal('https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80', `
+      <h2>Post an offering</h2>
+      <p style="color:var(--fg-dim)">Add to the marketplace as a service, seminar, or job. Visible to the whole network.</p>
+      <form id="offer-form" style="display:grid;gap:8px;margin-top:10px">
+        <select name="kind" required style="padding:10px;background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px">
+          <option value="services">Service</option>
+          <option value="seminars">Seminar (online or offline)</option>
+          <option value="jobs">Job / gig</option>
+        </select>
+        <input name="title" required placeholder="Title" style="padding:10px;background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px"/>
+        <input name="meta"  required placeholder="Your name / org · city" style="padding:10px;background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px"/>
+        <input name="rate"  placeholder="Rate / fee / comp (optional)" style="padding:10px;background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px"/>
+        <textarea name="summary" required placeholder="Description" style="padding:10px;background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px;min-height:80px"></textarea>
+        <button class="btn primary" type="submit">Post</button>
+      </form>
+    `);
+    document.getElementById('offer-form').addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const fd = new FormData(ev.target);
+      const kind = fd.get('kind');
+      const item = {
+        title: fd.get('title'),
+        summary: fd.get('summary'),
+        image: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80'
+      };
+      if (kind === 'services') { item.by = fd.get('meta').split(' · ')[0]; item.city = fd.get('meta').split(' · ')[1] || ''; item.rate = fd.get('rate') || 'Negotiable'; item.category = 'community'; }
+      if (kind === 'seminars') { item.host = fd.get('meta').split(' · ')[0]; item.fee = fd.get('rate') || 'Free'; item.format = 'online'; item.starts_at = new Date(Date.now() + 7*86400e3).toISOString(); }
+      if (kind === 'jobs')     { item.org = fd.get('meta').split(' · ')[0];  item.city = fd.get('meta').split(' · ')[1] || 'Remote'; item.comp = fd.get('rate') || 'Negotiable'; }
+      await AA.postOffering(kind, item);
+      // re-render relevant tab
+      document.getElementById('modal-body').innerHTML = '<h2>Posted ✓</h2><p>Visible in the marketplace immediately.</p>';
+      ['allied','services','seminars','jobs'].forEach(s => { const g = $('#' + s + '-grid'); if (g) g.innerHTML = ''; });
+      // bump to the right subtab
+      const tab = document.querySelector(`#merch-subtabs .subtab[data-sub="${kind}"]`); tab?.click();
+    });
+  });
+
+  // ---- CUSTOMIZE THEME SHEET --------------------------------------------
+  const TOKENS = ['bg','bg-2','fg','fg-dim','muted','accent','red','green','violet','teal'];
+  function getCurrentTheme () {
+    const stored = JSON.parse(localStorage.getItem('aa.theme') || 'null');
+    if (stored) return stored;
+    const cs = getComputedStyle(document.documentElement);
+    const out = {}; TOKENS.forEach(t => out[t] = cs.getPropertyValue('--' + t).trim() || '#000');
+    return out;
+  }
+  function applyTheme (tokens) {
+    Object.entries(tokens).forEach(([k, v]) => document.documentElement.style.setProperty('--' + k, v));
+    localStorage.setItem('aa.theme', JSON.stringify(tokens));
+  }
+  function swatches (tokens) { return ['bg','fg','accent','red','green'].map(k => `<i style="background:${tokens[k] || '#000'}"></i>`).join(''); }
+
+  async function buildCustomize () {
+    const cur = getCurrentTheme();
+    // tokens
+    const tokensHost = $('#customize-tokens');
+    tokensHost.innerHTML = TOKENS.map(t => `
+      <div class="token-row">
+        <label>${t}</label>
+        <input type="color" value="${tokens.toHex(cur[t])}" data-tok="${t}"/>
+        <input type="text"  value="${cur[t] || ''}" data-tok-text="${t}"/>
+      </div>`).join('');
+    tokensHost.querySelectorAll('[data-tok]').forEach(inp => inp.addEventListener('input', e => {
+      const t = e.target.dataset.tok; const v = e.target.value;
+      tokensHost.querySelector(`[data-tok-text="${t}"]`).value = v;
+      document.documentElement.style.setProperty('--' + t, v);
+    }));
+    tokensHost.querySelectorAll('[data-tok-text]').forEach(inp => inp.addEventListener('change', e => {
+      const t = e.target.dataset.tokText; const v = e.target.value;
+      tokensHost.querySelector(`[data-tok="${t}"]`).value = tokens.toHex(v);
+      document.documentElement.style.setProperty('--' + t, v);
+    }));
+    // admin presets
+    const seed = await AA.getSite(); // ensure load
+    const seedAll = await fetch('data/seed.json').then(r => r.json()).catch(() => null);
+    const presets = (seedAll && seedAll.theme_presets) || [];
+    $('#preset-list').innerHTML = '';
+    presets.forEach(p => {
+      const c = document.createElement('div');
+      c.className = 'preset-card';
+      c.innerHTML = `<div class="swatches">${swatches(p.tokens)}</div><div class="meta"><b>${p.name}</b><span>by ${p.by}</span></div>`;
+      c.addEventListener('click', () => applyTheme(p.tokens));
+      $('#preset-list').appendChild(c);
+    });
+    // user presets
+    renderUserPresets();
+  }
+  const tokens = {
+    toHex (v) {
+      v = (v || '').trim();
+      if (/^#[0-9a-f]{6}$/i.test(v)) return v;
+      // Convert rgb()/rgba() approximately
+      const m = v.match(/(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+      if (m) return '#' + [m[1],m[2],m[3]].map(n => Number(n).toString(16).padStart(2,'0')).join('');
+      return '#000000';
+    }
+  };
+  function renderUserPresets () {
+    const list = JSON.parse(localStorage.getItem('aa.userPresets') || '[]');
+    const host = $('#user-preset-list'); host.innerHTML = '';
+    if (!list.length) { host.innerHTML = '<p style="color:var(--muted);font-size:.8rem;margin:0">Save your first theme below.</p>'; return; }
+    list.forEach((p, i) => {
+      const c = document.createElement('div');
+      c.className = 'preset-card';
+      c.innerHTML = `<div class="swatches">${swatches(p.tokens)}</div><div class="meta"><b>${p.name}</b><span>${new Date(p.ts).toLocaleDateString()}</span></div><button class="delete" data-del="${i}">×</button>`;
+      c.addEventListener('click', e => {
+        if (e.target.dataset.del !== undefined) {
+          const arr = JSON.parse(localStorage.getItem('aa.userPresets') || '[]');
+          arr.splice(+e.target.dataset.del, 1);
+          localStorage.setItem('aa.userPresets', JSON.stringify(arr));
+          renderUserPresets();
+          return;
+        }
+        applyTheme(p.tokens);
+      });
+      host.appendChild(c);
+    });
+  }
+  document.addEventListener('click', e => {
+    if (e.target.id === 'customize-open') { $('#customize-sheet').classList.add('open'); buildCustomize(); }
+    if (e.target.id === 'customize-close') $('#customize-sheet').classList.remove('open');
+    if (e.target.id === 'customize-reset') {
+      localStorage.removeItem('aa.theme'); location.reload();
+    }
+    if (e.target.id === 'preset-save') {
+      const name = $('#preset-name').value.trim() || ('Theme ' + new Date().toLocaleString());
+      const t = getCurrentTheme();
+      const arr = JSON.parse(localStorage.getItem('aa.userPresets') || '[]');
+      arr.unshift({ name, tokens: t, ts: Date.now() });
+      localStorage.setItem('aa.userPresets', JSON.stringify(arr));
+      $('#preset-name').value = '';
+      renderUserPresets();
+    }
+  });
+
+  // ---- KONAMI CODE → underground mode ----------------------------------
+  (function () {
+    const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let buf = [];
+    document.addEventListener('keydown', e => {
+      buf.push(e.key); if (buf.length > code.length) buf.shift();
+      if (buf.join(',').toLowerCase() === code.join(',').toLowerCase()) {
+        document.body.classList.add('underground');
+        const t = document.createElement('div'); t.className = 'underground-toast'; t.textContent = 'UNDERGROUND MODE — 60s'; document.body.appendChild(t);
+        setTimeout(() => { document.body.classList.remove('underground'); t.remove(); }, 60000);
+      }
+    });
+  })();
+
   // ---- CLI install widget ----------------------------------------------
   function detectOS () {
     const ua = navigator.userAgent || '';
@@ -505,6 +747,14 @@
     const anim = localStorage.getItem('aa.anim') || 'aa-fade-up';
     document.documentElement.style.setProperty('--enter-anim', anim);
   }
+  function applyCustomLogo () {
+    const url = localStorage.getItem('aa.customLogo');
+    if (!url) return;
+    document.querySelectorAll('.brand .logo').forEach(l => {
+      l.classList.add('custom');
+      l.style.setProperty('--custom-logo', `url("${url}")`);
+    });
+  }
   function injectCustomCSS () {
     const css = localStorage.getItem('aa.css');
     if (!css) return;
@@ -538,6 +788,7 @@
   // ---- boot -------------------------------------------------------------
   (async function boot () {
     applyEntryAnim();
+    applyCustomLogo();
     injectCustomCSS();
     // theme tokens from localStorage
     const customTheme = localStorage.getItem('aa.theme');

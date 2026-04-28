@@ -5,14 +5,22 @@
     "stewards": "LUVLAB × COOLHUNTPARIS"
   },
   "theme": {
-    "bg": "#0a0a0a",
-    "fg": "#f5f0e8",
+    "bg": "#000000",
+    "fg": "#ffffff",
     "accent": "#FFD700",
     "red": "#C8102E",
     "green": "#007749",
     "violet": "#8B00FF",
     "teal": "#00FFE0"
   },
+  "theme_presets": [
+    { "id": "tp1", "name": "BLACKOUT (default · dark)",  "by": "LUVLAB",        "tokens": { "bg":"#000000","bg-2":"#0c0c0c","fg":"#ffffff","fg-dim":"#cfcfcf","muted":"#888888","accent":"#FFD700","red":"#C8102E","green":"#007749","violet":"#8B00FF","teal":"#00FFE0" } },
+    { "id": "tp2", "name": "WHITEOUT (default · light)", "by": "LUVLAB",        "tokens": { "bg":"#ffffff","bg-2":"#f5f5f5","fg":"#000000","fg-dim":"#2a2a2a","muted":"#777777","accent":"#FFD700","red":"#C8102E","green":"#007749","violet":"#8B00FF","teal":"#00FFE0" } },
+    { "id": "tp3", "name": "PAN-AFRICA",                  "by": "COOLHUNTPARIS", "tokens": { "bg":"#0a0a0a","bg-2":"#160605","fg":"#FFD700","fg-dim":"#FFB000","muted":"#7a5a00","accent":"#C8102E","red":"#C8102E","green":"#007749","violet":"#8B00FF","teal":"#00FFE0" } },
+    { "id": "tp4", "name": "CYBERPUNK DUB",               "by": "Kojo Sound",    "tokens": { "bg":"#0b0014","bg-2":"#15001f","fg":"#00FFE0","fg-dim":"#9affec","muted":"#5a8a85","accent":"#FF00AA","red":"#FF3366","green":"#00FFA0","violet":"#8B00FF","teal":"#00FFE0" } },
+    { "id": "tp5", "name": "TERMINAL GREEN",              "by": "Aïcha B.",      "tokens": { "bg":"#000000","bg-2":"#001100","fg":"#5dff8a","fg-dim":"#3aaa55","muted":"#2a662f","accent":"#FFD700","red":"#ff5050","green":"#5dff8a","violet":"#8B00FF","teal":"#00FFE0" } },
+    { "id": "tp6", "name": "NEWSPRINT CREAM",             "by": "COOLHUNTPARIS", "tokens": { "bg":"#f5f1ea","bg-2":"#ffffff","fg":"#0a0a0a","fg-dim":"#3a3530","muted":"#7a716a","accent":"#C8102E","red":"#C8102E","green":"#007749","violet":"#6B00C8","teal":"#008b80" } }
+  ],
   "hero": [
     {
       "id": "h1",
@@ -106,7 +114,45 @@
     { "id": "m1", "title": "BLACK STAR Tee", "provider": "Stanley/Stella", "eco": ["GOTS","Fair Wear"], "price_eur": 32, "carbon_g": 2400, "image": "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=1200&q=80", "summary": "Organic cotton, water-saving dye, ships from Lisbon — POD, no warehouse." },
     { "id": "m2", "title": "SANKOFA Tote", "provider": "Teemill", "eco": ["Climate-Neutral","B-Corp"], "price_eur": 18, "carbon_g": 900, "image": "https://images.unsplash.com/photo-1544441893-675973e31985?w=1200&q=80", "summary": "Circular cotton — return it when worn, get a new one." },
     { "id": "m3", "title": "COMMUNE Hoodie", "provider": "Stanley/Stella", "eco": ["GOTS","Fair Wear"], "price_eur": 64, "carbon_g": 5200, "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=1200&q=80", "summary": "Heavyweight, organic, ungendered." },
-    { "id": "m4", "title": "ZINE Bundle (3 issues)", "provider": "Ohh Deer (FSC)", "eco": ["FSC","Recycled"], "price_eur": 22, "carbon_g": 600, "image": "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=1200&q=80", "summary": "Riso-printed in Bristol, FSC paper." }
+    { "id": "m4", "title": "ZINE Bundle (3 issues)", "provider": "Ohh Deer (FSC)", "eco": ["FSC","Recycled"], "price_eur": 22, "carbon_g": 600, "image": "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=1200&q=80", "summary": "Riso-printed in Bristol, FSC paper." },
+    { "id": "m5", "title": "CIRCLE-A Patch (embroidered)", "provider": "Teemill", "eco": ["B-Corp","Climate-Neutral"], "price_eur": 8, "carbon_g": 80, "image": "https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=1200&q=80", "summary": "Iron-on punk patch — sankofa bird inside circle-A." },
+    { "id": "m6", "title": "PAN-AFRO Bandana", "provider": "FairShare Print", "eco": ["GOTS","SA8000"], "price_eur": 14, "carbon_g": 300, "image": "https://images.unsplash.com/photo-1542327897-d73f4005b533?w=1200&q=80", "summary": "Adinkra symbols on red/black/green organic cotton." },
+    { "id": "m7", "title": "ANARCH-AFRO Vinyl 7\"", "provider": "Allied · Soundway", "eco": ["Recycled vinyl"], "price_eur": 14, "carbon_g": 250, "image": "https://images.unsplash.com/photo-1453090927415-5f45085b65c0?w=1200&q=80", "summary": "DJ Anarka A-side · Kojo Sound dub on B." },
+    { "id": "m8", "title": "MUTUAL AID Riso poster A2", "provider": "Ohh Deer (FSC)", "eco": ["FSC","Recycled"], "price_eur": 24, "carbon_g": 180, "image": "https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=1200&q=80", "summary": "Two-colour riso, signed by the artist, Bristol pressing." }
+  ],
+  "external_shops": [
+    { "id": "x1", "name": "Bookmarks (London)",        "city": "London",       "country": "UK",          "what": "UK's only socialist bookshop — strong Black radical section, zines, posters.", "url": "https://bookmarksbookshop.co.uk", "image": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1200&q=80" },
+    { "id": "x2", "name": "AK Press",                  "city": "Chico, CA",    "country": "USA",         "what": "Worker-run publisher and distributor — anarchist + Black liberation books, audio, merch.", "url": "https://www.akpress.org", "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=80" },
+    { "id": "x3", "name": "PM Press",                  "city": "Oakland, CA",  "country": "USA",         "what": "Books, zines, music, films — anarchism, Black studies, prison abolition.", "url": "https://www.pmpress.org", "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80" },
+    { "id": "x4", "name": "Casa de las Américas",      "city": "Havana",       "country": "Cuba",        "what": "Cuban publisher with a deep Pan-African / decolonial catalogue.", "url": "https://www.casadelasamericas.org", "image": "https://images.unsplash.com/photo-1544211076-50105ce0e36c?w=1200&q=80" },
+    { "id": "x5", "name": "Africa is a Country shop",  "city": "Online",       "country": "—",           "what": "Tees, totes, prints from the editorial collective. Diaspora-led.", "url": "https://africasacountry.com", "image": "https://images.unsplash.com/photo-1513267048331-5611cad62e41?w=1200&q=80" },
+    { "id": "x6", "name": "Kontra Records",            "city": "Berlin",       "country": "Germany",     "what": "Kontra-distro — Afro-punk, dub, riot grrrl 7\"s, posters.", "url": "https://kontra-records.com", "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80" },
+    { "id": "x7", "name": "Souffles Distribution",     "city": "Marseille",    "country": "France",      "what": "Maghrebi anti-colonial press, in Arabic / Darija / French.", "url": "https://souffles.fr", "image": "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80" },
+    { "id": "x8", "name": "Chimurenga Library",        "city": "Cape Town",    "country": "South Africa","what": "Pan-African chronicle and library — books, music, archives.", "url": "https://chimurengachronic.co.za", "image": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80" },
+    { "id": "x9", "name": "Le Cafouillis",             "city": "Dakar",        "country": "Senegal",     "what": "Independent print house — risograph zines, comix.", "url": "https://lecafouillis.sn", "image": "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=1200&q=80" },
+    { "id": "x10", "name": "Beating Heart",            "city": "Nairobi/London","country": "KE/UK",     "what": "Ethical merch funded by reissued East African archive recordings.", "url": "https://beatingheart.org", "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80" }
+  ],
+  "services": [
+    { "id": "sv1", "title": "Print zines for your project", "by": "Esi Mensah",   "city": "Accra",       "rate": "€2/copy (50+)", "category": "print",       "image": "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=1200&q=80", "summary": "Riso, screen, FSC paper — turnaround 10 days." },
+    { "id": "sv2", "title": "Sound engineering for live + studio", "by": "Kojo Sound", "city": "Accra",  "rate": "€60/hour",     "category": "sound",       "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "summary": "Soundsystem build, mixing, mastering. Anarcho-rates." },
+    { "id": "sv3", "title": "Translation EN → Twi/Yoruba/Wolof", "by": "Lerato M.", "city": "Joburg",   "rate": "€0.10/word",   "category": "translation", "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "Articles, books, subtitles. Native speakers reviewed." },
+    { "id": "sv4", "title": "Movement legal aid / NDA review",   "by": "Yannick D.", "city": "Brussels", "rate": "Sliding scale","category": "legal",       "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Pro bono for organisers, paid for institutions." },
+    { "id": "sv5", "title": "Riso-print design + production",    "by": "Aïcha B.",   "city": "Tunis",    "rate": "€150/poster",  "category": "design",      "image": "https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=1200&q=80", "summary": "Concept → press, two-colour minimum." },
+    { "id": "sv6", "title": "Soundsystem assembly workshop",     "by": "DJ Anarka",  "city": "Luanda",   "rate": "Pay-what-you-can","category": "workshop", "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80", "summary": "Build your own rig — 2 days, hands-on." }
+  ],
+  "seminars": [
+    { "id": "se1", "title": "How Europe Underdeveloped Africa — 50 years on", "host": "AA Library", "starts_at": "2026-05-15T18:00:00+00:00", "format": "online",   "fee": "Free", "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Live reading + Q&A across 14 cities." },
+    { "id": "se2", "title": "Mutual aid bookkeeping for collectives",        "host": "Lerato M.",   "starts_at": "2026-05-22T17:00:00+00:00", "format": "online",   "fee": "€10",  "image": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80", "summary": "Practical: what to track, what to ignore." },
+    { "id": "se3", "title": "Curating the diaspora archive",                 "host": "COOLHUNTPARIS","starts_at": "2026-06-04T19:00:00+00:00", "format": "Paris",    "fee": "€15",  "image": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80", "summary": "At 59 Rivoli — limited 30 seats." },
+    { "id": "se4", "title": "Dub & polyrhythm as anti-state practice",        "host": "Kojo Sound",  "starts_at": "2026-06-21T20:00:00+00:00", "format": "Accra",    "fee": "Pay-what-you-can", "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "summary": "Live demo on the new soundsystem." },
+    { "id": "se5", "title": "Translating radical texts into Maghrebi",        "host": "Aïcha B.",    "starts_at": "2026-07-02T16:00:00+00:00", "format": "online",   "fee": "Free", "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Workshop on Darija + MSA register choices." }
+  ],
+  "jobs": [
+    { "id": "j1", "title": "Newsletter editor (part-time, remote)",       "org": "COOLHUNTPARIS",     "city": "Remote",        "comp": "€800/month",      "image": "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80", "summary": "Curate the weekly Library digest." },
+    { "id": "j2", "title": "Soundsystem builder (apprenticeship)",        "org": "Accra commune",     "city": "Accra",         "comp": "Stipend + stay",  "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "summary": "3 months, learn cabinets / amps / cabling." },
+    { "id": "j3", "title": "Translator (Lingala → EN/FR)",                "org": "AA Library",        "city": "Remote",        "comp": "€0.12/word",      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "100k words/year on rolling basis." },
+    { "id": "j4", "title": "Tour producer — Pan-African Bookfair",        "org": "AA × Chimurenga",   "city": "Cape Town",     "comp": "€2,500 + travel", "image": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80", "summary": "10-week project, 3 city stops." },
+    { "id": "j5", "title": "Risograph operator",                          "org": "Le Cafouillis",     "city": "Dakar",         "comp": "Local rate",      "image": "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=1200&q=80", "summary": "Print runs for the platform + outside clients." }
   ],
   "ambassadors": [
     { "id": "amb1", "name": "Lerato M.", "city": "Johannesburg", "country": "South Africa", "status": "active", "reach": 4200, "pitch": "Hosting monthly listening sessions in Maboneng." },

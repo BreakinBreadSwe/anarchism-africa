@@ -313,6 +313,58 @@ async function main () {
     const a = data.articles.find(x => x.title.toLowerCase().includes(q)) || data.articles[0];
     return readArticle(a);
   }
+  if (cmd === 'rsvp') {
+    const q = argv.slice(1).join(' ').toLowerCase();
+    const e = data.events.find(x => x.title.toLowerCase().includes(q) || x.city.toLowerCase().includes(q));
+    if (!e) return console.log(c(C.red, 'no event matched.'));
+    console.log(c(C.green, `✓ RSVP'd: ${e.title} — ${new Date(e.starts_at).toLocaleString()} · ${e.city}`));
+    console.log(c(C.dim, '   (demo · in production this hits the events table)'));
+    return;
+  }
+  if (cmd === 'pledge') {
+    const amt = parseInt(argv[1], 10) || 5;
+    const q = argv.slice(2).join(' ').toLowerCase();
+    const camp = data.campaigns.find(x => x.title.toLowerCase().includes(q)) || data.campaigns[0];
+    if (!camp) return console.log(c(C.red, 'no campaign matched.'));
+    console.log(c(C.green, `✓ pledged €${amt} to: ${camp.title}`));
+    console.log(c(C.dim, `   raised: €${camp.raised_eur + amt} of €${camp.goal_eur}`));
+    return;
+  }
+  if (cmd === 'follow') {
+    const q = argv.slice(1).join(' ').toLowerCase();
+    if (!q) {
+      head('ambassadors (try: aa follow <name>)');
+      data.ambassadors.forEach((a, i) => row(i, a.name, `${a.city}, ${a.country} · ${a.status}`));
+      return;
+    }
+    const a = data.ambassadors.find(x => x.name.toLowerCase().includes(q));
+    if (!a) return console.log(c(C.red, 'no match.'));
+    console.log(c(C.green, `✓ following ${a.name} (${a.city})`));
+    return;
+  }
+  if (cmd === 'ambassadors') {
+    head('ambassadors');
+    data.ambassadors.forEach((a, i) => row(i, a.name, `${a.city}, ${a.country} · reach ~${a.reach||0} · ${a.status}`));
+    return;
+  }
+  if (cmd === 'manifesto') {
+    banner();
+    const lines = [
+      'ANARCHISM is older than its name in Africa.',
+      '',
+      'In every market women\'s coop, every susu, every chama, every harambee,',
+      'every commune that runs without a chief, the practice is already there.',
+      '',
+      'We are not building it from nothing — we are re-membering it.',
+      '',
+      'No gods. No masters. No managers. No warehouse. No waste.',
+      '',
+      'Pan-African · Anti-state · Pro-people.'
+    ];
+    lines.forEach(l => console.log('  ' + c(C.green, l)));
+    console.log('');
+    return;
+  }
   console.log(c(C.red, 'unknown: ' + cmd) + '\n');
   help();
 }

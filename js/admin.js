@@ -243,6 +243,29 @@
     }));
     $('#css-override').value = localStorage.getItem('aa.css') || '/* Drop CSS here. Example:\n.tab.active { background: var(--violet); color: #fff; }\n*/';
 
+    // logo upload preview
+    const savedLogo = localStorage.getItem('aa.customLogo');
+    if (savedLogo) {
+      $('#logo-preview').style.backgroundImage = `url("${savedLogo}")`;
+    }
+    const upload = $('#logo-upload');
+    if (upload && !upload.dataset.bound) {
+      upload.dataset.bound = '1';
+      upload.addEventListener('change', e => {
+        const file = e.target.files[0]; if (!file) return;
+        if (file.size > 500_000) { alert('Too big — under 500KB please.'); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = reader.result;
+          localStorage.setItem('aa.customLogo', dataUrl);
+          $('#logo-preview').style.backgroundImage = `url("${dataUrl}")`;
+          // apply live to admin page logo
+          document.querySelectorAll('.brand .logo').forEach(l => { l.classList.add('custom'); l.style.setProperty('--custom-logo', `url("${dataUrl}")`); });
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     // animation picker
     const savedAnim = localStorage.getItem('aa.anim') || 'aa-fade-up';
     const savedDur  = localStorage.getItem('aa.animDur') || '550';
@@ -269,6 +292,11 @@
       stage.querySelectorAll('.preview-card').forEach(c => { c.classList.remove('anim-enter'); void c.offsetWidth; c.classList.add('anim-enter'); });
     }
     if (e.target.id === 'logo-shuffle-now' && window.AA_LOGO) window.AA_LOGO.shuffle();
+    if (e.target.id === 'logo-clear') {
+      localStorage.removeItem('aa.customLogo');
+      $('#logo-preview').style.backgroundImage = '';
+      document.querySelectorAll('.brand .logo').forEach(l => { l.classList.remove('custom'); l.style.removeProperty('--custom-logo'); });
+    }
     if (e.target.id === 'logo-pause') {
       // simple pause: re-toggle a flag the logo loop checks via localStorage (logo.js doesn't currently honor it; lightweight approach for the demo)
       const cur = localStorage.getItem('aa.logoPaused') === '1';

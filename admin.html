@@ -251,8 +251,16 @@
         <div style="margin-top:8px"><button class="btn primary" id="css-save">Save CSS</button></div>
         <div class="divider"></div>
         <h3>Logo behavior</h3>
-        <p style="color:var(--fg-dim);font-size:.9rem">The logo wordmark rotates fonts every 9 seconds, picking a random entry animation each time. Pause / unpause:</p>
-        <div style="display:flex;gap:8px"><button class="btn ghost" id="logo-pause">Pause rotation</button><button class="btn primary" id="logo-shuffle-now">Shuffle now</button></div>
+        <p style="color:var(--fg-dim);font-size:.9rem">The wordmark rotates fonts every 9s with a random entry animation. The round mark spins a pan-african gradient by default — upload a PNG/SVG/GIF/WEBP to override.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="logo-pause">Pause rotation</button><button class="btn primary" id="logo-shuffle-now">Shuffle now</button></div>
+        <div class="form-row" style="margin-top:14px">
+          <label>Custom round logo (PNG/SVG/GIF/WEBP, ≤500KB)</label>
+          <input type="file" id="logo-upload" accept="image/png,image/svg+xml,image/gif,image/webp"/>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div id="logo-preview" style="width:54px;height:54px;border-radius:50%;border:1px solid var(--line);background:var(--bg-2) center/cover no-repeat"></div>
+          <button class="btn ghost" id="logo-clear">Clear custom logo</button>
+        </div>
       </div>
     </div>
   </section>

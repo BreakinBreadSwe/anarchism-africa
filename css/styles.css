@@ -3,13 +3,13 @@
    so the backend CMS can override at runtime. */
 
 :root {
-  /* DARK theme is the base — the brand was born at 3am */
-  --bg:        #0a0a0a;
-  --bg-2:      #14110f;
-  --fg:        #f5f0e8;
-  --fg-dim:    #c9c2b6;
-  --muted:     #6b6359;
-  --line:      rgba(245, 240, 232, 0.12);
+  /* DARK theme — pure white on pure black, gold the only accent */
+  --bg:        #000000;
+  --bg-2:      #0c0c0c;
+  --fg:        #ffffff;
+  --fg-dim:    #cfcfcf;
+  --muted:     #888888;
+  --line:      rgba(255, 255, 255, 0.14);
   --accent:    #FFD700;
   --red:       #C8102E;
   --green:     #007749;
@@ -18,7 +18,7 @@
   --radius:    14px;
   --radius-lg: 22px;
   --max:       100vw;          /* full viewport width on every screen format */
-  --content-pad-x: clamp(14px, 3vw, 48px);
+  --content-pad-x: clamp(12px, 1.6vw, 24px);  /* small breathing room only — content spans edge to edge */
   --shadow:    0 20px 60px rgba(0,0,0,.5);
   --grain-opacity: .35;
   --enter-anim: aa-fade-up;          /* default content-load animation */
@@ -26,37 +26,31 @@
   --grain:     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* LIGHT theme — newsprint cream with afro-anarchist colour anchors retained */
+/* LIGHT theme — pure black on pure white, accent stays gold */
 [data-theme="light"] {
-  --bg:        #f5f1ea;
-  --bg-2:      #ffffff;
-  --fg:        #0a0a0a;
-  --fg-dim:    #3a3530;
-  --muted:     #7a716a;
-  --line:      rgba(10, 10, 10, 0.12);
-  --accent:    #C8102E;              /* swap accent to red on light — gold disappears on cream */
-  --red:       #C8102E;
-  --green:     #007749;
-  --violet:    #6B00C8;
-  --teal:      #008b80;
-  --shadow:    0 20px 60px rgba(0,0,0,.12);
-  --grain-opacity: .12;
+  --bg:        #ffffff;
+  --bg-2:      #f5f5f5;
+  --fg:        #000000;
+  --fg-dim:    #2a2a2a;
+  --muted:     #777777;
+  --line:      rgba(0, 0, 0, 0.14);
+  --accent:    #FFD700;
+  --shadow:    0 20px 60px rgba(0,0,0,.1);
+  --grain-opacity: .08;
 }
 
 /* SYSTEM mode — follow OS preference */
 @media (prefers-color-scheme: light) {
   [data-theme="system"] {
-    --bg:        #f5f1ea;
-    --bg-2:      #ffffff;
-    --fg:        #0a0a0a;
-    --fg-dim:    #3a3530;
-    --muted:     #7a716a;
-    --line:      rgba(10, 10, 10, 0.12);
-    --accent:    #C8102E;
-    --violet:    #6B00C8;
-    --teal:      #008b80;
-    --shadow:    0 20px 60px rgba(0,0,0,.12);
-    --grain-opacity: .12;
+    --bg:        #ffffff;
+    --bg-2:      #f5f5f5;
+    --fg:        #000000;
+    --fg-dim:    #2a2a2a;
+    --muted:     #777777;
+    --line:      rgba(0, 0, 0, 0.14);
+    --accent:    #FFD700;
+    --shadow:    0 20px 60px rgba(0,0,0,.1);
+    --grain-opacity: .08;
   }
 }
 
@@ -103,15 +97,50 @@ h3 { font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; }
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .12em; font-size: .85rem; }
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: .1em; font-size: 1rem; }
+@media (min-width: 600px) { .brand { font-size: 1.1rem; gap: 14px; } }
+@media (min-width: 1024px) { .brand { font-size: 1.2rem; } }
+
 .brand .logo {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: conic-gradient(from 90deg, var(--red), var(--accent), var(--green), var(--violet), var(--red));
+  width: 40px; height: 40px; border-radius: 50%;
   position: relative;
+  flex: 0 0 auto;
+  --custom-logo: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+@media (min-width: 600px) { .brand .logo { width: 44px; height: 44px; } }
+.brand .logo::before {
+  /* outer ring — rotating pan-african conic, the "moving GIF" feel */
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--red), var(--accent), var(--green), var(--violet), var(--teal), var(--red));
+  animation: aa-logo-spin 9s linear infinite;
+  z-index: 1;
 }
 .brand .logo::after {
-  content: 'A'; position: absolute; inset: 0; display: grid; place-items: center;
-  font-family: 'Bebas Neue', sans-serif; color: #000; font-size: 18px;
+  /* inner core — sits still, holds the glyph */
+  content: 'A'; position: absolute; inset: 4px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: 'Bebas Neue', sans-serif; color: var(--accent);
+  font-size: 22px; line-height: 1;
+  background: var(--bg);
+  z-index: 2;
+  text-shadow: 0 0 12px var(--accent);
+  animation: aa-logo-pulse 2.4s ease-in-out infinite;
+}
+@media (min-width: 600px) { .brand .logo::after { font-size: 26px; inset: 5px; } }
+
+/* Admin-uploaded image overrides the auto-generated face */
+.brand .logo.custom::before { animation: aa-logo-spin 14s linear infinite; opacity: .6; }
+.brand .logo.custom::after  {
+  content: ''; background: var(--custom-logo) center/cover no-repeat, var(--bg);
+  text-shadow: none;
+}
+
+@keyframes aa-logo-spin  { to { transform: rotate(360deg); } }
+@keyframes aa-logo-pulse {
+  0%, 100% { text-shadow: 0 0 6px var(--accent); transform: scale(1); }
+  50%      { text-shadow: 0 0 18px var(--accent), 0 0 32px var(--violet); transform: scale(1.04); }
 }
 .topbar-actions { display: flex; align-items: center; gap: 10px; }
 .btn {
@@ -340,6 +369,87 @@ section.view.active { display: block; animation: fadeIn .35s ease; }
 .chat-form input { flex: 1; padding: 10px 12px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 99px; font: inherit; }
 .chat-form button { padding: 10px 14px; border-radius: 99px; border: 0; background: var(--accent); color: #000; font-weight: 700; cursor: pointer; }
 
+/* CUSTOMIZE SHEET --------------------------------------------------------- */
+.customize-sheet {
+  position: fixed; right: -460px; top: 0; bottom: 0; width: min(440px, 100vw);
+  z-index: 60; background: var(--bg-2); border-left: 1px solid var(--line);
+  display: flex; flex-direction: column; transition: right .35s ease;
+  box-shadow: var(--shadow);
+}
+.customize-sheet.open { right: 0; }
+.customize-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+.customize-head h3 { margin: 0; }
+.customize-body { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 18px; }
+.preset-list { display: flex; flex-direction: column; gap: 8px; }
+.preset-card {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 10px; cursor: pointer; background: var(--bg);
+}
+.preset-card:hover { border-color: var(--accent); }
+.preset-card .swatches { display: flex; gap: 4px; flex: 0 0 auto; }
+.preset-card .swatches i { width: 14px; height: 14px; border-radius: 50%; display: block; border: 1px solid rgba(255,255,255,.2); }
+.preset-card b { display: block; font-size: .9rem; }
+.preset-card span { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; }
+.preset-card .meta { flex: 1; min-width: 0; }
+.preset-card .delete { padding: 4px 8px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 6px; font-size: .7rem; cursor: pointer; }
+.token-row {
+  display: grid; grid-template-columns: 110px 1fr 80px; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.token-row label { font-size: .8rem; color: var(--fg-dim); }
+.token-row input[type=color] { width: 100%; height: 36px; padding: 0; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; cursor: pointer; }
+.token-row input[type=text] { padding: 8px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 6px; font: inherit; font-size: .75rem; font-family: 'JetBrains Mono', monospace; }
+
+/* MARKETPLACE SUBTABS ----------------------------------------------------- */
+.subtabs { display: flex; gap: 6px; overflow-x: auto; margin: 0 0 16px; padding-bottom: 4px; scrollbar-width: none; }
+.subtabs::-webkit-scrollbar { display: none; }
+.subtab {
+  flex: 0 0 auto; padding: 8px 14px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg-2); color: var(--fg-dim);
+  font: inherit; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+  white-space: nowrap;
+}
+.subtab.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; }
+.subtab:hover { color: var(--fg); }
+
+/* External shop card / service card / seminar card / job card  */
+.shop-card .thumb { aspect-ratio: 16/10; }
+.shop-card .summary { color: var(--fg-dim); }
+.shop-card .city {
+  display: inline-block; font-size: .65rem; padding: 2px 8px; border-radius: 99px;
+  background: rgba(255,215,0,.12); color: var(--accent);
+  letter-spacing: .12em; text-transform: uppercase; font-weight: 700; margin-bottom: 6px;
+}
+.service-card .rate, .seminar-card .fee, .job-card .comp {
+  display: inline-block; font-size: .75rem; padding: 3px 8px; border-radius: 99px;
+  background: rgba(0,119,73,.18); color: #6fffa0; border: 1px solid rgba(0,119,73,.4);
+  font-weight: 600; margin-top: 6px;
+}
+.seminar-card .when {
+  font-size: .75rem; color: var(--accent); font-weight: 600; letter-spacing: .04em;
+}
+
+/* UNDERGROUND MODE — Konami code overlay -------------------------------- */
+body.underground {
+  filter: contrast(1.05) hue-rotate(-8deg);
+}
+body.underground::after {
+  content: ''; position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255,0,68,.04) 0 1px, transparent 1px 3px);
+  mix-blend-mode: screen;
+  animation: aa-undermode-flicker 4s steps(60) infinite;
+}
+body.underground .topbar, body.underground .tabs { background: rgba(0,0,0,.95); }
+body.underground h1, body.underground h2 { animation: aa-undermode-jitter .4s steps(2) infinite; }
+@keyframes aa-undermode-flicker { 50% { opacity: .7; } 51% { opacity: .35; } }
+@keyframes aa-undermode-jitter  { 0%,100% { transform: translate(0); } 50% { transform: translate(1px, -1px); } }
+.underground-toast {
+  position: fixed; bottom: 90px; right: 18px; z-index: 1001;
+  padding: 12px 18px; background: #000; color: var(--accent); border: 1px solid var(--accent);
+  font-family: 'JetBrains Mono', monospace; font-size: .85rem; letter-spacing: .12em;
+  text-transform: uppercase; box-shadow: 0 0 30px rgba(255,215,0,.4);
+}
+
 /* CLI INSTALL CARD --------------------------------------------------------
    Punk, underground, full-bleed terminal aesthetic for the install widget */
 .cli-card {
@@ -448,8 +558,10 @@ body.admin .kpi .stat span { font-size: .75rem; color: var(--muted); letter-spac
   display: inline-flex; align-items: baseline; gap: 0;
   position: relative; min-width: 12ch;
   font-family: 'Bebas Neue', system-ui;
-  letter-spacing: .04em; font-size: .85rem; line-height: 1;
+  letter-spacing: .03em; font-size: 1.05rem; line-height: 1;
 }
+@media (min-width: 600px) { .brand .logoword { font-size: 1.25rem; } }
+@media (min-width: 1024px) { .brand .logoword { font-size: 1.4rem; } }
 .brand .logoword .word {
   display: inline-block; will-change: transform, opacity, filter;
   white-space: nowrap;
@@ -457,11 +569,12 @@ body.admin .kpi .stat span { font-size: .75rem; color: var(--muted); letter-spac
 .brand .logoword .dot { color: var(--accent); margin: 0 1px; }
 
 .logo-shuffle {
-  width: 30px; height: 30px; border-radius: 999px; border: 1px solid var(--line);
+  width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--line);
   background: transparent; color: var(--fg-dim); cursor: pointer;
-  display: grid; place-items: center; font-size: 14px; transition: transform .25s, color .2s, background .2s;
-  margin-left: 2px;
+  display: grid; place-items: center; font-size: 11px; transition: transform .25s, color .2s, background .2s;
+  margin-left: 2px; padding: 0; line-height: 1;
 }
+@media (min-width: 600px) { .logo-shuffle { width: 24px; height: 24px; font-size: 12px; } }
 .logo-shuffle:hover { color: var(--accent); border-color: var(--accent); }
 .logo-shuffle:active { transform: rotate(360deg) scale(.9); }
 

@@ -12,8 +12,17 @@
 <body class="admin">
 
 <header class="topbar">
-  <a class="brand" href="index.html"><span class="logo"></span><span>STUDIO · LUVLAB</span></a>
+  <a class="brand" href="index.html" aria-label="Studio">
+    <span class="logo"></span>
+    <span class="logoword"><span class="word">STUDIO<span class="dot">·</span>LUVLAB</span></span>
+  </a>
+  <button class="logo-shuffle" id="logo-shuffle" title="Shuffle logo">⟳</button>
   <div class="topbar-actions">
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-mode="light"  title="Light">☀</button>
+      <button data-mode="system" title="System">◐</button>
+      <button data-mode="dark"   title="Dark" class="active">☾</button>
+    </div>
     <span class="tag mono" id="role-tag">role: admin</span>
     <a class="btn ghost" href="index.html">Public site</a>
   </div>
@@ -200,14 +209,50 @@
         <h3>Site theme — live edit</h3>
         <p style="color:var(--fg-dim);font-size:.9rem">Changes save to <code class="mono">localStorage</code> and apply to the public site immediately.</p>
         <div id="theme-controls"></div>
-        <button class="btn primary" id="theme-save">Save theme</button>
-        <button class="btn ghost" id="theme-reset">Reset</button>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" id="theme-save">Save theme</button>
+          <button class="btn ghost" id="theme-reset">Reset</button>
+        </div>
+        <div class="divider"></div>
+        <h3>Content load animation</h3>
+        <p style="color:var(--fg-dim);font-size:.9rem">How cards animate in when a tab opens or content loads. Default: <b>fade-up</b> — fast, accessible, mobile-friendly.</p>
+        <div class="form-row">
+          <label>Effect</label>
+          <select id="anim-pick">
+            <option value="aa-fade-up">Fade up (default — recommended)</option>
+            <option value="aa-slide-left">Slide from left</option>
+            <option value="aa-slide-right">Slide from right</option>
+            <option value="aa-scale-pop">Scale pop</option>
+            <option value="aa-mask-reveal">Mask reveal (left → right wipe)</option>
+            <option value="aa-blur-clear">Blur clear</option>
+            <option value="aa-glitch-in">Glitch in (afro-punk)</option>
+            <option value="aa-rise-rotate">Rise &amp; rotate</option>
+            <option value="aa-flip-y">Flip Y (3D)</option>
+            <option value="aa-iris-in">Iris in (camera-style)</option>
+            <option value="aa-marquee-in">Marquee from left</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Duration (ms)</label>
+          <input type="number" id="anim-dur" value="550" min="120" max="2000" step="20"/>
+        </div>
+        <div style="display:flex;gap:8px"><button class="btn primary" id="anim-save">Save animation</button>
+          <button class="btn ghost" id="anim-preview">Preview</button></div>
+        <div id="anim-stage" style="margin-top:14px;padding:14px;border:1px dashed var(--line);border-radius:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          <div class="card preview-card" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center">A</div>
+          <div class="card preview-card" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center">B</div>
+          <div class="card preview-card" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center">C</div>
+        </div>
       </div>
       <div class="panel">
         <h3>CSS overrides</h3>
-        <p style="color:var(--fg-dim);font-size:.9rem">Drop raw CSS to override anything on the public site. It's injected as a &lt;style&gt; tag on next page load.</p>
+        <p style="color:var(--fg-dim);font-size:.9rem">Drop raw CSS to override anything on the public site. Applied immediately on save.</p>
         <textarea id="css-override" style="min-height:240px;font-family:'JetBrains Mono',monospace"></textarea>
         <div style="margin-top:8px"><button class="btn primary" id="css-save">Save CSS</button></div>
+        <div class="divider"></div>
+        <h3>Logo behavior</h3>
+        <p style="color:var(--fg-dim);font-size:.9rem">The logo wordmark rotates fonts every 9 seconds, picking a random entry animation each time. Pause / unpause:</p>
+        <div style="display:flex;gap:8px"><button class="btn ghost" id="logo-pause">Pause rotation</button><button class="btn primary" id="logo-shuffle-now">Shuffle now</button></div>
       </div>
     </div>
   </section>
@@ -251,6 +296,8 @@
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/ai-chat.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

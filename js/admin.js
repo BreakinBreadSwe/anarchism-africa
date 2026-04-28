@@ -242,7 +242,40 @@
       $(`#theme-controls [data-mono="${e.target.dataset.token}"]`).textContent = e.target.value;
     }));
     $('#css-override').value = localStorage.getItem('aa.css') || '/* Drop CSS here. Example:\n.tab.active { background: var(--violet); color: #fff; }\n*/';
+
+    // animation picker
+    const savedAnim = localStorage.getItem('aa.anim') || 'aa-fade-up';
+    const savedDur  = localStorage.getItem('aa.animDur') || '550';
+    $('#anim-pick').value = savedAnim;
+    $('#anim-dur').value  = savedDur;
+    document.documentElement.style.setProperty('--enter-anim', savedAnim);
+    document.documentElement.style.setProperty('--enter-dur',  savedDur + 'ms');
   }
+  // anim picker handlers
+  document.addEventListener('click', e => {
+    if (e.target.id === 'anim-save') {
+      const v = $('#anim-pick').value, d = $('#anim-dur').value;
+      localStorage.setItem('aa.anim', v); localStorage.setItem('aa.animDur', d);
+      document.documentElement.style.setProperty('--enter-anim', v);
+      document.documentElement.style.setProperty('--enter-dur',  d + 'ms');
+      alert('Saved. The public site will use it on next render.');
+    }
+    if (e.target.id === 'anim-preview') {
+      const v = $('#anim-pick').value, d = $('#anim-dur').value;
+      document.documentElement.style.setProperty('--enter-anim', v);
+      document.documentElement.style.setProperty('--enter-dur',  d + 'ms');
+      const stage = $('#anim-stage');
+      stage.classList.remove('anim-stagger'); void stage.offsetWidth; stage.classList.add('anim-stagger');
+      stage.querySelectorAll('.preview-card').forEach(c => { c.classList.remove('anim-enter'); void c.offsetWidth; c.classList.add('anim-enter'); });
+    }
+    if (e.target.id === 'logo-shuffle-now' && window.AA_LOGO) window.AA_LOGO.shuffle();
+    if (e.target.id === 'logo-pause') {
+      // simple pause: re-toggle a flag the logo loop checks via localStorage (logo.js doesn't currently honor it; lightweight approach for the demo)
+      const cur = localStorage.getItem('aa.logoPaused') === '1';
+      localStorage.setItem('aa.logoPaused', cur ? '0' : '1');
+      e.target.textContent = cur ? 'Pause rotation' : 'Resume rotation';
+    }
+  });
   $('#theme-save').addEventListener('click', () => {
     const t = {};
     $$('#theme-controls input[type=color]').forEach(i => t[i.dataset.token] = i.value);

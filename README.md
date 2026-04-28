@@ -61,44 +61,39 @@ The role strip on the public site (Sign in button) flips between roles for the d
 
 ---
 
-## Deploy — GitHub → Vercel → Supabase
+## Deploy — GitHub → Vercel (one click)
 
-### 1. Push to GitHub
+**Just double-click `deploy.command`** in Finder.
+
+It does everything:
+1. Creates the GitHub repo (`anarchism-africa`) and pushes
+2. Links the project to Vercel
+3. Pushes any AI / POD env vars present in your shell
+4. Enables Vercel Blob storage
+5. Deploys to production
+6. Seeds Blob with the bundled content
+
+Prereqs (Homebrew install line in parentheses):
+- `gh` (`brew install gh`) — `gh auth login` once
+- `vercel` (auto-installs via `npm i -g vercel` if missing) — `vercel login` once
+
+After the first run, **Vercel's GitHub integration auto-deploys on every push** — so subsequent updates only need:
 
 ```bash
-cd ANARACHISM.AFRICA
-git init
-git add .
-git commit -m "ANARCHISM.AFRICA — first cut"
-gh repo create anarchism-africa --public --source=. --remote=origin --push
-# or use the GitHub UI to create the repo + push
+git push
 ```
 
-### 2. Provision the database
+To push your AI key the first time:
 
-**Option A — Supabase (recommended).**
-1. Create a new project at supabase.com
-2. SQL Editor → paste `db/schema.sql` → Run
-3. Settings → API → copy `URL`, `anon key`, `service_role key`
+```bash
+GEMINI_API_KEY=AIzaSy... bash deploy.command
+```
 
-**Option B — Neon.**
-1. Create a project at neon.tech
-2. SQL Editor → paste `db/schema.sql`
-3. Copy the pooled connection string
+### Storage: Vercel Blob (chosen) vs Supabase / Neon
 
-### 3. Deploy on Vercel
+This build defaults to **Vercel Blob** for content + mailing-list/community/pledge data — single dashboard, single bill, no separate database to manage. Schema-as-code lives in `db/schema.sql` if you ever migrate to Postgres later (Supabase / Neon connectors stay wired in `js/api.js`).
 
-1. vercel.com → New Project → Import the GitHub repo
-2. Framework preset: **Other** (it's static + serverless)
-3. Environment variables — paste from `.env.example`:
-   - `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE` (or `NEON_DATABASE_URL`)
-   - `GEMINI_API_KEY` (default AI provider)
-   - Optional: `QWEN_API_KEY`, `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `GLM_API_KEY`, `YI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`
-   - Optional POD: `PRINTFUL_API_KEY`, `TEEMILL_API_KEY`, `GELATO_API_KEY`
-4. Deploy.
-5. In the Studio (admin.html), Settings → switch `backend` to `supabase` and paste the URL/anon key, or set them at build-time as `window.AA_SUPABASE_URL` / `window.AA_SUPABASE_ANON`.
-
-### 4. Domain
+### Domain
 
 Vercel → Settings → Domains → add `anarchism.africa`.
 

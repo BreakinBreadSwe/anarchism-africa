@@ -5,14 +5,27 @@
  */
 window.AA_CONFIG = {
   // ---------- DATA BACKEND ------------------------------------------------
-  // 'local' : reads /data/seed.json (works offline, used for the demo)
-  // 'supabase': uses window.AA_SUPABASE_URL / ANON_KEY (Vercel env injects)
-  // 'neon'   : uses /api/* serverless endpoints backed by Neon/Postgres
-  backend: 'local',
+  // 'local'    : reads /data/seed.json (works offline, used for the demo)
+  // 'vercel'   : reads/writes JSON via /api/blob/* (Vercel Blob storage)
+  // 'supabase' : uses window.AA_SUPABASE_URL / ANON_KEY (Vercel env injects)
+  // Auto-picks 'vercel' when running on a *.vercel.app or anarchism.africa
+  // domain, else falls back to 'local' for the offline demo.
+  backend: (function () {
+    if (typeof location === 'undefined') return 'local';
+    if (/\.vercel\.app$/.test(location.hostname)) return 'vercel';
+    if (location.hostname === 'anarchism.africa' || location.hostname.endsWith('.anarchism.africa')) return 'vercel';
+    return 'local';
+  })(),
+
+  // Vercel Blob: data + media live as objects in Blob.
+  // Reads happen via /api/blob/get?key=... ; writes via /api/blob/put.
+  vercel: {
+    apiBase: '/api/blob'
+  },
 
   supabase: {
-    url:  window.AA_SUPABASE_URL  || '',
-    anon: window.AA_SUPABASE_ANON || ''
+    url:  (typeof window !== 'undefined' && window.AA_SUPABASE_URL)  || '',
+    anon: (typeof window !== 'undefined' && window.AA_SUPABASE_ANON) || ''
   },
 
   // ---------- AI PROVIDER (model-agnostic) -------------------------------

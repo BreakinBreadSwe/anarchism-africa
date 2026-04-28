@@ -15,11 +15,17 @@
 
 <!-- TOP BAR -->
 <header class="topbar">
-  <a class="brand" href="#home">
+  <a class="brand" href="#home" aria-label="ANARCHISM.AFRICA">
     <span class="logo"></span>
-    <span>ANARCHISM<span style="color:var(--accent)">.AFRICA</span></span>
+    <span class="logoword"><span class="word">ANARCHISM<span class="dot">.</span>AFRICA</span></span>
   </a>
+  <button class="logo-shuffle" id="logo-shuffle" title="Shuffle logo">⟳</button>
   <div class="topbar-actions">
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-mode="light"  title="Light">☀</button>
+      <button data-mode="system" title="System">◐</button>
+      <button data-mode="dark"   title="Dark" class="active">☾</button>
+    </div>
     <button class="btn ghost" id="role-toggle">Sign in</button>
     <a class="btn primary" href="admin.html">Studio</a>
   </div>
@@ -180,23 +186,16 @@
   <button data-role="admin">Admin (LUVLAB)</button>
 </div>
 
-<!-- A.A.AI CHAT ----------------------------------------------------------- -->
-<button class="chat-fab" id="chat-fab" title="A.A.AI">A.A<br/>AI</button>
-<aside class="chat-panel" id="chat-panel">
-  <div class="chat-head">
-    <div class="title">A.A.AI · live</div>
-    <div class="model-pick" id="chat-model">gemini-1.5-flash</div>
-  </div>
-  <div class="chat-body" id="chat-body"></div>
-  <form class="chat-form" id="chat-form">
-    <input type="text" id="chat-input" placeholder="Ask the archive…" autocomplete="off" />
-    <button type="submit">↑</button>
-  </form>
-</aside>
+<!-- A.A.AI + USER CHAT (multi-tab) ---------------------------------------- -->
+<button class="chat-fab" id="chat-fab" title="A.A · CHAT">A.A<br/>AI</button>
+<aside class="chat-panel" id="chat-panel"></aside>
 
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/ai-chat.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
 <script src="js/app.js"></script>
+<script src="js/chat.js"></script>
 </body>
 </html>

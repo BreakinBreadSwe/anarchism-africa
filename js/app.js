@@ -235,6 +235,8 @@
   function attachCardClick (el, handler, item) { el.addEventListener('click', () => handler(item)); }
 
   // ---- render tabs -------------------------------------------------------
+  function resetGrid (el) { el.innerHTML = ''; el.classList.add('grid', 'anim-stagger'); el.classList.remove('skeleton-grid'); }
+
   async function renderHome () {
     const hero = await AA.getHero();
     state.hero = hero;
@@ -242,40 +244,40 @@
     showHero(0);
     startHero();
 
-    const featured = $('#featured-grid'); featured.innerHTML = '';
+    const featured = $('#featured-grid'); resetGrid(featured);
     const films = await AA.getByType('film');
     films.forEach(f => { const c = card(f, 'film'); attachCardClick(c, openFilm, f); featured.appendChild(c); });
     const events = await AA.getByType('event');
     events.slice(0, 3).forEach(e => { const c = card(e, 'event'); attachCardClick(c, openEvent, e); featured.appendChild(c); });
 
-    const lib = $('#library-grid'); lib.innerHTML = '';
+    const lib = $('#library-grid'); resetGrid(lib);
     const articles = await AA.getByType('article');
     articles.forEach(a => { const c = card(a, 'article'); attachCardClick(c, openArticle, a); lib.appendChild(c); });
   }
 
   async function renderTab (tab) {
     if (tab === 'films') {
-      const g = $('#films-grid'); g.innerHTML = '';
+      const g = $('#films-grid'); resetGrid(g);
       (await AA.getByType('film')).forEach(f => { const c = card(f,'film'); attachCardClick(c, openFilm, f); g.appendChild(c); });
     }
     if (tab === 'articles') {
-      const g = $('#articles-grid'); g.innerHTML = '';
+      const g = $('#articles-grid'); resetGrid(g);
       (await AA.getByType('article')).forEach(a => { const c = card(a,'article'); attachCardClick(c, openArticle, a); g.appendChild(c); });
     }
     if (tab === 'events') {
-      const g = $('#events-grid'); g.innerHTML = '';
+      const g = $('#events-grid'); resetGrid(g);
       (await AA.getByType('event')).forEach(e => { const c = card(e,'event'); attachCardClick(c, openEvent, e); g.appendChild(c); });
     }
     if (tab === 'music') {
-      const list = $('#music-list'); list.innerHTML = '';
+      const list = $('#music-list'); list.innerHTML = ''; list.classList.add('anim-stagger');
       (await AA.getByType('song')).forEach(s => list.appendChild(audioRow(s)));
     }
     if (tab === 'books') {
-      const g = $('#books-grid'); g.innerHTML = '';
+      const g = $('#books-grid'); resetGrid(g);
       (await AA.getByType('book')).forEach(b => { const c = card(b,'book'); attachCardClick(c, openBook, b); g.appendChild(c); });
     }
     if (tab === 'merch') {
-      const g = $('#merch-grid'); g.innerHTML = '';
+      const g = $('#merch-grid'); resetGrid(g);
       (await AA.getByType('merch')).forEach(m => { const c = card(m,'merch'); attachCardClick(c, openMerch, m); g.appendChild(c); });
     }
     if (tab === 'community')  renderCommunity();
@@ -435,43 +437,48 @@
     }
   }));
 
-  // ---- chat -------------------------------------------------------------
-  const chatPanel = $('#chat-panel');
-  const chatBody  = $('#chat-body');
-  const chatInput = $('#chat-input');
-  const chatModel = $('#chat-model');
-  chatModel.textContent = window.AA_CONFIG?.ai?.model || 'gemini-1.5-flash';
+  // chat is now owned by chat.js — see js/chat.js
 
-  $('#chat-fab').addEventListener('click', () => {
-    chatPanel.classList.toggle('open');
-    if (chatPanel.classList.contains('open') && !state.chatHistory.length) {
-      pushChat('bot', "I'm A.A.AI — the library oracle. Ask about films, articles, events, music, books, merch, or how to host locally.");
-    }
-  });
-  $('#chat-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const q = chatInput.value.trim();
-    if (!q) return;
-    pushChat('user', q);
-    state.chatHistory.push({ role: 'user', content: q });
-    chatInput.value = '';
-    const thinking = pushChat('bot', '…');
-    const ans = await AA_AI.ask(q, state.chatHistory);
-    thinking.textContent = ans;
-    state.chatHistory.push({ role: 'assistant', content: ans });
-  });
-  function pushChat (who, text) {
-    const m = document.createElement('div');
-    m.className = 'chat-msg ' + who;
-    m.textContent = text;
-    chatBody.appendChild(m);
-    chatBody.scrollTop = chatBody.scrollHeight;
-    return m;
+  // ---- skeletons + entry animations ------------------------------------
+  function applyEntryAnim () {
+    const anim = localStorage.getItem('aa.anim') || 'aa-fade-up';
+    document.documentElement.style.setProperty('--enter-anim', anim);
   }
+  function injectCustomCSS () {
+    const css = localStorage.getItem('aa.css');
+    if (!css) return;
+    let tag = document.getElementById('aa-custom-css');
+    if (!tag) { tag = document.createElement('style'); tag.id = 'aa-custom-css'; document.head.appendChild(tag); }
+    tag.textContent = css;
+  }
+  function showSkeletons (containerId, n = 6) {
+    const c = $(containerId); if (!c) return;
+    c.classList.add('skeleton-grid');
+    c.innerHTML = Array.from({length: n}, () => '<div class="skeleton"></div>').join('');
+  }
+  function clearSkeletons (containerId) {
+    const c = $(containerId); if (!c) return;
+    c.classList.remove('skeleton-grid');
+    c.classList.add('grid','anim-stagger');
+    c.innerHTML = '';
+  }
+
+  // wrap renderTab with skeleton + stagger anim
+  const _renderTab = renderTab;
+  renderTab = async function (tab) {
+    const map = { films:'#films-grid', articles:'#articles-grid', events:'#events-grid', books:'#books-grid', merch:'#merch-grid' };
+    const target = map[tab];
+    if (target && !$(target).children.length) showSkeletons(target);
+    await new Promise(r => setTimeout(r, 220));   // tiny delay so the shimmer is visible
+    if (target) clearSkeletons(target);
+    return _renderTab(tab);
+  };
 
   // ---- boot -------------------------------------------------------------
   (async function boot () {
-    // theme override from localStorage (Studio control)
+    applyEntryAnim();
+    injectCustomCSS();
+    // theme tokens from localStorage
     const customTheme = localStorage.getItem('aa.theme');
     if (customTheme) {
       try {
@@ -479,15 +486,30 @@
         Object.entries(t).forEach(([k, v]) => document.documentElement.style.setProperty('--' + k, v));
       } catch {}
     }
+
+    // skeleton flash → real content with stagger animation
+    showSkeletons('#featured-grid');
+    showSkeletons('#library-grid', 3);
+    await new Promise(r => setTimeout(r, 280));
+    clearSkeletons('#featured-grid');
+    clearSkeletons('#library-grid');
     await renderHome();
-    // pre-render adjacent tabs lazily on switch
+
+    // tab clicks render lazily
     $('#tabs').addEventListener('click', e => {
       const t = e.target.closest('.tab'); if (t) renderTab(t.dataset.tab);
     });
-    // hash deep-link
     const h = location.hash.replace('#', '');
     if (h && document.getElementById('view-' + h)) { setTab(h); renderTab(h); }
-    // lazy-render every other tab one time so fast-switching feels instant
     setTimeout(() => ['films','articles','events','music','books','merch','community','ambassadors','crowdfund'].forEach(renderTab), 600);
   })();
+
+  // react to theme changes — re-trigger entry animation on visible cards for tactile feedback
+  window.addEventListener('aa:theme', () => {
+    document.querySelectorAll('section.view.active .card').forEach(c => {
+      c.classList.remove('anim-enter');
+      void c.offsetWidth;
+      c.classList.add('anim-enter');
+    });
+  });
 })();

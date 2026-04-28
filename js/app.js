@@ -50,6 +50,7 @@
     const b = e.target.closest('[data-bbar]'); if (!b) return;
     const k = b.dataset.bbar;
     if (k === 'home')      { setTab('home'); }
+    if (k === 'search')    { openSearch(); }
     if (k === 'merch')     { setTab('merch'); renderTab('merch'); }
     if (k === 'chat')      { window.AA_CHAT?.open(); }
     if (k === 'customize') {
@@ -696,6 +697,59 @@
       renderUserPresets();
     }
   });
+
+  // ---- GLOBAL SEARCH ----------------------------------------------------
+  async function openSearch () {
+    const m = $('#search-modal'); m?.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => $('#search-input')?.focus(), 50);
+    runSearch('');
+  }
+  function closeSearch () { $('#search-modal')?.classList.remove('open'); document.body.style.overflow = ''; }
+  $('#search-close')?.addEventListener('click', closeSearch);
+  $('#search-modal')?.addEventListener('click', e => { if (e.target.id === 'search-modal') closeSearch(); });
+  $('#search-input')?.addEventListener('input', e => runSearch(e.target.value));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeSearch();
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  });
+  async function runSearch (q) {
+    const seed = await fetch('data/seed.json').then(r => r.json());
+    const types = [
+      ['film',     seed.films,           x => `${x.director} · ${x.duration}min`,             x => setTab('films')],
+      ['article',  seed.articles,        x => `${x.author} · ${x.reading_time}min`,            x => setTab('articles')],
+      ['event',    seed.events,          x => `${x.city} · ${new Date(x.starts_at).toLocaleDateString()}`, x => setTab('events')],
+      ['song',     seed.music,           x => `${x.artist}`,                                   x => setTab('music')],
+      ['book',     seed.books,           x => `${x.author}`,                                   x => setTab('books')],
+      ['merch',    seed.merch,           x => `€${x.price_eur} · ${x.provider}`,                x => setTab('merch')],
+      ['shop',     seed.external_shops,  x => `${x.city}, ${x.country}`,                       x => { setTab('merch'); document.querySelector('.subtab[data-sub="allied"]')?.click(); }],
+      ['service',  seed.services,        x => `${x.by} · ${x.rate}`,                           x => { setTab('merch'); document.querySelector('.subtab[data-sub="services"]')?.click(); }],
+      ['seminar',  seed.seminars,        x => `${x.host} · ${x.format}`,                       x => { setTab('merch'); document.querySelector('.subtab[data-sub="seminars"]')?.click(); }],
+      ['job',      seed.jobs,            x => `${x.org} · ${x.city}`,                          x => { setTab('merch'); document.querySelector('.subtab[data-sub="jobs"]')?.click(); }],
+      ['amb',      seed.ambassadors,     x => `${x.city}, ${x.country}`,                       x => setTab('ambassadors')]
+    ];
+    const f = (q || '').toLowerCase().trim();
+    const out = $('#search-results'); out.innerHTML = ''; let count = 0;
+    types.forEach(([kind, list, sub, jump]) => {
+      (list || []).forEach(item => {
+        const hay = JSON.stringify(item).toLowerCase();
+        if (!f || hay.includes(f)) {
+          count++;
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;gap:10px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer';
+          row.innerHTML = `
+            <span style="display:inline-block;font-size:.65rem;padding:2px 8px;border-radius:99px;background:var(--accent);color:var(--bg);font-weight:700;letter-spacing:.12em;text-transform:uppercase;flex:0 0 auto;align-self:flex-start">${kind}</span>
+            <div style="flex:1;min-width:0">
+              <b style="display:block">${(item.title || item.name || item.funder || item.host || '')}</b>
+              <span style="color:var(--muted);font-size:.8rem">${sub(item)}</span>
+            </div>`;
+          row.addEventListener('click', () => { closeSearch(); jump(item); });
+          out.appendChild(row);
+        }
+      });
+    });
+    if (!count) out.innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">no match — try a different word.</p>';
+  }
 
   // ---- KONAMI CODE → underground mode ----------------------------------
   (function () {

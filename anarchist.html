@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ANARCHIST · ANARCHISM.AFRICA/anarchist</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.anarchist.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="admin has-rail" data-role="anarchist">
+
+<header class="topbar">
+  <button class="menu-toggle" id="menu-toggle"><span class="logo"></span></button>
+  <a class="brand" href="index.html" style="flex:1;min-width:0">
+    <span class="logoword"><span class="word">YOUR<span class="dot">·</span>ANARCHIST</span></span>
+  </a>
+  <a class="btn primary" href="index.html">Public site</a>
+</header>
+
+<aside class="rail" id="rail">
+  <button class="rail-item active" data-view="me"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span class="label">My space</span></button>
+  <button class="rail-item" data-view="apply"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Become ambassador</span></button>
+  <button class="rail-item" data-view="post"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/></svg></span><span class="label">Post to community</span></button>
+  <button class="rail-item" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span class="label">A.A.AI</span></button>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
+  <div class="panel">
+    <h2 style="margin:0 0 8px">Anarchist · Your space</h2>
+    <p style="color:var(--fg-dim);max-width:65ch">Your follows, your pledges, your applications. Sign up as ambassador, post in community, customise your view. Open archive.</p>
+  </div>
+  <div id="role-views" style="display:flex;flex-direction:column;gap:14px;margin-top:14px"></div>
+</main>
+
+<nav class="bottombar" id="bottombar">
+  <button data-view="me" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span>Me</span></button>
+  <button data-view="post"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg></span><span>Post</span></button>
+  <button data-bbar="search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span>A.A.AI</span></button>
+  <button data-bbar="public"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
+</nav>
+
+<footer class="footer">
+  <p class="mono" style="margin:0;color:var(--muted);font-size:.7rem;text-align:center">app by <a href="https://luvlab.io" target="_blank" rel="noopener" style="color:var(--accent)">luvlab.io</a></p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ai-chat.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/role-shared.js"></script>
+<script>
+  RoleShared.boot({
+    role: 'anarchist',
+    views: {
+      me: async () => RoleShared.views.myStuff(),
+      apply: async () => `<div class="panel"><h3>Apply to be a local ambassador</h3>
+        <form data-form="amb-app" style="display:grid;gap:8px;max-width:560px">
+          <input name="name" required placeholder="Full name"/>
+          <input name="location" required placeholder="City, country"/>
+          <input name="email" type="email" required placeholder="Email"/>
+          <textarea name="pitch" required placeholder="What would you organise locally?" style="min-height:90px"></textarea>
+          <button class="btn primary" type="submit">Send application</button>
+        </form>
+      </div>`,
+      post: async () => `<div class="panel"><h3>Post to community</h3>
+        <form data-form="post" style="display:grid;gap:8px;max-width:560px">
+          <input name="title" required placeholder="Title"/>
+          <textarea name="body" required placeholder="Speak your piece…" style="min-height:90px"></textarea>
+          <button class="btn primary" type="submit">Post</button>
+        </form>
+      </div>`,
+      ai: async () => RoleShared.views.ai()
+    }
+  });
+  if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body>
+</html>

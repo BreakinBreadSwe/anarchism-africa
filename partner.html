@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>PARTNER · ANARCHISM.AFRICA/partner</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.partner.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="admin has-rail" data-role="partner">
+
+<header class="topbar">
+  <button class="menu-toggle" id="menu-toggle"><span class="logo"></span></button>
+  <a class="brand" href="index.html" style="flex:1;min-width:0">
+    <span class="logoword"><span class="word">PARTNER<span class="dot">·</span>COLLAB</span></span>
+  </a>
+  <a class="btn primary" href="index.html">Public site</a>
+</header>
+
+<aside class="rail" id="rail">
+  <button class="rail-item active" data-view="projects"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></span><span class="label">My projects</span></button>
+  <button class="rail-item" data-view="services"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 010 .8l2 1.6-2 3.4-2.4-1"/></svg></span><span class="label">Offerings</span></button>
+  <button class="rail-item" data-view="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/></svg></span><span class="label">Shared grants</span></button>
+  <button class="rail-item" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span class="label">A.A.AI</span></button>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
+  <div class="panel">
+    <h2 style="margin:0 0 8px">Partner · Collaborator</h2>
+    <p style="color:var(--fg-dim);max-width:65ch">Co-create projects with LUVLAB and COOLHUNTPARIS. Propose initiatives, post offerings to the marketplace, share grants you find. Read access to the full archive.</p>
+  </div>
+  <div id="role-views" style="display:flex;flex-direction:column;gap:14px;margin-top:14px"></div>
+</main>
+
+<nav class="bottombar" id="bottombar">
+  <button data-view="projects" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></span><span>Projects</span></button>
+  <button data-view="services"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></span><span>Offer</span></button>
+  <button data-bbar="search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span>A.A.AI</span></button>
+  <button data-bbar="public"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
+</nav>
+
+<footer class="footer">
+  <p class="mono" style="margin:0;color:var(--muted);font-size:.7rem;text-align:center">app by <a href="https://luvlab.io" target="_blank" rel="noopener" style="color:var(--accent)">luvlab.io</a></p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ai-chat.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/role-shared.js"></script>
+<script>
+  RoleShared.boot({
+    role: 'partner',
+    views: {
+      projects: async () => `<div class="panel"><h3>Proposed projects</h3><p style="color:var(--muted)">Pitch a film, an event, a print run or a soundsystem. LUVLAB + COOLHUNTPARIS review.</p>
+        <form data-form="project" style="display:grid;gap:8px;max-width:560px;margin-top:10px">
+          <input name="title" required placeholder="Project title"/>
+          <select name="kind"><option>film</option><option>event</option><option>seminar</option><option>print</option><option>soundsystem</option><option>other</option></select>
+          <textarea name="pitch" required placeholder="Pitch (3–5 sentences)" style="min-height:90px"></textarea>
+          <input name="budget" placeholder="Budget ask (optional)"/>
+          <button class="btn primary" type="submit">Submit pitch</button>
+        </form>
+      </div>`,
+      services: async () => RoleShared.views.services(),
+      grants:   async () => RoleShared.views.grants(),
+      ai:       async () => RoleShared.views.ai()
+    }
+  });
+  if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body>
+</html>

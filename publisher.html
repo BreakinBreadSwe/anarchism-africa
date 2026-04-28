@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>PUBLISHER · ANARCHISM.AFRICA/publisher</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.publisher.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="admin has-rail" data-role="publisher">
+
+<header class="topbar">
+  <button class="menu-toggle" id="menu-toggle"><span class="logo"></span></button>
+  <a class="brand" href="index.html" style="flex:1;min-width:0">
+    <span class="logoword"><span class="word">PUBLISHER<span class="dot">·</span>COOLHUNTPARIS</span></span>
+  </a>
+  <a class="btn primary" href="index.html">Public site</a>
+</header>
+
+<aside class="rail" id="rail">
+  <button class="rail-item active" data-view="curate"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Curate</span></button>
+  <button class="rail-item" data-view="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="label">Grants</span></button>
+  <button class="rail-item" data-view="ambassadors"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Ambassadors</span></button>
+  <button class="rail-item" data-view="mailing"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="label">Mailing</span></button>
+  <button class="rail-item" data-view="promo"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 11l13-5v12L3 13z"/><path d="M16 9v6"/><path d="M19 9c1.5 0 3 1 3 3s-1.5 3-3 3"/></svg></span><span class="label">Promotions</span></button>
+  <button class="rail-item" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
+  <div class="panel">
+    <h2 style="margin:0 0 8px">Publisher · COOLHUNTPARIS</h2>
+    <p style="color:var(--fg-dim);max-width:65ch">Run the magazine, library, expo and giftshop. Scout grants, approve ambassadors, push the newsletter. A.A.AI helps you find funds and shape briefs.</p>
+  </div>
+
+  <div id="role-views" style="display:flex;flex-direction:column;gap:14px;margin-top:14px"></div>
+</main>
+
+<nav class="bottombar" id="bottombar">
+  <button data-view="curate" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/></svg></span><span>Curate</span></button>
+  <button data-view="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/></svg></span><span>Grants</span></button>
+  <button data-bbar="search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4"/></svg></span><span>A.A.AI</span></button>
+  <button data-bbar="public"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18"/></svg></span><span>Site</span></button>
+</nav>
+
+<footer class="footer">
+  <p class="mono" style="margin:0;color:var(--muted);font-size:.7rem;text-align:center">app by <a href="https://luvlab.io" target="_blank" rel="noopener" style="color:var(--accent)">luvlab.io</a> · stewarded by LUVLAB · curated by COOLHUNTPARIS</p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ai-chat.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/role-shared.js"></script>
+<script>
+  RoleShared.boot({
+    role: 'publisher',
+    views: {
+      curate: async () => {
+        const seed = await fetch('data/seed.json').then(r => r.json());
+        return RoleShared.html.panels([
+          RoleShared.html.tablePanel('Films',    ['Title','Director','Min'], seed.films.map(f => [f.title, f.director, f.duration])),
+          RoleShared.html.tablePanel('Articles', ['Title','Author','Min'],   seed.articles.map(a => [a.title, a.author, a.reading_time])),
+          RoleShared.html.tablePanel('Events',   ['Title','City','When'],    seed.events.map(e => [e.title, e.city, new Date(e.starts_at).toLocaleDateString()])),
+          RoleShared.html.tablePanel('Books',    ['Title','Author','Pages'], seed.books.map(b => [b.title, b.author, b.pages])),
+          RoleShared.html.tablePanel('Music',    ['Title','Artist','Length'], seed.music.map(s => [s.title, s.artist, Math.floor(s.duration/60)+':'+String(s.duration%60).padStart(2,'0')]))
+        ]);
+      },
+      grants:      async () => RoleShared.views.grants(),
+      ambassadors: async () => RoleShared.views.ambassadors(),
+      mailing:     async () => RoleShared.views.mailing(),
+      promo:       async () => RoleShared.views.promo(),
+      ai:          async () => RoleShared.views.ai()
+    }
+  });
+</script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body>
+</html>

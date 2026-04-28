@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>MARKET · ANARCHISM.AFRICA/market</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.market.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="admin has-rail" data-role="market">
+
+<header class="topbar">
+  <button class="menu-toggle" id="menu-toggle"><span class="logo"></span></button>
+  <a class="brand" href="index.html" style="flex:1;min-width:0">
+    <span class="logoword"><span class="word">MARKET<span class="dot">·</span>STAFF</span></span>
+  </a>
+  <a class="btn primary" href="index.html">Public site</a>
+</header>
+
+<aside class="rail" id="rail">
+  <button class="rail-item active" data-view="pod"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 8l2-4h14l2 4M4 8h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 12h6"/></svg></span><span class="label">POD · merch</span></button>
+  <button class="rail-item" data-view="services"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 010 .8l2 1.6-2 3.4-2.4-1a7 7 0 01-1.4.8L15 21h-4l-.2-2.4a7 7 0 01-1.4-.8l-2.4 1-2-3.4 2-1.6a7 7 0 010-1.6l-2-1.6 2-3.4 2.4 1a7 7 0 011.4-.8L11 3h4l.2 2.4a7 7 0 011.4.8l2.4-1 2 3.4-2 1.6"/></svg></span><span class="label">Services</span></button>
+  <button class="rail-item" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
+  <div class="panel">
+    <h2 style="margin:0 0 8px">Marketplace · Staff</h2>
+    <p style="color:var(--fg-dim);max-width:65ch">Run print-on-demand, sustainable providers, and the services marketplace. Connect Stanley/Stella, Teemill, Gelato Eco — sync inventory, track CO₂.</p>
+  </div>
+  <div id="role-views" style="display:flex;flex-direction:column;gap:14px;margin-top:14px"></div>
+</main>
+
+<nav class="bottombar" id="bottombar">
+  <button data-view="pod" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 8l2-4h14l2 4M4 8h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg></span><span>Merch</span></button>
+  <button data-view="services"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></span><span>Services</span></button>
+  <button data-bbar="search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span>A.A.AI</span></button>
+  <button data-bbar="public"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
+</nav>
+
+<footer class="footer">
+  <p class="mono" style="margin:0;color:var(--muted);font-size:.7rem;text-align:center">app by <a href="https://luvlab.io" target="_blank" rel="noopener" style="color:var(--accent)">luvlab.io</a></p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ai-chat.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/role-shared.js"></script>
+<script>
+  RoleShared.boot({
+    role: 'market',
+    views: {
+      pod:      async () => RoleShared.views.pod(),
+      services: async () => RoleShared.views.services(),
+      ai:       async () => RoleShared.views.ai()
+    }
+  });
+  if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body>
+</html>

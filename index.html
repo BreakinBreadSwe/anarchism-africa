@@ -36,17 +36,18 @@
 
 <!-- TABS -->
 <nav class="tabs" id="tabs">
-  <div class="tab active" data-tab="home">Home</div>
-  <div class="tab" data-tab="films">Films</div>
-  <div class="tab" data-tab="articles">Library</div>
-  <div class="tab" data-tab="events">Events</div>
-  <div class="tab" data-tab="music">Music</div>
-  <div class="tab" data-tab="books">Books</div>
-  <div class="tab" data-tab="merch">Giftshop</div>
-  <div class="tab" data-tab="community">Community</div>
-  <div class="tab" data-tab="ambassadors">Ambassadors</div>
-  <div class="tab" data-tab="crowdfund">Crowdfund</div>
-  <div class="tab" data-tab="about">About</div>
+  <!-- Afro-futurist adinkra/sankofa-inspired glyphs, drawn in currentColor so they pick up the active text color -->
+  <div class="tab active" data-tab="home"><span class="glyph"><!-- gye-nyame: sun disc with rays --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span>Home</div>
+  <div class="tab" data-tab="films"><span class="glyph"><!-- nsoroma: star/eye --><svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-7 9-7s6 2 9 7c-3 5-6 7-9 7s-6-2-9-7z"/><circle cx="12" cy="12" r="3" class="fill"/></svg></span>Films</div>
+  <div class="tab" data-tab="articles"><span class="glyph"><!-- papyrus scroll --><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span>Library</div>
+  <div class="tab" data-tab="events"><span class="glyph"><!-- djembe drum --><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2"/><path d="M5 6v8c0 2 3 4 7 4s7-2 7-4V6"/><path d="M9 8l-2 8M15 8l2 8M12 8v10"/></svg></span>Events</div>
+  <div class="tab" data-tab="music"><span class="glyph"><!-- bata drum + waves --><svg viewBox="0 0 24 24"><circle cx="9" cy="14" r="4"/><path d="M13 14V4l7 2v9"/><circle cx="17" cy="15" r="3"/></svg></span>Music</div>
+  <div class="tab" data-tab="books"><span class="glyph"><!-- nya yensa: closed book --><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 013 3v13a3 3 0 00-3-3H4z"/><path d="M20 4h-7a3 3 0 00-3 3v13a3 3 0 013-3h7z"/></svg></span>Books</div>
+  <div class="tab" data-tab="merch"><span class="glyph"><!-- mask: kente / ceremonial --><svg viewBox="0 0 24 24"><path d="M7 4l5-1 5 1 1 6-2 8-4 3-4-3-2-8z"/><circle cx="10" cy="10" r="1" class="fill"/><circle cx="14" cy="10" r="1" class="fill"/><path d="M10 15h4"/></svg></span>Giftshop</div>
+  <div class="tab" data-tab="community"><span class="glyph"><!-- constellation: many stars connected --><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/><circle cx="7" cy="18" r="1.6" class="fill"/><circle cx="18" cy="17" r="1.6" class="fill"/><path d="M6 7l6 6M18 6l-6 7M12 13l-5 5M12 13l6 4"/></svg></span>Community</div>
+  <div class="tab" data-tab="ambassadors"><span class="glyph"><!-- compass star + globe --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>Ambassadors</div>
+  <div class="tab" data-tab="crowdfund"><span class="glyph"><!-- nkonsonkonson: chain links / open palm --><svg viewBox="0 0 24 24"><path d="M5 12c2-3 4-3 6 0M13 12c2-3 4-3 6 0M5 12c2 3 4 3 6 0M13 12c2 3 4 3 6 0"/><circle cx="12" cy="12" r="1.4" class="fill"/></svg></span>Crowdfund</div>
+  <div class="tab" data-tab="about"><span class="glyph"><!-- circle-A: anarchist circle --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M7 17l5-12 5 12M9 13h6"/></svg></span>About</div>
 </nav>
 
 <!-- HOME ------------------------------------------------------------------ -->
@@ -146,6 +147,25 @@
 <section class="view" id="view-about">
   <div class="section-head"><div><h2>About</h2><p class="lead">A library, a magazine, an expo and a giftshop — held together by mutual aid.</p></div></div>
   <p style="max-width:65ch;color:var(--fg-dim)">ANARCHISM.AFRICA is stewarded by <b>LUVLAB</b> (admin) and curated by <b>COOLHUNTPARIS</b> (publishers), with merch handled by staff and projects co-created with partners. Consumers can become ambassadors, post in community, and crowdsource projects. Everything we sell is print-on-demand from sustainable certified providers.</p>
+
+  <div class="divider"></div>
+
+  <!-- TERMINAL CLI INSTALL ------------------------------------------------ -->
+  <div class="cli-card" id="cli-install">
+    <div class="cli-card-head">
+      <h3 style="margin:0">Underground · Terminal client</h3>
+      <span class="tag mono">aa --help</span>
+    </div>
+    <p style="color:var(--fg-dim);max-width:65ch">A punk, pan-African command-line client. Browse films, read the library, play music through your system player, talk to A.A.AI — all without a browser. Zero dependencies, single Node script.</p>
+    <pre class="cli-screen" id="cli-screen"><span class="cli-prompt">[anarchist@africa]$</span> <span class="cli-cmd">curl -sSL https://anarchism-africa.vercel.app/aa.sh | bash</span></pre>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn primary" id="cli-copy">Copy install command</button>
+      <button class="btn ghost" id="cli-os">Show for my OS</button>
+      <a class="btn ghost" href="bin/aa.js" target="_blank">View source</a>
+    </div>
+    <p class="mono" style="color:var(--muted);font-size:.75rem;margin-top:10px">requires node 18+ · drops to <code>~/.local/bin/aa</code> or <code>/usr/local/bin/aa</code></p>
+  </div>
+
   <div class="divider"></div>
   <h3>Newsletter</h3>
   <form class="footer-signup" id="newsletter-form" style="display:flex;gap:8px;max-width:420px">
@@ -165,6 +185,10 @@
       <input type="email" required placeholder="Get the newsletter" />
       <button type="submit">Join</button>
     </form>
+  </div>
+  <div class="row" style="gap:10px">
+    <a href="#about" data-jump="about" class="btn ghost" style="font-size:.7rem">Install CLI</a>
+    <a href="https://github.com/BreakinBreadSwe/anarchism-africa" target="_blank" rel="noopener" class="btn ghost" style="font-size:.7rem">Source</a>
   </div>
   <p class="mono" style="margin:0;color:var(--muted);font-size:.75rem">© 2026 — open archive · pan-african · anti-state · pro-people</p>
 </footer>

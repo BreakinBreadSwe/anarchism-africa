@@ -438,6 +438,46 @@
     });
   }
 
+  // ---- CLI install widget ----------------------------------------------
+  function detectOS () {
+    const ua = navigator.userAgent || '';
+    if (/Mac/i.test(ua))     return 'mac';
+    if (/Linux/i.test(ua))   return 'linux';
+    if (/Windows/i.test(ua)) return 'win';
+    return 'unix';
+  }
+  function installCommand (os = 'unix') {
+    if (os === 'win') {
+      // Windows users via PowerShell or WSL — give them WSL
+      return `wsl bash -c "curl -sSL ${location.origin || 'https://anarchism-africa.vercel.app'}/aa.sh | bash"`;
+    }
+    return `curl -sSL ${location.origin || 'https://anarchism-africa.vercel.app'}/aa.sh | bash`;
+  }
+  const cliCopy = $('#cli-copy');
+  const cliOs   = $('#cli-os');
+  const cliScr  = $('#cli-screen');
+  if (cliCopy) {
+    cliCopy.addEventListener('click', async () => {
+      const cmd = installCommand(detectOS());
+      try {
+        await navigator.clipboard.writeText(cmd);
+        const card = $('#cli-install'); card.classList.add('copied');
+        cliCopy.textContent = '✓ Copied — paste into Terminal';
+        setTimeout(() => { cliCopy.textContent = 'Copy install command'; card.classList.remove('copied'); }, 2400);
+      } catch {
+        prompt('Copy this:', cmd);
+      }
+    });
+  }
+  if (cliOs) {
+    cliOs.addEventListener('click', () => {
+      const os = detectOS();
+      const cmd = installCommand(os);
+      const label = ({ mac:'macOS', linux:'Linux', win:'Windows (WSL)', unix:'Unix' })[os];
+      cliScr.innerHTML = `<span class="cli-comment"># ${label} — paste in Terminal</span>\n<span class="cli-prompt">[anarchist@africa]$</span> <span class="cli-cmd">${cmd}</span>`;
+    });
+  }
+
   // ---- newsletter -------------------------------------------------------
   document.querySelectorAll('#newsletter-form, #newsletter-form-2').forEach(f => f.addEventListener('submit', async e => {
     e.preventDefault();

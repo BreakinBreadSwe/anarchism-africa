@@ -4,42 +4,56 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Studio · ANARCHISM.AFRICA</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.admin.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/icon-admin-192.svg" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-admin-192.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body class="admin">
+<body class="admin has-rail">
 
 <header class="topbar">
-  <a class="brand" href="index.html" aria-label="Studio">
+  <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
     <span class="logo"></span>
+  </button>
+  <a class="brand" href="index.html" aria-label="Studio" style="flex:1;min-width:0">
     <span class="logoword"><span class="word">STUDIO<span class="dot">·</span>LUVLAB</span></span>
   </a>
   <button class="logo-shuffle" id="logo-shuffle" title="Shuffle logo">⟳</button>
-  <div class="topbar-actions">
-    <div class="theme-toggle" role="group" aria-label="Theme">
-      <button data-mode="light"  title="Light">☀</button>
-      <button data-mode="system" title="System">◐</button>
-      <button data-mode="dark"   title="Dark" class="active">☾</button>
-    </div>
-    <span class="tag mono" id="role-tag">role: admin</span>
-    <a class="btn ghost" href="index.html">Public site</a>
-  </div>
+  <a class="btn primary" href="index.html">Public site</a>
 </header>
 
-<nav class="tabs" id="tabs">
+<aside class="rail" id="rail" aria-label="Studio sections">
+  <button class="rail-item active" data-tab="dashboard"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/></svg></span><span class="label">Dashboard</span></button>
+  <button class="rail-item" data-tab="content"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Content</span></button>
+  <button class="rail-item" data-tab="merch"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 8l2-4h14l2 4M4 8h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 12h6"/></svg></span><span class="label">Marketplace</span></button>
+  <button class="rail-item" data-tab="users"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M14 20c0-2.5 1.5-4.5 3.5-4.5S21 17.5 21 20"/></svg></span><span class="label">Users</span></button>
+  <button class="rail-item" data-tab="mailing"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="label">Mailing</span></button>
+  <button class="rail-item" data-tab="promotions"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 11l13-5v12L3 13z"/><path d="M16 9v6"/><path d="M19 9c1.5 0 3 1 3 3s-1.5 3-3 3"/></svg></span><span class="label">Promotions</span></button>
+  <button class="rail-item" data-tab="ambassadors"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Ambassadors</span></button>
+  <button class="rail-item" data-tab="crowdfund"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 12c2-3 4-3 6 0M13 12c2-3 4-3 6 0M5 12c2 3 4 3 6 0M13 12c2 3 4 3 6 0"/><circle cx="12" cy="12" r="1.4" class="fill"/></svg></span><span class="label">Crowdfund</span></button>
+  <button class="rail-item" data-tab="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="label">Grants</span></button>
+  <button class="rail-item" data-tab="settings"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 010 .8l2 1.6-2 3.4-2.4-1a7 7 0 01-1.4.8L15 21h-4l-.2-2.4a7 7 0 01-1.4-.8l-2.4 1-2-3.4 2-1.6a7 7 0 010-1.6l-2-1.6 2-3.4 2.4 1a7 7 0 011.4-.8L11 3h4l.2 2.4a7 7 0 011.4.8l2.4-1 2 3.4-2 1.6"/></svg></span><span class="label">Site · CSS</span></button>
+  <button class="rail-item" data-tab="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<!-- legacy horizontal tabs hidden via body.has-rail; kept for hash navigation parity -->
+<nav class="tabs" id="tabs" hidden>
   <div class="tab active" data-tab="dashboard">Dashboard</div>
   <div class="tab" data-tab="content">Content</div>
-  <div class="tab" data-tab="merch">Merch · POD</div>
+  <div class="tab" data-tab="merch">Merch</div>
   <div class="tab" data-tab="users">Users</div>
-  <div class="tab" data-tab="mailing">Mailing list</div>
+  <div class="tab" data-tab="mailing">Mailing</div>
   <div class="tab" data-tab="promotions">Promotions</div>
   <div class="tab" data-tab="ambassadors">Ambassadors</div>
   <div class="tab" data-tab="crowdfund">Crowdfund</div>
   <div class="tab" data-tab="grants">Grants</div>
-  <div class="tab" data-tab="settings">Site &amp; CSS</div>
-  <div class="tab" data-tab="ai">AI assistant</div>
+  <div class="tab" data-tab="settings">Settings</div>
+  <div class="tab" data-tab="ai">AI</div>
 </nav>
 
 <main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
@@ -301,11 +315,120 @@
 
 </main>
 
+<!-- FIXED BOTTOM BAR (admin) -->
+<nav class="bottombar" id="bottombar" aria-label="Studio quick actions">
+  <button data-bbar="dashboard" class="active" title="Dashboard"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="1.5" class="fill"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/></svg></span><span>Home</span></button>
+  <button data-bbar="content" title="Content"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span>Content</span></button>
+  <button data-bbar="search" title="Search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-bbar="ai" title="A.A.AI"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span>A.A.AI</span></button>
+  <button data-bbar="public" title="Public site"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></span><span>Site</span></button>
+</nav>
+
+<!-- GLOBAL SEARCH MODAL -->
+<div class="modal" id="search-modal">
+  <div class="panel" style="max-width:680px">
+    <div class="panel-body" style="padding:18px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <input type="text" id="search-input" placeholder="Search the archive…" autocomplete="off" style="flex:1;padding:12px 16px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit;font-size:1rem"/>
+        <button class="btn ghost" id="search-close">Esc</button>
+      </div>
+      <div id="search-results" style="display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/ai-chat.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/logo.js"></script>
 <script src="js/admin.js"></script>
+<script>
+  // Admin PWA service worker
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  }
+
+  // Rail + bottombar wiring (admin)
+  (function () {
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+    const rail = $('#rail');
+    function openRail ()  { rail.classList.add('expanded'); document.body.classList.add('rail-open'); }
+    function closeRail () { rail.classList.remove('expanded'); document.body.classList.remove('rail-open'); }
+    $('#menu-toggle')?.addEventListener('click', () => rail.classList.contains('expanded') ? closeRail() : openRail());
+    $('#rail-backdrop')?.addEventListener('click', closeRail);
+    rail?.addEventListener('click', e => {
+      const r = e.target.closest('.rail-item'); if (!r) return;
+      const tab = r.dataset.tab;
+      $$('.rail-item').forEach(x => x.classList.toggle('active', x === r));
+      // delegate to existing tab handler in admin.js by clicking the (hidden) horizontal tab
+      const fakeTab = document.querySelector(`.tabs .tab[data-tab="${tab}"]`); fakeTab?.click();
+      if (matchMedia('(max-width:768px)').matches) closeRail();
+    });
+    $('#bottombar')?.addEventListener('click', e => {
+      const b = e.target.closest('[data-bbar]'); if (!b) return;
+      const k = b.dataset.bbar;
+      if (k === 'dashboard') document.querySelector('.rail-item[data-tab="dashboard"]')?.click();
+      if (k === 'content')   document.querySelector('.rail-item[data-tab="content"]')?.click();
+      if (k === 'ai')        document.querySelector('.rail-item[data-tab="ai"]')?.click();
+      if (k === 'public')    location.href = 'index.html';
+      if (k === 'search')    openSearch();
+    });
+
+    // ---- global search ----
+    async function openSearch () {
+      $('#search-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      $('#search-input').focus();
+      runSearch('');
+    }
+    function closeSearch () { $('#search-modal').classList.remove('open'); document.body.style.overflow = ''; }
+    $('#search-close')?.addEventListener('click', closeSearch);
+    $('#search-modal')?.addEventListener('click', e => { if (e.target.id === 'search-modal') closeSearch(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeSearch();
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+    });
+    $('#search-input')?.addEventListener('input', e => runSearch(e.target.value));
+    async function runSearch (q) {
+      const seed = await fetch('data/seed.json').then(r => r.json());
+      const types = [
+        ['film',     seed.films,           x => `${x.director} · ${x.duration}min`],
+        ['article',  seed.articles,        x => `${x.author} · ${x.reading_time}min`],
+        ['event',    seed.events,          x => `${x.city} · ${new Date(x.starts_at).toLocaleDateString()}`],
+        ['song',     seed.music,           x => `${x.artist}`],
+        ['book',     seed.books,           x => `${x.author}`],
+        ['merch',    seed.merch,           x => `€${x.price_eur} · ${x.provider}`],
+        ['shop',     seed.external_shops,  x => `${x.city}, ${x.country}`],
+        ['service',  seed.services,        x => `${x.by} · ${x.rate}`],
+        ['seminar',  seed.seminars,        x => `${x.host} · ${x.format}`],
+        ['job',      seed.jobs,            x => `${x.org} · ${x.city}`],
+        ['grant',    seed.grants,          x => `${x.funder} · ${x.amount}`]
+      ];
+      const f = q.toLowerCase().trim();
+      const out = $('#search-results'); out.innerHTML = '';
+      let count = 0;
+      types.forEach(([kind, list, sub]) => {
+        (list || []).forEach(item => {
+          const hay = JSON.stringify(item).toLowerCase();
+          if (!f || hay.includes(f)) {
+            count++;
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;gap:10px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer';
+            row.innerHTML = `
+              <span style="display:inline-block;font-size:.65rem;padding:2px 8px;border-radius:99px;background:var(--accent);color:var(--bg);font-weight:700;letter-spacing:.12em;text-transform:uppercase;flex:0 0 auto;align-self:flex-start">${kind}</span>
+              <div style="flex:1;min-width:0">
+                <b style="display:block">${(item.title || item.name || item.funder)}</b>
+                <span style="color:var(--muted);font-size:.8rem">${sub(item)}</span>
+              </div>`;
+            out.appendChild(row);
+          }
+        });
+      });
+      if (!count) out.innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">no match — try a different word.</p>';
+    }
+  })();
+</script>
 </body>
 </html>

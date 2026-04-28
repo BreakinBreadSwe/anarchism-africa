@@ -1,5 +1,7 @@
-/* ANARCHISM.AFRICA — service worker (PWA + offline shell) */
-const CACHE = 'aa-shell-v1';
+/* ANARCHISM.AFRICA — service worker (PWA + offline shell)
+ * Caches BOTH the public app shell AND the Studio shell so each can install
+ * as its own PWA on iOS/Android/Desktop. */
+const CACHE = 'aa-shell-v2';
 const SHELL = [
   '/',
   '/index.html',
@@ -14,8 +16,11 @@ const SHELL = [
   '/js/chat.js',
   '/js/admin.js',
   '/manifest.webmanifest',
+  '/manifest.admin.webmanifest',
   '/icons/icon-192.svg',
   '/icons/icon-512.svg',
+  '/icons/icon-admin-192.svg',
+  '/icons/icon-admin-512.svg',
   '/data/seed.json'
 ];
 

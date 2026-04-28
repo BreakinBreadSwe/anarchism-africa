@@ -355,6 +355,6 @@
   });
 
   // ---- boot --------------------------------------------------------------
-  $('#role-tag').textContent = 'role: ' + (AA.getRole() || 'admin');
+  const roleTag = $('#role-tag'); if (roleTag) roleTag.textContent = 'role: ' + (AA.getRole() || 'admin');
   renderDashboard();
 })();

@@ -1,0 +1,130 @@
+{
+  "site": {
+    "name": "ANARCHISM.AFRICA",
+    "tagline": "an afrofuturist 360° on afro-anarchism — Africa & diaspora",
+    "stewards": "LUVLAB × COOLHUNTPARIS"
+  },
+  "theme": {
+    "bg": "#0a0a0a",
+    "fg": "#f5f0e8",
+    "accent": "#FFD700",
+    "red": "#C8102E",
+    "green": "#007749",
+    "violet": "#8B00FF",
+    "teal": "#00FFE0"
+  },
+  "hero": [
+    {
+      "id": "h1",
+      "type": "film",
+      "title": "Afrolution // Concrete Moonlight",
+      "subtitle": "A short film — Lagos, 2026",
+      "summary": "Generators hum a different anthem when no one is selling sleep.",
+      "image": "https://images.unsplash.com/photo-1549924231-f129b911e442?w=1600&q=80",
+      "video": "https://cdn.coverr.co/videos/coverr-night-city-walk-3203/1080p.mp4",
+      "tab": "films",
+      "ref": "f1"
+    },
+    {
+      "id": "h2",
+      "type": "article",
+      "title": "Sankofa is a Strategy, not a Souvenir",
+      "subtitle": "Essay — Library / Magazine",
+      "summary": "On reaching back for what mutual-aid practice was always doing.",
+      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1600&q=80",
+      "tab": "articles",
+      "ref": "a1"
+    },
+    {
+      "id": "h3",
+      "type": "song",
+      "title": "Black Star Liner — Dub for the Diaspora",
+      "subtitle": "Sound — listen now",
+      "summary": "A 4-minute riddim from Accra, dedicated to every commune that didn't make the news.",
+      "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80",
+      "audio": "https://cdn.pixabay.com/download/audio/2022/03/15/audio_8c0b9b8b41.mp3",
+      "tab": "music",
+      "ref": "s1"
+    },
+    {
+      "id": "h4",
+      "type": "event",
+      "title": "Self-Organised Soundsystem // Dakar",
+      "subtitle": "May 24, 2026 — Médina rooftop",
+      "summary": "Free entry. Bring water, bring a friend, bring a zine.",
+      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600&q=80",
+      "tab": "events",
+      "ref": "e1"
+    },
+    {
+      "id": "h5",
+      "type": "book",
+      "title": "How Europe Underdeveloped Africa — annotated",
+      "subtitle": "Walter Rodney — open library edition",
+      "summary": "Read it free in the AA library, with marginalia by readers across 14 cities.",
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1600&q=80",
+      "tab": "books",
+      "ref": "b1"
+    },
+    {
+      "id": "h6",
+      "type": "merch",
+      "title": "BLACK STAR Tee — organic, GOTS-certified",
+      "subtitle": "Print-on-demand · Stanley/Stella · ships from Lisbon",
+      "summary": "Carbon-tracked, water-saved, no warehouse stock. €32.",
+      "image": "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=1600&q=80",
+      "tab": "merch",
+      "ref": "m1"
+    }
+  ],
+  "films": [
+    { "id": "f1", "title": "Afrolution // Concrete Moonlight", "director": "Adaeze Okeke", "duration": 14, "language": "English / Igbo", "image": "https://images.unsplash.com/photo-1549924231-f129b911e442?w=1200&q=80", "summary": "Lagos at 3am — generators, faith and a girl on a bicycle who refuses the curfew.", "embed": "https://cdn.coverr.co/videos/coverr-night-city-walk-3203/1080p.mp4" },
+    { "id": "f2", "title": "Kibera Commune", "director": "Wangari N.", "duration": 22, "language": "Swahili", "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&q=80", "summary": "How 200 households share water, internet, and a printing press — without a chief." },
+    { "id": "f3", "title": "Diaspora Dub Tapes Vol.1", "director": "K. Brown", "duration": 9, "language": "English", "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "summary": "Crate-digging from Brixton to Brooklyn — the soundsystem as mutual-aid technology." }
+  ],
+  "articles": [
+    { "id": "a1", "title": "Sankofa is a Strategy, not a Souvenir", "author": "Esi Mensah", "category": "essay", "reading_time": 7, "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "On reaching back for what mutual-aid practice was always doing.", "body": "We did not invent solidarity. We re-membered it. The susu, the chama, the tontine, the harambee — long before NGOs put their stamp on it..." },
+    { "id": "a2", "title": "What Anarchism Means in Kano", "author": "Fatima A.", "category": "interview", "reading_time": 12, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "A market women's coop runs on horizontal decision-making and zero managers — they just don't call it anarchism. Yet." },
+    { "id": "a3", "title": "Library Note — Walter Rodney at 50", "author": "AA Library", "category": "library", "reading_time": 4, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Why Rodney's 1972 thesis still names the room we're all standing in." }
+  ],
+  "events": [
+    { "id": "e1", "title": "Self-Organised Soundsystem // Dakar", "starts_at": "2026-05-24T20:00:00+00:00", "venue": "Médina Rooftop", "city": "Dakar", "country": "Senegal", "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "summary": "Free entry. Bring water, bring a friend, bring a zine.", "online": false },
+    { "id": "e2", "title": "Reading Circle: Combahee → Combahee", "starts_at": "2026-05-09T17:00:00+00:00", "venue": "online", "city": "Online", "country": "—", "image": "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80", "summary": "Black feminism as anti-state practice — a 90-min reading circle.", "online": true },
+    { "id": "e3", "title": "Afrolab Expo — Paris", "starts_at": "2026-06-12T18:00:00+00:00", "venue": "59 Rivoli", "city": "Paris", "country": "France", "image": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80", "summary": "Curated by COOLHUNTPARIS — 14 artists from 9 cities." }
+  ],
+  "music": [
+    { "id": "s1", "title": "Black Star Liner — Dub for the Diaspora", "artist": "Kojo Sound", "duration": 246, "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80", "audio": "https://cdn.pixabay.com/download/audio/2022/03/15/audio_8c0b9b8b41.mp3", "summary": "A 4-minute riddim from Accra." },
+    { "id": "s2", "title": "Marketplace Polyrhythm", "artist": "Yemoja & the Locals", "duration": 198, "image": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=1200&q=80", "audio": "https://cdn.pixabay.com/download/audio/2021/10/25/audio_6b3e4ed97e.mp3", "summary": "Field recording from Balogun market, looped and chopped." },
+    { "id": "s3", "title": "Kuduro for Communes", "artist": "DJ Anarka", "duration": 212, "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80", "audio": "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3", "summary": "Luanda BPM. No bosses." }
+  ],
+  "books": [
+    { "id": "b1", "title": "How Europe Underdeveloped Africa — annotated", "author": "Walter Rodney", "publisher": "AA Library Edition", "pages": 312, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Open library edition with reader marginalia from 14 cities." },
+    { "id": "b2", "title": "The Anarchism of Blackness — reader", "author": "Various / ed. AA", "publisher": "COOLHUNTPARIS", "pages": 188, "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80", "summary": "Essays on autonomy, mutual aid, and Black radical traditions." },
+    { "id": "b3", "title": "Cookbook for the Commune", "author": "Mama Adaeze", "publisher": "AA Press", "pages": 96, "image": "https://images.unsplash.com/photo-1481833761820-0509d3217039?w=1200&q=80", "summary": "Recipes that scale from 4 to 400, with no boss in the kitchen." }
+  ],
+  "merch": [
+    { "id": "m1", "title": "BLACK STAR Tee", "provider": "Stanley/Stella", "eco": ["GOTS","Fair Wear"], "price_eur": 32, "carbon_g": 2400, "image": "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=1200&q=80", "summary": "Organic cotton, water-saving dye, ships from Lisbon — POD, no warehouse." },
+    { "id": "m2", "title": "SANKOFA Tote", "provider": "Teemill", "eco": ["Climate-Neutral","B-Corp"], "price_eur": 18, "carbon_g": 900, "image": "https://images.unsplash.com/photo-1544441893-675973e31985?w=1200&q=80", "summary": "Circular cotton — return it when worn, get a new one." },
+    { "id": "m3", "title": "COMMUNE Hoodie", "provider": "Stanley/Stella", "eco": ["GOTS","Fair Wear"], "price_eur": 64, "carbon_g": 5200, "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=1200&q=80", "summary": "Heavyweight, organic, ungendered." },
+    { "id": "m4", "title": "ZINE Bundle (3 issues)", "provider": "Ohh Deer (FSC)", "eco": ["FSC","Recycled"], "price_eur": 22, "carbon_g": 600, "image": "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=1200&q=80", "summary": "Riso-printed in Bristol, FSC paper." }
+  ],
+  "ambassadors": [
+    { "id": "amb1", "name": "Lerato M.", "city": "Johannesburg", "country": "South Africa", "status": "active", "reach": 4200, "pitch": "Hosting monthly listening sessions in Maboneng." },
+    { "id": "amb2", "name": "Yannick D.", "city": "Brussels", "country": "Belgium", "status": "active", "reach": 1800, "pitch": "Running a diaspora reading circle at our community space." },
+    { "id": "amb3", "name": "Aïcha B.", "city": "Tunis", "country": "Tunisia", "status": "pending", "reach": 0, "pitch": "Translating articles to Darija + Arabic for the Maghreb audience." }
+  ],
+  "community": [
+    { "id": "c1", "author": "Lerato M.", "title": "Joburg listening circle, May 11", "topic": "events", "body": "Bringing the Kojo Sound EP. Free, donations to the printer.", "likes": 47 },
+    { "id": "c2", "author": "Esi Mensah", "title": "Translation help — Twi", "topic": "library", "body": "Looking for two volunteers to translate the Rodney annotations.", "likes": 12 },
+    { "id": "c3", "author": "DJ Anarka", "title": "Stems for remix — Kuduro for Communes", "topic": "music", "body": "Free to remix, share back here.", "likes": 88 }
+  ],
+  "campaigns": [
+    { "id": "cf1", "title": "Print 1000 zines for Pan-African Bookfair", "raised_eur": 4200, "goal_eur": 6000, "image": "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=1200&q=80" },
+    { "id": "cf2", "title": "Soundsystem build — Accra commune", "raised_eur": 1800, "goal_eur": 5000, "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80" }
+  ],
+  "grants": [
+    { "id": "g1", "funder": "Africa No Filter", "title": "Narrative shift mini-grants", "amount": "$5,000", "deadline": "2026-06-15", "region": "Pan-African", "themes": ["media","narrative"], "status": "watching" },
+    { "id": "g2", "funder": "Prince Claus Fund", "title": "Cultural Emergency Response", "amount": "€15,000", "deadline": "2026-07-30", "region": "Global South", "themes": ["heritage","emergency"], "status": "applying" },
+    { "id": "g3", "funder": "Ford Foundation", "title": "Disability Justice in Africa", "amount": "$25,000", "deadline": "2026-09-01", "region": "Africa", "themes": ["justice","disability"], "status": "open" }
+  ]
+}

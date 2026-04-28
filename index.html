@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ANARCHISM.AFRICA — afrofuturist 360°</title>
+  <meta name="description" content="An afrofuturist 360° platform for afro-anarchism: films, articles, events, music, books, merch, community." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <a class="brand" href="#home">
+    <span class="logo"></span>
+    <span>ANARCHISM<span style="color:var(--accent)">.AFRICA</span></span>
+  </a>
+  <div class="topbar-actions">
+    <button class="btn ghost" id="role-toggle">Sign in</button>
+    <a class="btn primary" href="admin.html">Studio</a>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs" id="tabs">
+  <div class="tab active" data-tab="home">Home</div>
+  <div class="tab" data-tab="films">Films</div>
+  <div class="tab" data-tab="articles">Library</div>
+  <div class="tab" data-tab="events">Events</div>
+  <div class="tab" data-tab="music">Music</div>
+  <div class="tab" data-tab="books">Books</div>
+  <div class="tab" data-tab="merch">Giftshop</div>
+  <div class="tab" data-tab="community">Community</div>
+  <div class="tab" data-tab="ambassadors">Ambassadors</div>
+  <div class="tab" data-tab="crowdfund">Crowdfund</div>
+  <div class="tab" data-tab="about">About</div>
+</nav>
+
+<!-- HOME ------------------------------------------------------------------ -->
+<section class="view active" id="view-home">
+  <!-- HERO SLIDESHOW -->
+  <div class="hero" id="hero">
+    <div class="hero-progress" id="hero-progress"></div>
+    <div class="hero-controls">
+      <button id="hero-prev" aria-label="Previous">‹</button>
+      <button id="hero-toggle" aria-label="Pause">⏸</button>
+      <button id="hero-next" aria-label="Next">›</button>
+    </div>
+  </div>
+
+  <div class="section-head" style="margin-top:24px">
+    <div>
+      <h2>Featured</h2>
+      <p class="lead">A living index of films, articles, events, sound, books and objects from afro-anarchist practice — Africa &amp; diaspora.</p>
+    </div>
+    <button class="btn ghost" data-jump="films">All films →</button>
+  </div>
+  <div class="grid" id="featured-grid"></div>
+
+  <div class="section-head" style="margin-top:36px">
+    <div><h2>From the library</h2><p class="lead">Essays, interviews, library notes — curated by COOLHUNTPARIS.</p></div>
+    <button class="btn ghost" data-jump="articles">All articles →</button>
+  </div>
+  <div class="grid" id="library-grid"></div>
+</section>
+
+<!-- FILMS ----------------------------------------------------------------- -->
+<section class="view" id="view-films">
+  <div class="section-head"><div><h2>Films</h2><p class="lead">Documentary, fiction, field. Tap any film to play.</p></div></div>
+  <div class="grid" id="films-grid"></div>
+</section>
+
+<!-- ARTICLES (LIBRARY) ---------------------------------------------------- -->
+<section class="view" id="view-articles">
+  <div class="section-head"><div><h2>Library &amp; Magazine</h2><p class="lead">Essays, interviews, library notes.</p></div></div>
+  <div class="grid" id="articles-grid"></div>
+</section>
+
+<!-- EVENTS ---------------------------------------------------------------- -->
+<section class="view" id="view-events">
+  <div class="section-head"><div><h2>Events &amp; Expos</h2><p class="lead">In person across Africa &amp; diaspora — and online.</p></div></div>
+  <div class="grid" id="events-grid"></div>
+</section>
+
+<!-- MUSIC ----------------------------------------------------------------- -->
+<section class="view" id="view-music">
+  <div class="section-head"><div><h2>Music</h2><p class="lead">Sound from communes, soundsystems and self-released artists.</p></div></div>
+  <div id="music-list"></div>
+</section>
+
+<!-- BOOKS ----------------------------------------------------------------- -->
+<section class="view" id="view-books">
+  <div class="section-head"><div><h2>Books</h2><p class="lead">A reading list and an open library.</p></div></div>
+  <div class="grid" id="books-grid"></div>
+</section>
+
+<!-- MERCH ----------------------------------------------------------------- -->
+<section class="view" id="view-merch">
+  <div class="section-head">
+    <div>
+      <h2>Giftshop</h2>
+      <p class="lead">Print-on-demand only — no warehouses, organic cottons, certified providers. Each item carbon-tracked.</p>
+    </div>
+  </div>
+  <div class="grid" id="merch-grid"></div>
+</section>
+
+<!-- COMMUNITY ------------------------------------------------------------- -->
+<section class="view" id="view-community">
+  <div class="section-head"><div><h2>Community</h2><p class="lead">Open to all consumers. Sign in to post.</p></div></div>
+  <div id="community-list"></div>
+</section>
+
+<!-- AMBASSADORS ----------------------------------------------------------- -->
+<section class="view" id="view-ambassadors">
+  <div class="section-head">
+    <div>
+      <h2>Ambassadors</h2>
+      <p class="lead">Become a local steward. Host events, run reading circles, translate. Apply below.</p>
+    </div>
+    <button class="btn primary" id="apply-amb">Apply</button>
+  </div>
+  <div id="amb-list"></div>
+</section>
+
+<!-- CROWDFUND ------------------------------------------------------------- -->
+<section class="view" id="view-crowdfund">
+  <div class="section-head"><div><h2>Crowdfund</h2><p class="lead">Pool resources for projects, expos, soundsystems and zines.</p></div></div>
+  <div id="cf-list"></div>
+</section>
+
+<!-- ABOUT ----------------------------------------------------------------- -->
+<section class="view" id="view-about">
+  <div class="section-head"><div><h2>About</h2><p class="lead">A library, a magazine, an expo and a giftshop — held together by mutual aid.</p></div></div>
+  <p style="max-width:65ch;color:var(--fg-dim)">ANARCHISM.AFRICA is stewarded by <b>LUVLAB</b> (admin) and curated by <b>COOLHUNTPARIS</b> (publishers), with merch handled by staff and projects co-created with partners. Consumers can become ambassadors, post in community, and crowdsource projects. Everything we sell is print-on-demand from sustainable certified providers.</p>
+  <div class="divider"></div>
+  <h3>Newsletter</h3>
+  <form class="footer-signup" id="newsletter-form" style="display:flex;gap:8px;max-width:420px">
+    <input type="email" required placeholder="email@diaspora.world" />
+    <button class="btn primary" type="submit">Subscribe</button>
+  </form>
+</section>
+
+<!-- FOOTER ---------------------------------------------------------------- -->
+<footer class="footer">
+  <div class="row">
+    <div>
+      <div class="brand"><span class="logo"></span><span>ANARCHISM.AFRICA</span></div>
+      <p>Stewarded by LUVLAB · Curated by COOLHUNTPARIS</p>
+    </div>
+    <form class="signup" id="newsletter-form-2">
+      <input type="email" required placeholder="Get the newsletter" />
+      <button type="submit">Join</button>
+    </form>
+  </div>
+  <p class="mono" style="margin:0;color:var(--muted);font-size:.75rem">© 2026 — open archive · pan-african · anti-state · pro-people</p>
+</footer>
+
+<!-- MODAL ----------------------------------------------------------------- -->
+<div class="modal" id="modal">
+  <div class="panel">
+    <div class="panel-head" id="modal-head">
+      <button class="close" id="modal-close">×</button>
+    </div>
+    <div class="panel-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ROLE LOGIN STRIP ------------------------------------------------------ -->
+<div class="role-strip" id="role-strip">
+  <button data-role="consumer" class="active">Consumer</button>
+  <button data-role="ambassador">Ambassador</button>
+  <button data-role="partner">Partner</button>
+  <button data-role="merch">Merch staff</button>
+  <button data-role="publisher">Publisher (COOLHUNTPARIS)</button>
+  <button data-role="admin">Admin (LUVLAB)</button>
+</div>
+
+<!-- A.A.AI CHAT ----------------------------------------------------------- -->
+<button class="chat-fab" id="chat-fab" title="A.A.AI">A.A<br/>AI</button>
+<aside class="chat-panel" id="chat-panel">
+  <div class="chat-head">
+    <div class="title">A.A.AI · live</div>
+    <div class="model-pick" id="chat-model">gemini-1.5-flash</div>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <form class="chat-form" id="chat-form">
+    <input type="text" id="chat-input" placeholder="Ask the archive…" autocomplete="off" />
+    <button type="submit">↑</button>
+  </form>
+</aside>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ai-chat.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

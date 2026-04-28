@@ -14,18 +14,49 @@
     chatHistory: []
   };
 
-  // ---- tabs --------------------------------------------------------------
+  // ---- tabs / rail / bottombar ------------------------------------------
   function setTab (name) {
     state.tab = name;
     $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    $$('.rail-item').forEach(r => r.classList.toggle('active', r.dataset.tab === name));
+    // sync bottombar Home highlight only for tab=home (other actions remain unselected)
+    $$('.bottombar [data-bbar]').forEach(b => b.classList.toggle('active',
+      (b.dataset.bbar === 'home' && name === 'home') ||
+      (b.dataset.bbar === 'merch' && name === 'merch')));
     $$('section.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + name));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     location.hash = name;
+    // close mobile rail drawer after navigation
+    if (matchMedia('(max-width: 768px)').matches) closeRail();
   }
 
   $('#tabs').addEventListener('click', e => {
     const t = e.target.closest('.tab');
     if (t) setTab(t.dataset.tab);
+  });
+  // left rail
+  const rail = $('#rail');
+  function openRail ()  { rail.classList.add('expanded'); document.body.classList.add('rail-open'); }
+  function closeRail () { rail.classList.remove('expanded'); document.body.classList.remove('rail-open'); }
+  function toggleRail () { rail.classList.contains('expanded') ? closeRail() : openRail(); }
+  $('#menu-toggle')?.addEventListener('click', toggleRail);
+  $('#rail-backdrop')?.addEventListener('click', closeRail);
+  rail?.addEventListener('click', e => {
+    const r = e.target.closest('.rail-item');
+    if (r) { setTab(r.dataset.tab); renderTab(r.dataset.tab); }
+  });
+  // bottombar
+  $('#bottombar')?.addEventListener('click', e => {
+    const b = e.target.closest('[data-bbar]'); if (!b) return;
+    const k = b.dataset.bbar;
+    if (k === 'home')      { setTab('home'); }
+    if (k === 'merch')     { setTab('merch'); renderTab('merch'); }
+    if (k === 'chat')      { window.AA_CHAT?.open(); }
+    if (k === 'customize') {
+      const sheet = $('#customize-sheet');
+      if (sheet) { sheet.classList.add('open'); buildCustomize(); }
+    }
+    if (k === 'signin')    { toggleRoleStrip(); }
   });
   document.addEventListener('click', e => {
     const j = e.target.closest('[data-jump]');
@@ -730,14 +761,20 @@
   }));
 
   // ---- role strip -------------------------------------------------------
-  $('#role-toggle').addEventListener('click', () => $('#role-strip').classList.toggle('open'));
+  // Role strip — toggled by bottombar 'signin' button now (header pill removed)
+  function toggleRoleStrip () {
+    const strip = $('#role-strip'); if (strip) strip.classList.toggle('open');
+  }
+  window.AA_ROLE = { toggleStrip: toggleRoleStrip };
+  $('#role-toggle')?.addEventListener('click', toggleRoleStrip);
   $$('#role-strip button').forEach(b => b.addEventListener('click', () => {
     AA.setRole(b.dataset.role);
     $$('#role-strip button').forEach(x => x.classList.toggle('active', x === b));
-    $('#role-toggle').textContent = b.textContent + ' (signed in · demo)';
     if (['admin','publisher','merch'].includes(b.dataset.role)) {
       setTimeout(() => { if (confirm('Open the Studio backend?')) location.href = 'admin.html'; }, 200);
     }
+    // close strip after pick
+    setTimeout(() => $('#role-strip')?.classList.remove('open'), 600);
   }));
 
   // chat is now owned by chat.js — see js/chat.js

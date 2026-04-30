@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>JOURNALIST · ANARCHISM.AFRICA/journalist</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.journalist.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="admin has-rail" data-role="journalist">
+
+<header class="topbar">
+  <button class="menu-toggle" id="menu-toggle"><span class="logo"></span></button>
+  <div class="brand-wrap">
+    <a class="brand" href="index.html">
+      <span class="logoword"><span class="word">JOURNALIST<span class="dot">·</span>BUREAU</span></span>
+    </a>
+  </div>
+  <a class="btn primary" href="index.html" style="margin-left:auto">Public site</a>
+</header>
+
+<aside class="rail" id="rail" aria-label="Journalist sections">
+  <button class="rail-item active" data-view="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>
+  <button class="rail-item" data-view="myarticles"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/></svg></span><span class="label">My drafts</span></button>
+  <button class="rail-item" data-view="leads"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></svg></span><span class="label">Story leads</span></button>
+  <button class="rail-item" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
+  <div class="panel">
+    <h2 style="margin:0 0 8px">Journalist · Bureau</h2>
+    <p style="color:var(--fg-dim);max-width:65ch">Pitch, draft, submit. Use Article Lab for research and writing assistance. Submit drafts to the editor when ready — your name stays on the byline.</p>
+  </div>
+  <div id="role-views" style="display:flex;flex-direction:column;gap:14px;margin-top:14px"></div>
+</main>
+
+<nav class="bottombar" id="bottombar">
+  <button data-view="articlelab" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/></svg></span><span>Lab</span></button>
+  <button data-view="myarticles"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/></svg></span><span>Drafts</span></button>
+  <button data-bbar="search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span>A.A.AI</span></button>
+  <button data-bbar="public"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
+</nav>
+
+<footer class="footer">
+  <p class="mono" style="margin:0;color:var(--muted);font-size:.7rem;text-align:center">app by <a href="https://luvlab.io" target="_blank" rel="noopener" style="color:var(--accent)">luvlab.io</a> · stewarded by LUVLAB · curated by COOLHUNTPARIS</p>
+</footer>
+
+<script src="js/pin-gate.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ai-chat.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/role-shared.js"></script>
+<script src="js/user-settings.js"></script>
+<script src="js/wishlist.js"></script>
+<script src="js/article-lab.js"></script>
+<script src="js/content-queue.js"></script>
+<script>
+  RoleShared.boot({
+    role: 'journalist',
+    views: {
+      articlelab: async () => { setTimeout(() => window.ArticleLab?.render(), 0); return '<div id="view-articlelab"></div>'; },
+      myarticles: async () => {
+        const drafts = JSON.parse(localStorage.getItem('aa.articles.drafts') || '[]');
+        if (!drafts.length) return '<div class="panel"><p style="color:var(--muted);margin:0">No drafts yet — open Article Lab to start one.</p></div>';
+        return `<div class="panel">
+          <h3 style="margin:0 0 10px">My drafts</h3>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            ${drafts.map(d => `<div class="al-draft-card"><div><b>${d.title || d.topic || '(untitled)'}</b><div class="mono" style="font-size:.7rem;color:var(--muted)">${new Date(d.ts).toLocaleString()}</div></div></div>`).join('')}
+          </div>
+        </div>`;
+      },
+      leads:      async () => { setTimeout(() => window.ContentQueue?.render('journalist'), 0); return '<div id="view-content-queue"></div>'; },
+      ai:         async () => RoleShared.views.ai(),
+      wishlist:   async () => window.AA.wishlist.renderView()
+    }
+  });
+</script>
+<script>if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));</script>
+</body>
+</html>

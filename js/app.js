@@ -237,6 +237,17 @@
   function card (it, kind) {
     const el = document.createElement('div');
     el.className = 'card' + (kind === 'merch' ? ' merch-card' : '');
+    // Universal wishlist hooks — js/wishlist.js will inject a heart toggle.
+    if (it && it.id) {
+      el.dataset.wishId   = it.id;
+      el.dataset.wishType = kind;
+      try {
+        el.dataset.wishItem = JSON.stringify({
+          id: it.id, title: it.title, image: it.image,
+          summary: it.summary, kind
+        });
+      } catch {}
+    }
     el.innerHTML = `
       <div class="thumb" style="background-image:url(${it.image})"><span class="badge">${kind}</span></div>
       <div class="body">
@@ -315,6 +326,21 @@
     if (tab === 'community')  renderCommunity();
     if (tab === 'ambassadors') renderAmb();
     if (tab === 'crowdfund')   renderCrowdfund();
+    if (tab === 'languages') {
+      let host = document.getElementById('view-languages');
+      if (!host) {
+        host = document.createElement('section');
+        host.className = 'view'; host.id = 'view-languages';
+        host.style.padding = '18px var(--content-pad-x, 16px)';
+        document.querySelector('main, body').appendChild(host);
+      }
+      if (window.AA?.languages) {
+        host.innerHTML = await window.AA.languages.renderDirectory();
+        window.AA.languages.bindDirectoryView(host);
+        // make this section the active one
+        document.querySelectorAll('section.view').forEach(s => s.classList.toggle('active', s === host));
+      }
+    }
   }
 
   // -------- MINI PLAYER (sticky across tabs) -----------------------------
@@ -663,7 +689,7 @@
     }));
     // admin presets
     const seed = await AA.getSite(); // ensure load
-    const seedAll = await fetch('data/seed.json').then(r => r.json()).catch(() => null);
+    const seedAll = await AA.loadSeed().catch(() => null);
     const presets = (seedAll && seedAll.theme_presets) || [];
     $('#preset-list').innerHTML = '';
     presets.forEach(p => {
@@ -740,7 +766,7 @@
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
   });
   async function runSearch (q) {
-    const seed = await fetch('data/seed.json').then(r => r.json());
+    const seed = await AA.loadSeed();
     const types = [
       ['film',     seed.films,           x => `${x.director} · ${x.duration}min`,             x => setTab('films')],
       ['article',  seed.articles,        x => `${x.author} · ${x.reading_time}min`,            x => setTab('articles')],

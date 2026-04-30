@@ -21,11 +21,13 @@
   <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" title="Menu">
     <span class="logo"></span>
   </button>
-  <a class="brand" href="#home" style="flex:1;min-width:0">
-    <span class="logoword"><span class="word">ANARCHISM<span class="dot">.</span>AFRICA</span></span>
-  </a>
-  <button class="logo-shuffle" id="logo-shuffle" title="Shuffle logo">⟳</button>
-  <a class="btn primary" href="admin.html">Studio</a>
+  <div class="brand-wrap">
+    <a class="brand" href="#home">
+      <span class="logoword"><span class="word">ANARCHISM<span class="dot">.</span>AFRICA</span></span>
+    </a>
+    <button class="logo-shuffle" id="logo-shuffle" title="Shuffle logo">⟳</button>
+  </div>
+  <a class="btn primary" href="admin.html" style="margin-left:auto">Studio</a>
 </header>
 
 <!-- LEFT RAIL (icons collapsed by default) -->
@@ -40,6 +42,7 @@
   <button class="rail-item" data-tab="community"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/><circle cx="7" cy="18" r="1.6" class="fill"/><circle cx="18" cy="17" r="1.6" class="fill"/><path d="M6 7l6 6M18 6l-6 7M12 13l-5 5M12 13l6 4"/></svg></span><span class="label">Community</span></button>
   <button class="rail-item" data-tab="ambassadors"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Ambassadors</span></button>
   <button class="rail-item" data-tab="crowdfund"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 12c2-3 4-3 6 0M13 12c2-3 4-3 6 0M5 12c2 3 4 3 6 0M13 12c2 3 4 3 6 0"/><circle cx="12" cy="12" r="1.4" class="fill"/></svg></span><span class="label">Crowdfund</span></button>
+  <button class="rail-item" data-tab="languages"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c4-9 14-9 18 0M3 12c4 9 14 9 18 0M12 3v18M5 8h14M5 16h14"/></svg></span><span class="label">Languages</span></button>
   <button class="rail-item" data-tab="manifesto"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/><path d="M14 14l6-6M20 14l-6-6" class="fill"/></svg></span><span class="label">Manifesto</span></button>
   <button class="rail-item" data-tab="about"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M7 17l5-12 5 12M9 13h6"/></svg></span><span class="label">About</span></button>
 </aside>
@@ -89,6 +92,7 @@
   <div class="tab" data-tab="community"><span class="glyph"><!-- constellation: many stars connected --><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/><circle cx="7" cy="18" r="1.6" class="fill"/><circle cx="18" cy="17" r="1.6" class="fill"/><path d="M6 7l6 6M18 6l-6 7M12 13l-5 5M12 13l6 4"/></svg></span>Community</div>
   <div class="tab" data-tab="ambassadors"><span class="glyph"><!-- compass star + globe --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>Ambassadors</div>
   <div class="tab" data-tab="crowdfund"><span class="glyph"><!-- nkonsonkonson: chain links / open palm --><svg viewBox="0 0 24 24"><path d="M5 12c2-3 4-3 6 0M13 12c2-3 4-3 6 0M5 12c2 3 4 3 6 0M13 12c2 3 4 3 6 0"/><circle cx="12" cy="12" r="1.4" class="fill"/></svg></span>Crowdfund</div>
+  <div class="tab" data-tab="languages"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c4-9 14-9 18 0M3 12c4 9 14 9 18 0M12 3v18M5 8h14M5 16h14"/></svg></span>Languages</div>
   <div class="tab" data-tab="manifesto"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span>Manifesto</div>
   <div class="tab" data-tab="about"><span class="glyph"><!-- circle-A: anarchist circle --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M7 17l5-12 5 12M9 13h6"/></svg></span>About</div>
 </nav>
@@ -354,6 +358,10 @@
 <script src="js/logo.js"></script>
 <script src="js/app.js"></script>
 <script src="js/chat.js"></script>
+<script src="js/wishlist.js"></script>
+<script src="js/beta-popup.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/languages.js"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));

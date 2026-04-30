@@ -97,7 +97,7 @@
     },
     closeSearch () { $('#search-modal')?.classList.remove('open'); document.body.style.overflow = ''; },
     async runSearch (q) {
-      const seed = await fetch('data/seed.json').then(r => r.json());
+      const seed = await AA.loadSeed();
       const types = [
         ['film',    seed.films,           x => `${x.director} · ${x.duration}min`],
         ['article', seed.articles,        x => `${x.author} · ${x.reading_time}min`],
@@ -141,7 +141,7 @@
 
     views: {
       async grants () {
-        const seed = await fetch('data/seed.json').then(r=>r.json());
+        const seed = await AA.loadSeed();
         const stored = JSON.parse(localStorage.getItem('aa.grants') || '[]');
         const all = [...stored, ...seed.grants];
         return `<div class="panel">
@@ -162,7 +162,7 @@
         </div>`;
       },
       async ambassadors () {
-        const seed = await fetch('data/seed.json').then(r=>r.json());
+        const seed = await AA.loadSeed();
         const apps = JSON.parse(localStorage.getItem('aa.amb_apps') || '[]');
         return `<div class="panel">
           <h3 style="margin:0 0 8px">Ambassadors</h3>
@@ -230,7 +230,7 @@
         </div>`;
       },
       async pod () {
-        const seed = await fetch('data/seed.json').then(r=>r.json());
+        const seed = await AA.loadSeed();
         const providers = (window.AA_CONFIG?.pod_providers) || [];
         return `<div class="panel">
           <h3 style="margin:0 0 8px">POD providers</h3>
@@ -244,7 +244,7 @@
         </div>`;
       },
       async services () {
-        const seed = await fetch('data/seed.json').then(r=>r.json());
+        const seed = await AA.loadSeed();
         return `<div class="panel">
           <h3 style="margin:0 0 8px">Services posted</h3>
           <table><thead><tr><th>Title</th><th>By</th><th>Rate</th></tr></thead>

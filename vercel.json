@@ -5,6 +5,9 @@
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
+  "crons": [
+    { "path": "/api/cron/scan-content", "schedule": "0 6 * * *" }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",

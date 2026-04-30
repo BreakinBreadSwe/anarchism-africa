@@ -24,6 +24,8 @@
 
 <aside class="rail" id="rail">
   <button class="rail-item active" data-view="curate"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Curate</span></button>
+  <button class="rail-item" data-view="pending"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/><circle cx="20" cy="18" r="2" class="fill"/></svg></span><span class="label">Pending</span></button>
+  <button class="rail-item" data-view="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>
   <button class="rail-item" data-view="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="label">Grants</span></button>
   <button class="rail-item" data-view="ambassadors"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Ambassadors</span></button>
   <button class="rail-item" data-view="mailing"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="label">Mailing</span></button>
@@ -60,25 +62,32 @@
 <script src="js/theme.js"></script>
 <script src="js/logo.js"></script>
 <script src="js/role-shared.js"></script>
+<script src="js/user-settings.js"></script>
+<script src="js/wishlist.js"></script>
+<script src="js/article-lab.js"></script>
+<script src="js/content-queue.js"></script>
 <script>
   RoleShared.boot({
     role: 'publisher',
     views: {
       curate: async () => {
-        const seed = await fetch('data/seed.json').then(r => r.json());
+        const seed = await AA.loadSeed();
         return RoleShared.html.panels([
-          RoleShared.html.tablePanel('Films',    ['Title','Director','Min'], seed.films.map(f => [f.title, f.director, f.duration])),
-          RoleShared.html.tablePanel('Articles', ['Title','Author','Min'],   seed.articles.map(a => [a.title, a.author, a.reading_time])),
-          RoleShared.html.tablePanel('Events',   ['Title','City','When'],    seed.events.map(e => [e.title, e.city, new Date(e.starts_at).toLocaleDateString()])),
-          RoleShared.html.tablePanel('Books',    ['Title','Author','Pages'], seed.books.map(b => [b.title, b.author, b.pages])),
-          RoleShared.html.tablePanel('Music',    ['Title','Artist','Length'], seed.music.map(s => [s.title, s.artist, Math.floor(s.duration/60)+':'+String(s.duration%60).padStart(2,'0')]))
+          RoleShared.html.tablePanel('Films',    ['Title','Director','Min'], (seed.films||[]).map(f => [f.title, f.director, f.duration])),
+          RoleShared.html.tablePanel('Articles', ['Title','Author','Min'],   (seed.articles||[]).map(a => [a.title, a.author, a.reading_time])),
+          RoleShared.html.tablePanel('Events',   ['Title','City','When'],    (seed.events||[]).map(e => [e.title, e.city, new Date(e.starts_at).toLocaleDateString()])),
+          RoleShared.html.tablePanel('Books',    ['Title','Author','Pages'], (seed.books||[]).map(b => [b.title, b.author, b.pages])),
+          RoleShared.html.tablePanel('Music',    ['Title','Artist','Length'], (seed.music||[]).map(s => [s.title, s.artist, Math.floor(s.duration/60)+':'+String(s.duration%60).padStart(2,'0')]))
         ]);
       },
+      pending:     async () => { setTimeout(() => window.ContentQueue?.render('publisher'), 0); return '<div id="view-content-queue"></div>'; },
+      articlelab:  async () => { setTimeout(() => window.ArticleLab?.render(), 0); return '<div id="view-articlelab"></div>'; },
       grants:      async () => RoleShared.views.grants(),
       ambassadors: async () => RoleShared.views.ambassadors(),
       mailing:     async () => RoleShared.views.mailing(),
       promo:       async () => RoleShared.views.promo(),
-      ai:          async () => RoleShared.views.ai()
+      ai:          async () => RoleShared.views.ai(),
+      wishlist:    async () => window.AA.wishlist.renderView()
     }
   });
 </script>

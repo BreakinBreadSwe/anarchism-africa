@@ -13,17 +13,48 @@
 
   const cache = { seed: null, blob: {} };
 
+  // Always read from the live DB first (Vercel Blob via /api/blob/get with
+  // fallback=1 so cold-start serves the bundled fixture). The local fixture
+  // is ONLY a bootstrap for first deploy; once the publisher / scraper writes
+  // anything, Blob is the source of truth. No UI code should fetch the local
+  // seed.json directly — every read flows through here.
   async function loadSeed () {
     if (cache.seed) return cache.seed;
-    // In production (vercel backend), the seed mirror lives in Blob; in dev it's the local file.
-    const url = (cfg().backend === 'vercel')
-      ? `${cfg().vercel.apiBase}/get?key=seed.json&fallback=1`
-      : 'data/seed.json';
-    const r = await fetch(url);
-    if (!r.ok) throw new Error('seed not found at ' + url);
-    cache.seed = await r.json();
+    const useBlob = (cfg().backend === 'vercel');
+    let r, data = null;
+    if (useBlob) {
+      try {
+        r = await fetch(`${cfg().vercel.apiBase}/get?key=seed.json&fallback=1`, { cache: 'no-store' });
+        if (r.ok) data = await r.json();
+      } catch {}
+    }
+    // Bootstrap fixture fallback (cold start, local dev, or blob unreachable).
+    if (!data) {
+      r = await fetch('data/seed.json', { cache: 'no-store' });
+      if (!r.ok) throw new Error('seed not reachable (blob + fixture both failed)');
+      data = await r.json();
+    }
+    // Overlay any live content writes on top of the seed (films, articles,
+    // events, music, books, merch, grants, etc.) so approved scraper items
+    // and publisher edits show up everywhere immediately.
+    if (useBlob) {
+      const KINDS = [
+        ['films','content/films.json'], ['articles','content/articles.json'],
+        ['events','content/events.json'], ['music','content/music.json'],
+        ['books','content/books.json'], ['merch','content/merch.json'],
+        ['grants','content/grants.json']
+      ];
+      await Promise.all(KINDS.map(async ([key, blobKey]) => {
+        try {
+          const o = await blobGet(blobKey);
+          if (o && Array.isArray(o.items) && o.items.length) data[key] = o.items;
+        } catch {}
+      }));
+    }
+    cache.seed = data;
     return cache.seed;
   }
+  function invalidateSeed () { cache.seed = null; cache.blob = {}; }
 
   // ---------- Vercel Blob helpers ------------------------------------
   async function blobGet (key) {
@@ -170,6 +201,11 @@
       localStorage.setItem('aa.pledges', JSON.stringify(list));
       return { ok: true };
     },
+
+    // expose the unified read so UI code never fetches data/seed.json directly
+    loadSeed,
+    invalidateSeed,
+    blobGet, blobPut, blobAppend,
 
     // role -------------------------------------------------------------
     setRole (role) { localStorage.setItem('aa.role', role); },

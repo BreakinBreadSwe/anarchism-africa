@@ -22,6 +22,8 @@
     if (name === 'settings')     renderSettings();
     if (name === 'ai')           renderAI();
     if (name === 'dashboard')    renderDashboard();
+    if (name === 'marklab')      window.MarkLab?.render();
+    if (name === 'articlelab')   window.ArticleLab?.render();
   }
   $('#tabs').addEventListener('click', e => {
     const t = e.target.closest('.tab'); if (t) setTab(t.dataset.tab);
@@ -29,7 +31,7 @@
 
   // ---- DASHBOARD ---------------------------------------------------------
   async function renderDashboard () {
-    const seed = await fetch('data/seed.json').then(r => r.json());
+    const seed = await AA.loadSeed();
     const mail = JSON.parse(localStorage.getItem('aa.mailing') || '[]');
     const apps = JSON.parse(localStorage.getItem('aa.amb_apps') || '[]');
     const pledges = JSON.parse(localStorage.getItem('aa.pledges') || '[]');
@@ -206,7 +208,7 @@
 
   // ---- GRANTS ------------------------------------------------------------
   async function renderGrants () {
-    const seedGrants = (await fetch('data/seed.json').then(r => r.json())).grants;
+    const seedGrants = (await AA.loadSeed()).grants || [];
     const stored = JSON.parse(localStorage.getItem('aa.grants') || '[]');
     const all = [...stored, ...seedGrants];
     $('#grant-rows').innerHTML = all.map(g => `

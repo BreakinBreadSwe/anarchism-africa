@@ -29,15 +29,21 @@ window.AA_CONFIG = {
   },
 
   // ---------- AI PROVIDER (model-agnostic) -------------------------------
-  // gemini default. The provider list is plug-and-play — add Qwen, DeepSeek,
-  // Kimi, GLM, Yi, Hunyuan, MoonshotAI for Chinese stack support.
+  // OpenRouter default — free tier covers chat, article lab, grant assist.
+  // Mark Lab uses Gemini directly (image generation isn't on OpenRouter).
   ai: {
-    provider: 'gemini',
-    model: 'gemini-1.5-flash',
-    fallbacks: ['qwen-3', 'deepseek-v3', 'kimi-k2', 'glm-4', 'claude-haiku-4-5'],
+    provider: 'openrouter',
+    model:    'meta-llama/llama-3.1-8b-instruct:free',
+    fallbacks: ['google/gemini-flash-1.5:free', 'gemini-1.5-flash', 'qwen-3', 'deepseek-v3', 'kimi-k2', 'glm-4', 'claude-haiku-4-5'],
     // Routes are server-side proxies (api/ai/[provider].js) — keys never live in browser.
     endpoint: '/api/ai/chat'
   },
+
+  // ---------- AUTH (consumer sign-in) ------------------------------------
+  // Paste your Google OAuth Web client ID here (or set in Vercel env as
+  // GOOGLE_CLIENT_ID and the server picks it up). The client ID is public —
+  // safe to ship in JS. The corresponding AUTH_SECRET stays server-side only.
+  googleClientId: window.AA_GOOGLE_CLIENT_ID || '',
 
   // ---------- POD / MERCH PROVIDERS --------------------------------------
   // Eco-first: ranked by sustainability score. Backend rotates / chooses.

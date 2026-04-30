@@ -14,7 +14,14 @@
   const role = document.body.dataset.role || (location.pathname.includes('admin') ? 'admin' : null);
   if (!role || role === 'anarchist') return; // anarchist page is open
 
-  const DEFAULTS = window.AA_PIN_DEFAULTS || { admin: '1791', publisher: '1968', market: '1959', partner: '1804' };
+  const DEFAULTS = window.AA_PIN_DEFAULTS || {
+    admin:      '1791',  // Haitian Revolution
+    publisher:  '1968',  // global '68
+    editor:     '1972',  // Rodney's "How Europe Underdeveloped Africa"
+    journalist: '1979',  // Ervin's "Anarchism and the Black Revolution"
+    market:     '1959',  // Cuban Revolution
+    partner:    '1804'   // Haitian independence
+  };
   const KEY = 'aa.pin.' + role;
   const SESSION_KEY = 'aa.session.' + role;
 

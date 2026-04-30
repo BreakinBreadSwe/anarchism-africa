@@ -1,9 +1,19 @@
 /* ANARCHISM.AFRICA — animated logo
- * Rotates the wordmark through a curated library of fonts every 9 seconds.
- * Each rotation picks a random "entry" animation. Header button reshuffles instantly.
  *
- * Library mixes: museum (serif/display), afro/funk (bold display), punk (glitch/mono),
- * brutalist, vintage. Loaded on demand from Google Fonts so first paint stays fast.
+ * Default state: wordmark uses the app's main display font (Bebas Neue —
+ * same as the hero/section titles). NO auto-rotation.
+ *
+ * The ⟳ button is a three-state toggle:
+ *   1. idle      → click picks a random font from the library
+ *   2. previewing → font is applied for 9 seconds, then auto-reverts to default
+ *                   (clicking again during this window LOCKS the current font)
+ *   3. locked    → font stays indefinitely; the button becomes 🔓 — click to unlock
+ *                   and return to the default font
+ *
+ * Lock state persists across reloads via localStorage['aa.logoLock'].
+ *
+ * Library mixes: museum (serif/display), afro/funk (bold display), punk
+ * (glitch/mono), brutalist, vintage. Loaded on demand from Google Fonts.
  */
 (function () {
   // [css-family, google-fonts URL fragment, vibe]
@@ -51,12 +61,18 @@
                  'anim-zoom','anim-typeon','anim-neon','anim-rotate3d','anim-marquee',
                  'anim-shake','anim-fall','anim-warp'];
 
+  // The app's main display font — same as section/hero headings (loaded in index.html).
+  const DEFAULT_FONT  = 'Bebas Neue';
+  const DEFAULT_VIBE  = 'default';
+  const PREVIEW_MS    = 9000;
+  const LOCK_KEY      = 'aa.logoLock';   // { family, frag, vibe } | null
+
   const loaded = new Set();
   function loadFont (frag) {
-    if (loaded.has(frag)) return;
+    if (!frag || loaded.has(frag)) return;
     loaded.add(frag);
     const link = document.createElement('link');
-    link.rel = 'stylesheet';
+    link.rel  = 'stylesheet';
     link.href = `https://fonts.googleapis.com/css2?family=${frag}&display=swap`;
     document.head.appendChild(link);
   }
@@ -65,45 +81,152 @@
 
   let lastFont = null, lastAnim = null;
   function pickFont () {
-    let f; do { f = rand(FONTS); } while (FONTS.length > 1 && f[0] === lastFont);
+    let f;
+    do { f = rand(FONTS); } while (FONTS.length > 1 && f[0] === lastFont);
     lastFont = f[0];
     return f;
   }
   function pickAnim () {
-    let a; do { a = rand(ANIMS); } while (ANIMS.length > 1 && a === lastAnim);
+    let a;
+    do { a = rand(ANIMS); } while (ANIMS.length > 1 && a === lastAnim);
     lastAnim = a;
     return a;
   }
 
-  function shuffle (host) {
-    const [family, frag, vibe] = pickFont();
-    loadFont(frag);
-    const anim = pickAnim();
-    // Use weight 400 fallback for fonts that don't have multiple weights
-    const span = host.querySelector('.word');
-    span.classList.remove(...ANIMS);
-    // void reflow to restart animation
-    void span.offsetWidth;
-    span.style.fontFamily = `'${family}', 'Bebas Neue', system-ui`;
-    span.dataset.vibe = vibe;
-    span.classList.add(anim, 'is-anim');
-    host.dataset.font = family;
+  // ----- state ---------------------------------------------------------------
+  let revertTimer = null;
+  let locked      = false;
+
+  function readLock () {
+    try { return JSON.parse(localStorage.getItem(LOCK_KEY) || 'null'); } catch { return null; }
+  }
+  function writeLock (v) {
+    try {
+      if (v) localStorage.setItem(LOCK_KEY, JSON.stringify(v));
+      else   localStorage.removeItem(LOCK_KEY);
+    } catch {}
   }
 
+  // ----- font application ----------------------------------------------------
+  function applyFont (host, family, vibe, animate) {
+    const span = host.querySelector('.word');
+    if (!span) return;
+    span.classList.remove(...ANIMS);
+    void span.offsetWidth; // restart any animation
+    span.style.fontFamily = `'${family}', 'Bebas Neue', system-ui`;
+    span.dataset.vibe = vibe || '';
+    host.dataset.font = family;
+    if (animate) span.classList.add(pickAnim(), 'is-anim');
+  }
+
+  function applyDefault (host, animate) {
+    applyFont(host, DEFAULT_FONT, DEFAULT_VIBE, !!animate);
+  }
+
+  // ----- actions -------------------------------------------------------------
+  function startPreview (host) {
+    if (revertTimer) { clearTimeout(revertTimer); revertTimer = null; }
+    const [family, frag, vibe] = pickFont();
+    loadFont(frag);
+    applyFont(host, family, vibe, true);
+    host.dataset.previewing = '1';
+    host.dataset.previewFamily = family;
+    host.dataset.previewFrag   = frag;
+    host.dataset.previewVibe   = vibe;
+    revertTimer = setTimeout(() => {
+      delete host.dataset.previewing;
+      delete host.dataset.previewFamily;
+      delete host.dataset.previewFrag;
+      delete host.dataset.previewVibe;
+      revertTimer = null;
+      if (!locked) applyDefault(host, true);
+      updateBtn();
+    }, PREVIEW_MS);
+    updateBtn();
+  }
+
+  function lockCurrent (host) {
+    if (!host.dataset.previewing) return;
+    if (revertTimer) { clearTimeout(revertTimer); revertTimer = null; }
+    locked = true;
+    writeLock({
+      family: host.dataset.previewFamily,
+      frag:   host.dataset.previewFrag,
+      vibe:   host.dataset.previewVibe
+    });
+    delete host.dataset.previewing;
+    delete host.dataset.previewFamily;
+    delete host.dataset.previewFrag;
+    delete host.dataset.previewVibe;
+    updateBtn();
+  }
+
+  function unlock (host) {
+    locked = false;
+    writeLock(null);
+    if (revertTimer) { clearTimeout(revertTimer); revertTimer = null; }
+    applyDefault(host, true);
+    updateBtn();
+  }
+
+  function onShuffleClick (host) {
+    if (locked)               return unlock(host);
+    if (host.dataset.previewing) return lockCurrent(host);
+    return startPreview(host);
+  }
+
+  // ----- button UI -----------------------------------------------------------
+  function updateBtn () {
+    const btn = document.querySelector('.logo-shuffle');
+    if (!btn) return;
+    if (locked) {
+      btn.textContent = '🔓';
+      btn.title       = 'Unlock — return to default font';
+      btn.dataset.state = 'locked';
+    } else if (revertTimer) {
+      btn.textContent = '🔒';
+      btn.title       = 'Lock this font';
+      btn.dataset.state = 'previewing';
+    } else {
+      btn.textContent = '⟳';
+      btn.title       = 'Try a random font (9s preview)';
+      btn.dataset.state = 'idle';
+    }
+  }
+
+  // ----- init ----------------------------------------------------------------
   function init () {
     const host = document.querySelector('.brand .logoword');
     if (!host) return;
-    shuffle(host);
-    setInterval(() => {
-      if (localStorage.getItem('aa.logoPaused') === '1') return;
-      shuffle(host);
-    }, 9000);
+
+    // Restore prior lock OR start with the default (hero) font.
+    const lock = readLock();
+    if (lock && lock.family) {
+      locked = true;
+      loadFont(lock.frag);
+      applyFont(host, lock.family, lock.vibe || '', false);
+    } else {
+      applyDefault(host, false);
+    }
+    updateBtn();
+
     const btn = document.querySelector('.logo-shuffle');
-    if (btn) btn.addEventListener('click', () => shuffle(host));
+    if (btn) btn.addEventListener('click', () => onShuffleClick(host));
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 
-  window.AA_LOGO = { shuffle: () => shuffle(document.querySelector('.brand .logoword')) };
+  // ----- public API ---------------------------------------------------------
+  window.AA_LOGO = {
+    shuffle: () => {
+      const host = document.querySelector('.brand .logoword');
+      if (host) onShuffleClick(host);
+    },
+    reset: () => {
+      const host = document.querySelector('.brand .logoword');
+      if (host) unlock(host);
+    },
+    isLocked: () => locked
+  };
 })();

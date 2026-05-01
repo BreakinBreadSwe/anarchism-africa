@@ -296,7 +296,21 @@
       <div class="meta mono" style="font-size:.7rem;margin-top:4px">${m.carbon_g}g CO₂ · POD</div>`;
   }
 
-  function attachCardClick (el, handler, item) { el.addEventListener('click', () => handler(item)); }
+    function attachCardClick (el, handler, item) {
+    el.addEventListener('click', e => {
+      // Wishlist heart inside the card stays interactive
+      if (e.target.closest('.wish-heart')) return;
+      // Navigate to the full item page rather than opening a modal
+      const id = el.dataset.wishId || (item && item.id);
+      const kind = el.dataset.wishType;
+      if (id && kind) {
+        location.href = `item.html?type=${encodeURIComponent(kind)}&id=${encodeURIComponent(id)}`;
+        return;
+      }
+      // Fallback to legacy modal handler if no id (shouldn't happen for content cards)
+      if (typeof handler === 'function') handler(item);
+    });
+  }
 
   // ---- render tabs -------------------------------------------------------
   function resetGrid (el) { el.innerHTML = ''; el.classList.add('grid', 'anim-stagger'); el.classList.remove('skeleton-grid'); }

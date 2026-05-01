@@ -97,36 +97,67 @@
   }
 
   function openSheet () {
-    let sheet = document.getElementById('aa-auth-sheet');
-    if (!sheet) {
-      sheet = document.createElement('div');
-      sheet.id = 'aa-auth-sheet';
-      sheet.className = 'modal';
-      sheet.innerHTML = `
-        <div class="panel" style="max-width:440px;width:calc(100% - 32px)">
-          <div class="panel-body" style="padding:28px 26px">
-            <h2 style="margin:0 0 6px;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em">Join ANARCHISM.AFRICA</h2>
-            <p style="color:var(--fg-dim);margin:0 0 18px;line-height:1.5">
-              Sign up to save a wishlist, follow ambassadors, get the newsletter, and shape the platform with us.
-            </p>
-            <div id="aa-auth-google" style="display:flex;justify-content:center;margin-bottom:14px"></div>
-            <p class="mono" style="color:var(--muted);font-size:.7rem;line-height:1.5;margin:6px 0 14px">
-              More options coming soon: Apple, GitHub, email magic-link.
-            </p>
-            <div style="display:flex;justify-content:flex-end">
-              <button class="btn ghost" id="aa-auth-close">Close</button>
+    let page = document.getElementById('aa-auth-page');
+    if (!page) {
+      page = document.createElement('div');
+      page.id = 'aa-auth-page';
+      page.className = 'aa-auth-page';
+      page.setAttribute('role', 'dialog');
+      page.setAttribute('aria-modal', 'true');
+      page.setAttribute('aria-labelledby', 'aa-auth-title');
+      page.innerHTML = `
+        <button class="aa-auth-close" id="aa-auth-close" aria-label="Close" type="button">&times;</button>
+        <div class="aa-auth-grid">
+          <div class="aa-auth-pitch">
+            <div class="aa-auth-mark">
+              <svg viewBox="0 0 192 192" width="64" height="64" aria-hidden="true">
+                <rect width="192" height="192" rx="20" fill="#000"/>
+                <path d="M 78 28 Q 100 22 124 28 Q 146 36 156 54 Q 162 70 158 84 Q 154 96 144 104 Q 142 116 138 130 Q 134 144 126 154 Q 116 162 106 158 Q 98 150 92 138 Q 84 122 76 108 Q 66 92 58 78 Q 52 64 56 50 Q 64 34 78 28 Z" fill="none" stroke="#fff" stroke-width="3"/>
+                <ellipse cx="160" cy="118" rx="4.5" ry="11" fill="none" stroke="#fff" stroke-width="2"/>
+                <clipPath id="aa-auth-africa"><path d="M 78 28 Q 100 22 124 28 Q 146 36 156 54 Q 162 70 158 84 Q 154 96 144 104 Q 142 116 138 130 Q 134 144 126 154 Q 116 162 106 158 Q 98 150 92 138 Q 84 122 76 108 Q 66 92 58 78 Q 52 64 56 50 Q 64 34 78 28 Z"/></clipPath>
+                <g clip-path="url(#aa-auth-africa)">
+                  <polygon points="62,160 96,30 110,30 84,160" fill="#fff"/>
+                  <polygon points="98,30 112,30 142,160 128,160" fill="#fff"/>
+                  <rect x="40" y="100" width="120" height="14" fill="#fff"/>
+                  <polygon points="92,100 116,100 110,114 96,114" fill="#000"/>
+                </g>
+              </svg>
             </div>
+            <h1 id="aa-auth-title">Join the platform.</h1>
+            <p class="aa-auth-lede">An afrofuturist 360&deg; on afro-anarchism. Sign up to save what catches you, follow ambassadors, submit events, order merch, shape what ships next.</p>
+            <ul class="aa-auth-bullets">
+              <li>♥ Save films, articles, books, music, events, merch</li>
+              <li>✍︎ Submit events &amp; suggest content</li>
+              <li>◇ Order merch (T-shirts, posters, zines)</li>
+              <li>✦ Get the weekly digest only when something real ships</li>
+            </ul>
+          </div>
+          <div class="aa-auth-form">
+            <h2 class="aa-auth-form-title">Sign in</h2>
+            <p class="aa-auth-form-sub">One tap with Google. More options coming soon.</p>
+            <div id="aa-auth-google" class="aa-auth-google"></div>
+            <p class="aa-auth-fineprint mono">
+              By signing in you agree to be a participant, not a customer. We don't sell data, don't run ads, don't pretend.
+              See <a href="#about">about</a> for the boring details.
+            </p>
           </div>
         </div>`;
-      document.body.appendChild(sheet);
-      sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
-      sheet.querySelector('#aa-auth-close').addEventListener('click', closeSheet);
+      document.body.appendChild(page);
+      page.querySelector('#aa-auth-close').addEventListener('click', closeSheet);
+      // Esc closes
+      document.addEventListener('keydown', function onEsc (e) {
+        if (e.key === 'Escape' && page.classList.contains('open')) {
+          closeSheet(); document.removeEventListener('keydown', onEsc);
+        }
+      });
     }
-    sheet.classList.add('open');
-    mountSignInButton(sheet.querySelector('#aa-auth-google'));
+    page.classList.add('open');
+    document.body.classList.add('aa-auth-open');
+    mountSignInButton(page.querySelector('#aa-auth-google'));
   }
   function closeSheet () {
-    document.getElementById('aa-auth-sheet')?.classList.remove('open');
+    document.getElementById('aa-auth-page')?.classList.remove('open');
+    document.body.classList.remove('aa-auth-open');
   }
 
   function signOut () { writeUser(null); }

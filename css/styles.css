@@ -273,7 +273,14 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
   padding: 0; margin: 0;
   position: relative;
 }
-.menu-toggle .logo { width: 40px; height: 40px; pointer-events: none; }
+.menu-toggle .logo {
+  width: 40px; height: 40px;
+  pointer-events: none;
+  background: url('/icons/AAlogo1.svg') center / contain no-repeat;
+  border-radius: 8px;
+  display: block;
+}
+@media (min-width: 600px) { .menu-toggle .logo { width: 44px; height: 44px; } }
 
 /* FIXED BOTTOM BAR -------------------------------------------------------- */
 .bottombar {
@@ -1687,3 +1694,25 @@ section.view { padding: 16px; }
   background: transparent !important;
 }
 .rail-item--auth .label { font-weight: 700; letter-spacing: .04em; }
+
+/* === Bottombar logo button (mobile menu opener at bottom-left) ====== */
+.bottombar .bottombar-logo .logo-glyph {
+  width: 26px; height: 26px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.bottombar .bottombar-logo .logo-glyph .logo {
+  width: 24px; height: 24px;
+  background: url('/icons/AAlogo1.svg') center / contain no-repeat;
+  border-radius: 4px;
+  display: block;
+}
+
+/* Hide the desktop topbar menu-toggle on mobile — the bottombar logo
+   takes over the menu-opening role there. */
+@media (max-width: 1023px) {
+  .topbar #menu-toggle { display: none; }
+}
+@media (min-width: 1024px) {
+  /* On desktop the bottombar is hidden anyway via responsive-fixes.css —
+     this keeps the menu logo from leaking onto desktop. */
+}

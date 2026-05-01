@@ -40,52 +40,44 @@
     m.id = 'beta-modal';
     m.className = 'modal beta-modal open';
     m.innerHTML = `
-      <div class="panel" style="max-width:560px;width:calc(100% - 32px)">
-        <div class="panel-body" style="padding:28px 26px">
-          <div class="beta-mark">BETA · IN PROGRESS</div>
-          <h2 style="margin:10px 0 6px;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em">
-            Welcome — this is the beta.
-          </h2>
-          <p style="color:var(--fg-dim);margin:0 0 14px;line-height:1.5">
-            An afrofuturist 360° on afro-anarchism — Africa & diaspora.
-            <strong style="color:var(--fg)">Films, articles, sound, books, events, merch, community.</strong>
-            Curated by COOLHUNTPARIS, stewarded by LUVLAB. Every ♥ you save and every word
-            you send shapes what ships next.
-          </p>
-          <form id="beta-form" style="display:grid;gap:10px">
-            <input name="email" type="email" required placeholder="your@email.com"
-              style="padding:12px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit" />
-            <input name="name" type="text" placeholder="Your name (optional)"
-              style="padding:12px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit" />
-            <select name="role"
-              style="padding:12px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit">
-              <option value="">I'm joining as… (optional)</option>
-              <option value="consumer">Listener / reader / supporter</option>
-              <option value="event">Event organiser</option>
-              <option value="agency">Agency / collective</option>
-              <option value="publisher">Writer / publisher / curator</option>
-              <option value="merch">Artist / maker / label</option>
-              <option value="partner">Partner / sponsor</option>
-              <option value="ambassador">Local ambassador</option>
-            </select>
-            <textarea name="note" placeholder="What would make this perfect for you? (optional)"
-              style="padding:12px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:18px;font:inherit;min-height:84px;resize:vertical"></textarea>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-              <button class="btn primary" type="submit">Count me in</button>
-              <button class="btn ghost"   type="button" data-beta-later>Maybe later</button>
+      <div class="panel">
+        <div class="panel-body">
+          <div class="beta-mark">BETA &middot; IN PROGRESS</div>
+          <div class="beta-grid">
+            <div class="beta-grid-text">
+              <h2>Welcome &mdash; this is the beta.</h2>
+              <p>
+                An afrofuturist 360&deg; on afro-anarchism &mdash; Africa &amp; diaspora.
+                <strong>Films, articles, sound, books, events, merch, community.</strong>
+                Curated by COOLHUNTPARIS, stewarded by LUVLAB. Every &hearts; you save and every word
+                you send shapes what ships next.
+              </p>
             </div>
-            <p class="mono" style="color:var(--muted);font-size:.7rem;margin:6px 0 0;line-height:1.4">
-              No spam — unsubscribe anytime. We only write when something real ships.
-            </p>
-          </form>
-
+            <form id="beta-form" class="beta-grid-form">
+              <input name="email" type="email" required placeholder="your@email.com" autocomplete="email"/>
+              <input name="name" type="text" placeholder="Your name (optional)" autocomplete="name"/>
+              <select name="role">
+                <option value="">I'm joining as&hellip; (optional)</option>
+                <option value="consumer">Listener / reader / supporter</option>
+                <option value="event">Event organiser</option>
+                <option value="agency">Agency / collective</option>
+                <option value="publisher">Writer / publisher / curator</option>
+                <option value="merch">Artist / maker / label</option>
+                <option value="partner">Partner / sponsor</option>
+                <option value="ambassador">Local ambassador</option>
+              </select>
+              <textarea name="note" rows="3" placeholder="What would make this perfect for you? (optional)"></textarea>
+              <div class="beta-actions">
+                <button class="btn primary" type="submit">Count me in</button>
+                <button class="btn ghost"   type="button" data-beta-later>Maybe later</button>
+              </div>
+              <p class="mono beta-finep">No spam &mdash; unsubscribe anytime. We only write when something real ships.</p>
+            </form>
+          </div>
           <div id="beta-thanks" style="display:none">
-            <div class="beta-mark" style="border-color:var(--green);color:var(--green)">SIGNED UP</div>
-            <h3 style="margin:10px 0 6px">Thank you ✊🏾</h3>
-            <p style="color:var(--fg-dim);margin:0 0 14px">
-              You're on the list. We'll write when something real ships.
-              Now — explore the beta and tap the ♥ to start a wishlist.
-            </p>
+            <div class="beta-mark" style="background:var(--green);border-color:var(--green);color:#fff">SIGNED UP</div>
+            <h2>Thank you &#9994;&#127998;</h2>
+            <p>You're on the list. We'll write when something real ships. Now &mdash; explore the beta and tap the &hearts; to start a wishlist.</p>
             <button class="btn primary" type="button" data-beta-close>Explore the beta</button>
           </div>
         </div>

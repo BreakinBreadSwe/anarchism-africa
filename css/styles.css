@@ -1498,3 +1498,143 @@ section.view { padding: 16px; }
   font-size: .95rem; text-transform: none; letter-spacing: 0;
 }
 .item-related-body p { margin: 0; font-size: .8rem; color: var(--fg-dim); line-height: 1.4; }
+
+/* =============================================================
+   TOP BAR — minimal: logo (left) + slogan ticker (centre, future)
+   + randomizer (right)
+   ============================================================= */
+.topbar.topbar-min {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px clamp(8px, 2vw, 16px);
+  min-height: 56px;
+}
+.topbar.topbar-min .topbar-slogans {
+  flex: 1; min-width: 0; height: 100%;
+  display: flex; align-items: center;
+  font: 600 .75rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em; color: var(--fg-dim);
+  text-transform: uppercase;
+  overflow: hidden; white-space: nowrap;
+}
+.topbar.topbar-min .logo-shuffle { margin-left: auto; }
+
+/* =============================================================
+   HERO — full viewport on home, slideshow as background, wordmark
+   + random button overlaid in centre.
+   ============================================================= */
+.hero.hero-full {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 56px);          /* subtract topbar */
+  min-height: 480px;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero.hero-full .slide {
+  position: absolute; inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.hero.hero-full .slide.active { opacity: 1; }
+.hero.hero-full::before {
+  /* dark legibility veil over the slideshow */
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.85) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.hero.hero-full .hero-progress { z-index: 3; }
+.hero.hero-full .hero-controls { z-index: 3; }
+
+.hero-wordmark {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 24px clamp(16px, 5vw, 60px);
+  text-align: center;
+  width: 100%;
+}
+.hero-wordmark .brand {
+  text-decoration: none;
+  display: inline-block;
+  pointer-events: none;            /* let clicks pass through to slideshow controls */
+}
+.hero-wordmark .logoword {
+  display: inline-block;
+  pointer-events: auto;
+}
+.hero-wordmark .logoword .word {
+  font-family: 'Bebas Neue', 'Anton', 'Impact', sans-serif;
+  font-size: clamp(2.6rem, 11vw, 9rem);
+  line-height: .92;
+  letter-spacing: .015em;
+  color: var(--fg);
+  text-shadow: 0 4px 28px rgba(0,0,0,.6);
+  display: inline-block;
+}
+.hero-wordmark .logoword .dot { color: var(--fg) !important; opacity: .7; }
+.hero-buttons {
+  display: flex; gap: 10px; align-items: center; justify-content: center;
+  margin-top: 6px;
+  pointer-events: auto;
+}
+.hero-buttons .logo-shuffle,
+.hero-buttons .logo-lock {
+  width: 44px; height: 44px;
+  font-size: 18px;
+  border: 2px solid var(--fg);
+  background: rgba(0,0,0,.4);
+  color: var(--fg);
+  border-radius: 999px;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform .12s ease, background .15s ease;
+}
+.hero-buttons .logo-shuffle:hover,
+.hero-buttons .logo-lock:hover {
+  background: var(--fg);
+  color: var(--bg);
+  transform: scale(1.05);
+}
+.hero-lede {
+  font: 600 .85rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.8);
+  margin: 18px 0 0;
+  pointer-events: auto;
+}
+.hero-scroll-cue {
+  position: absolute;
+  bottom: 24px; left: 50%; transform: translateX(-50%);
+  font: 600 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .26em;
+  color: rgba(255,255,255,.5);
+  text-transform: uppercase;
+  animation: aa-scroll-cue 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes aa-scroll-cue {
+  0%, 100% { transform: translate(-50%, 0); opacity: .5; }
+  50%      { transform: translate(-50%, 8px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-cue { animation: none; }
+}
+
+/* mobile: shorter hero so users can see the grid below */
+@media (max-width: 600px) {
+  .hero.hero-full { height: calc(80vh - 56px); min-height: 420px; }
+  .hero-wordmark .logoword .word { font-size: clamp(2.2rem, 14vw, 4rem); }
+  .hero-lede { font-size: .72rem; }
+}

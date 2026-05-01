@@ -196,10 +196,16 @@
       applyDefault(host, false);
     }
 
-    const shuffleBtn = document.querySelector('.logo-shuffle');
-    if (shuffleBtn) shuffleBtn.addEventListener('click', () => shuffle(host));
-
+    // Wire EVERY .logo-shuffle (topbar + hero etc) so the button fires no matter where it lives
+    document.querySelectorAll('.logo-shuffle').forEach(b => b.addEventListener('click', () => shuffle(host)));
+    // Lock button — auto-injected next to the FIRST .logo-shuffle that doesn't already have a sibling lock
     ensureLockButton()?.addEventListener('click', () => locked ? unlock(host) : lock(host));
+    // Also wire any explicit .logo-lock siblings created in hero markup
+    document.querySelectorAll('.logo-lock').forEach(b => {
+      if (b.dataset.bound === '1') return;
+      b.dataset.bound = '1';
+      b.addEventListener('click', () => locked ? unlock(host) : lock(host));
+    });
     updateUI();
   }
 

@@ -1,56 +1,277 @@
-/* ANARCHISM.AFRICA — intro popup styles */
-.aa-intro-modal .panel { border: 1px solid var(--line); border-radius: 22px; background: var(--bg-2); }
-.aa-intro-mark { display: inline-flex; flex-shrink: 0; }
-.aa-intro-themes { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
-@media (max-width: 540px) { .aa-intro-themes { grid-template-columns: 1fr; } }
-.aa-intro-theme {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-  padding: 14px 14px 16px; background: var(--bg); border: 1px solid var(--line);
-  color: var(--fg); border-radius: 16px; cursor: pointer; text-align: left;
-  font: inherit; transition: border-color .15s, transform .15s, background .15s;
-}
-.aa-intro-theme:hover { border-color: var(--fg); transform: translateY(-1px); }
-.aa-intro-theme.active {
-  border-color: var(--fg); background: var(--bg-2);
-  outline: 2px solid var(--fg); outline-offset: -3px;
-}
-.aa-intro-theme b {
-  font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em;
-  font-size: 1.05rem; font-weight: 700;
-}
-.aa-intro-theme span:not(.aa-intro-swatch) {
-  color: var(--fg-dim); font-size: .75rem; line-height: 1.4;
-}
-.aa-intro-swatch {
-  width: 36px; height: 36px; border-radius: 10px;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-family: 'Bebas Neue', sans-serif; font-weight: 800; font-size: 1.2rem;
-  flex-shrink: 0;
-}
-.brand .logoword .dot { color: var(--fg) !important; }
-.tab.active { color: var(--fg) !important; }
+/* ANARCHISM.AFRICA — intro + beta popup styling
+ * Full-viewport, afro-punk / brutalist treatment that scales on every screen.
+ */
 
-/* === Center the intro popup + blur the app behind it ================ */
-.modal.aa-intro-modal {
-  align-items: center !important;        /* vertical centering */
-  justify-content: center !important;    /* horizontal centering */
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.45) !important;   /* let the blurred app show through */
-  backdrop-filter: blur(12px) saturate(0.85);
-  -webkit-backdrop-filter: blur(12px) saturate(0.85);
-}
-.aa-intro-modal .panel {
-  max-height: 90vh;
+/* ====== Shared overlay (intro + beta) ============================== */
+.modal.aa-intro-modal,
+.modal.beta-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(0px, 4vw, 40px) !important;
+  background: rgba(0, 0, 0, 0.62) !important;
+  backdrop-filter: blur(14px) saturate(0.85);
+  -webkit-backdrop-filter: blur(14px) saturate(0.85);
+  z-index: 90;
   overflow-y: auto;
-  /* subtle zoom-in on open */
+}
+.modal.aa-intro-modal.open,
+.modal.beta-modal.open {
+  display: flex !important;
+}
+
+/* ====== Panel — brutalist edge, full-bleed on phone ================ */
+.aa-intro-modal .panel,
+.beta-modal .panel {
+  width: 100%;
+  max-width: 880px !important;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: var(--bg-2);
+  color: var(--fg);
+  border: 2px solid var(--fg);
+  border-radius: 0;             /* sharp anarchist edges */
+  box-shadow:
+    8px 8px 0 0 var(--accent),  /* offset block-shadow for the punk-poster feel */
+    0 30px 80px rgba(0, 0, 0, 0.7);
   animation: aa-intro-pop .35s cubic-bezier(.2, .9, .25, 1.15) both;
-  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+  position: relative;
 }
 @keyframes aa-intro-pop {
-  0%   { transform: translateY(8px) scale(.96); opacity: 0; }
+  0%   { transform: translateY(12px) scale(.96); opacity: 0; }
   100% { transform: none; opacity: 1; }
 }
-/* honor reduced-motion users */
 @media (prefers-reduced-motion: reduce) {
-  .aa-intro-modal .panel { animation: none !important; }
+  .aa-intro-modal .panel, .beta-modal .panel { animation: none !important; }
+}
+
+/* phones: full-bleed, no offset shadow, slim border */
+@media (max-width: 600px) {
+  .aa-intro-modal .panel,
+  .beta-modal .panel {
+    border-width: 1px;
+    box-shadow: none;
+    min-height: 100vh;
+    max-height: none;
+    max-width: none !important;
+  }
+  .modal.aa-intro-modal,
+  .modal.beta-modal { padding: 0 !important; }
+}
+
+.aa-intro-modal .panel-body,
+.beta-modal .panel-body {
+  padding: clamp(20px, 4vw, 44px) !important;
+}
+
+/* ====== Header bar — BETA pill + mark + name ======================= */
+.aa-intro-modal .panel-body > div:first-child,
+.beta-modal .panel-body .beta-mark {
+  /* the existing markup will be re-skinned by what's below */
+}
+
+.beta-modal .beta-mark,
+.aa-intro-modal .beta-mark {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 2px solid var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 0;
+  font: 800 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .22em;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+
+/* ====== Headline typography ======================================== */
+.aa-intro-modal h2,
+.beta-modal h2 {
+  font-family: 'Bebas Neue', 'Anton', 'Impact', sans-serif !important;
+  font-size: clamp(2rem, 7vw, 4.6rem) !important;
+  line-height: .95 !important;
+  letter-spacing: .02em !important;
+  margin: 6px 0 18px !important;
+  color: var(--fg);
+  text-transform: uppercase;
+  word-break: break-word;
+}
+
+.aa-intro-modal h3,
+.beta-modal h3 {
+  font: 800 .82rem 'JetBrains Mono', monospace !important;
+  letter-spacing: .22em !important;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin: 24px 0 12px !important;
+}
+
+.aa-intro-modal p,
+.beta-modal p {
+  font-size: clamp(1rem, 1.4vw, 1.18rem) !important;
+  line-height: 1.55 !important;
+  max-width: 65ch;
+}
+
+.beta-modal p strong,
+.aa-intro-modal p strong {
+  background: var(--fg);
+  color: var(--bg);
+  padding: 0 6px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+/* ====== Form fields — brutalist boxes ============================== */
+.beta-modal input[type="email"],
+.beta-modal input[type="text"],
+.beta-modal select,
+.beta-modal textarea,
+.aa-intro-modal input,
+.aa-intro-modal select,
+.aa-intro-modal textarea {
+  border: 2px solid var(--fg) !important;
+  background: var(--bg) !important;
+  color: var(--fg) !important;
+  border-radius: 0 !important;
+  padding: 14px 16px !important;
+  font: inherit;
+  font-size: 1rem !important;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.beta-modal input:focus,
+.beta-modal select:focus,
+.beta-modal textarea:focus,
+.aa-intro-modal input:focus,
+.aa-intro-modal select:focus,
+.aa-intro-modal textarea:focus {
+  outline: 0;
+  box-shadow: 4px 4px 0 0 var(--accent);
+  transform: translate(-2px, -2px);
+}
+
+/* ====== Buttons — chunky punk ====================================== */
+.aa-intro-modal .btn,
+.beta-modal .btn {
+  border-radius: 0 !important;
+  border: 2px solid var(--fg) !important;
+  font: 800 .82rem 'JetBrains Mono', monospace !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase;
+  padding: 14px 22px !important;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.aa-intro-modal .btn.primary,
+.beta-modal .btn.primary {
+  background: var(--fg) !important;
+  color: var(--bg) !important;
+  box-shadow: 4px 4px 0 0 var(--accent);
+}
+.aa-intro-modal .btn.primary:hover,
+.beta-modal .btn.primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--accent);
+}
+.aa-intro-modal .btn.ghost,
+.beta-modal .btn.ghost {
+  background: transparent !important;
+  color: var(--fg) !important;
+}
+.aa-intro-modal .btn.ghost:hover,
+.beta-modal .btn.ghost:hover {
+  background: var(--fg) !important;
+  color: var(--bg) !important;
+}
+
+/* ====== Theme picker (intro popup only) ============================ */
+.aa-intro-themes {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 540px) {
+  .aa-intro-themes { grid-template-columns: 1fr; }
+}
+.aa-intro-theme {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  padding: 18px 16px 20px;
+  background: var(--bg) !important;
+  border: 2px solid var(--fg) !important;
+  color: var(--fg) !important;
+  border-radius: 0 !important;
+  cursor: pointer; text-align: left;
+  font: inherit;
+  transition: transform .12s ease, box-shadow .12s ease;
+  position: relative;
+}
+.aa-intro-theme:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 0 var(--accent);
+}
+.aa-intro-theme.active {
+  background: var(--fg) !important;
+  color: var(--bg) !important;
+  box-shadow: 4px 4px 0 0 var(--accent);
+}
+.aa-intro-theme b {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: .04em;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.aa-intro-theme span:not(.aa-intro-swatch) {
+  font-size: .78rem;
+  opacity: .8;
+  line-height: 1.4;
+}
+.aa-intro-swatch {
+  width: 42px; height: 42px;
+  border: 2px solid currentColor;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-weight: 800; font-size: 1.4rem;
+  flex-shrink: 0; border-radius: 0;
+}
+
+/* ====== Mark / logo header ========================================= */
+.aa-intro-mark {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.aa-intro-mark svg {
+  width: clamp(48px, 10vw, 80px);
+  height: clamp(48px, 10vw, 80px);
+  display: block;
+}
+
+/* ====== Helper: defensive accent + dot fix ========================= */
+.brand .logoword .dot { color: var(--fg) !important; }
+.tab.active            { color: var(--fg) !important; }
+
+/* ====== Beta-popup two-column grid + flex on small screens ========= */
+.beta-grid {
+  display: grid;
+  gap: clamp(20px, 3vw, 36px);
+  grid-template-columns: 1.1fr 1fr;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .beta-grid { grid-template-columns: 1fr; }
+}
+.beta-grid-text { min-width: 0; }
+.beta-grid-form { display: grid; gap: 12px; min-width: 0; }
+.beta-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 4px;
+}
+.beta-actions .btn { flex: 1 1 auto; min-width: 140px; }
+.beta-finep {
+  font-size: .68rem !important;
+  color: var(--muted) !important;
+  letter-spacing: .04em;
+  line-height: 1.5 !important;
+  margin: 6px 0 0 !important;
+  text-transform: none !important;
 }

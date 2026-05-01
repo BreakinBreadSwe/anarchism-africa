@@ -42,15 +42,15 @@
     m.innerHTML = `
       <div class="panel" style="max-width:560px;width:calc(100% - 32px)">
         <div class="panel-body" style="padding:28px 26px">
-          <div class="beta-mark">BETA · BETA · in progress</div>
+          <div class="beta-mark">BETA · IN PROGRESS</div>
           <h2 style="margin:10px 0 6px;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em">
-            This is a Beta beta version under progress.
+            Welcome — this is the beta.
           </h2>
           <p style="color:var(--fg-dim);margin:0 0 14px;line-height:1.5">
-            Sign up and participate in the progress of building
-            <strong style="color:var(--fg)">the perfect music platform — by and for music luvers</strong>.
-            Films, sound, books, events, community — every ♥ you save and every word you send
-            shapes what ships next.
+            An afrofuturist 360° on afro-anarchism — Africa & diaspora.
+            <strong style="color:var(--fg)">Films, articles, sound, books, events, merch, community.</strong>
+            Curated by COOLHUNTPARIS, stewarded by LUVLAB. Every ♥ you save and every word
+            you send shapes what ships next.
           </p>
           <form id="beta-form" style="display:grid;gap:10px">
             <input name="email" type="email" required placeholder="your@email.com"
@@ -59,7 +59,7 @@
               style="padding:12px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit" />
             <select name="role"
               style="padding:12px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit">
-              <option value="">I'm joining as… a music luver who's a (optional)</option>
+              <option value="">I'm joining as… (optional)</option>
               <option value="consumer">Listener / reader / supporter</option>
               <option value="event">Event organiser</option>
               <option value="agency">Agency / collective</option>
@@ -68,7 +68,7 @@
               <option value="partner">Partner / sponsor</option>
               <option value="ambassador">Local ambassador</option>
             </select>
-            <textarea name="note" placeholder="What would make this perfect for music luvers like you? (optional)"
+            <textarea name="note" placeholder="What would make this perfect for you? (optional)"
               style="padding:12px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:18px;font:inherit;min-height:84px;resize:vertical"></textarea>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
               <button class="btn primary" type="submit">Count me in</button>

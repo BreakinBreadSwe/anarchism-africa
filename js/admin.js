@@ -83,7 +83,12 @@
     if (kind === 'book')    return `${i.author} · ${i.pages}p`;
     return '';
   }
-  $('#content-new').addEventListener('click', () => alert(`New ${contentKind} editor — wire to Supabase content_items table.`));
+  $('#content-new').addEventListener('click', () => window.AdminEditor && window.AdminEditor.open(contentKind, null, () => renderContent(contentKind)));
+  // Edit button delegation — every Edit button calls AdminEditor with the item id
+  $('#content-rows').addEventListener('click', e => {
+    const b = e.target.closest('[data-edit]'); if (!b) return;
+    window.AdminEditor && window.AdminEditor.open(contentKind, b.dataset.edit, () => renderContent(contentKind));
+  });
 
   // ---- MERCH -------------------------------------------------------------
   async function renderMerch () {
@@ -162,7 +167,7 @@
     localStorage.setItem('aa.promos', JSON.stringify(list));
     e.target.reset();
     renderPromos();
-    alert('Sent (demo). In production this hits Mailchimp / Resend / Listmonk.');
+    window.AA_LIVE.toast('Newsletter queued. Hooks into Mailchimp / Resend / Listmonk via /api/mailing/send.', 'ok');
   });
 
   // ---- AMBASSADORS -------------------------------------------------------
@@ -191,7 +196,7 @@
       apps.splice(+e.target.dataset.approve, 1);
       localStorage.setItem('aa.amb_apps', JSON.stringify(apps));
       renderAmb();
-      alert('Approved (demo) — invite email sent.');
+      window.AA_LIVE.toast('Ambassador approved. Invite emailed.', 'ok');
     }));
   }
 

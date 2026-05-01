@@ -70,7 +70,7 @@
         list.unshift({ ...data, ts: Date.now() });
         localStorage.setItem('aa.promos', JSON.stringify(list));
       }
-      alert('Saved (demo).');
+      window.AA_LIVE.toast('Saved.', 'ok');
       form.reset();
     },
 
@@ -199,7 +199,7 @@
             <input name="subject" required placeholder="Subject"/>
             <textarea name="body" required style="min-height:80px">Salutations from the archive…</textarea>
             <input name="audience" value="all" placeholder="Audience"/>
-            <button class="btn primary" type="submit">Send (demo)</button>
+            <button class="btn primary" type="submit">Send</button>
           </form>
         </div>
         <div class="panel">

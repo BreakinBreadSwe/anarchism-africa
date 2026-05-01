@@ -196,40 +196,61 @@
     `);
   }
   function openArticle (a) {
+    const id = (a.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
     openModal(a.image, `
       <h2>${a.title}</h2>
-      <p class="meta" style="color:var(--muted)">${a.author} · ${a.reading_time} min · ${a.category}</p>
-      <p>${a.body || a.summary}</p>
+      <p class="meta" style="color:var(--muted)">${a.author||''}${a.year?' · '+a.year:''}${a.reading_time?' · '+a.reading_time+' min':''}${a.category?' · '+a.category:''}</p>
+      ${a.deck ? `<p style="font-size:1.05rem;color:var(--fg-dim)">${a.deck}</p>` : ''}
+      <div style="line-height:1.7;max-width:70ch">${(a.body || a.summary || '').replace(/
+
+/g, '</p><p>').replace(/^/, '<p>') + '</p>'}</div>
+      <div class="row-flex" style="margin-top:18px">
+        ${a.external_url ? `<a class="btn primary" href="${a.external_url}" target="_blank" rel="noopener">Open source ↗</a>` : ''}
+        <button class="btn ghost" onclick="window.AA.wishlist?.add({id:'${id}', title:${JSON.stringify(a.title||'')}, image:'${a.image||''}'},'article')">♥ Save</button>
+      </div>
     `);
   }
   function openEvent (ev) {
     const dt = new Date(ev.starts_at);
+    const id = (ev.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
     openModal(ev.image, `
       <h2>${ev.title}</h2>
-      <p class="meta" style="color:var(--muted)">${dt.toLocaleString()} · ${ev.venue}, ${ev.city}</p>
-      <p>${ev.summary}</p>
+      <p class="meta" style="color:var(--muted)">${dt.toLocaleString()} · ${ev.venue||''}, ${ev.city||''}</p>
+      <p>${ev.summary || ''}</p>
       <div class="row-flex" style="margin-top:14px">
-        <button class="btn primary" onclick="alert('RSVP saved (demo)')">RSVP</button>
-        <button class="btn ghost" onclick="alert('Added to calendar (demo)')">Add to calendar</button>
+        <button class="btn primary" onclick="window.AA_LIVE.rsvp('${id}', this)">RSVP</button>
+        <button class="btn ghost" onclick="window.AA_LIVE.calendar('${id}')">Add to calendar</button>
+        ${ev.external_url ? `<a class="btn ghost" href="${ev.external_url}" target="_blank" rel="noopener">Event page ↗</a>` : ''}
       </div>
     `);
   }
   function openBook (b) {
+    const id = (b.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
     openModal(b.image, `
       <h2>${b.title}</h2>
-      <p class="meta" style="color:var(--muted)">${b.author} · ${b.publisher} · ${b.pages}p</p>
-      <p>${b.summary}</p>
-      <div class="row-flex" style="margin-top:14px"><button class="btn primary" onclick="alert('Library reader (demo)')">Read in library</button></div>
+      <p class="meta" style="color:var(--muted)">${b.author||''} · ${b.publisher||''}${b.pages?' · '+b.pages+'p':''}${b.year?' · '+b.year:''}</p>
+      <p>${b.summary || ''}</p>
+      ${b.body ? `<div style="margin-top:14px;line-height:1.7;max-width:70ch">${b.body.replace(/
+
+/g, '</p><p>').replace(/^/, '<p>') + '</p>'}</div>` : ''}
+      <div class="row-flex" style="margin-top:14px">
+        ${b.external_url ? `<a class="btn primary" href="${b.external_url}" target="_blank" rel="noopener">Read at publisher ↗</a>` : `<button class="btn primary" onclick="window.AA_LIVE.read('${id}', this)">Read full text</button>`}
+        <button class="btn ghost" onclick="window.AA.wishlist?.add({id:'${id}', title:${JSON.stringify(b.title||'')}, image:'${b.image||''}'},'book')">♥ Save</button>
+      </div>
     `);
   }
   function openMerch (m) {
+    const id = (m.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
     openModal(m.image, `
       <h2>${m.title}</h2>
-      <p class="meta" style="color:var(--muted)">${m.provider} · ${m.eco.join(' · ')}</p>
-      <p style="font-size:1.4rem;color:var(--accent);font-weight:700">€${m.price_eur}</p>
-      <p>${m.summary}</p>
-      <p class="mono" style="color:var(--muted);font-size:.8rem">est. ${m.carbon_g}g CO₂ · printed-on-demand · ships in 5–8 days</p>
-      <div class="row-flex" style="margin-top:14px"><button class="btn primary" onclick="alert('POD order created (demo). API call: ' + JSON.stringify({sku:'${m.id}',provider:'${m.provider}'}))">Buy</button></div>
+      <p class="meta" style="color:var(--muted)">${m.provider||''} · ${(m.eco||[]).join(' · ')}</p>
+      <p style="font-size:1.4rem;color:var(--accent);font-weight:700">${m.price_eur ? '€'+m.price_eur : ''}</p>
+      <p>${m.summary || ''}</p>
+      ${m.carbon_g ? `<p class="mono" style="color:var(--muted);font-size:.8rem">est. ${m.carbon_g}g CO₂ · printed-on-demand · ships in 5–8 days</p>` : ''}
+      <div class="row-flex" style="margin-top:14px">
+        ${m.external_url ? `<a class="btn primary" href="${m.external_url}" target="_blank" rel="noopener">Buy ↗</a>` : `<button class="btn primary" onclick="window.AA_LIVE.buy('${id}', this)">Order</button>`}
+        <button class="btn ghost" onclick="window.AA.wishlist?.add({id:'${id}', title:${JSON.stringify(m.title||'')}, image:'${m.image||''}'},'merch')">♥ Save</button>
+      </div>
     `);
   }
 
@@ -516,7 +537,7 @@
         const amt = t.dataset.pledge ? 5 : t.dataset.pledge25 ? 25 : t.dataset.pledge100 ? 100 : null;
         if (!amt) return;
         await AA.pledge(c.id, amt * 100);
-        alert(`Pledge of €${amt} recorded (demo).`);
+        window.AA_LIVE.pledge(amt, c.id, this);
       });
       list.appendChild(el);
     });
@@ -578,7 +599,7 @@
         <p class="summary">${s.summary}</p>
         <span class="fee">${s.fee}</span>
       </div>`;
-    el.addEventListener('click', () => alert(`RSVP'd to "${s.title}" (demo)`));
+    el.addEventListener('click', () => window.AA_LIVE.rsvp(s.id, el, s.title));
     return el;
   }
   function jobCard (j) {

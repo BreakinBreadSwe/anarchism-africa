@@ -1423,3 +1423,19 @@ section.view { padding: 16px; }
 .logo-lock:hover  { color: var(--fg); border-color: var(--fg); }
 .logo-lock:active { transform: scale(.92); }
 .logo-lock[data-state="locked"] { color: var(--fg); border-color: var(--fg); }
+
+/* === Afro-books catalog (afro-anarchist Google) ====================== */
+.abx-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.abx-card { border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--bg-2); display: flex; flex-direction: column; gap: 10px; }
+.abx-card:hover { border-color: var(--accent); }
+.abx-head h3 { margin: 0; font-family: 'Space Grotesk', sans-serif; text-transform: none; letter-spacing: 0; font-size: 1rem; line-height: 1.3; }
+.abx-meta { font-size: .72rem; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; letter-spacing: .04em; }
+.abx-summary { margin: 0; font-size: .85rem; line-height: 1.5; color: var(--fg-dim); }
+.abx-buys { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); }
+.abx-buy {
+  display: inline-flex; align-items: center;
+  font: 600 .68rem 'JetBrains Mono', monospace; letter-spacing: .08em;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px;
+  color: var(--fg-dim); text-decoration: none;
+}
+.abx-buy:hover { color: var(--fg); border-color: var(--fg); }

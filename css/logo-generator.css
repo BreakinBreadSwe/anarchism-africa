@@ -1,0 +1,104 @@
+/* ANARCHISM.AFRICA — Logo lab styling */
+
+#aa-logo-gen { position: fixed; inset: 0; z-index: 80; }
+.lg-page {
+  position: absolute;
+  top: 56px; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  color: var(--fg);
+  overflow-y: auto;
+  animation: lg-up .25s ease-out both;
+}
+@media (max-width: 1023px) { .lg-page { bottom: 64px; } }
+@media (prefers-reduced-motion: reduce) { .lg-page { animation: none; } }
+@keyframes lg-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+body.aa-logo-gen-open { overflow: hidden; }
+
+.lg-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 44px; height: 44px;
+  background: transparent; color: var(--fg);
+  border: 1px solid var(--line);
+  font-size: 26px; line-height: 1; cursor: pointer; padding: 0;
+}
+.lg-close:hover { background: var(--fg); color: var(--bg); }
+
+.lg-grid {
+  max-width: 980px; margin: 0 auto;
+  padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px) 80px;
+  display: grid; gap: 28px;
+}
+.lg-head h1 {
+  margin: 0; font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.4rem); letter-spacing: .03em; line-height: 1;
+  text-transform: uppercase;
+}
+.lg-sub { margin: 8px 0 0; color: var(--fg-dim); max-width: 60ch; line-height: 1.5; }
+
+.lg-section {
+  border: 1px solid var(--line); padding: clamp(16px, 2.4vw, 24px); background: var(--bg-2);
+}
+.lg-section h2 {
+  margin: 0 0 8px;
+  font: 800 .82rem 'JetBrains Mono', monospace;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.lg-section p { margin: 0 0 12px; color: var(--fg-dim); font-size: .85rem; line-height: 1.5; }
+
+/* Upload */
+.lg-drop {
+  border: 2px dashed var(--line);
+  padding: 28px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  transition: border-color .15s, background .15s;
+}
+.lg-drop.over { border-color: var(--accent); background: var(--bg); }
+.lg-drop-hint { color: var(--muted); font-size: .8rem; margin: 0; }
+
+/* Patterns */
+.lg-patterns {
+  display: grid; gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+}
+.lg-pat-tile {
+  aspect-ratio: 1 / 1;
+  background: var(--bg-2) center / cover no-repeat;
+  border: 1px solid var(--line);
+  cursor: pointer; padding: 0;
+  position: relative;
+  transition: transform .12s, border-color .12s;
+}
+.lg-pat-tile:hover { transform: translate(-2px, -2px); border-color: var(--fg); box-shadow: 4px 4px 0 0 var(--accent); }
+.lg-pat-label {
+  position: absolute; left: 4px; bottom: 4px;
+  font: 700 .56rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  background: rgba(0,0,0,.75); color: #fff;
+  padding: 1px 6px; text-transform: uppercase;
+}
+
+/* Pixel editor */
+.lg-pixrow {
+  display: grid; grid-template-columns: auto 1fr; gap: 18px;
+  align-items: start;
+}
+@media (max-width: 540px) { .lg-pixrow { grid-template-columns: 1fr; } }
+.lg-pixgrid {
+  width: 256px; height: 256px;
+  display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr);
+  gap: 1px; background: var(--line);
+  border: 1px solid var(--fg);
+}
+.lg-pixcell { background: var(--bg); border: 0; padding: 0; cursor: pointer; }
+.lg-pixcell:hover { background: var(--bg-2); }
+.lg-pixcell.on { background: var(--fg); }
+.lg-pixctl { display: grid; gap: 8px; align-content: start; }
+.lg-pixctl .btn { justify-content: center; }
+
+.lg-actions {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+}
+#lg-status { font-size: .78rem; }

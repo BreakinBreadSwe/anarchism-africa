@@ -72,11 +72,11 @@
   </defs>
 
   <!-- Continent — outline only, interior matches background so the A reads carved-in -->
-  <use href="#africa" fill="#000" stroke="#fff" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+  <use href="#africa" fill="#000" stroke="#fff" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
 
   <!-- Madagascar — teardrop, off the southeast coast -->
   <path d="M 808 660 Q 814 685 814 720 Q 812 760 800 790 Q 790 800 784 790 Q 780 770 786 740 Q 790 705 798 680 Q 802 666 808 660 Z"
-        fill="#000" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+        fill="#000" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
 
   <!-- Anarchist A — bold, clipped to silhouette so the legs settle into the continent -->
   <g clip-path="url(#africa-clip)">

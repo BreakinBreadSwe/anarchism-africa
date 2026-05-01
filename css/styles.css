@@ -1410,3 +1410,16 @@ section.view { padding: 16px; }
 .ml-side-label { padding: 8px 12px; font: 700 .7rem 'JetBrains Mono', monospace; letter-spacing: .14em; border-bottom: 1px solid var(--line); color: var(--fg-dim); background: var(--bg-2); }
 .ml-svg-host { aspect-ratio: 5 / 6; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .ml-svg-host svg { width: 100%; height: 100%; display: block; }
+
+/* === Logo lock button — sibling to .logo-shuffle =================== */
+.logo-lock {
+  width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--line);
+  background: transparent; color: var(--fg-dim); cursor: pointer;
+  display: grid; place-items: center; font-size: 11px;
+  transition: transform .25s, color .2s, background .2s, border-color .2s;
+  margin-left: 4px; padding: 0; line-height: 1; flex: 0 0 auto;
+}
+@media (min-width: 600px) { .logo-lock { width: 24px; height: 24px; font-size: 12px; } }
+.logo-lock:hover  { color: var(--fg); border-color: var(--fg); }
+.logo-lock:active { transform: scale(.92); }
+.logo-lock[data-state="locked"] { color: var(--fg); border-color: var(--fg); }

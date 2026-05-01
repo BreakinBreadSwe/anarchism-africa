@@ -29,3 +29,28 @@
 }
 .brand .logoword .dot { color: var(--fg) !important; }
 .tab.active { color: var(--fg) !important; }
+
+/* === Center the intro popup + blur the app behind it ================ */
+.modal.aa-intro-modal {
+  align-items: center !important;        /* vertical centering */
+  justify-content: center !important;    /* horizontal centering */
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45) !important;   /* let the blurred app show through */
+  backdrop-filter: blur(12px) saturate(0.85);
+  -webkit-backdrop-filter: blur(12px) saturate(0.85);
+}
+.aa-intro-modal .panel {
+  max-height: 90vh;
+  overflow-y: auto;
+  /* subtle zoom-in on open */
+  animation: aa-intro-pop .35s cubic-bezier(.2, .9, .25, 1.15) both;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+}
+@keyframes aa-intro-pop {
+  0%   { transform: translateY(8px) scale(.96); opacity: 0; }
+  100% { transform: none; opacity: 1; }
+}
+/* honor reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .aa-intro-modal .panel { animation: none !important; }
+}

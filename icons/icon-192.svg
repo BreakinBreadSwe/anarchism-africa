@@ -1,35 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192"
-     role="img" aria-label="ANARCHISM.AFRICA — circle-A over African continent">
-  <!-- bg tile -->
-  <rect width="192" height="192" rx="36" fill="#000"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="192" height="192"
+     role="img" aria-label="ANARCHISM.AFRICA — A inside the African continent">
+  <rect width="1024" height="1024" fill="#000"/>
+  <defs>
+    <!-- Geographically-recognisable Africa silhouette: Mediterranean coast,
+         Sinai notch, Horn of Africa bulge, Cape, Gulf of Guinea concavity,
+         West-Africa bulge, NW tip. Hand-tuned bezier — not survey accurate
+         but reads as Africa at every size. -->
+    <path id="africa"
+      d="M 290 192
+         C 325 178, 365 175, 410 178
+         C 455 180, 505 183, 555 185
+         C 595 186, 632 187, 658 192
+         C 678 195, 690 200, 695 215
+         L 715 240
+         C 728 252, 735 268, 728 285
+         L 712 305
+         C 705 320, 716 335, 730 348
+         C 752 365, 760 388, 752 410
+         C 745 432, 728 452, 712 470
+         C 700 488, 690 510, 685 532
+         C 678 560, 668 590, 660 618
+         C 655 650, 650 685, 640 718
+         C 628 752, 612 782, 590 808
+         C 565 832, 538 852, 510 858
+         C 488 862, 470 850, 458 832
+         C 444 810, 432 786, 422 760
+         C 408 728, 392 698, 372 672
+         C 348 642, 322 615, 300 588
+         C 280 562, 268 538, 260 512
+         C 250 478, 240 445, 232 410
+         C 222 372, 215 332, 218 295
+         C 222 262, 235 232, 250 215
+         C 262 202, 275 195, 290 192 Z"/>
+    <clipPath id="africa-clip"><use href="#africa"/></clipPath>
+  </defs>
 
-  <!-- African continent outline (white, no fill) -->
-  <path
-    d="M 78 28
-       Q 100 22 124 28
-       Q 146 36 156 54
-       Q 162 70 158 84
-       Q 154 96 144 104
-       Q 142 116 138 130
-       Q 134 144 126 154
-       Q 116 162 106 158
-       Q 98 150 92 138
-       Q 84 122 76 108
-       Q 66 92 58 78
-       Q 52 64 56 50
-       Q 64 34 78 28 Z"
-    fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Continent — solid silhouette + thin outer outline.
+       The interior is the same as the bg (black) so the A reads as carved out. -->
+  <use href="#africa" fill="#000" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
 
-  <!-- Madagascar (small detail keeps the silhouette legible as Africa) -->
-  <ellipse cx="160" cy="118" rx="4.5" ry="11" fill="none" stroke="#fff" stroke-width="2"/>
+  <!-- Madagascar -->
+  <ellipse cx="788" cy="690" rx="22" ry="60" fill="#000" stroke="#fff" stroke-width="5"/>
 
-  <!-- Anarchist "A" — legs, drawn inside the continent -->
-  <path
-    d="M 82 144 L 102 60 L 122 144"
-    fill="none" stroke="#fff" stroke-width="6"
-    stroke-linecap="square" stroke-linejoin="miter"/>
-
-  <!-- Cross-bar — extends past the continent on both sides (the anarchist signature) -->
-  <line x1="56" y1="118" x2="148" y2="118"
-        stroke="#fff" stroke-width="6" stroke-linecap="square"/>
+  <!-- Anarchist A — solid white, clipped to the continent so the legs land
+       inside the silhouette and the crossbar reads as a horizontal slab. -->
+  <g clip-path="url(#africa-clip)">
+    <!-- Apex at upper Africa, legs sweep down toward Cameroon / South Africa -->
+    <polygon points="290,820 460,180 510,180 410,820" fill="#fff"/>
+    <polygon points="498,180 548,180 718,820 600,820" fill="#fff"/>
+    <!-- Crossbar -->
+    <rect x="220" y="490" width="600" height="62" fill="#fff"/>
+    <!-- Negative-space triangle inside the A -->
+    <polygon points="430,490 580,490 545,552 460,552" fill="#000"/>
+  </g>
 </svg>

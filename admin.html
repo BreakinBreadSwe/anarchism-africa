@@ -12,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/intro-popup.css" />
+  <link rel="stylesheet" href="css/responsive-fixes.css" />
 </head>
 <body class="admin has-rail">
 
@@ -38,6 +40,9 @@
   <button class="rail-item" data-tab="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="label">Grants</span></button>
   <button class="rail-item" data-tab="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>
   <button class="rail-item" data-tab="marklab"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 16l3-10 3 10M10 13h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Mark Lab</span></button>
+  <button class="rail-item" data-tab="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Article Lab</span></button>
+  <button class="rail-item" data-tab="merchlab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M7 4l5-1 5 1 1 6-2 8-4 3-4-3-2-8z"/><path d="M9 12h6"/></svg></span><span class="label">Merch Lab</span></button>
+  <button class="rail-item" data-tab="marklab"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 16l3-10 3 10M10 13h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Mark Lab</span></button>
   <button class="rail-item" data-tab="settings"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 010 .8l2 1.6-2 3.4-2.4-1a7 7 0 01-1.4.8L15 21h-4l-.2-2.4a7 7 0 01-1.4-.8l-2.4 1-2-3.4 2-1.6a7 7 0 010-1.6l-2-1.6 2-3.4 2.4 1a7 7 0 011.4-.8L11 3h4l.2 2.4a7 7 0 011.4.8l2.4-1 2 3.4-2 1.6"/></svg></span><span class="label">Site · CSS</span></button>
   <button class="rail-item" data-tab="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
 </aside>
@@ -55,6 +60,9 @@
   <div class="tab" data-tab="crowdfund">Crowdfund</div>
   <div class="tab" data-tab="grants">Grants</div>
   <div class="tab" data-tab="articlelab">Article Lab</div>
+  <div class="tab" data-tab="marklab">Mark Lab</div>
+  <div class="tab" data-tab="articlelab">Article Lab</div>
+  <div class="tab" data-tab="merchlab">Merch Lab</div>
   <div class="tab" data-tab="marklab">Mark Lab</div>
   <div class="tab" data-tab="settings">Settings</div>
   <div class="tab" data-tab="ai">AI</div>
@@ -227,6 +235,12 @@
   <section class="view" id="view-marklab"></section>
 
   <!-- SETTINGS / CSS ----------------------------------------------------- -->
+  <section class="view" id="view-articlelab"></section>
+
+  <section class="view" id="view-merchlab"></section>
+
+  <section class="view" id="view-marklab"></section>
+
   <section class="view" id="view-settings">
     <div class="admin-grid">
       <div class="panel">
@@ -352,12 +366,17 @@
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/ai-chat.js"></script>
+<script src="js/intro-popup.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/logo.js"></script>
 <script src="js/admin.js"></script>
+<script src="js/article-lab.js"></script>
+<script src="js/mark-lab.js"></script>
+<script src="js/merch-lab.js"></script>
 <script src="js/mark-lab.js"></script>
 <script src="js/article-lab.js"></script>
 <script src="js/content-queue.js"></script>
+<script src="js/role-switcher.js"></script>
 <script src="js/user-settings.js"></script>
 <script>
   // Admin PWA service worker

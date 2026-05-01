@@ -1,0 +1,108 @@
+/* ANARCHISM.AFRICA — responsive + accessibility fixes
+   Drop-in stylesheet that kills the legacy gold accent, lands WCAG basics
+   (44x44 touch targets + visible focus + reduced motion), and tunes layout
+   for phones, tablets, and wide screens. Loads after css/styles.css. */
+
+/* === Kill the gold accent ============================================= */
+:root[data-theme="light"] { --accent: #000000 !important; }
+:root[data-theme="dark"]  { --accent: #ffffff !important; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) { --accent: #000000; }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { --accent: #ffffff; }
+}
+/* legacy preset id tp7 (GOLD ACCENT) is still available via the picker */
+
+/* === Fluid type scale ================================================== */
+:root { font-size: clamp(14px, 1.05vw + 11px, 16px); }
+.summary { max-width: 70ch; }
+
+/* === WCAG 2.5.5 — 44x44 touch targets ================================ */
+.wish-heart { width: 44px !important; height: 44px !important; }
+.wish-heart svg { width: 22px; height: 22px; }
+.logo-shuffle { padding: 11px !important; width: 44px !important; height: 44px !important; font-size: 16px !important; }
+.beta-pill, .role-switch-btn { padding: 8px 12px !important; min-height: 40px; }
+.cq-filter, .al-tab, .lang-chip, .aa-intro-theme { min-height: 40px; padding-block: 8px !important; }
+.rail-item { min-height: 44px; min-width: 44px; }
+
+/* === WCAG 2.4.7 — visible focus indicator ============================ */
+:where(button, a, input, select, textarea, .card, .tab, .rail-item, .ml-quote-card, .item-related-card, .rs-card):focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+  border-radius: inherit;
+}
+
+/* === prefers-reduced-motion =========================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .brand .logoword .word.is-anim { animation: none !important; }
+  .hero-progress { animation: none !important; }
+}
+
+/* === Tiny phones — collapse topbar chrome ============================ */
+@media (max-width: 399px) {
+  .topbar .role-switch-btn span:not(.role-switch-dot),
+  .topbar .beta-pill,
+  .topbar .aa-account .aa-account-name { display: none; }
+}
+@media (max-width: 359px) {
+  .brand .logoword .word { font-size: 0; }
+  .brand .logoword .word::before {
+    content: 'AA';
+    font-size: 1.2rem;
+    letter-spacing: .06em;
+  }
+}
+
+/* === Single-column cards on phones =================================== */
+@media (max-width: 419px) {
+  #films-grid, #articles-grid, #events-grid,
+  #books-grid, #merch-grid, #grants-grid, .grid {
+    grid-template-columns: 1fr !important;
+  }
+  .card .thumb { aspect-ratio: 16 / 9; }
+}
+
+/* === Modal buttons stack on phones =================================== */
+@media (max-width: 480px) {
+  .modal .panel-body div[style*="justify-content:flex-end"],
+  .modal .panel-body div[style*="display:flex;gap:8px;flex-wrap:wrap"] {
+    flex-direction: column-reverse !important;
+  }
+  .modal .panel-body div[style*="justify-content:flex-end"] .btn,
+  .modal .panel-body div[style*="display:flex;gap:8px;flex-wrap:wrap"] .btn {
+    width: 100%;
+  }
+}
+
+/* === Bottombar — hide on desktop, icons-only on phones =============== */
+@media (min-width: 1024px) {
+  .bottombar { display: none !important; }
+  body.has-rail main, body.admin main { padding-bottom: 24px !important; }
+}
+@media (max-width: 599px) {
+  .bottombar button span:not(.glyph) { display: none; }
+  .bottombar { padding: 6px 4px; }
+  .bottombar button { padding: 6px; }
+}
+
+/* === Hero readability gradient ======================================= */
+.hero .slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0) 70%);
+  pointer-events: none;
+}
+
+/* === Wide screens — cap line length ================================== */
+@media (min-width: 1440px) {
+  main { max-width: 1280px; margin: 0 auto; }
+  .item-body, .summary, .item-lede { max-width: 70ch; }
+}

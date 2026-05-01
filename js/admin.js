@@ -22,6 +22,9 @@
     if (name === 'settings')     renderSettings();
     if (name === 'ai')           renderAI();
     if (name === 'dashboard')    renderDashboard();
+    if (name === 'articlelab')   window.ArticleLab?.render();
+    if (name === 'merchlab')     window.MerchLab?.render();
+    if (name === 'marklab')      window.MarkLab?.render();
     if (name === 'marklab')      window.MarkLab?.render();
     if (name === 'articlelab')   window.ArticleLab?.render();
   }

@@ -132,41 +132,10 @@
   function signOut () { writeUser(null); }
 
   function paintHeaderState () {
-    const u = readUser();
-    document.body.classList.toggle('aa-signed-in', !!u);
-    // top-bar avatar pill (creates one if there's a topbar and no .aa-account yet)
-    const tb = document.querySelector('.topbar');
-    if (!tb) return;
-    let pill = tb.querySelector('.aa-account');
-    if (!u) {
-      // signed-out: make sure a sign-in pill exists if not on an admin/role page
-      if (document.body.dataset.role) return;     // role pages have their own header
-      if (!pill) {
-        pill = document.createElement('button');
-        pill.type = 'button';
-        pill.className = 'btn ghost aa-account';
-        pill.style.marginLeft = '4px';
-        pill.textContent = 'Sign in';
-        pill.addEventListener('click', openSheet);
-        // place before the last topbar child (Studio button)
-        tb.insertBefore(pill, tb.lastElementChild);
-      } else {
-        pill.textContent = 'Sign in';
-        pill.onclick = openSheet;
-      }
-      return;
-    }
-    // signed-in: show avatar + name
-    if (!pill) {
-      pill = document.createElement('button');
-      pill.type = 'button';
-      pill.className = 'btn ghost aa-account';
-      pill.style.marginLeft = '4px';
-      tb.insertBefore(pill, tb.lastElementChild);
-    }
-    const initials = (u.name || u.email || '?').split(/\s+/).map(p => p[0]).slice(0,2).join('').toUpperCase();
-    pill.innerHTML = `<span class="aa-account-avatar" style="background-image:url('${u.picture || ''}')">${u.picture ? '' : initials}</span><span class="aa-account-name">${(u.name || u.email).slice(0, 18)}</span>`;
-    pill.onclick = () => { if (confirm('Sign out?')) signOut(); };
+    // The sign-in lives in the rail menu now, not the topbar.
+    // We just clean up any old .aa-account pill earlier versions injected.
+    document.querySelectorAll('.topbar .aa-account').forEach(el => el.remove());
+    document.body.classList.toggle('aa-signed-in', !!readUser());
   }
 
   // boot
@@ -175,6 +144,7 @@
   window.AA = window.AA || {};
   window.AA.auth = {
     user: readUser,
+    signedIn: () => !!readUser(),
     signOut, openSheet, closeSheet,
     mountSignInButton
   };

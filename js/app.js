@@ -57,7 +57,18 @@
       const sheet = $('#customize-sheet');
       if (sheet) { sheet.classList.add('open'); buildCustomize(); }
     }
-    if (k === 'signin')    { toggleRoleStrip(); }
+    if (k === 'signin')    {
+      // Bottombar "You" icon — opens the Sign-in sheet, or offers sign-out if already signed in
+      if (window.AA?.auth) {
+        if (window.AA.auth.signedIn && window.AA.auth.signedIn()) {
+          if (confirm('Sign out?')) window.AA.auth.signOut();
+        } else {
+          window.AA.auth.openSheet();
+        }
+      } else {
+        toggleRoleStrip();   // legacy fallback
+      }
+    }
   });
   document.addEventListener('click', e => {
     const j = e.target.closest('[data-jump]');

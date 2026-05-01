@@ -2,55 +2,91 @@
      role="img" aria-label="ANARCHISM.AFRICA — A inside the African continent">
   <rect width="1024" height="1024" fill="#000"/>
   <defs>
-    <!-- Geographically-recognisable Africa silhouette: Mediterranean coast,
-         Sinai notch, Horn of Africa bulge, Cape, Gulf of Guinea concavity,
-         West-Africa bulge, NW tip. Hand-tuned bezier — not survey accurate
-         but reads as Africa at every size. -->
+    <!-- Africa silhouette — hand-tuned to match the geographic landmarks
+         (Mediterranean coast, Sinai notch, Horn of Africa, Cape, Gulf of
+         Guinea concavity, NW tip, Senegal bulge). Line-only stroke gives
+         a slightly hand-drawn feel that matches the reference. -->
     <path id="africa"
-      d="M 290 192
-         C 325 178, 365 175, 410 178
-         C 455 180, 505 183, 555 185
-         C 595 186, 632 187, 658 192
-         C 678 195, 690 200, 695 215
-         L 715 240
-         C 728 252, 735 268, 728 285
-         L 712 305
-         C 705 320, 716 335, 730 348
-         C 752 365, 760 388, 752 410
-         C 745 432, 728 452, 712 470
-         C 700 488, 690 510, 685 532
-         C 678 560, 668 590, 660 618
-         C 655 650, 650 685, 640 718
-         C 628 752, 612 782, 590 808
-         C 565 832, 538 852, 510 858
-         C 488 862, 470 850, 458 832
-         C 444 810, 432 786, 422 760
-         C 408 728, 392 698, 372 672
-         C 348 642, 322 615, 300 588
-         C 280 562, 268 538, 260 512
-         C 250 478, 240 445, 232 410
-         C 222 372, 215 332, 218 295
-         C 222 262, 235 232, 250 215
-         C 262 202, 275 195, 290 192 Z"/>
+      d="M 290 138
+         L 350 132
+         L 410 130
+         L 472 134
+         L 525 138
+         L 580 144
+         L 632 156
+         L 668 178
+         L 685 200
+         L 700 226
+         L 712 254
+         L 720 282
+         L 725 314
+         L 718 340
+         L 705 358
+         L 712 380
+         L 728 405
+         L 738 428
+         L 738 460
+         L 725 488
+         L 715 514
+         L 715 540
+         L 705 568
+         L 695 596
+         L 690 626
+         L 685 658
+         L 680 690
+         L 678 720
+         L 670 750
+         L 658 778
+         L 642 802
+         L 622 822
+         L 600 838
+         L 575 845
+         L 552 838
+         L 535 822
+         L 520 800
+         L 510 776
+         L 498 752
+         L 482 728
+         L 462 705
+         L 440 682
+         L 420 658
+         L 398 632
+         L 380 605
+         L 365 578
+         L 352 550
+         L 340 522
+         L 325 492
+         L 308 460
+         L 292 428
+         L 278 396
+         L 262 360
+         L 248 322
+         L 238 285
+         L 232 252
+         L 232 220
+         L 240 192
+         L 254 170
+         L 270 152
+         L 290 138 Z"/>
     <clipPath id="africa-clip"><use href="#africa"/></clipPath>
   </defs>
 
-  <!-- Continent — solid silhouette + thin outer outline.
-       The interior is the same as the bg (black) so the A reads as carved out. -->
-  <use href="#africa" fill="#000" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
+  <!-- Continent — outline only, interior matches background so the A reads carved-in -->
+  <use href="#africa" fill="#000" stroke="#fff" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
 
-  <!-- Madagascar -->
-  <ellipse cx="788" cy="690" rx="22" ry="60" fill="#000" stroke="#fff" stroke-width="5"/>
+  <!-- Madagascar — teardrop, off the southeast coast -->
+  <path d="M 808 660 Q 814 685 814 720 Q 812 760 800 790 Q 790 800 784 790 Q 780 770 786 740 Q 790 705 798 680 Q 802 666 808 660 Z"
+        fill="#000" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
 
-  <!-- Anarchist A — solid white, clipped to the continent so the legs land
-       inside the silhouette and the crossbar reads as a horizontal slab. -->
+  <!-- Anarchist A — bold, clipped to silhouette so the legs settle into the continent -->
   <g clip-path="url(#africa-clip)">
-    <!-- Apex at upper Africa, legs sweep down toward Cameroon / South Africa -->
-    <polygon points="290,820 460,180 510,180 410,820" fill="#fff"/>
-    <polygon points="498,180 548,180 718,820 600,820" fill="#fff"/>
-    <!-- Crossbar -->
-    <rect x="220" y="490" width="600" height="62" fill="#fff"/>
-    <!-- Negative-space triangle inside the A -->
-    <polygon points="430,490 580,490 545,552 460,552" fill="#000"/>
+    <!-- left leg -->
+    <polygon points="290,820 470,160 522,160 415,820" fill="#fff"/>
+    <!-- right leg -->
+    <polygon points="502,160 554,160 730,820 615,820" fill="#fff"/>
+    <!-- crossbar -->
+    <rect x="245" y="500" width="535" height="64" fill="#fff"/>
+    <!-- inner triangle (negative space inside the A) -->
+    <polygon points="442,500 580,500 552,564 470,564" fill="#000"/>
   </g>
 </svg>

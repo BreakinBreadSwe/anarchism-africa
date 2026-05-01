@@ -28,6 +28,7 @@
 
 <!-- TOP BAR — sticky, slides up on scroll-down, eases back on scroll-stop -->
 <header class="topbar topbar-sticky" id="topbar">
+  <div class="topbar-bg" id="topbar-bg" aria-hidden="true"></div>
   <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" title="Menu">
     <span class="logo"></span>
   </button>
@@ -41,6 +42,10 @@
 
 <!-- LEFT RAIL (icons collapsed by default) -->
 <aside class="rail" id="rail" aria-label="Sections">
+  <button class="rail-item rail-item--auth" data-rail-auth type="button" title="Sign in">
+    <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span>
+    <span class="label" data-auth-label>Sign in</span>
+  </button>
   <button class="rail-item active" data-tab="home"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><span class="label">Home</span></button>
   <button class="rail-item" data-tab="films"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-7 9-7s6 2 9 7c-3 5-6 7-9 7s-6-2-9-7z"/><circle cx="12" cy="12" r="3" class="fill"/></svg></span><span class="label">Films</span></button>
   <button class="rail-item" data-tab="articles"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Library</span></button>
@@ -342,7 +347,6 @@
   <button data-bbar="search" title="Search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
   <button data-bbar="chat" title="A.A.AI chat"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 5h16v11a2 2 0 01-2 2H8l-4 4z" class="fill"/></svg></span><span>Chat</span></button>
   <button data-bbar="customize" title="Customize"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18M3 12h18"/></svg></span><span>Theme</span></button>
-  <button data-bbar="signin" title="Sign in / role"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span>You</span></button>
 </nav>
 
 <!-- GLOBAL SEARCH MODAL (public) -->
@@ -377,6 +381,7 @@
 <script src="js/chat.js"></script>
 <script src="js/wishlist.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/auth-rail.js"></script>
 <script src="js/languages.js"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol === 'https:') {

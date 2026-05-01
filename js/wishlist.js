@@ -26,6 +26,15 @@
   const k = (type, id) => `${type}:${id}`;
   const emit = () => document.dispatchEvent(new CustomEvent('aa:wishlist:change'));
 
+  // Returns true if signed in. If not, opens the auth sheet and shows a tiny
+  // toast so the user knows why the action didn't happen.
+  function signedInOrPrompt () {
+    if (window.AA?.auth?.user?.()) return true;
+    if (window.AA?.auth?.openSheet) window.AA.auth.openSheet();
+    if (window.AA_LIVE?.toast) window.AA_LIVE.toast('Sign in to save favourites', 'idle');
+    return false;
+  }
+
   const TYPE_LABELS = {
     film:'Films', article:'Library', event:'Events', song:'Music',
     book:'Books', merch:'Marketplace', shop:'Shops', service:'Services',
@@ -45,6 +54,8 @@
     },
     add (item, type) {
       if (!item || !item.id) return false;
+      // Gate likes/favorites on sign-in (unless already in the list — allow read/refresh)
+      if (!read()[k(type, item.id)] && !signedInOrPrompt()) return false;
       const m = read();
       m[k(type, item.id)] = { item, type, addedAt: Date.now() };
       write(m); emit(); return true;
@@ -54,6 +65,8 @@
       const m = read(); delete m[k(type, id)]; write(m); emit(); return true;
     },
     toggle (item, type) {
+      // Gate likes/favorites on sign-in
+      if (!W.has(item.id, type) && !signedInOrPrompt()) return false;
       return W.has(item.id, type)
         ? (W.remove(item, type), false)
         : (W.add(item, type),    true);

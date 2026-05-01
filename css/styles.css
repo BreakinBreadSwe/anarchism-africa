@@ -1652,3 +1652,38 @@ section.view { padding: 16px; }
 .hero-cap-kind { font: 800 .68rem 'JetBrains Mono', monospace; letter-spacing: .2em; color: var(--accent); }
 .hero-cap-title { font: 800 clamp(1.6rem, 4vw, 2.6rem) 'Bebas Neue', sans-serif; letter-spacing: .03em; line-height: 1.05; }
 .hero-cap-sub { font-size: .82rem; color: rgba(255,255,255,.85); max-width: 60ch; line-height: 1.5; }
+
+/* === Drag-and-drop logo upload feedback (admin/publisher) =========== */
+.menu-toggle.logo-droppable {
+  outline: 2px dashed var(--accent);
+  outline-offset: 4px;
+  background: var(--bg-2);
+}
+.menu-toggle.logo-droppable::after {
+  content: 'drop logo';
+  position: absolute;
+  bottom: -22px; left: 50%; transform: translateX(-50%);
+  font: 700 .58rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.menu-toggle { position: relative; }
+.menu-toggle.locked::before {
+  content: '🔒'; position: absolute; top: 2px; right: 2px;
+  font-size: 9px; opacity: .9;
+}
+
+/* === Auth rail item — top of rail, primary call-out when signed-out ==== */
+.rail-item--auth {
+  border: 1px solid var(--accent) !important;
+  background: var(--bg-2) !important;
+  color: var(--accent) !important;
+  margin-bottom: 6px;
+}
+.rail-item--auth.signed-in {
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  background: transparent !important;
+}
+.rail-item--auth .label { font-weight: 700; letter-spacing: .04em; }

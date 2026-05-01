@@ -144,6 +144,12 @@
 
   // -------- Buy (POD order) --------------------------------------------
   async function buy (itemId, btn) {
+    // Gate purchases on sign-in
+    if (!window.AA?.auth?.user?.()) {
+      window.AA?.auth?.openSheet?.();
+      toast('Sign in to order merch', 'idle');
+      return;
+    }
     const restore = btnLoading(btn, 'Ordering…');
     try {
       const it = await findItem('merch', itemId);

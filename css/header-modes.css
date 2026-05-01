@@ -1,6 +1,44 @@
 /* ANARCHISM.AFRICA — header mode bar + per-mode styling */
 
-/* Mode buttons row inside the topbar — minimalist mono pills */
+/* ====== Full-bleed BG layer behind everything in the topbar ======== */
+.topbar { position: relative; isolation: isolate; }
+.topbar-bg {
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  color: var(--fg);   /* the patterns paint with currentColor */
+}
+.topbar-bg > * { pointer-events: auto; }
+.topbar > *:not(.topbar-bg) { position: relative; z-index: 2; }
+
+body.hm-has-bg .topbar { background: var(--bg-2); }      /* slight contrast lift when bg art is present */
+body.hm-has-bg .brand .logoword .word {
+  text-shadow: 0 1px 0 rgba(0,0,0,.5), 0 0 14px rgba(0,0,0,.7);  /* legibility over busy art */
+}
+
+.hm-pattern-svg {
+  width: 100%; height: 100%;
+  display: block;
+  cursor: pointer;
+  opacity: .85;
+}
+.hm-gif-img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  opacity: .65;
+}
+.hm-gif-tag {
+  position: absolute; right: 8px; bottom: 4px;
+  font: 700 .58rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  background: rgba(0,0,0,.7);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 0;
+}
+
+/* ====== Mode buttons row ========================================== */
 .hm-bar {
   display: inline-flex; gap: 4px; align-items: center;
   margin-left: auto;
@@ -15,96 +53,68 @@
   color: var(--fg-dim);
   cursor: pointer;
   font: 800 .82rem 'JetBrains Mono', monospace;
-  letter-spacing: 0;
   padding: 0;
+  position: relative;
   transition: background .12s, color .12s, border-color .12s;
 }
 .hm-mode-btn:hover, .hm-mode-btn:focus-visible { background: var(--bg-2); color: var(--fg); border-color: var(--fg); outline: 0; }
-.hm-mode-btn.active {
-  background: var(--fg); color: var(--bg); border-color: var(--fg);
-}
+.hm-mode-btn.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 .hm-mode-btn.locked::after {
-  content: '🔒'; position: absolute; transform: translate(11px, -10px);
-  font-size: 8px;
-}
-.hm-mode-btn { position: relative; }
-
-/* Brand-wrap content is replaced per-mode — keep it consistent in size */
-.brand-wrap {
-  min-height: 32px;
-  display: flex; align-items: center; gap: 8px;
+  content: '🔒'; position: absolute; transform: translate(11px, -10px); font-size: 8px;
 }
 
-/* ====== QUOTE mode ================================================ */
+/* Brand-wrap content height anchor */
+.brand-wrap { min-height: 32px; display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; }
+
+/* ====== Marquee — only animates when content overflows ============ */
+.hm-marquee {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  display: flex; align-items: center;
+}
+.hm-marquee-inner {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 18px;
+  white-space: nowrap;
+}
+.hm-marquee--scrolling .hm-marquee-inner {
+  animation: hm-scroll var(--marquee-duration, 40s) linear infinite;
+  will-change: transform;
+}
+@keyframes hm-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.hm-marquee--scrolling:hover .hm-marquee-inner { animation-play-state: paused; }
+.hm-marquee-gap { display: inline-block; width: 36px; }
+@media (prefers-reduced-motion: reduce) {
+  .hm-marquee--scrolling .hm-marquee-inner { animation: none; }
+}
+
+/* ====== QUOTE mode ================================================= */
 .hm-quote {
-  display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15;
-  max-width: min(640px, 50vw);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   letter-spacing: .02em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.hm-quote-text {
   font-size: clamp(.78rem, 1.6vw, .95rem);
   font-weight: 600;
   color: var(--fg);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  width: 100%;
 }
 .hm-quote-attr {
+  margin-left: 12px;
   font-size: .68rem;
   color: var(--fg-dim);
   letter-spacing: .14em;
   text-transform: uppercase;
 }
 
-/* ====== PATTERN mode =============================================== */
-.hm-pattern {
-  position: relative;
-  display: flex; align-items: center;
-  width: clamp(180px, 35vw, 360px);
-  height: 32px;
-  cursor: pointer;
-  color: var(--fg);
-}
-.hm-pattern svg { width: 100%; height: 100%; display: block; }
-.hm-pattern-label {
-  position: absolute; right: 6px; top: 6px;
-  font: 700 .58rem 'JetBrains Mono', monospace;
-  letter-spacing: .2em;
-  color: var(--bg);
-  background: var(--fg);
-  padding: 1px 6px;
-  text-transform: uppercase;
-}
-
-/* ====== GIF mode =================================================== */
-.hm-gif {
-  position: relative;
-  height: 32px;
-  display: flex; align-items: center;
-  overflow: hidden;
-  border: 1px solid var(--line);
-}
-.hm-gif img {
-  height: 100%; width: auto; display: block;
-}
-.hm-gif-tag {
-  font: 700 .62rem 'JetBrains Mono', monospace;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  padding: 0 8px;
-  color: var(--fg);
-}
-.hm-gif-fallback { padding-right: 8px; }
-.hm-gif-hint { font-size: .6rem; color: var(--muted); margin-left: 8px; }
-
 /* ====== AD mode ==================================================== */
-.hm-ad {
-  display: inline-flex; align-items: baseline; gap: 8px;
-  text-decoration: none;
-  color: var(--fg);
-  max-width: min(640px, 50vw);
-  white-space: nowrap; overflow: hidden;
+.hm-ad-inner {
+  display: inline-flex; align-items: baseline; gap: 10px;
+  text-decoration: none; color: var(--fg);
 }
 .hm-ad-kind {
   font: 800 .58rem 'JetBrains Mono', monospace;
@@ -114,23 +124,18 @@
   flex-shrink: 0;
 }
 .hm-ad-title {
-  font: 600 .85rem 'Bebas Neue', sans-serif;
+  font: 600 .9rem 'Bebas Neue', sans-serif;
   letter-spacing: .06em;
   text-transform: uppercase;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .hm-ad-sub {
-  font: 400 .7rem 'JetBrains Mono', monospace;
+  font: 400 .72rem 'JetBrains Mono', monospace;
   color: var(--fg-dim);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.hm-ad:hover .hm-ad-title { text-decoration: underline; }
+.hm-ad-inner:hover .hm-ad-title { text-decoration: underline; }
 
-/* ====== Mobile — drop one or two of the mode buttons to fit ====== */
+/* ====== Mobile sizes ============================================== */
 @media (max-width: 480px) {
   .hm-bar { gap: 2px; }
   .hm-mode-btn { width: 26px; height: 26px; font-size: .72rem; }
-  .hm-quote { max-width: 60vw; }
-  .hm-ad    { max-width: 60vw; }
-  .hm-pattern { width: clamp(120px, 50vw, 200px); }
 }

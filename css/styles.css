@@ -1707,12 +1707,37 @@ section.view { padding: 16px; }
   display: block;
 }
 
-/* Hide the desktop topbar menu-toggle on mobile — the bottombar logo
+/* Hide the desktop topbar menu-toggle on mobile - the bottombar logo
    takes over the menu-opening role there. */
-@media (max-width: 1023px) {
+@media (max-width: 768px) {
   .topbar #menu-toggle { display: none; }
 }
-@media (min-width: 1024px) {
-  /* On desktop the bottombar is hidden anyway via responsive-fixes.css —
-     this keeps the menu logo from leaking onto desktop. */
+
+/* DESKTOP: menu-toggle becomes part of the SIDE RAIL column (top-left).
+   The topbar starts to the right of the rail. When the rail expands
+   from 64px -> 220px, the topbar shifts right too. */
+@media (min-width: 769px) {
+  .topbar #menu-toggle {
+    position: fixed;
+    top: 6px;
+    left: 10px;
+    z-index: 32;            /* above topbar (z:30) */
+    width: 44px;
+    height: 44px;
+  }
+  body.has-rail .topbar {
+    margin-left: 64px;
+    width: calc(100% - 64px);
+    max-width: calc(100vw - 64px);
+    transition: margin-left .26s ease, width .26s ease;
+  }
+  body.has-rail.rail-open .topbar {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    max-width: calc(100vw - 220px);
+  }
+  /* Rail starts at top:0 on desktop so the menu-toggle sits at the top of
+     the rail column visually. The first rail-item also gets a top offset
+     so it doesn't render under the toggle. */
+  body.has-rail .rail { top: 0; padding-top: 56px; }
 }

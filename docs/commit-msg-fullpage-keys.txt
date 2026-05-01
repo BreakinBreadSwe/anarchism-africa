@@ -1,0 +1,33 @@
+feat(ux/admin): full-page items, rail-column logo on desktop, About copy, AI keys panel
+
+- About: new copy - "library, magazine, expo, radio, giftshop, organised chaos"
+  + ANARCHISM.AFRICA link, COOLHUNTPARIS as publisher, LUVLAB.io as admin/dev.
+
+- Full-viewport item pages: item.html main no longer capped at 920px - the
+  page now spans the full viewport. Hero items + every card (films, articles,
+  events, music, books, merch, grants) ALWAYS navigate to item.html. The
+  legacy modal fallback in attachCardClick is replaced with a slug-based
+  fallback so navigation still lands when an item has no id. Hero CTA
+  delegation no longer opens openModalFromHero - it routes to item.html
+  with a kind-mapped type param.
+
+- Desktop layout: top-left logo button is now part of the side rail column
+  (position:fixed top-left at z:32). The topbar shifts right to start
+  AFTER the rail (margin-left 64px collapsed, 220px when rail-open) with
+  matching width transitions. Rail starts at top:0 on desktop with 56px
+  top padding so the menu-toggle sits visually at the head of the rail
+  column. Mobile unchanged - menu-toggle hidden on mobile (lives in
+  bottombar). Header height preserved.
+
+- AI keys panel: new /api/system/env-status endpoint reports presence
+  + length of every env var the platform consumes (LLM, Media, POD,
+  Storage, Auth, Platform groups). Admin AI tab now shows a third
+  panel "API keys & environment" with a status table (green dot = set,
+  red ring = missing), click-to-copy key names, "Sign up" / "Get key"
+  links per provider, and a Refresh button. Values never leave server.
+  Covered keys: OPENROUTER_API_KEY, ANTHROPIC_API_KEY, OPENAI_API_KEY,
+  GEMINI_API_KEY, DEEPSEEK_API_KEY, GLM_API_KEY, KIMI_API_KEY,
+  QWEN_API_KEY, YI_API_KEY, GIPHY_API_KEY, PRINTIFY_API_TOKEN,
+  PRINTIFY_SHOP_ID, BLOB_READ_WRITE_TOKEN, SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE, GOOGLE_CLIENT_ID, AUTH_SECRET, ADMIN_TOKEN,
+  CRON_SECRET, SITE_URL.

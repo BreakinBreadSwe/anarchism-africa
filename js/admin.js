@@ -376,7 +376,72 @@
     $('#ai-provider').value = cfg.provider;
     $('#ai-model').value    = cfg.model;
     $('#ai-endpoint').value = cfg.endpoint;
+    loadEnvStatus();
   }
+
+  async function loadEnvStatus () {
+    const host = document.getElementById('env-table');
+    if (!host) return;
+    host.innerHTML = '<span style="color:var(--muted)">Checking deployment...</span>';
+    try {
+      const r = await fetch('/api/system/env-status', { cache: 'no-store' });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'HTTP ' + r.status);
+      renderEnvTable(host, data.vars || []);
+    } catch (e) {
+      host.innerHTML = '<span style="color:var(--red,#C8102E)">Could not load env status: ' + (e.message || e) + '</span>';
+    }
+  }
+
+  function renderEnvTable (host, vars) {
+    const groups = {};
+    for (const v of vars) (groups[v.group] = groups[v.group] || []).push(v);
+    const order = ['LLM','Media','POD','Storage','Auth','Platform'];
+    const html = order.filter(g => groups[g]).map(g => `
+      <div style="margin-bottom:14px">
+        <div style="font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:6px">${g}</div>
+        <table style="width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.78rem">
+          <thead>
+            <tr style="border-bottom:1px solid var(--line);text-align:left">
+              <th style="padding:6px 8px;width:32px"></th>
+              <th style="padding:6px 8px">KEY</th>
+              <th style="padding:6px 8px">USED FOR</th>
+              <th style="padding:6px 8px;text-align:right">GET KEY</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${groups[g].map(v => `
+              <tr style="border-bottom:1px solid var(--line)">
+                <td style="padding:8px;text-align:center">${v.set
+                  ? `<span title="set (${v.length} chars)" style="color:var(--green,#0a0);font-weight:700">●</span>`
+                  : `<span title="missing" style="color:var(--red,#C8102E);font-weight:700">○</span>`}</td>
+                <td style="padding:8px"><code style="background:var(--bg-2);padding:2px 6px;border:1px solid var(--line);border-radius:4px;cursor:pointer" data-copy="${v.key}" title="Click to copy">${v.key}</code></td>
+                <td style="padding:8px;font-family:'Space Grotesk',sans-serif;color:var(--fg-dim)">${escapeHTML(v.label)}</td>
+                <td style="padding:8px;text-align:right">
+                  ${v.signup ? `<a class="btn ghost" style="font-size:.7rem;padding:4px 8px" href="${escapeHTML(v.signup)}" target="_blank" rel="noopener">Sign up</a>` : ''}
+                  ${v.doc ? `<a class="btn ghost" style="font-size:.7rem;padding:4px 8px" href="${/^https?:/.test(v.doc) ? escapeHTML(v.doc) : '#'}" target="_blank" rel="noopener">${/^https?:/.test(v.doc) ? 'Get key' : escapeHTML(v.doc)}</a>` : ''}
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`).join('');
+    const summary = (() => {
+      const set = vars.filter(v => v.set).length;
+      return `<div style="margin-bottom:10px;color:var(--fg-dim);font-family:'Space Grotesk',sans-serif;font-size:.86rem">
+        <b>${set}</b> of <b>${vars.length}</b> environment variables set.
+        Filled rows are good to go; empty ones turn off the feature they back.
+      </div>`;
+    })();
+    host.innerHTML = summary + html;
+    host.querySelectorAll('[data-copy]').forEach(el => el.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(el.dataset.copy); el.style.background = 'var(--green,#0a0)'; el.style.color = '#fff'; setTimeout(() => { el.style.background = 'var(--bg-2)'; el.style.color = ''; }, 700); } catch {}
+    }));
+  }
+
+  function escapeHTML (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+  document.addEventListener('click', e => {
+    if (e.target && e.target.id === 'env-refresh') loadEnvStatus();
+  });
   $('#ai-save').addEventListener('click', () => {
     const ai = { provider: $('#ai-provider').value, model: $('#ai-model').value, endpoint: $('#ai-endpoint').value };
     AA.setConfig({ ai: Object.assign({}, AA.cfg().ai, ai) });

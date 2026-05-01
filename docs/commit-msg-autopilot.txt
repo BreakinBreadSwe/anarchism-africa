@@ -1,0 +1,15 @@
+feat(autopilot): constant-content engine - 38 sources, 4 daily crons, manual trigger
+
+- scan-content.js: SOURCES expanded 12 -> 38 across afro-anarchism, decolonial,
+  diaspora portraits, afro-punk, afro-funk, books, films, events. Each source
+  now carries a tags[] array forwarded to the queue for richer trend signals.
+- generate-articles.js: SEED_BOOST list expanded 23 -> 60+ keywords covering
+  music subgenres (afrobeat, amapiano, gqom, singeli, etc.), liberation
+  thinkers (Sankara, Fanon, Rodney, Mbah, Biko, Cabral), and movements
+  (EndSARS, RhodesMustFall, Panthers). Tags weighted 2x in frequency table.
+  Recently-covered themes penalized 0.25x so coverage rotates over 14 days.
+- vercel.json crons: scrape (06 UTC), articles (09), slogans (12), logos (15)
+- api/autopilot/run.js: new fan-out endpoint - POST kicks all four stages or
+  ?only=scrape,articles,slogans,logos for partial runs. ADMIN_TOKEN gated.
+- admin.js: Autopilot panel injected into dashboard with one-click buttons
+  to run all stages or any single stage; live JSON output for inspection.

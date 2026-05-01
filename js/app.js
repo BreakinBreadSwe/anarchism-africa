@@ -157,14 +157,19 @@
     if (state.heroPlaying) startHero(); else stopHero();
   });
 
-  // hero CTA delegation
+  // hero CTA delegation - hero items always open the full item page
   $('#hero').addEventListener('click', e => {
     const goTab = e.target.dataset.heroGo;
     const detailId = e.target.dataset.heroDetail;
     if (goTab) { setTab(goTab); }
     if (detailId) {
       const item = state.hero.find(h => h.id === detailId);
-      if (item) openModalFromHero(item);
+      if (item) {
+        const kind = item.tab || item.kind || (item.audio ? 'music' : item.video ? 'films' : 'articles');
+        // Map plural section to singular type used by item.html
+        const map = { films:'film', articles:'article', events:'event', music:'song', books:'book', merch:'merch', grants:'grant' };
+        location.href = `item.html?type=${encodeURIComponent(map[kind] || kind)}&id=${encodeURIComponent(item.id)}`;
+      }
     }
   });
 
@@ -307,19 +312,23 @@
       <div class="meta mono" style="font-size:.7rem;margin-top:4px">${m.carbon_g}g CO₂ · POD</div>`;
   }
 
-    function attachCardClick (el, handler, item) {
+  function attachCardClick (el, handler, item) {
     el.addEventListener('click', e => {
       // Wishlist heart inside the card stays interactive
       if (e.target.closest('.wish-heart')) return;
-      // Navigate to the full item page rather than opening a modal
-      const id = el.dataset.wishId || (item && item.id);
-      const kind = el.dataset.wishType;
+      // Cards ALWAYS open the full item page - no modals.
+      const id   = el.dataset.wishId   || (item && item.id);
+      const kind = el.dataset.wishType || (item && item.kind);
       if (id && kind) {
         location.href = `item.html?type=${encodeURIComponent(kind)}&id=${encodeURIComponent(id)}`;
         return;
       }
-      // Fallback to legacy modal handler if no id (shouldn't happen for content cards)
-      if (typeof handler === 'function') handler(item);
+      // No id? Fall back to a slug from the title so navigation still lands.
+      if (item && (item.title || item.name)) {
+        const slug = String(item.title || item.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
+        const inferredKind = kind || (item.duration ? 'film' : item.audio ? 'song' : item.author ? 'book' : item.starts_at ? 'event' : 'article');
+        location.href = `item.html?type=${encodeURIComponent(inferredKind)}&id=${encodeURIComponent(slug)}`;
+      }
     });
   }
 

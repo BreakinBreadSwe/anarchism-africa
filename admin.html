@@ -346,6 +346,23 @@
         </form>
       </div>
     </div>
+
+    <!-- Environment keys reference - which API keys to set, where to get them, current status -->
+    <div class="panel" style="margin-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+        <h3 style="margin:0">API keys & environment</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" id="env-refresh">Refresh status</button>
+          <a class="btn ghost" href="https://vercel.com/dashboard" target="_blank" rel="noopener">Open Vercel dashboard</a>
+        </div>
+      </div>
+      <p style="color:var(--fg-dim);font-size:.86rem;max-width:65ch;margin:0 0 12px">
+        These are every key the platform consumes. Paste them in <b>Vercel → Project → Settings → Environment Variables</b>
+        (one per row, scope <code>Production, Preview, Development</code>). After saving, redeploy. Each row below shows
+        whether the key is set on the live deployment, what it powers, and where to grab it. Values never leave the server.
+      </p>
+      <div id="env-table" class="mono" style="font-size:.78rem">Loading…</div>
+    </div>
   </section>
 
 </main>

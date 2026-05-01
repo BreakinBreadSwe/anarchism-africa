@@ -29,7 +29,29 @@ async function writeJSON (key, value) {
   return put(key, JSON.stringify(value), { access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
 }
 
-function topTheme (items) {
+// Curated afro-anarchist semantic seed - boosted in the trend frequency
+// table so subgenre coverage stays broad even when the news cycle drifts.
+const SEED_BOOST = [
+  // Anarchism / liberation theory
+  'anarchism','autonomy','mutual','commons','abolition','liberation','revolution',
+  'fanon','sankara','rodney','mbah','biko','cabral','garvey','nkrumah','lumumba',
+  // Africa / panafrican / decolonial
+  'africa','panafrican','decolonial','colonial','diaspora','blackness','futurism',
+  'sahel','swahili','yoruba','igbo','zulu','kongo','amazigh','tigray',
+  // Music subgenres - explicit high boost
+  'afropunk','afrofunk','afrobeat','afrobeats','highlife','soukous','juju',
+  'kwaito','amapiano','gqom','singeli','etiojazz','dub','reggae','calypso',
+  // Diaspora / portraits / culture
+  'portrait','diaspora','queer','feminism','panther','windrush','harlem',
+  'brixton','marseille','salvador','kingston','accra','lagos','nairobi',
+  // Visual / film / literature
+  'cinema','documentary','novel','poetry','collage','mural','graffiti',
+  // Movements
+  'rhodesmustfall','feesmustfall','endsars','blacklivesmatter','kemetic',
+  'rastafari','panther','zapatista'
+];
+
+function topTheme (items, recentDrafts) {
   const freq = {};
   for (const it of items || []) {
     const blob = `${it.title || ''} ${it.summary || ''} ${(it.tags || []).join(' ')}`.toLowerCase();
@@ -37,13 +59,23 @@ function topTheme (items) {
       if (STOPWORDS.has(w)) continue;
       freq[w] = (freq[w] || 0) + 1;
     }
+    // Tags carry editorial weight - count them double.
+    for (const t of it.tags || []) {
+      const k = String(t).toLowerCase();
+      if (k && !STOPWORDS.has(k)) freq[k] = (freq[k] || 0) + 2;
+    }
   }
+  // 2x boost for curated seed - keeps subgenre coverage alive
+  for (const k of SEED_BOOST) if (freq[k]) freq[k] *= 2.0;
+
+  // Penalize themes we already covered in the past 14 days so coverage rotates
+  const usedRecently = new Set(
+    (recentDrafts || []).filter(d => Date.now() - d.ts < 14 * 86400000).map(d => d.theme)
+  );
+  for (const k of usedRecently) if (freq[k]) freq[k] *= 0.25;
+
   const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-  // Bias toward afro-anarchist semantics by boosting these keywords if present
-  const seed = ['anarchism','africa','colonial','liberation','revolution','sankara','fanon','rodney','mbah','panther','autonomy','mutual','ecology','feminism','abolition','sound','dub','afrobeat','panafrican','diaspora','blackness','futurism','punk'];
-  for (const k of seed) if (freq[k]) freq[k] *= 1.5;
-  const re = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-  return re.length ? re[0][0] : null;
+  return sorted.length ? sorted[0][0] : null;
 }
 
 export default async function handler (req, res) {
@@ -57,11 +89,11 @@ export default async function handler (req, res) {
     const pending = (await readJSON(PENDING_KEY, { items: [] })).items || [];
     const articles = (await readJSON(ARTICLES_KEY, { items: [] })).items || [];
     const recentItems = [...pending, ...articles].slice(0, 80);
-    const theme = topTheme(recentItems);
+    const drafts = (await readJSON(DRAFTS_KEY, { items: [] })).items || [];
+    const theme = topTheme(recentItems, drafts);
     if (!theme) return res.status(200).json({ ok: true, skipped: 'no theme found' });
 
     // Skip if we already wrote about this theme in the past 7 days
-    const drafts = (await readJSON(DRAFTS_KEY, { items: [] })).items || [];
     const recentSame = drafts.find(d => (d.theme === theme) && (Date.now() - d.ts) < 7 * 86400000);
     if (recentSame) return res.status(200).json({ ok: true, skipped: 'theme covered recently', theme });
 

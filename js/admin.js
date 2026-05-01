@@ -50,6 +50,46 @@
       ['Amb. pending',  apps.length],
       ['Pledged €',     totalRaised.toFixed(0)]
     ].map(([k, v]) => `<div class="stat"><b>${v}</b><span>${k}</span></div>`).join('');
+
+    // Autopilot panel - kick the constant-content pipeline manually.
+    let auto = document.getElementById('autopilot-panel');
+    if (!auto) {
+      auto = document.createElement('div');
+      auto.id = 'autopilot-panel';
+      auto.className = 'panel';
+      auto.style.marginTop = '16px';
+      auto.innerHTML = `
+        <h3 style="margin:0 0 6px">Autopilot</h3>
+        <p style="color:var(--fg-dim);max-width:65ch;margin:0 0 10px;font-size:.86rem">
+          Scrape feeds, draft an article on the trending theme, top up the slogan
+          and mark queues. Idempotent - safe to re-run. Underlying handlers skip
+          recently-covered work. Cron also runs these stages daily (06/09/12/15 UTC).
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+          <button class="btn" data-auto="all">Run all stages</button>
+          <button class="btn ghost" data-auto="scrape">Scrape only</button>
+          <button class="btn ghost" data-auto="articles">Draft article</button>
+          <button class="btn ghost" data-auto="slogans">Top up slogans</button>
+          <button class="btn ghost" data-auto="logos">Top up marks</button>
+        </div>
+        <pre id="autopilot-out" class="mono" style="margin:0;padding:10px;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;font-size:.78rem;max-height:240px;overflow:auto;white-space:pre-wrap">Idle.</pre>`;
+      $('#view-dashboard')?.appendChild(auto);
+      auto.addEventListener('click', async e => {
+        const b = e.target.closest('button[data-auto]');
+        if (!b) return;
+        const stage = b.dataset.auto;
+        const out = document.getElementById('autopilot-out');
+        out.textContent = `Running ${stage}...`;
+        try {
+          const url = stage === 'all' ? '/api/autopilot/run' : `/api/autopilot/run?only=${stage}`;
+          const r = await fetch(url, { method: 'POST' });
+          const j = await r.json();
+          out.textContent = JSON.stringify(j, null, 2);
+        } catch (err) {
+          out.textContent = 'Error: ' + (err.message || err);
+        }
+      });
+    }
   }
 
   // ---- CONTENT -----------------------------------------------------------

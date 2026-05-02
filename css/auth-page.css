@@ -1,11 +1,14 @@
 /* ANARCHISM.AFRICA — Sign-in / Join page (full viewport between header & footer) */
 
+/* Sign-in / Join page sits BETWEEN the persistent chrome — header on top,
+   left rail on the desktop side, bottombar at the bottom. It must never
+   obscure them so the user can always navigate away. */
 .aa-auth-page {
   position: fixed;
-  top: 56px;             /* below the topbar */
+  top: 56px;             /* below the topbar (header)                    */
   left: 0; right: 0;
-  bottom: 0;
-  z-index: 70;
+  bottom: 60px;          /* above the bottombar (footer) on desktop too  */
+  z-index: 26;            /* BELOW rail (28), bottombar (35), topbar (30) */
   display: none;
   background: var(--bg);
   color: var(--fg);
@@ -14,13 +17,23 @@
 }
 .aa-auth-page.open { display: block; }
 
-/* Footer (bottombar) is shown — we leave room above it on mobile */
-@media (max-width: 1023px) {
-  .aa-auth-page { bottom: 64px; }   /* room for the bottombar */
+/* Desktop: leave room for the left rail (64px collapsed, 220px open). */
+@media (min-width: 769px) {
+  body.has-rail .aa-auth-page { left: 64px; transition: left .26s ease; }
+  body.has-rail.rail-open .aa-auth-page { left: 220px; }
 }
+
+/* Mobile: bottombar is 56px tall. */
+@media (max-width: 768px) {
+  .aa-auth-page { bottom: 56px; top: 56px; }
+}
+
 @media (prefers-reduced-motion: reduce) { .aa-auth-page { animation: none; } }
 @keyframes aap-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
+/* Body class: prevent BACKGROUND scroll behind the auth page, but DO NOT
+   apply overflow:hidden globally — that breaks scrolling inside the page
+   itself on touch devices. */
 body.aa-auth-open { overflow: hidden; }
 
 /* Close button — top-right, big and obvious */

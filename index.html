@@ -34,9 +34,6 @@
 <!-- TOP BAR — sticky, slides up on scroll-down, eases back on scroll-stop -->
 <header class="topbar topbar-sticky" id="topbar">
   <div class="topbar-bg" id="topbar-bg" aria-hidden="true"></div>
-  <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" title="Menu">
-    <span class="logo"></span>
-  </button>
   <div class="brand-wrap">
     <a class="brand" href="#home">
       <span class="logoword"><span class="word">ANARCHISM<span class="dot">.</span>AFRICA</span></span>
@@ -45,8 +42,12 @@
   </div>
 </header>
 
-<!-- LEFT RAIL (icons collapsed by default) -->
+<!-- LEFT RAIL (icons collapsed by default) — first cell IS the menu toggle -->
 <aside class="rail" id="rail" aria-label="Sections">
+  <button class="menu-toggle rail-menu-toggle" id="menu-toggle" type="button" aria-label="Toggle menu" title="Menu">
+    <span class="logo"></span>
+    <span class="label">Menu</span>
+  </button>
   <button class="rail-item rail-item--auth" data-rail-auth type="button" title="Sign in">
     <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span>
     <span class="label" data-auth-label>Sign in</span>
@@ -352,11 +353,12 @@
 <nav class="bottombar" id="bottombar" aria-label="Quick actions">
   <button data-bbar="menu" title="Menu" class="bottombar-logo" aria-label="Open menu"><span class="glyph logo-glyph"><span class="logo"></span></span><span>Menu</span></button>
   <button data-bbar="home" title="Home" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><span>Home</span></button>
-  <button data-bbar="library" title="Library" data-tab="articles"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span>Library</span></button>
-  <button data-bbar="search" title="Search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
-  <button data-bbar="chat" title="A.A.AI chat"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 5h16v11a2 2 0 01-2 2H8l-4 4z" class="fill"/></svg></span><span>Chat</span></button>
-  <button data-bbar="customize" title="Theme"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><span>Theme</span></button>
-  <button data-bbar="signin" title="Sign in / your profile" aria-label="Sign in or profile"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" class="fill"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span>You</span></button>
+  <button data-bbar="films" title="Films"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-7 9-7s6 2 9 7c-3 5-6 7-9 7s-6-2-9-7z"/><circle cx="12" cy="12" r="3" class="fill"/></svg></span><span>Films</span></button>
+  <button data-bbar="library" title="Library"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span>Library</span></button>
+  <button data-bbar="search" title="Search" aria-label="Search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-bbar="chat" title="A.A.AI chat" aria-label="Chat"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 5h16v11a2 2 0 01-2 2H8l-4 4z" class="fill"/></svg></span><span>Chat</span></button>
+  <button data-bbar="customize" title="Theme" aria-label="Theme"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18 6 6 0 000-12 3 3 0 010-6z" class="fill"/></svg></span><span>Theme</span></button>
+  <button data-bbar="signin" title="Sign in / your profile" aria-label="Sign in or profile"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span>You</span></button>
 </nav>
 
 <!-- GLOBAL SEARCH MODAL (public) -->

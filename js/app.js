@@ -19,10 +19,10 @@
     state.tab = name;
     $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
     $$('.rail-item').forEach(r => r.classList.toggle('active', r.dataset.tab === name));
-    // sync bottombar Home highlight only for tab=home (other actions remain unselected)
-    $$('.bottombar [data-bbar]').forEach(b => b.classList.toggle('active',
-      (b.dataset.bbar === 'home' && name === 'home') ||
-      (b.dataset.bbar === 'merch' && name === 'merch')));
+    // sync bottombar active highlight for tabs that map to a footer button
+    const tabToBbar = { home: 'home', films: 'films', articles: 'library', merch: 'merch' };
+    const wanted = tabToBbar[name] || null;
+    $$('.bottombar [data-bbar]').forEach(b => b.classList.toggle('active', wanted && b.dataset.bbar === wanted));
     $$('section.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + name));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     location.hash = name;
@@ -43,7 +43,10 @@
   $('#rail-backdrop')?.addEventListener('click', closeRail);
   rail?.addEventListener('click', e => {
     const r = e.target.closest('.rail-item');
-    if (r) { setTab(r.dataset.tab); renderTab(r.dataset.tab); }
+    // Only navigate if the rail item maps to a tab. Auth, logo lab, install,
+    // studio anchor and the menu-toggle have their own handlers — don't blow
+    // away the current view by calling setTab(undefined) on those.
+    if (r && r.dataset.tab) { setTab(r.dataset.tab); renderTab(r.dataset.tab); }
   });
   // bottombar
   $('#bottombar')?.addEventListener('click', e => {
@@ -54,6 +57,7 @@
     $$('#bottombar [data-bbar]').forEach(x => x.classList.toggle('active', x === b));
 
     if (k === 'home')     { setTab('home'); return; }
+    if (k === 'films')    { setTab('films'); renderTab('films'); return; }
     if (k === 'library')  { setTab('articles'); renderTab('articles'); return; }
     if (k === 'search')   { openSearch(); return; }
     if (k === 'merch')    { setTab('merch'); renderTab('merch'); return; }

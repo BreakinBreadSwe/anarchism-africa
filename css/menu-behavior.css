@@ -147,25 +147,16 @@ body.aa-mm-open { overflow: hidden; }
   text-align: center;
 }
 
-/* ====== Bottombar — square buttons on mobile ====================== */
+/* ====== Bottombar — square borderless buttons on mobile/tablet ====
+   No dividing lines between buttons. The row scrolls horizontally so all
+   eight buttons fit on any screen width while staying square (56×56). */
 @media (max-width: 1023px) {
-  .bottombar {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    padding: 0;
-  }
   .bottombar button {
     aspect-ratio: 1 / 1;
     max-height: 64px;
     border-radius: 0;
-    border-right: 1px solid var(--line);
+    border: 0;
     flex-direction: column; gap: 2px;
   }
-  .bottombar button:last-child { border-right: 0; }
   .bottombar button .glyph { width: 22px; height: 22px; }
-}
-@media (min-width: 600px) and (max-width: 1023px) {
-  /* tablet: still 4 per row but each fits more comfortably */
-  .bottombar { grid-template-columns: repeat(5, 1fr); }
 }

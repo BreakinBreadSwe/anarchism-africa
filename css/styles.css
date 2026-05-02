@@ -1733,28 +1733,41 @@ section.view { padding: 16px; }
   display: block;
 }
 
-/* The menu-toggle is the FIRST cell inside the rail — flush to top + left +
-   right of the rail column. The rail has no top padding and 6px horizontal
-   padding; the menu-toggle uses negative side margins to bleed to the edges. */
+/* The menu-toggle is the FIRST cell inside the rail — exactly the same
+   width as the rail column and the same height as the header. It IS the
+   top-left corner cell of the entire layout. !important wins over the
+   inherited .menu-toggle 44×44 round-pill defaults. */
 .rail .rail-menu-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   gap: 14px;
-  width: calc(100% + 12px);
-  margin: 0 -6px 8px -6px;
-  height: 56px;
-  padding: 0;
-  background: var(--bg-2);
-  border: 0;
-  border-bottom: 1px solid var(--line);
+  width: calc(100% + 12px) !important;
+  height: 56px !important;
+  margin: 0 -6px 8px -6px !important;
+  padding: 0 !important;
+  background: var(--bg-2) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--line) !important;
+  border-radius: 0 !important;
   color: var(--fg);
   cursor: pointer;
   font: inherit;
-  text-align: left;
   flex: 0 0 auto;
-  position: relative;                    /* ensure it claims its z-stack  */
+  position: relative;
   z-index: 1;
+  box-sizing: border-box;
+}
+/* The logo glyph fills the cell at a comfortable 40px square, regardless
+   of the .menu-toggle .logo width:100%/height:100% inheritance. */
+.rail .rail-menu-toggle .logo {
+  width: 40px !important;
+  height: 40px !important;
+  background: url('/icons/AAlogo1.svg') center / contain no-repeat !important;
+  border-radius: 0 !important;
+  display: block !important;
+  flex: 0 0 auto;
+  filter: none !important;               /* drop the legacy drop-shadow   */
 }
 .rail .rail-menu-toggle:hover { background: color-mix(in srgb, var(--bg-2) 60%, var(--accent) 18%); }
 .rail .rail-menu-toggle .logo {
@@ -2122,81 +2135,10 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
 }
 
 /* ============================================================
-   AA-TOOLTIP - lightweight CSS-only tooltip that surfaces a
-   button's data-aa-tooltip text on hover. Pairs with the JS
-   that copies title/aria-label into data-aa-tooltip so the
-   browser's native tooltip stays as a fallback for keyboards
-   while we render a styled bubble for mice/touch.
-   Especially useful when the rail menu is COLLAPSED to icons.
-   ============================================================ */
-[data-aa-tooltip] { position: relative; }
-[data-aa-tooltip]::after {
-  content: attr(data-aa-tooltip);
-  position: absolute;
-  white-space: nowrap;
-  background: var(--fg);
-  color: var(--bg);
-  padding: 5px 9px;
-  font: 600 .68rem 'JetBrains Mono', monospace;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  border: 1px solid var(--fg);
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(2px);
-  transition: opacity .15s ease, transform .15s ease;
-  z-index: 80;
-  box-shadow: 2px 2px 0 0 color-mix(in srgb, var(--fg) 25%, transparent);
-}
-[data-aa-tooltip]:hover::after,
-[data-aa-tooltip]:focus-visible::after {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Tooltip placement variants - default is bottom (under button) */
-[data-aa-tooltip]::after {
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, 6px);
-  margin-top: 6px;
-}
-[data-aa-tooltip]:hover::after,
-[data-aa-tooltip]:focus-visible::after {
-  transform: translate(-50%, 0);
-}
-
-/* Rail items use right-side tooltips so they don't get cut off
-   when the rail is collapsed at the left edge. */
-.rail [data-aa-tooltip]::after {
-  top: 50%;
-  left: 100%;
-  transform: translate(8px, -50%);
-  margin: 0 0 0 6px;
-}
-.rail [data-aa-tooltip]:hover::after,
-.rail [data-aa-tooltip]:focus-visible::after {
-  transform: translate(0, -50%);
-}
-/* Hide the tooltip on rail items when the rail is EXPANDED
-   (the label is already visible, no need for the bubble). */
-.rail.expanded [data-aa-tooltip]::after,
-body.rail-open .rail [data-aa-tooltip]::after { display: none; }
-
-/* Bottombar tooltips appear ABOVE the bar */
-.bottombar [data-aa-tooltip]::after {
-  top: auto;
-  bottom: 100%;
-  left: 50%;
-  transform: translate(-50%, -6px);
-  margin: 0 0 6px 0;
-}
-.bottombar [data-aa-tooltip]:hover::after {
-  transform: translate(-50%, 0);
-}
-
-/* Touch devices: hide tooltips because long-press on iOS triggers
-   the native one anyway and hover doesn't reliably exist. */
-@media (hover: none) {
-  [data-aa-tooltip]::after { display: none; }
-}
+   AA-TOOLTIP — rendering moved to a single floating element in
+   js/tooltips.js (#aa-tip, position:fixed, z-index:10000).
+   That avoids stacking-context traps where the topbar/rail/footer
+   covered tooltips that lived inside their own context. Auto-hides
+   after the read-time of the label. The CSS-only ::after fallback
+   is intentionally disabled to prevent double-rendering. */
+[data-aa-tooltip]::after { display: none !important; content: none !important; }

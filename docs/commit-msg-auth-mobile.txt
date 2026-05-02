@@ -1,0 +1,38 @@
+feat(auth/mobile): Google + email magic link + phone OTP; tight square swipable mobile bottombar
+
+AUTH (3 methods land on the same aa_session HMAC cookie):
+
+- api/auth/_session.js: shared signSession + setSessionCookie + randomToken
+  + randomDigits + timingSafeEqual so every provider mirrors google.js shape.
+- api/auth/email/start.js: POST email -> 32-byte token (15-min TTL) stored in
+  Vercel Blob -> magic link sent via Resend with branded HTML+text body.
+  60s per-email throttle. Generic responses so user enumeration leaks nothing.
+- api/auth/email/verify.js: GET ?token -> single-use, set aa_session cookie,
+  302 redirect to /?signed_in=email. Failure paths redirect to /?auth_error=...
+- api/auth/phone/start.js: POST phone (E.164) -> 6-digit OTP stored in Blob
+  (10-min TTL) -> Twilio SMS. Supports both From-number and MGxxxxx
+  Messaging Service SID. 60s throttle.
+- api/auth/phone/verify.js: POST phone+code -> session. Max 5 attempts per
+  OTP record; constant-time compare; expired/wrong responds generically.
+- js/auth.js: Sign-in sheet redesigned. Three labelled methods:
+    Google (existing GIS button)
+    Email - magic link (input + Send link, status line, throttled)
+    Phone - SMS code (input + Send code -> 6-digit field appears + Verify)
+  Each method shows live status, success/error coloring, and validation.
+- css/auth-page.css: styles for the new method blocks, divider, status line.
+- api/system/env-status.js: RESEND_API_KEY, RESEND_FROM_EMAIL,
+  TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_PHONE added to the
+  Auth group with sign-up + get-key links.
+
+MOBILE BOTTOMBAR:
+
+- Height drops 60->56px, padding zeroed so the logo is flush left.
+- Buttons are now SQUARE (56x56, aspect-ratio 1:1), no flex grow, hard
+  fixed widths so they actually fit on one row.
+- Row is horizontally scrollable (-webkit-overflow-scrolling:touch +
+  scroll-snap-type:x proximity), scrollbar hidden.
+- Logo button is sticky at left:0 inside the scroll viewport so it
+  stays pinned bottom-left while the rest of the row swipes; visual
+  separator (right border + soft shadow) makes the divide clear.
+- Subtle right-edge fade indicates there's more to swipe.
+- Body bottom padding adjusted to 56px to match the shorter row.

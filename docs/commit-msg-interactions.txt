@@ -1,0 +1,51 @@
+feat(ui): logo as rail corner cell + double-click lock + hover tooltips everywhere
+
+DESKTOP RAIL/HEADER BOUNDARY (>=769px):
+- Menu-toggle (logo) is now a proper rail CORNER CELL: position fixed,
+  64x56px, sits at top:0 left:0 with the rail's background color, blur,
+  right + bottom borders matching rail/topbar boundaries. Visually it is
+  the FIRST item of the side menu, not a chip floating over the header.
+- When the rail expands to 220px, the logo cell widens to 220px so it
+  remains the corner cell of the open menu (matching width transition).
+- Topbar now physically starts AFTER the rail column at every state -
+  margin-left:64 collapsed, 220 when rail-open, never extends under the
+  logo. Width: calc(100% - 64/220px) so it stays in bounds.
+- Rail body resumes at top:56 with no top padding (the menu-toggle is
+  its own fixed cell above it).
+
+DOUBLE-CLICK LOCK on the title font randomizer:
+- Single click on logo-shuffle (the (R) button next to the wordmark) now
+  schedules the shuffle action with a 220ms delay so a quick double-click
+  can suppress it.
+- Double-click toggles lock: if not locked, locks the currently-rendered
+  font (persists in localStorage); if already locked, unlocks and reverts
+  to the default Bebas Neue.
+- Visual ack: button briefly inverts colors and scales 1.18x for 350ms
+  on dblclick (.aa-lock-flash class).
+- Tooltip text reflects the affordance:
+  "Click: try a random font - Double-click: LOCK current font"
+  "Click: try another font - Double-click: UNLOCK (back to default)"
+
+HOVER TOOLTIPS (js/tooltips.js + CSS):
+- New tooltip layer surfaces a button's title/aria-label as a brutalist
+  bubble (offset shadow, mono caps) on hover. Replaces the slow native
+  ~2s title popup. Original title= is moved into data-aa-tooltip and
+  also kept as data-aa-title-backup so screen readers still see the
+  label via aria-label.
+- Placement variants:
+    rail items -> bubble on the right (so collapsed-rail icons get
+                  legible labels without horizontal clipping)
+    bottombar  -> bubble above the bar
+    others     -> bubble below
+- Auto-hides on rail items when the rail is EXPANDED (the visible label
+  is enough).
+- Auto-hides on touch devices (@media (hover:none)) - iOS long-press
+  shows the system tooltip instead.
+- MutationObserver re-scans for dynamically inserted controls (role-
+  switcher cards, install pill, etc.).
+- Title attributes auto-added to every rail-item and bottombar button
+  on all 8 role/index pages so the tooltips actually have something to
+  show when the rail is collapsed to icons.
+
+SW v5 -> v6:
+- /js/tooltips.js added to the shell pre-cache.

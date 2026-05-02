@@ -76,7 +76,15 @@
           <dl class="item-details">
             ${details.map(([k, v]) => `<div><dt>${escapeHTML(k)}</dt><dd>${escapeHTML(v)}</dd></div>`).join('')}
           </dl>` : ''}
+        ${renderHero(it)}
+        ${renderPullQuote(it, 0)}
         ${it.body ? `<div class="item-body">${formatBody(it.body)}</div>` : ''}
+        ${renderStats(it)}
+        ${renderEmbeds(it)}
+        ${renderGallery(it)}
+        ${renderPullQuote(it, 1)}
+        ${renderSources(it)}
+        ${renderVerify(it)}
         ${type === 'song' && it.audio ? `<audio controls style="width:100%;margin-top:16px" src="${escapeHTML(it.audio)}"></audio>` : ''}
         ${type === 'film' && it.embed ? `<video controls style="width:100%;border-radius:12px;margin-top:16px" src="${escapeHTML(it.embed)}"></video>` : ''}
         <div class="item-actions">
@@ -162,4 +170,91 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
   else load();
+
+
+  // ----- enriched article media renderers ---------------------------------
+  function renderHero (it) {
+    const h = it.hero_image;
+    if (!h) return '';
+    const url = h.url || h.src || '';
+    const q   = h.query || h.alt || '';
+    if (url) return `<figure class="item-rich-hero"><img src="${escapeHTML(url)}" alt="${escapeHTML(h.alt || '')}"/>${h.caption ? `<figcaption>${escapeHTML(h.caption)}</figcaption>` : ''}</figure>`;
+    if (q)   return `<div class="item-rich-hero placeholder mono"><span>HERO IMAGE</span><small>${escapeHTML(q)}</small></div>`;
+    return '';
+  }
+  function renderPullQuote (it, idx) {
+    const q = (it.pull_quotes || [])[idx];
+    if (!q) return '';
+    return `<blockquote class="item-pullquote">${escapeHTML(q)}</blockquote>`;
+  }
+  function renderStats (it) {
+    const stats = (it.stats || []).filter(s => s && (s.label || s.value));
+    if (!stats.length) return '';
+    const max = Math.max(1, ...stats.map(s => Number(String(s.value).replace(/[^\d.\-]/g, '')) || 0));
+    return `<section class="item-stats">
+      <h3 class="item-section-h">By the numbers</h3>
+      <div class="item-stats-grid">
+        ${stats.map(s => {
+          const num = Number(String(s.value).replace(/[^\d.\-]/g, '')) || 0;
+          const pct = max > 0 ? Math.round(num / max * 100) : 0;
+          return `<div class="item-stat">
+            <div class="item-stat-num">${escapeHTML(String(s.value))}<span>${escapeHTML(s.unit || '')}</span></div>
+            <div class="item-stat-label">${escapeHTML(s.label || '')}</div>
+            <div class="item-stat-bar"><i style="width:${pct}%"></i></div>
+            ${s.source ? `<div class="item-stat-src mono">${escapeHTML(s.source)}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+    </section>`;
+  }
+  function renderEmbeds (it) {
+    const embeds = (it.embeds || []).filter(e => e);
+    if (!embeds.length) return '';
+    return `<section class="item-embeds">
+      <h3 class="item-section-h">Watch &amp; listen</h3>
+      ${embeds.map(e => {
+        if (e.url && /youtube\.com|youtu\.be/.test(e.url)) {
+          const id = (e.url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/) || [])[1];
+          if (id) return `<div class="item-embed video"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+        }
+        if (e.url && /vimeo\.com/.test(e.url)) {
+          const id = (e.url.match(/vimeo\.com\/(\d+)/) || [])[1];
+          if (id) return `<div class="item-embed video"><iframe src="https://player.vimeo.com/video/${id}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
+        }
+        if (e.url) return `<div class="item-embed"><a href="${escapeHTML(e.url)}" target="_blank" rel="noopener" class="btn ghost">Open ${escapeHTML(e.platform || 'link')} ↗</a><span class="mono">${escapeHTML(e.why || '')}</span></div>`;
+        // suggestion-only (no URL yet)
+        return `<div class="item-embed placeholder mono"><b>${escapeHTML((e.kind || 'video').toUpperCase())}</b> · ${escapeHTML(e.platform || '')} · "${escapeHTML(e.search_query || '')}"<small>${escapeHTML(e.why || '')}</small></div>`;
+      }).join('')}
+    </section>`;
+  }
+  function renderGallery (it) {
+    const g = (it.gallery || []).filter(x => x);
+    if (!g.length) return '';
+    return `<section class="item-gallery">
+      <h3 class="item-section-h">Gallery</h3>
+      <div class="item-gallery-grid">
+        ${g.map(x => x.url
+          ? `<figure><img src="${escapeHTML(x.url)}" alt="${escapeHTML(x.alt || '')}"/>${x.caption ? `<figcaption>${escapeHTML(x.caption)}</figcaption>` : ''}</figure>`
+          : `<figure class="placeholder mono"><span>${escapeHTML(x.query || '')}</span><small>${escapeHTML(x.caption || x.alt || '')}</small></figure>`
+        ).join('')}
+      </div>
+    </section>`;
+  }
+  function renderSources (it) {
+    const src = (it.sources || []).filter(s => s && s.uri);
+    if (!src.length) return '';
+    return `<section class="item-sources">
+      <h3 class="item-section-h">Sources</h3>
+      <ol class="item-sources-list">
+        ${src.map(s => `<li><a href="${escapeHTML(s.uri)}" target="_blank" rel="noopener">${escapeHTML(s.title || s.uri)}</a></li>`).join('')}
+      </ol>
+    </section>`;
+  }
+  function renderVerify (it) {
+    const v = (it.verify || []).filter(Boolean);
+    if (!v.length) return '';
+    return `<aside class="item-verify"><h4>Editor: verify before publishing</h4><ul>${v.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></aside>`;
+  }
+
+
 })();

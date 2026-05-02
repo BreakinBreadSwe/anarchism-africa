@@ -134,8 +134,39 @@
           </div>
           <div class="aa-auth-form">
             <h2 class="aa-auth-form-title">Sign in</h2>
-            <p class="aa-auth-form-sub">One tap with Google. More options coming soon.</p>
-            <div id="aa-auth-google" class="aa-auth-google"></div>
+            <p class="aa-auth-form-sub">Pick the method you prefer. Each one drops you in as a consumer.</p>
+
+            <div class="aa-auth-method">
+              <div class="aa-auth-method-label mono">Google</div>
+              <div id="aa-auth-google" class="aa-auth-google"></div>
+            </div>
+
+            <div class="aa-auth-divider mono"><span>or</span></div>
+
+            <form class="aa-auth-method aa-auth-email" id="aa-auth-email-form" novalidate>
+              <div class="aa-auth-method-label mono">Email · magic link</div>
+              <div class="aa-auth-row">
+                <input type="email" id="aa-auth-email-input" placeholder="you@diaspora.world" autocomplete="email" required/>
+                <button type="submit" class="btn primary" id="aa-auth-email-btn">Send link</button>
+              </div>
+              <p class="aa-auth-status mono" id="aa-auth-email-status"></p>
+            </form>
+
+            <div class="aa-auth-divider mono"><span>or</span></div>
+
+            <form class="aa-auth-method aa-auth-phone" id="aa-auth-phone-form" novalidate>
+              <div class="aa-auth-method-label mono">Phone · SMS code</div>
+              <div class="aa-auth-row">
+                <input type="tel" id="aa-auth-phone-input" placeholder="+33 6 12 34 56 78" autocomplete="tel" required/>
+                <button type="submit" class="btn primary" id="aa-auth-phone-btn">Send code</button>
+              </div>
+              <div class="aa-auth-row" id="aa-auth-phone-code-row" style="display:none;margin-top:8px">
+                <input type="text" id="aa-auth-phone-code" inputmode="numeric" maxlength="6" placeholder="6-digit code"/>
+                <button type="button" class="btn primary" id="aa-auth-phone-verify-btn">Verify</button>
+              </div>
+              <p class="aa-auth-status mono" id="aa-auth-phone-status"></p>
+            </form>
+
             <p class="aa-auth-fineprint mono">
               By signing in you agree to be a participant, not a customer. We don't sell data, don't run ads, don't pretend.
               See <a href="#about">about</a> for the boring details.
@@ -154,6 +185,97 @@
     page.classList.add('open');
     document.body.classList.add('aa-auth-open');
     mountSignInButton(page.querySelector('#aa-auth-google'));
+    wireEmailForm(page);
+    wirePhoneForm(page);
+  }
+
+  function wireEmailForm (page) {
+    const form   = page.querySelector('#aa-auth-email-form');
+    const input  = page.querySelector('#aa-auth-email-input');
+    const btn    = page.querySelector('#aa-auth-email-btn');
+    const status = page.querySelector('#aa-auth-email-status');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = input.value.trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = 'Please enter a valid email.'; status.style.color = 'var(--red)'; return;
+      }
+      btn.disabled = true; status.style.color = 'var(--muted)'; status.textContent = 'Sending magic link...';
+      try {
+        const r = await fetch('/api/auth/email/start', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await r.json();
+        if (!r.ok) { status.textContent = 'Error: ' + (data.error || r.status); status.style.color = 'var(--red)'; }
+        else       { status.textContent = 'Check your inbox. Link is good for 15 minutes.'; status.style.color = 'var(--green)'; }
+      } catch (err) {
+        status.textContent = 'Network error: ' + err.message; status.style.color = 'var(--red)';
+      } finally { btn.disabled = false; }
+    });
+  }
+
+  function wirePhoneForm (page) {
+    const form   = page.querySelector('#aa-auth-phone-form');
+    const input  = page.querySelector('#aa-auth-phone-input');
+    const btn    = page.querySelector('#aa-auth-phone-btn');
+    const codeRow= page.querySelector('#aa-auth-phone-code-row');
+    const codeIn = page.querySelector('#aa-auth-phone-code');
+    const verify = page.querySelector('#aa-auth-phone-verify-btn');
+    const status = page.querySelector('#aa-auth-phone-status');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const phone = input.value.trim().replace(/[^\d+]/g, '');
+      if (!/^\+[1-9]\d{6,14}$/.test(phone)) {
+        status.textContent = 'Please use international format, e.g. +33612345678.';
+        status.style.color = 'var(--red)'; return;
+      }
+      btn.disabled = true; status.style.color = 'var(--muted)'; status.textContent = 'Sending SMS code...';
+      try {
+        const r = await fetch('/api/auth/phone/start', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone })
+        });
+        const data = await r.json();
+        if (!r.ok) { status.textContent = 'Error: ' + (data.error || r.status); status.style.color = 'var(--red)'; }
+        else {
+          status.textContent = 'Code sent. Enter the 6-digit code below.'; status.style.color = 'var(--green)';
+          codeRow.style.display = ''; codeIn.focus();
+        }
+      } catch (err) {
+        status.textContent = 'Network error: ' + err.message; status.style.color = 'var(--red)';
+      } finally { btn.disabled = false; }
+    });
+
+    verify.addEventListener('click', async () => {
+      const phone = input.value.trim().replace(/[^\d+]/g, '');
+      const code  = codeIn.value.trim();
+      if (!/^\d{6}$/.test(code)) {
+        status.textContent = 'Code must be 6 digits.'; status.style.color = 'var(--red)'; return;
+      }
+      verify.disabled = true; status.style.color = 'var(--muted)'; status.textContent = 'Verifying...';
+      try {
+        const r = await fetch('/api/auth/phone/verify', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, code })
+        });
+        const data = await r.json();
+        if (!r.ok) {
+          status.textContent = 'Error: ' + (data.error || r.status) + (typeof data.remaining === 'number' ? ` (${data.remaining} attempts left)` : '');
+          status.style.color = 'var(--red)';
+        } else {
+          writeUser(data.user); status.textContent = 'Signed in.'; status.style.color = 'var(--green)';
+          setTimeout(closeSheet, 600);
+        }
+      } catch (err) {
+        status.textContent = 'Network error: ' + err.message; status.style.color = 'var(--red)';
+      } finally { verify.disabled = false; }
+    });
   }
   function closeSheet () {
     document.getElementById('aa-auth-page')?.classList.remove('open');

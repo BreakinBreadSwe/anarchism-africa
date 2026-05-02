@@ -3,16 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ANARCHIST · ANARCHISM.AFRICA/anarchist</title>
+  <title>Anarchist (consumer) · ANARCHISM.AFRICA</title>
   <meta property="og:title" content="ANARCHISM.AFRICA" />
   <meta property="og:description" content="An afrofuturist 360° on afro-anarchism — Africa <meta name="theme-color" diaspora." />
-  <meta property="og:image" content="/icons/icon-512.svg" />
+  <meta property="og:image" content="/icons/AAlogo1.svg" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="/icons/icon-512.svg" />
+  <meta name="twitter:image" content="/icons/AAlogo1.svg" />
   <meta name="theme-color" content="#000000" />
   <link rel="manifest" href="/manifest.anarchist.webmanifest" />
-  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="alternate icon" type="image/x-icon" href="/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicon-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -36,16 +40,16 @@
 
 <aside class="rail" id="rail">
   <button class="rail-item active" data-view="me"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span class="label">My space</span></button>
-  <button class="rail-item" data-view="apply"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Become ambassador</span></button>
-  <button class="rail-item" data-view="post"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/></svg></span><span class="label">Post to community</span></button>
-  <button class="rail-item" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span class="label">A.A.AI</span></button>
+  <button class="rail-item" title="Become ambassador" data-view="apply"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Become ambassador</span></button>
+  <button class="rail-item" title="Post to community" data-view="post"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/></svg></span><span class="label">Post to community</span></button>
+  <button class="rail-item" title="A.A.AI" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span class="label">A.A.AI</span></button>
 </aside>
 <div class="rail-backdrop" id="rail-backdrop"></div>
 
 <main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
   <div class="panel">
-    <h2 style="margin:0 0 8px">Anarchist · Your space</h2>
-    <p style="color:var(--fg-dim);max-width:65ch">Your follows, your pledges, your applications. Sign up as ambassador, post in community, customise your view. Open archive.</p>
+    <h2 style="margin:0 0 8px">Anarchist · Consumer space</h2>
+    <p style="color:var(--fg-dim);max-width:65ch">This is the default access level for every signed-in user. Your follows, your pledges, your applications, your saved items. Sign up to become an ambassador, post in community, customise your view. No PIN - sign in with Google and you're here.</p>
   </div>
   <div id="role-views" style="display:flex;flex-direction:column;gap:14px;margin-top:14px"></div>
 </main>
@@ -53,9 +57,9 @@
 <nav class="bottombar" id="bottombar">
   <button data-view="me" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span>Me</span></button>
   <button data-view="post"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg></span><span>Post</span></button>
-  <button data-bbar="search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-bbar="search" title="Search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
   <button data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span>A.A.AI</span></button>
-  <button data-bbar="public"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
+  <button data-bbar="public" title="Site"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
 </nav>
 
 <footer class="footer">
@@ -105,5 +109,7 @@
   });
   if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 </script>
+<script src="js/tooltips.js" defer></script>
+<script src="js/pwa-install.js" defer></script>
 </body>
 </html>

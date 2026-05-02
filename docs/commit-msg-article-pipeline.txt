@@ -1,0 +1,35 @@
+feat(articles): full structured article pipeline + NotebookLM-grounded research
+
+- Anarchist (consumer): role-switcher card now reads "Anarchist (consumer)" with
+  "Default access for any signed-in user" subtitle. anarchist.html landing copy
+  + page title clarified: this is the default consumer access level, no PIN.
+  pin-gate.js comment updated.
+
+- api/ai/article.js: two new pipeline steps + grounded research path.
+  * "media"   - asks the model for hero_image, gallery, embeds, pull_quotes,
+                stats[{label,value,unit,source}], related_topics.
+  * "compose" - end-to-end server-side run (outline -> grounded research per
+                section -> draft -> polish -> headline -> media). Returns the
+                full article record ready to persist + render.
+  * stepResearch grounded:true path - calls Gemini grounded generation
+    (gemini-1.5-flash with googleSearch tool) using NOTEBOOKLM_API_KEY or
+    GEMINI_API_KEY. Returns notes + sources[] with real URLs from grounding
+    metadata. Falls back to ungrounded prompt if grounded path fails.
+
+- api/cron/generate-articles.js: daily cron now calls a single "compose" with
+  grounded:true so each scheduled draft arrives with text + media + stats +
+  sources (instead of 4 sequential calls returning text only).
+
+- api/system/env-status.js: NOTEBOOKLM_API_KEY added to the LLM group; admin
+  AI tab shows status + signup link to https://notebooklm.google.com.
+
+- js/item-page.js: enriched article schema rendered on item.html.
+  hero image (real or placeholder), pull-quotes (interleaved), stat cards
+  with bar visualisation, video embeds (YouTube/Vimeo iframes when URL),
+  gallery grid, sources list (clickable when grounded), editor verify
+  callout. css/styles.css: matching styles for every new block.
+
+- js/article-lab.js: "Compose end-to-end" primary CTA + grounded toggle in
+  Brief panel. One click runs the whole pipeline server-side and lands you
+  on the polish step with hero/gallery/embeds/stats already attached.
+  Old step-by-step buttons remain as the secondary path.

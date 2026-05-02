@@ -1,0 +1,45 @@
+feat(favicon): tight-cropped (zero padding) AAlogo1 favicons across the board
+
+Goal: make the favicon as LARGE AS POSSIBLE inside its frame - no whitespace.
+
+icons/favicon.svg
+- Copy of AAlogo1.svg with the viewBox shrunk from "0 0 1850 1881" down
+  to "0 18 1836 1848". The 14-unit right gutter and 33-unit vertical
+  whitespace (mostly at the top) that lived in AAlogo1's frame are now
+  cropped out, so the Africa silhouette + glyph fill the whole canvas
+  edge to edge.
+- The +1px outline strokes from the previous AAlogo1 update carry over.
+
+icons/favicon-{16,32,48,64,96,128,180,192,256,512}.png
+- Rendered from the tight-cropped SVG at every common system size:
+    16  - browser tab + Windows taskbar
+    32  - high-DPI tab + bookmark bar
+    48  - Windows Site Tile fallback
+    64  - desktop high-DPI
+    96  - Android Chrome
+    128 - Chrome Web Store
+    180 - apple-touch-icon (iPad/iPhone)
+    192 - Android home screen (PWA "any" purpose)
+    256 - Windows tile
+    512 - high-density Android + PWA splash
+- All come from the SAME source SVG so they stay visually consistent
+  at any zoom level.
+
+icons/favicon.ico
+- Multi-resolution .ico bundling 16+32+48 PNGs for legacy browsers
+  (Edge bookmarks, IE-era tooling, RSS readers).
+
+HTML link tags (9 pages: index/admin/publisher/editor/journalist/market/
+partner/anarchist/item):
+  <link rel="icon"            type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="alternate icon"  type="image/x-icon"  href="/icons/favicon.ico">
+  <link rel="icon"            type="image/png"     sizes="32x32" href="/icons/favicon-32.png">
+  <link rel="icon"            type="image/png"     sizes="16x16" href="/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180"     href="/icons/favicon-180.png">
+
+Modern browsers pick the SVG (sharp at any zoom). Safari uses the
+180px PNG. Older browsers fall back to the .ico. The 32+16 PNG hints
+keep Chrome/Firefox out of the hot loop of decoding the SVG for the tab.
+
+Service worker: bumped v6 -> v7. Pre-caches favicon.svg, favicon.ico,
+and the 16/32/48/180/192/512 PNGs so favicons stay crisp offline.

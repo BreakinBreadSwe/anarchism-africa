@@ -20,7 +20,7 @@
     { id: 'journalist', label: 'Journalist', who: 'Bureau',          href: 'journalist.html', icon: '✑' },
     { id: 'market',     label: 'Market',     who: 'Merch',           href: 'market.html',     icon: '◇' },
     { id: 'partner',    label: 'Partner',    who: 'Collaborators',   href: 'partner.html',    icon: '⊕' },
-    { id: 'anarchist',  label: 'Anarchist',  who: 'My space',        href: 'anarchist.html',  icon: 'Ⓐ' }
+    { id: 'anarchist',  label: 'Anarchist (consumer)',  who: 'Default access for any signed-in user', href: 'anarchist.html',  icon: 'Ⓐ' }
   ];
 
   // Mirrors pin-gate.js defaults; allows runtime override via window.AA_PIN_DEFAULTS.

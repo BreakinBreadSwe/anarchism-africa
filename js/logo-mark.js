@@ -1,11 +1,9 @@
 /* ANARCHISM.AFRICA — logo source resolver + corner randomizer + drag-drop upload
  *
  * Source priority (first reachable wins):
- *   1. localStorage['aa.user.logo']   — user-uploaded data URL (admin/publisher drop-zone)
- *   2. /icons/AAlogo1.svg             — the curated brand logo
- *   3. /icons/AA-logo1.png            — PNG variant
- *   4. /icons/aa-logo.png             — alternate filename
- *   5. /icons/icon-192.svg            — generic fallback
+ *   1. localStorage['aa.user.logo']   - user-uploaded data URL (admin/publisher drop-zone)
+ *   2. /icons/AAlogo1.svg             - the curated brand logo (canonical)
+ *   3. /icons/AA-logo1.png            - PNG variant fallback
  *
  * Logo-corner click → cycles through small-format display modes:
  *   default | pattern (small SVG) | gif (when AA_CONFIG.giphy_api_key present)
@@ -26,9 +24,7 @@
   const SOURCES = [
     'localStorage:aa.user.logo',
     '/icons/AAlogo1.svg',
-    '/icons/AA-logo1.png',
-    '/icons/aa-logo.png',
-    '/icons/icon-192.svg'
+    '/icons/AA-logo1.png'
   ];
   const LOGO_MODE_KEY = 'aa.logo.mode';        // { mode, locked }
 

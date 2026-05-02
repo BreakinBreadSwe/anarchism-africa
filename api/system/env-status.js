@@ -13,6 +13,7 @@ const VARS = [
   { key: 'ANTHROPIC_API_KEY',   group: 'LLM',           label: 'Claude (anthropic)',                doc: 'https://console.anthropic.com/settings/keys',     signup: 'https://console.anthropic.com' },
   { key: 'OPENAI_API_KEY',      group: 'LLM',           label: 'OpenAI / ChatGPT',                  doc: 'https://platform.openai.com/api-keys',            signup: 'https://platform.openai.com/signup' },
   { key: 'GEMINI_API_KEY',      group: 'LLM',           label: 'Google Gemini (text + image)',      doc: 'https://aistudio.google.com/apikey',              signup: 'https://aistudio.google.com' },
+  { key: 'NOTEBOOKLM_API_KEY',  group: 'LLM',           label: 'NotebookLM / Gemini grounded research (article compose)', doc: 'https://aistudio.google.com/apikey', signup: 'https://notebooklm.google.com' },
   { key: 'DEEPSEEK_API_KEY',    group: 'LLM',           label: 'DeepSeek',                          doc: 'https://platform.deepseek.com/api_keys',          signup: 'https://platform.deepseek.com' },
   { key: 'GLM_API_KEY',         group: 'LLM',           label: 'Zhipu GLM',                         doc: 'https://open.bigmodel.cn',                        signup: 'https://open.bigmodel.cn' },
   { key: 'KIMI_API_KEY',        group: 'LLM',           label: 'Moonshot Kimi',                     doc: 'https://platform.moonshot.cn/console/api-keys',    signup: 'https://platform.moonshot.cn' },
@@ -21,6 +22,13 @@ const VARS = [
 
   // ----- Image / Media generation -----
   { key: 'GIPHY_API_KEY',       group: 'Media',         label: 'Giphy (header GIF mode)',           doc: 'https://developers.giphy.com/dashboard/',         signup: 'https://giphy.com/join' },
+
+  // ----- Email + SMS auth -----
+  { key: 'RESEND_API_KEY',      group: 'Auth',          label: 'Resend (email magic link sender)', doc: 'https://resend.com/api-keys',                     signup: 'https://resend.com/signup' },
+  { key: 'RESEND_FROM_EMAIL',   group: 'Auth',          label: 'Resend From address (e.g. ANARCHISM.AFRICA <auth@anarchism.africa>)', doc: 'https://resend.com/domains', signup: '' },
+  { key: 'TWILIO_ACCOUNT_SID',  group: 'Auth',          label: 'Twilio account SID (SMS OTP)',     doc: 'https://console.twilio.com',                     signup: 'https://www.twilio.com/try-twilio' },
+  { key: 'TWILIO_AUTH_TOKEN',   group: 'Auth',          label: 'Twilio auth token',                doc: 'https://console.twilio.com',                     signup: '' },
+  { key: 'TWILIO_FROM_PHONE',   group: 'Auth',          label: 'Twilio From phone (E.164) or Messaging Service SID (MG...)', doc: 'https://console.twilio.com/us1/develop/sms/manage/phone-numbers', signup: '' },
 
   // ----- Print on demand -----
   { key: 'PRINTIFY_API_TOKEN',  group: 'POD',           label: 'Printify token (merch fulfilment)', doc: 'https://printify.com/app/account/api',            signup: 'https://printify.com/app/register' },

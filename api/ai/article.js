@@ -5,15 +5,30 @@
 //
 // Steps (each returns the next stage; client orchestrates):
 //   - "outline"   { topic, angle?, length?, audience? }
-//                  → { outline: { title, hook, sections: [{heading, beats:[]}] } }
-//   - "research"  { topic, sectionHeading, beats }
-//                  → { notes: string, sources: [{title, hint}] }      // factual notes; user verifies
+//                  -> { outline: { title, hook, sections: [{heading, beats:[]}] } }
+//   - "research"  { topic, sectionHeading, beats, grounded? }
+//                  -> { notes: string, sources: [{title, hint}] }      // factual notes; user verifies
+//                     If grounded:true and NOTEBOOKLM_API_KEY (Google AI Studio
+//                     grounded model) is set, runs through the grounded model
+//                     and returns sources[] from web grounding.
 //   - "draft"     { outline, notes? }
-//                  → { draft: string }                                  // full article, markdown
+//                  -> { draft: string }                                 // full article, markdown
 //   - "polish"    { draft, voice? }
-//                  → { polished: string }                               // tone/voice tightened
+//                  -> { polished: string }                              // tone/voice tightened
 //   - "headline"  { draft }
-//                  → { titles: [string], deck: string, blurb: string }
+//                  -> { titles: [string], deck: string, blurb: string }
+//   - "media"     { topic, draft, sections? }
+//                  -> { hero_image, gallery:[], embeds:[], pull_quotes:[],
+//                       stats:[{label,value,unit,source}], related_topics:[] }
+//                     Suggests visual + multimedia assets to enrich the article
+//                     when rendered on item.html.
+//   - "compose"   { topic, angle?, length?, audience?, voice?, grounded? }
+//                  -> { article: { id, title, deck, blurb, body (markdown),
+//                                  hero_image, gallery, embeds, pull_quotes,
+//                                  stats, sources, verify, ts } }
+//                     End-to-end: runs outline -> research (per section) -> draft
+//                     -> polish -> headline -> media in one server-side call.
+//                     Output is the complete article record ready to persist.
 //
 // All steps proxy to /api/ai/chat (which defaults to OpenRouter free models).
 // Editorial responsibility stays with the publisher — every output is a draft,
@@ -64,6 +79,8 @@ export default async function handler_article (req, res) {
       case 'draft':     return res.status(200).json(await stepDraft(payload, provider, model));
       case 'polish':    return res.status(200).json(await stepPolish(payload, provider, model));
       case 'headline':  return res.status(200).json(await stepHeadline(payload, provider, model));
+      case 'media':     return res.status(200).json(await stepMedia(payload, provider, model));
+      case 'compose':   return res.status(200).json(await stepCompose(payload, provider, model));
       default:          return res.status(400).json({ error: 'unknown step: ' + step });
     }
   } catch (e) {
@@ -100,7 +117,17 @@ Return ONLY valid JSON, no prose around it.`;
 }
 
 async function stepResearch (p, provider, model) {
-  const { topic, sectionHeading, beats = [] } = p;
+  const { topic, sectionHeading, beats = [], grounded = false } = p;
+
+  // Grounded path: use Google AI Studio's grounded generation (Gemini with
+  // Google Search grounding) when NOTEBOOKLM_API_KEY (or GEMINI_API_KEY) is set.
+  // Returns notes + sources[] with real URLs scraped from grounding metadata.
+  if (grounded) {
+    const grounded_out = await runGrounded(topic, sectionHeading, beats);
+    if (grounded_out) return grounded_out;
+    // fall through to ungrounded if grounded path failed
+  }
+
   const prompt = `
 For the article on "${topic}", produce research notes for the section titled "${sectionHeading}".
 Beats to cover: ${JSON.stringify(beats)}
@@ -115,9 +142,41 @@ SOURCES TO CHECK
 - short list of likely-authoritative sources (book titles + year, archive names, journal names, official documents). Don't invent URLs. The editor will verify and locate them.
 
 UNCERTAIN
-- anything you're guessing at — flag explicitly so the editor doesn't accidentally publish it as fact.`;
+- anything you're guessing at - flag explicitly so the editor doesn't accidentally publish it as fact.`;
   const notes = await callChat({ messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: prompt }], provider, model });
-  return { notes };
+  return { notes, sources: [], grounded: false };
+}
+
+// Google AI Studio grounded generation - same key as NotebookLM personal use.
+// Returns { notes, sources:[{title,uri}], grounded:true } on success, null on failure.
+async function runGrounded (topic, sectionHeading, beats) {
+  const key = process.env.NOTEBOOKLM_API_KEY || process.env.GEMINI_API_KEY;
+  if (!key) return null;
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+    const body = {
+      contents: [{ role: 'user', parts: [{ text:
+        `Research notes for the section "${sectionHeading}" of an article on "${topic}".\n` +
+        `Beats: ${JSON.stringify(beats)}\n\n` +
+        `Use grounded web search. Produce 6-12 fact-shaped bullets. Attribute names, dates, places. Flag anything uncertain. Plain text, no markdown.` }]}],
+      tools: [{ googleSearch: {} }],
+      generationConfig: { temperature: 0.4, maxOutputTokens: 1200 }
+    };
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (!r.ok) return null;
+    const data = await r.json();
+    const cand = data?.candidates?.[0];
+    const notes = cand?.content?.parts?.map(p => p.text).filter(Boolean).join('\n').trim() || '';
+    const grounding = cand?.groundingMetadata || cand?.citationMetadata || {};
+    const chunks = grounding.groundingChunks || grounding.citations || [];
+    const sources = chunks.map(c => ({
+      title: c.web?.title || c.title || '',
+      uri:   c.web?.uri   || c.uri   || ''
+    })).filter(s => s.uri);
+    return { notes, sources, grounded: true };
+  } catch (e) {
+    return null;
+  }
 }
 
 async function stepDraft (p, provider, model) {
@@ -170,4 +229,100 @@ ${draft}`;
   const parsed = tryJSON(text);
   if (!parsed) return { titles: [], deck: '', blurb: '', raw: text };
   return parsed;
+}
+
+// ----- stepMedia -----------------------------------------------------------
+// Suggests visual + multimedia enrichment for the article. Outputs schema
+// the item.html renderer expects: hero_image, gallery, embeds, pull_quotes,
+// stats, related_topics. AI-generated suggestions only - the editor confirms.
+async function stepMedia (p, provider, model) {
+  const { topic, draft, sections = [] } = p;
+  const prompt = `
+For an article on "${topic}", suggest multimedia enrichment a publisher could add.
+Use only what would genuinely strengthen the piece - don't pad.
+
+Return JSON:
+{
+  "hero_image": { "query": "specific image search query for an Unsplash/Wikimedia hero", "alt": "..." },
+  "gallery":    [ { "query": "...", "alt": "...", "caption": "..." } ],   // 0-4 items
+  "embeds":     [ { "kind": "video|audio", "platform": "youtube|vimeo|bandcamp|soundcloud", "search_query": "...", "why": "..." } ],   // 0-3 items
+  "pull_quotes": [ "short, sharp line lifted from the draft" ],   // 1-3
+  "stats":      [ { "label": "...", "value": "...", "unit": "...", "source": "name + year, no URL invention" } ],   // 0-6
+  "related_topics": [ "..." ]   // 3-6 short tags for cross-linking
+}
+
+ARTICLE DRAFT:
+${(draft || '').slice(0, 6000)}
+
+Return ONLY valid JSON.`;
+  const text = await callChat({ messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: prompt }], provider, model });
+  const parsed = tryJSON(text);
+  if (!parsed) return { hero_image: null, gallery: [], embeds: [], pull_quotes: [], stats: [], related_topics: [], raw: text };
+  return parsed;
+}
+
+// ----- stepCompose ---------------------------------------------------------
+// End-to-end article composer. Runs every stage server-side and returns the
+// complete article record ready for the publisher to review and persist.
+async function stepCompose (p, provider, model) {
+  const { topic, angle = '', length = 1500, audience = 'general afro-anarchist reader', voice = VOICE, grounded = true } = p;
+  const ts = Date.now();
+
+  // 1. Outline
+  const { outline } = await stepOutline({ topic, angle, length, audience }, provider, model);
+  if (!outline) return { article: null, error: 'outline failed' };
+
+  // 2. Research per section (grounded if NOTEBOOKLM_API_KEY/GEMINI_API_KEY set)
+  const allNotes = [];
+  const allSources = [];
+  for (const sec of (outline.sections || []).slice(0, 6)) {
+    try {
+      const { notes, sources = [] } = await stepResearch(
+        { topic, sectionHeading: sec.heading, beats: sec.beats || [], grounded },
+        provider, model
+      );
+      if (notes) allNotes.push(`## ${sec.heading}\n${notes}`);
+      for (const src of sources) if (src.uri && !allSources.find(x => x.uri === src.uri)) allSources.push(src);
+    } catch {}
+  }
+  const notes = allNotes.join('\n\n');
+
+  // 3. Draft
+  const { draft } = await stepDraft({ outline, notes }, provider, model);
+
+  // 4. Polish
+  const { polished } = await stepPolish({ draft, voice }, provider, model);
+  const body = polished || draft || '';
+
+  // 5. Headlines
+  const head = await stepHeadline({ draft: body }, provider, model);
+
+  // 6. Media suggestions
+  const media = await stepMedia({ topic, draft: body, sections: outline.sections }, provider, model);
+
+  const id = (head?.titles?.[0] || outline.title || topic)
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) + '-' + ts;
+
+  const article = {
+    id,
+    kind: 'article',
+    title: head?.titles?.[0] || outline.title || topic,
+    title_alts: head?.titles || [],
+    deck: head?.deck || outline.hook || '',
+    blurb: head?.blurb || '',
+    body,                                  // markdown
+    hero_image: media?.hero_image || null,
+    gallery:    media?.gallery    || [],
+    embeds:     media?.embeds     || [],
+    pull_quotes: media?.pull_quotes || [],
+    stats:      media?.stats      || [],
+    related_topics: media?.related_topics || [],
+    sources:    allSources,                // grounded URLs when available
+    verify:     outline?.verify_before_publishing || [],
+    grounded:   !!allSources.length,
+    topic, angle, audience,
+    ts,
+    status: 'draft'
+  };
+  return { article };
 }

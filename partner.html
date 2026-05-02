@@ -6,13 +6,17 @@
   <title>PARTNER · ANARCHISM.AFRICA/partner</title>
   <meta property="og:title" content="ANARCHISM.AFRICA" />
   <meta property="og:description" content="An afrofuturist 360° on afro-anarchism — Africa <meta name="theme-color" diaspora." />
-  <meta property="og:image" content="/icons/icon-512.svg" />
+  <meta property="og:image" content="/icons/AAlogo1.svg" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="/icons/icon-512.svg" />
+  <meta name="twitter:image" content="/icons/AAlogo1.svg" />
   <meta name="theme-color" content="#000000" />
   <link rel="manifest" href="/manifest.partner.webmanifest" />
-  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="alternate icon" type="image/x-icon" href="/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicon-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -36,9 +40,9 @@
 
 <aside class="rail" id="rail">
   <button class="rail-item active" data-view="projects"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></span><span class="label">My projects</span></button>
-  <button class="rail-item" data-view="services"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 010 .8l2 1.6-2 3.4-2.4-1"/></svg></span><span class="label">Offerings</span></button>
-  <button class="rail-item" data-view="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/></svg></span><span class="label">Shared grants</span></button>
-  <button class="rail-item" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span class="label">A.A.AI</span></button>
+  <button class="rail-item" title="Offerings" data-view="services"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 010 .8l2 1.6-2 3.4-2.4-1"/></svg></span><span class="label">Offerings</span></button>
+  <button class="rail-item" title="Shared grants" data-view="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/></svg></span><span class="label">Shared grants</span></button>
+  <button class="rail-item" title="A.A.AI" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span class="label">A.A.AI</span></button>
 </aside>
 <div class="rail-backdrop" id="rail-backdrop"></div>
 
@@ -53,9 +57,9 @@
 <nav class="bottombar" id="bottombar">
   <button data-view="projects" class="active"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></span><span>Projects</span></button>
   <button data-view="services"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></span><span>Offer</span></button>
-  <button data-bbar="search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-bbar="search" title="Search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
   <button data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span><span>A.A.AI</span></button>
-  <button data-bbar="public"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
+  <button data-bbar="public" title="Site"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span><span>Site</span></button>
 </nav>
 
 <footer class="footer">
@@ -100,5 +104,7 @@
   });
   if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 </script>
+<script src="js/tooltips.js" defer></script>
+<script src="js/pwa-install.js" defer></script>
 </body>
 </html>

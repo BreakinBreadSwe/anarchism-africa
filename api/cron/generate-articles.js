@@ -97,63 +97,45 @@ export default async function handler (req, res) {
     const recentSame = drafts.find(d => (d.theme === theme) && (Date.now() - d.ts) < 7 * 86400000);
     if (recentSame) return res.status(200).json({ ok: true, skipped: 'theme covered recently', theme });
 
-    // Step 1: outline
-    const briefRes = await fetch(`${origin}/api/ai/article`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ step: 'outline', payload: { topic: theme, length: 1200, audience: 'general afro-anarchist reader' } })
+    // Single compose call - end-to-end article (outline -> grounded research
+    // -> draft -> polish -> headlines -> media). Returns the full structured
+    // article record ready to render on item.html with text + images + embeds
+    // + pull-quotes + stats + sources.
+    const composeRes = await fetch(`${origin}/api/ai/article`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        step: 'compose',
+        payload: {
+          topic: theme,
+          length: 1500,
+          audience: 'general afro-anarchist reader',
+          grounded: true        // uses NOTEBOOKLM_API_KEY / GEMINI_API_KEY when set
+        }
+      })
     });
-    const briefData = await briefRes.json();
-    if (!briefRes.ok || !briefData.outline) {
-      return res.status(200).json({ ok: false, theme, step: 'outline', error: briefData.error || 'no outline' });
+    const composeData = await composeRes.json();
+    if (!composeRes.ok || !composeData.article) {
+      return res.status(200).json({ ok: false, theme, step: 'compose', error: composeData.error || 'compose failed' });
     }
-    const outline = briefData.outline;
+    const article = composeData.article;
+    article.theme = theme;
+    article.author = 'AA · auto-draft';
+    article.status = 'pending_editor_review';
 
-    // Step 2: notes for each section
-    const notesBySection = {};
-    for (const sec of (outline.sections || []).slice(0, 4)) {
-      const r = await fetch(`${origin}/api/ai/article`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 'research', payload: { topic: theme, sectionHeading: sec.heading, beats: sec.beats || [] } })
-      });
-      const d = await r.json();
-      notesBySection[sec.heading] = d.notes || '';
-    }
-    const notes = Object.entries(notesBySection).map(([k, v]) => `## ${k}\n${v}`).join('\n\n');
-
-    // Step 3: draft
-    const draftRes = await fetch(`${origin}/api/ai/article`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ step: 'draft', payload: { outline, notes } })
-    });
-    const draftData = await draftRes.json();
-    const draft = draftData.draft || '';
-
-    // Step 4: polish + headlines (parallel)
-    const [polishedRes, headlineRes] = await Promise.all([
-      fetch(`${origin}/api/ai/article`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ step: 'polish', payload: { draft } }) }),
-      fetch(`${origin}/api/ai/article`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ step: 'headline', payload: { draft } }) })
-    ]);
-    const polished = (await polishedRes.json()).polished || draft;
-    const headlines = await headlineRes.json();
-
-    const articleId = 'autoart_' + Date.now().toString(36);
-    const entry = {
-      id: articleId,
-      ts: Date.now(),
-      theme,
-      title: headlines?.titles?.[0] || outline.title || theme,
-      deck: headlines?.deck || '',
-      blurb: headlines?.blurb || outline.hook || '',
-      body: polished,
-      outline,
-      headlines,
-      author: 'AA · auto-draft',
-      status: 'pending_editor_review'
-    };
-    drafts.unshift(entry);
+    drafts.unshift(article);
     await writeJSON(DRAFTS_KEY, { items: drafts.slice(0, 200), updated: Date.now() });
 
-    return res.status(200).json({ ok: true, theme, articleId, status: 'queued for editor review' });
+    return res.status(200).json({
+      ok: true,
+      theme,
+      articleId: article.id,
+      title: article.title,
+      grounded: article.grounded,
+      sources: (article.sources || []).length,
+      sections: (article.body || '').split(/^##\s/m).length - 1,
+      status: 'queued for editor review'
+    });
   } catch (e) {
     return res.status(500).json({ ok: false, error: String(e.message || e) });
   }

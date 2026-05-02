@@ -1,7 +1,7 @@
 {
-  "name": "STUDIO · LUVLAB · ANARCHISM.AFRICA",
+  "name": "STUDIO \u00b7 LUVLAB \u00b7 ANARCHISM.AFRICA",
   "short_name": "Studio",
-  "description": "Backend CMS for ANARCHISM.AFRICA — content, marketplace, ambassadors, mailing, AI.",
+  "description": "Backend CMS for ANARCHISM.AFRICA \u2014 content, marketplace, ambassadors, mailing, AI.",
   "start_url": "/admin.html",
   "scope": "/admin.html",
   "display": "standalone",
@@ -9,15 +9,98 @@
   "background_color": "#000000",
   "theme_color": "#000000",
   "lang": "en",
-  "categories": ["productivity", "business"],
+  "categories": [
+    "productivity",
+    "business"
+  ],
   "icons": [
-    { "src": "/icons/icon-admin-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable" },
-    { "src": "/icons/icon-admin-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+    {
+      "src": "/icons/AAlogo1.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/aa-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/aa-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/aa-logo-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/aa-logo-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Content",     "short_name": "Content",   "url": "/admin.html#content",     "icons": [{ "src": "/icons/icon-admin-192.svg", "sizes": "192x192" }] },
-    { "name": "Marketplace", "short_name": "Shop",      "url": "/admin.html#merch",       "icons": [{ "src": "/icons/icon-admin-192.svg", "sizes": "192x192" }] },
-    { "name": "Mailing",     "short_name": "Mailing",   "url": "/admin.html#mailing",     "icons": [{ "src": "/icons/icon-admin-192.svg", "sizes": "192x192" }] },
-    { "name": "Grants",      "short_name": "Grants",    "url": "/admin.html#grants",      "icons": [{ "src": "/icons/icon-admin-192.svg", "sizes": "192x192" }] }
-  ]
+    {
+      "name": "Content",
+      "short_name": "Content",
+      "url": "/admin.html#content",
+      "icons": [
+        {
+          "src": "/icons/aa-logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Marketplace",
+      "short_name": "Shop",
+      "url": "/admin.html#merch",
+      "icons": [
+        {
+          "src": "/icons/aa-logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Mailing",
+      "short_name": "Mailing",
+      "url": "/admin.html#mailing",
+      "icons": [
+        {
+          "src": "/icons/aa-logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Grants",
+      "short_name": "Grants",
+      "url": "/admin.html#grants",
+      "icons": [
+        {
+          "src": "/icons/aa-logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "id": "/admin.html",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "dir": "ltr"
 }

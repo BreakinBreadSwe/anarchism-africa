@@ -12,7 +12,7 @@
  */
 (function () {
   const role = document.body.dataset.role || (location.pathname.includes('admin') ? 'admin' : null);
-  if (!role || role === 'anarchist') return; // anarchist page is open
+  if (!role || role === 'anarchist') return; // anarchist = consumer access level (any signed-in user); no PIN gate
 
   const DEFAULTS = window.AA_PIN_DEFAULTS || {
     admin:      '1791',  // Haitian Revolution

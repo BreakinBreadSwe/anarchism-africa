@@ -69,11 +69,21 @@
                 style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/>
             </label>
           </div>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:4px;font-size:.86rem;color:var(--fg-dim)">
+            <input type="checkbox" id="al-grounded" checked/>
+            Ground research in real web sources via NotebookLM / Gemini
+            <span class="mono" style="font-size:.65rem;color:var(--muted);margin-left:auto">requires NOTEBOOKLM_API_KEY or GEMINI_API_KEY</span>
+          </label>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-            <button class="btn primary" id="al-generate-outline">Generate outline →</button>
+            <button class="btn primary" id="al-compose">Compose end-to-end →</button>
+            <button class="btn ghost"   id="al-generate-outline">Step-by-step (outline only)</button>
             <button class="btn ghost"   id="al-load-draft">Load saved draft</button>
             <span class="mono" id="al-status" style="font-size:.75rem;color:var(--muted);align-self:center"></span>
           </div>
+          <p style="color:var(--muted);font-size:.78rem;margin:8px 0 0;line-height:1.5">
+            <b>Compose</b> runs the whole pipeline server-side: outline -> grounded research -> draft -> polish -> headlines -> media + stats suggestions.
+            You get back a structured article ready to render with hero, gallery, embeds, pull-quotes and stat cards on its full-page view.
+          </p>
         </div>
       </div>
 
@@ -148,6 +158,7 @@
       showStep(t.dataset.step);
     });
     $('#al-generate-outline').addEventListener('click', genOutline);
+    $('#al-compose').addEventListener('click', composeEndToEnd);
     $('#al-regen-outline').addEventListener('click',    genOutline);
     $('#al-go-research').addEventListener('click',      goResearch);
     $('#al-go-draft').addEventListener('click',         genDraft);
@@ -204,6 +215,43 @@
       else          { state.outline = outline; renderOutline(); status('Outline ready', 'ok'); }
       writeJSON(KEY_LAST, state);
       showStep('outline');
+    } catch (e) { status('Error: ' + e.message, 'error'); }
+  }
+
+  async function composeEndToEnd () {
+    state.topic    = $('#al-topic').value.trim();
+    state.angle    = $('#al-angle').value.trim();
+    state.length   = parseInt($('#al-length').value, 10) || 1500;
+    state.audience = $('#al-audience').value.trim();
+    const grounded = !!$('#al-grounded')?.checked;
+    if (!state.topic) { status('Topic is required', 'error'); return; }
+    if (!state.id) state.id = uid();
+    status('Composing end-to-end (this can take 20-60s)...');
+    try {
+      const r = await fetch('/api/ai/article', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 'compose', payload: {
+          topic: state.topic, angle: state.angle, length: state.length, audience: state.audience, grounded
+        }})
+      });
+      const data = await r.json();
+      if (!r.ok || !data.article) { status('Compose failed: ' + (data.error || 'no article'), 'error'); return; }
+      const a = data.article;
+      // Map compose output into Article Lab state
+      state.outline   = { title: a.title, hook: a.deck, sections: [], verify_before_publishing: a.verify || [] };
+      state.notes     = (a.sources || []).map(s => `- ${s.title || s.uri}\n  ${s.uri}`).join('\n');
+      state.draft     = a.body;
+      state.polished  = a.body;
+      state.headlines = { titles: a.title_alts || [a.title], deck: a.deck, blurb: a.blurb };
+      state.media     = { hero_image: a.hero_image, gallery: a.gallery, embeds: a.embeds, pull_quotes: a.pull_quotes, stats: a.stats, related_topics: a.related_topics };
+      writeJSON(KEY_LAST, state);
+      renderOutline();
+      $('#al-research-host').textContent = state.notes || '';
+      $('#al-draft').value     = state.draft;
+      $('#al-polished').value  = state.polished;
+      renderHeadlines();
+      status(`Composed: ${(a.body||'').length} chars, ${(a.sources||[]).length} sources, ${(a.stats||[]).length} stats. ${a.grounded ? 'Grounded.' : 'Ungrounded.'}`, 'ok');
+      showStep('polish');
     } catch (e) { status('Error: ' + e.message, 'error'); }
   }
 

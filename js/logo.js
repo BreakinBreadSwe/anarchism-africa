@@ -162,7 +162,9 @@
     const lockBtn = ensureLockButton();
     if (shuffleBtn) {
       shuffleBtn.textContent = '⟳';
-      shuffleBtn.title = locked ? 'Try another (lock stays in effect until you unlock)' : 'Try a random font';
+      shuffleBtn.title = locked
+        ? 'Click: try another font - Double-click: UNLOCK (back to default)'
+        : 'Click: try a random font - Double-click: LOCK current font';
       shuffleBtn.setAttribute('aria-label', 'Random font');
     }
     if (lockBtn) {
@@ -196,8 +198,29 @@
       applyDefault(host, false);
     }
 
-    // Wire EVERY .logo-shuffle (topbar + hero etc) so the button fires no matter where it lives
-    document.querySelectorAll('.logo-shuffle').forEach(b => b.addEventListener('click', () => shuffle(host)));
+    // Wire EVERY .logo-shuffle (topbar + hero etc):
+    //   single click -> shuffle (cycle to a random font)
+    //   double-click -> lock the CURRENTLY shown font (or unlock if already locked)
+    // We delay the single-click action by 220ms so a double-click suppresses it,
+    // matching the user's expectation that the second click "captures" the style.
+    document.querySelectorAll('.logo-shuffle').forEach(b => {
+      let pendingTimer = null;
+      b.addEventListener('click', () => {
+        if (pendingTimer) return;
+        pendingTimer = setTimeout(() => { pendingTimer = null; shuffle(host); }, 220);
+      });
+      b.addEventListener('dblclick', e => {
+        e.preventDefault();
+        if (pendingTimer) { clearTimeout(pendingTimer); pendingTimer = null; }
+        if (locked) unlock(host); else lock(host);
+        // little flash on the button to acknowledge the lock toggle
+        b.classList.add('aa-lock-flash');
+        setTimeout(() => b.classList.remove('aa-lock-flash'), 350);
+      });
+      b.title = locked
+        ? 'Click to try another font - double-click to UNLOCK and return to default'
+        : 'Click to try a random font - double-click to LOCK the current one';
+    });
     // Lock button — auto-injected next to the FIRST .logo-shuffle that doesn't already have a sibling lock
     ensureLockButton()?.addEventListener('click', () => locked ? unlock(host) : lock(host));
     // Also wire any explicit .logo-lock siblings created in hero markup

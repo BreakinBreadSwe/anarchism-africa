@@ -144,17 +144,11 @@
 
   // ---- UI ------------------------------------------------------------------
   function ensureLockButton () {
-    const shuffle = document.querySelector('.logo-shuffle');
-    if (!shuffle) return null;
-    let lockBtn = document.querySelector('.logo-lock');
-    if (!lockBtn) {
-      lockBtn = document.createElement('button');
-      lockBtn.className = 'logo-lock';
-      lockBtn.type = 'button';
-      lockBtn.setAttribute('aria-label', 'Lock current font');
-      shuffle.insertAdjacentElement('afterend', lockBtn);
-    }
-    return lockBtn;
+    // Retired - the lock action is now triggered by DOUBLE-CLICKING the
+    // .logo-shuffle button (handled in init()). Strip any pre-existing
+    // .logo-lock so only the (R) shuffle pill sits next to the wordmark.
+    document.querySelectorAll('.logo-lock').forEach(b => b.remove());
+    return null;
   }
 
   function updateUI () {

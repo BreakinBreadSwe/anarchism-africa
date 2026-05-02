@@ -49,16 +49,24 @@
   $('#bottombar')?.addEventListener('click', e => {
     const b = e.target.closest('[data-bbar]'); if (!b) return;
     const k = b.dataset.bbar;
-    if (k === 'home')      { setTab('home'); }
-    if (k === 'search')    { openSearch(); }
-    if (k === 'merch')     { setTab('merch'); renderTab('merch'); }
-    if (k === 'chat')      { window.AA_CHAT?.open(); }
+    // Mark the current button active so the visual state matches what the
+    // user just tapped (other handlers may set their own active state too).
+    $$('#bottombar [data-bbar]').forEach(x => x.classList.toggle('active', x === b));
+
+    if (k === 'home')     { setTab('home'); return; }
+    if (k === 'library')  { setTab('articles'); renderTab('articles'); return; }
+    if (k === 'search')   { openSearch(); return; }
+    if (k === 'merch')    { setTab('merch'); renderTab('merch'); return; }
+    if (k === 'chat')     { (window.AA_CHAT?.open || window.AA?.chat?.open || (() => alert('A.A.AI chat is loading...')))(); return; }
     if (k === 'customize') {
       const sheet = $('#customize-sheet');
-      if (sheet) { sheet.classList.add('open'); buildCustomize(); }
+      if (sheet) { sheet.classList.add('open'); buildCustomize(); return; }
+      // Fallback: theme toggle if the customize sheet isn't on this page
+      if (window.AA?.theme?.cycle) window.AA.theme.cycle();
+      return;
     }
-    if (k === 'signin')    {
-      // Bottombar "You" icon — opens the Sign-in sheet, or offers sign-out if already signed in
+    if (k === 'signin')   {
+      // Bottombar "You" icon - open Sign-in sheet, or offer sign-out if signed in
       if (window.AA?.auth) {
         if (window.AA.auth.signedIn && window.AA.auth.signedIn()) {
           if (confirm('Sign out?')) window.AA.auth.signOut();
@@ -68,7 +76,9 @@
       } else {
         toggleRoleStrip();   // legacy fallback
       }
+      return;
     }
+    // 'menu' is handled by js/menu-behavior.js (capture phase) - no-op here
   });
   document.addEventListener('click', e => {
     const j = e.target.closest('[data-jump]');

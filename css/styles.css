@@ -1965,7 +1965,8 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
   }
   .bottombar::-webkit-scrollbar { display: none; }
 
-  /* Every button: SQUARE, fixed width = row height, no flex grow */
+  /* Every button: SQUARE, fixed width = row height, no flex grow,
+     no dividers between buttons (only the logo cell has a separator). */
   .bottombar button {
     flex: 0 0 auto;
     width: 56px; height: 56px;
@@ -1975,10 +1976,9 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
     gap: 2px;
     font-size: .58rem;
     letter-spacing: .08em;
-    border-right: 1px solid var(--line);
+    border: 0;
     scroll-snap-align: start;
   }
-  .bottombar button:last-child { border-right: 0; }
 
   /* The label text gets clipped to one tight line */
   .bottombar button > span:not(.glyph) {
@@ -2012,18 +2012,6 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
   body.has-rail { padding-bottom: 56px; }
   .chat-fab { bottom: 70px; }
 
-  /* Subtle right-edge fade hint that more is scrollable */
-  .bottombar::after {
-    content: '';
-    position: sticky;
-    right: 0;
-    width: 24px;
-    height: 100%;
-    margin-left: -24px;
-    background: linear-gradient(to right, transparent, var(--bg) 70%);
-    pointer-events: none;
-    flex: 0 0 auto;
-  }
 }
 
 /* ============================================================

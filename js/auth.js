@@ -110,18 +110,7 @@
         <div class="aa-auth-grid">
           <div class="aa-auth-pitch">
             <div class="aa-auth-mark">
-              <svg viewBox="0 0 192 192" width="64" height="64" aria-hidden="true">
-                <rect width="192" height="192" rx="20" fill="#000"/>
-                <path d="M 78 28 Q 100 22 124 28 Q 146 36 156 54 Q 162 70 158 84 Q 154 96 144 104 Q 142 116 138 130 Q 134 144 126 154 Q 116 162 106 158 Q 98 150 92 138 Q 84 122 76 108 Q 66 92 58 78 Q 52 64 56 50 Q 64 34 78 28 Z" fill="none" stroke="#fff" stroke-width="3"/>
-                <ellipse cx="160" cy="118" rx="4.5" ry="11" fill="none" stroke="#fff" stroke-width="2"/>
-                <clipPath id="aa-auth-africa"><path d="M 78 28 Q 100 22 124 28 Q 146 36 156 54 Q 162 70 158 84 Q 154 96 144 104 Q 142 116 138 130 Q 134 144 126 154 Q 116 162 106 158 Q 98 150 92 138 Q 84 122 76 108 Q 66 92 58 78 Q 52 64 56 50 Q 64 34 78 28 Z"/></clipPath>
-                <g clip-path="url(#aa-auth-africa)">
-                  <polygon points="62,160 96,30 110,30 84,160" fill="#fff"/>
-                  <polygon points="98,30 112,30 142,160 128,160" fill="#fff"/>
-                  <rect x="40" y="100" width="120" height="14" fill="#fff"/>
-                  <polygon points="92,100 116,100 110,114 96,114" fill="#000"/>
-                </g>
-              </svg>
+              <img src="/icons/favicon.svg" alt="ANARCHISM.AFRICA" width="96" height="96" decoding="async" />
             </div>
             <h1 id="aa-auth-title">Join the platform.</h1>
             <p class="aa-auth-lede">An afrofuturist 360&deg; on afro-anarchism. Sign up to save what catches you, follow ambassadors, submit events, order merch, shape what ships next.</p>

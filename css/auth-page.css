@@ -57,6 +57,17 @@ body.aa-auth-open { overflow: hidden; }
 /* Left pitch column — big punk type */
 .aa-auth-pitch { min-width: 0; }
 .aa-auth-mark { margin-bottom: 18px; }
+.aa-auth-mark img {
+  width: 96px; height: 96px;
+  display: block;
+  /* The SVG is filled black; on the dark auth background we invert so the
+     silhouette reads as white. On light theme we leave it untouched. */
+  filter: invert(1);
+}
+[data-theme="light"] .aa-auth-mark img { filter: none; }
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] .aa-auth-mark img { filter: none; }
+}
 .aa-auth-pitch h1 {
   margin: 0;
   font-family: 'Bebas Neue', 'Anton', 'Impact', sans-serif;

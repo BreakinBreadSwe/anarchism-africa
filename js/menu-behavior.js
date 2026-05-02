@@ -155,11 +155,12 @@
     document.body.classList.remove('aa-mm-open');
   }
 
-  // The menu-toggle button (logo in topbar AND first bottombar button) opens the menu.
-  // On desktop it still toggles the desktop rail expand/collapse — that behavior already
-  // exists in app.js; we ADD the mobile-menu open path on top.
-  function isMobile () { return window.innerWidth < 1024; }
-  document.querySelectorAll('#menu-toggle, [data-bbar="menu"]').forEach(b => {
+  // The bottombar logo button opens the mobile menu. The desktop topbar
+  // #menu-toggle button toggles the side rail (handled in app.js). We only
+  // intercept on REAL mobile (<= 768px - the breakpoint where the rail goes
+  // away). At >= 769px the rail is the menu, so let app.js handle the click.
+  function isMobile () { return window.innerWidth <= 768; }
+  document.querySelectorAll('[data-bbar="menu"]').forEach(b => {
     b.addEventListener('click', e => {
       if (isMobile()) {
         e.preventDefault();

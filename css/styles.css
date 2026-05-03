@@ -278,21 +278,24 @@ body.has-rail .tabs { display: none; }
 body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
 @media (min-width: 769px) { .rail-backdrop { display: none; } }
 
-/* MENU TOGGLE BUTTON (top-left) ------------------------------------------ */
-.menu-toggle {
+/* MENU TOGGLE BUTTON ------------------------------------------------------
+   Base styles ONLY apply OUTSIDE the rail (e.g. drag-drop logo upload spots
+   in admin tools). Inside the rail the .rail .rail-menu-toggle rule below
+   takes over the whole appearance — it's the actual top-left corner cell. */
+.menu-toggle:not(.rail-menu-toggle) {
   display: inline-flex; align-items: center; justify-content: center;
   width: 44px; height: 44px; border-radius: 50%;
   background: transparent; border: 0; cursor: pointer;
   padding: 0; margin: 0;
   position: relative;
 }
-.menu-toggle .logo {
+.menu-toggle:not(.rail-menu-toggle) .logo {
   width: 100%; height: 100%;
   pointer-events: none;
   background: url('/icons/AAlogo1.svg') center / contain no-repeat;
   border-radius: 8px;
   display: block;
-  filter: drop-shadow(0 0 1px var(--fg)) drop-shadow(0 0 0.5px var(--fg));   /* 1px effective outline boost on top of SVG stroke */
+  filter: drop-shadow(0 0 1px var(--fg)) drop-shadow(0 0 0.5px var(--fg));
 }
 
 /* FIXED BOTTOM BAR -------------------------------------------------------- */
@@ -1769,13 +1772,7 @@ section.view { padding: 16px; }
   flex: 0 0 auto;
   filter: none !important;               /* drop the legacy drop-shadow   */
 }
-.rail .rail-menu-toggle:hover { background: color-mix(in srgb, var(--bg-2) 60%, var(--accent) 18%); }
-.rail .rail-menu-toggle .logo {
-  display: block;
-  width: 36px; height: 36px;
-  background: url('/icons/AAlogo1.svg') center / contain no-repeat;
-  flex: 0 0 auto;
-}
+.rail .rail-menu-toggle:hover { background: color-mix(in srgb, var(--bg-2) 60%, var(--accent) 18%) !important; }
 .rail .rail-menu-toggle .label {
   font: 800 .78rem 'JetBrains Mono', monospace;
   letter-spacing: .14em;

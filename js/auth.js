@@ -156,6 +156,15 @@
               <p class="aa-auth-status mono" id="aa-auth-phone-status"></p>
             </form>
 
+            <div class="aa-auth-divider mono"><span>or</span></div>
+
+            <button type="button" class="btn primary aa-auth-guest" id="aa-auth-guest" style="width:100%;justify-content:center">
+              Continue as guest
+            </button>
+            <p class="aa-auth-status mono" style="opacity:.6;margin-top:6px">
+              No password, no email — just browse. Saves favourites locally to this device. Sign in later to sync across devices.
+            </p>
+
             <p class="aa-auth-fineprint mono">
               By signing in you agree to be a participant, not a customer. We don't sell data, don't run ads, don't pretend.
               See <a href="#about">about</a> for the boring details.
@@ -164,6 +173,19 @@
         </div>`;
       document.body.appendChild(page);
       page.querySelector('#aa-auth-close').addEventListener('click', closeSheet);
+      page.querySelector('#aa-auth-guest').addEventListener('click', () => {
+        // Local-only consumer session — no backend round-trip required.
+        const guest = {
+          method: 'guest',
+          role:   'anarchist',
+          name:   'Visitor',
+          email:  '',
+          id:     'guest-' + Math.random().toString(36).slice(2, 10),
+          ts:     Date.now()
+        };
+        writeUser(guest);
+        closeSheet();
+      });
       // Esc closes
       document.addEventListener('keydown', function onEsc (e) {
         if (e.key === 'Escape' && page.classList.contains('open')) {

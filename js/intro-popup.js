@@ -50,20 +50,7 @@
       <div class="panel" style="max-width:560px;width:calc(100% - 32px)">
         <div class="panel-body" style="padding:34px 30px">
           <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
-            <span class="aa-intro-mark">
-              <svg viewBox="0 0 192 192" width="56" height="56" aria-hidden="true">
-                <rect width="192" height="192" rx="24" fill="#000"/>
-                <path d="M 78 28 Q 100 22 124 28 Q 146 36 156 54 Q 162 70 158 84 Q 154 96 144 104 Q 142 116 138 130 Q 134 144 126 154 Q 116 162 106 158 Q 98 150 92 138 Q 84 122 76 108 Q 66 92 58 78 Q 52 64 56 50 Q 64 34 78 28 Z" fill="none" stroke="#fff" stroke-width="3"/>
-                <ellipse cx="160" cy="118" rx="4.5" ry="11" fill="none" stroke="#fff" stroke-width="2"/>
-                <clipPath id="aa-intro-africa"><path d="M 78 28 Q 100 22 124 28 Q 146 36 156 54 Q 162 70 158 84 Q 154 96 144 104 Q 142 116 138 130 Q 134 144 126 154 Q 116 162 106 158 Q 98 150 92 138 Q 84 122 76 108 Q 66 92 58 78 Q 52 64 56 50 Q 64 34 78 28 Z"/></clipPath>
-                <g clip-path="url(#aa-intro-africa)">
-                  <polygon points="62,160 96,30 110,30 84,160" fill="#fff"/>
-                  <polygon points="98,30 112,30 142,160 128,160" fill="#fff"/>
-                  <rect x="40" y="100" width="120" height="14" fill="#fff"/>
-                  <polygon points="92,100 116,100 110,114 96,114" fill="#000"/>
-                </g>
-              </svg>
-            </span>
+            <span class="aa-intro-mark" style="display:inline-block;width:64px;height:64px;background:#000 url('/icons/AAlogo1.svg') center / 70% no-repeat;flex:0 0 auto" aria-hidden="true"></span>
             <div>
               <h2 id="aa-intro-title" style="margin:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;font-size:1.6rem;line-height:1">ANARCHISM<span style="opacity:.5">.</span>AFRICA</h2>
               <p class="mono" style="margin:4px 0 0;font-size:.7rem;color:var(--muted);letter-spacing:.14em">BETA &middot; IN PROGRESS</p>

@@ -231,9 +231,7 @@
       <h2>${a.title}</h2>
       <p class="meta" style="color:var(--muted)">${a.author||''}${a.year?' · '+a.year:''}${a.reading_time?' · '+a.reading_time+' min':''}${a.category?' · '+a.category:''}</p>
       ${a.deck ? `<p style="font-size:1.05rem;color:var(--fg-dim)">${a.deck}</p>` : ''}
-      <div style="line-height:1.7;max-width:70ch">${(a.body || a.summary || '').replace(/
-
-/g, '</p><p>').replace(/^/, '<p>') + '</p>'}</div>
+      <div style="line-height:1.7;max-width:70ch">${(a.body || a.summary || '').replace(/\n\n/g, '</p><p>').replace(/^/, '<p>') + '</p>'}</div>
       <div class="row-flex" style="margin-top:18px">
         ${a.external_url ? `<a class="btn primary" href="${a.external_url}" target="_blank" rel="noopener">Open source ↗</a>` : ''}
         <button class="btn ghost" onclick="window.AA.wishlist?.add({id:'${id}', title:${JSON.stringify(a.title||'')}, image:'${a.image||''}'},'article')">♥ Save</button>
@@ -260,9 +258,7 @@
       <h2>${b.title}</h2>
       <p class="meta" style="color:var(--muted)">${b.author||''} · ${b.publisher||''}${b.pages?' · '+b.pages+'p':''}${b.year?' · '+b.year:''}</p>
       <p>${b.summary || ''}</p>
-      ${b.body ? `<div style="margin-top:14px;line-height:1.7;max-width:70ch">${b.body.replace(/
-
-/g, '</p><p>').replace(/^/, '<p>') + '</p>'}</div>` : ''}
+      ${b.body ? `<div style="margin-top:14px;line-height:1.7;max-width:70ch">${b.body.replace(/\n\n/g, '</p><p>').replace(/^/, '<p>') + '</p>'}</div>` : ''}
       <div class="row-flex" style="margin-top:14px">
         ${b.external_url ? `<a class="btn primary" href="${b.external_url}" target="_blank" rel="noopener">Read at publisher ↗</a>` : `<button class="btn primary" onclick="window.AA_LIVE.read('${id}', this)">Read full text</button>`}
         <button class="btn ghost" onclick="window.AA.wishlist?.add({id:'${id}', title:${JSON.stringify(b.title||'')}, image:'${b.image||''}'},'book')">♥ Save</button>

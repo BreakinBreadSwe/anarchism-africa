@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="css/header-modes.css" />
   <link rel="stylesheet" href="css/auth-page.css" />
   <link rel="stylesheet" href="css/logo-generator.css" />
+  <link rel="stylesheet" href="css/admin-checklist.css" />
   <link rel="stylesheet" href="css/admin-editor.css" />
 </head>
 <body class="admin has-rail" data-role="publisher">
@@ -54,6 +55,9 @@
 <div class="rail-backdrop" id="rail-backdrop"></div>
 
 <main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
+  <!-- Pipeline checklist — same data as LUVLAB but framed for the publisher -->
+  <div id="aa-checklist-mount" data-role="COOLHUNTPARIS"></div>
+
   <div class="panel">
     <h2 style="margin:0 0 8px">Publisher · COOLHUNTPARIS</h2>
     <p style="color:var(--fg-dim);max-width:65ch">Run the magazine, library, expo and giftshop. Scout grants, approve ambassadors, push the newsletter. A.A.AI helps you find funds and shape briefs.</p>
@@ -96,6 +100,7 @@
 <script src="js/article-lab.js"></script>
 <script src="js/content-queue.js"></script>
 <script src="js/role-switcher.js"></script>
+<script src="js/admin-checklist.js"></script>
 <script>
   RoleShared.boot({
     role: 'publisher',

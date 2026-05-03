@@ -88,15 +88,24 @@ export default async function handler (req, res) {
       summary.scanned += items.length;
       for (const it of items) {
         const payload = {
-          kind:         src.kind,
-          title:        it.title,
-          summary:      cleanText(it.summary).slice(0, 600),
-          url:          it.link,
-          source:       src.name,
-          source_id:    src.id,
-          tags:         src.tags || [],
-          published_at: it.date || null,
-          submitted_by: 'scraper:' + src.id
+          kind:           src.kind,
+          title:          it.title,
+          summary:        cleanText(it.summary).slice(0, 600),
+          url:            it.link,
+          // Mirror credit fields — every scraped item retains a path back
+          // to its original source, so item.html can render a "via" credit
+          // and a clear linkback. License falls back to the source's known
+          // license when the feed entry doesn't declare one.
+          source:         src.name,
+          source_id:      src.id,
+          source_url:     it.link,
+          source_title:   it.title,
+          source_author:  it.author || src.author || '',
+          source_license: it.license || src.license || 'all rights reserved (linkback only)',
+          scraped_at:     new Date().toISOString(),
+          tags:           src.tags || [],
+          published_at:   it.date || null,
+          submitted_by:   'scraper:' + src.id
         };
         const r = await fetch(`${origin}/api/content/queue`, {
           method: 'POST',
@@ -139,7 +148,25 @@ function parseFeed (xml) {
     const date    = pick(m, /<pubDate[^>]*>([\s\S]*?)<\/pubDate>/) ||
                     pick(m, /<published[^>]*>([\s\S]*?)<\/published>/) ||
                     pick(m, /<updated[^>]*>([\s\S]*?)<\/updated>/);
-    if (title && link) out.push({ title: cleanText(title), link: cleanText(link), summary, date });
+    // Author: <author><name>...</name></author> (Atom) or <dc:creator> /
+    // <author> (RSS). Fall through any of the variants we see in the wild.
+    const author  = pick(m, /<author[^>]*>[\s\S]*?<name[^>]*>([\s\S]*?)<\/name>[\s\S]*?<\/author>/) ||
+                    pick(m, /<dc:creator[^>]*>([\s\S]*?)<\/dc:creator>/) ||
+                    pick(m, /<author[^>]*>([\s\S]*?)<\/author>/);
+    // License: <license href="..."/> (Atom) or <copyright> (RSS) or
+    // <dc:rights>. Many feeds publish under Creative Commons; capture it.
+    const license = (m.match(/<license[^>]*href="([^"]+)"/) || [, ''])[1] ||
+                    pick(m, /<dc:rights[^>]*>([\s\S]*?)<\/dc:rights>/) ||
+                    pick(m, /<copyright[^>]*>([\s\S]*?)<\/copyright>/) ||
+                    pick(m, /<rights[^>]*>([\s\S]*?)<\/rights>/);
+    if (title && link) out.push({
+      title:   cleanText(title),
+      link:    cleanText(link),
+      summary,
+      date,
+      author:  cleanText(author),
+      license: cleanText(license)
+    });
   }
   return out;
 }

@@ -68,6 +68,7 @@
     main.innerHTML = `
       <article class="item-page" data-wish-id="${escapeHTML(it.id)}" data-wish-type="${escapeHTML(type)}">
         <div class="item-meta-pill mono">${escapeHTML(label.toUpperCase())}${it.year ? ' · ' + it.year : ''}${it.category ? ' · ' + escapeHTML(it.category) : ''}</div>
+        ${renderCredit(it)}
         ${it.image ? `<div class="item-hero" style="background-image:url('${escapeHTML(it.image)}')"></div>` : ''}
         <h1 class="item-title">${escapeHTML(it.title || '')}</h1>
         ${it.deck ? `<p class="item-lede">${escapeHTML(it.deck)}</p>` : ''}
@@ -97,6 +98,8 @@
         </div>
         <section id="item-related" class="item-related"></section>
       </article>`;
+    // Populate related items asynchronously so the main article paints first
+    renderRelated(type, it, seed).catch(() => {});
 
     document.getElementById('item-share')?.addEventListener('click', async () => {
       try {
@@ -256,5 +259,54 @@
     return `<aside class="item-verify"><h4>Editor: verify before publishing</h4><ul>${v.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></aside>`;
   }
 
+  /* Mirror credit — every scraped item carries the source it was mirrored
+     from. We surface "via SOURCE — by AUTHOR · LICENSE" with a linkback so
+     attribution is unmistakable. */
+  function renderCredit (it) {
+    const url = it.source_url || it.url || it.external_url || '';
+    if (!url || !/^https?:\/\//i.test(url)) return '';
+    const source  = it.source || '';
+    const author  = it.source_author || '';
+    const license = it.source_license || '';
+    const display = source || (() => {
+      try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return 'source'; }
+    })();
+    const parts = [];
+    parts.push(`via <a href="${escapeHTML(url)}" target="_blank" rel="noopener nofollow">${escapeHTML(display)}</a>`);
+    if (author)  parts.push('by ' + escapeHTML(author));
+    if (license) parts.push(escapeHTML(license));
+    return `<p class="item-credit mono">${parts.join(' · ')}</p>`;
+  }
 
+  /* Related content — pull a few items of the same kind from the seed
+     and render a small grid below the article. Tag overlap (or simple
+     same-kind randomness) is enough for now; AI-curated suggestions can
+     replace this later. */
+  async function renderRelated (type, it, seed) {
+    const host = document.getElementById('item-related');
+    if (!host || !seed) return;
+    const buckets = { film: 'films', article: 'articles', event: 'events', song: 'music', book: 'books', merch: 'merch' };
+    const list = seed[buckets[type] || type] || [];
+    const tags = new Set((it.tags || []).map(t => String(t).toLowerCase()));
+    function score (other) {
+      if (other.id === it.id) return -1;
+      const ot = (other.tags || []).map(t => String(t).toLowerCase());
+      const overlap = ot.filter(t => tags.has(t)).length;
+      return overlap * 10 + Math.random();
+    }
+    const picks = list.slice().sort((a,b) => score(b) - score(a)).slice(0, 6);
+    if (!picks.length) return;
+    host.innerHTML = `
+      <h3 class="item-section-h">More from the library</h3>
+      <div class="grid item-related-grid">
+        ${picks.map(p => `
+          <a class="card" href="item.html?type=${encodeURIComponent(type)}&id=${encodeURIComponent(p.id)}">
+            ${p.image ? `<div class="cover" style="background-image:url('${escapeHTML(p.image)}')"></div>` : ''}
+            <div class="meta">
+              <h3>${escapeHTML(p.title || p.name || '')}</h3>
+              <p class="lead">${escapeHTML((p.summary || p.deck || '').slice(0, 120))}</p>
+            </div>
+          </a>`).join('')}
+      </div>`;
+  }
 })();

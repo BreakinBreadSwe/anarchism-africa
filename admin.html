@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="css/header-modes.css" />
   <link rel="stylesheet" href="css/auth-page.css" />
   <link rel="stylesheet" href="css/logo-generator.css" />
+  <link rel="stylesheet" href="css/admin-checklist.css" />
   <link rel="stylesheet" href="css/admin-editor.css" />
 </head>
 <body class="admin has-rail">
@@ -86,6 +87,8 @@
 
   <!-- DASHBOARD ---------------------------------------------------------- -->
   <section class="view active" id="view-dashboard">
+    <!-- Pipeline checklist — mirrors what's running, fires actions inline -->
+    <div id="aa-checklist-mount" data-role="LUVLAB"></div>
     <div class="kpi" id="kpi"></div>
     <div class="panel">
       <h2 style="margin-top:0">Welcome back, LUVLAB</h2>
@@ -409,6 +412,7 @@
 <script src="js/logo.js"></script>
 <script src="js/admin-editor.js"></script>
 <script src="js/admin.js"></script>
+<script src="js/admin-checklist.js"></script>
 <script src="js/article-lab.js"></script>
 <script src="js/mark-lab.js"></script>
 <script src="js/merch-lab.js"></script>

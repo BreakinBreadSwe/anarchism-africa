@@ -2139,3 +2139,29 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
    after the read-time of the label. The CSS-only ::after fallback
    is intentionally disabled to prevent double-rendering. */
 [data-aa-tooltip]::after { display: none !important; content: none !important; }
+
+/* ============================================================
+   ITEM PAGE — mirror credit pill + related-content grid
+   The credit appears just under the meta pill so attribution is
+   unmistakable. Related items render under the article body.
+   ============================================================ */
+.item-credit {
+  margin: 8px 0 18px;
+  padding: 6px 10px;
+  display: inline-block;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-2) 70%, transparent);
+  font: 600 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+  color: var(--fg-dim);
+}
+.item-credit a { color: var(--fg); border-bottom: 1px dotted currentColor; text-decoration: none; }
+.item-credit a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+.item-related { margin-top: clamp(28px, 4vw, 48px); }
+.item-related-grid {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 20px);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  margin-top: 14px;
+}

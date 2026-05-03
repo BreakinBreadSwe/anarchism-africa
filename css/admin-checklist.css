@@ -1,0 +1,120 @@
+/* LUVLAB + COOLHUNTPARIS pipeline checklist
+ * Renders top-of-dashboard health summary + actionable checklist.
+ * Colors: pass=green, warn=amber, fail=red — match the brand tokens. */
+
+.aa-checklist {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  padding: 0;
+  margin: 0 0 22px;
+  font: 500 .9rem 'Space Grotesk', sans-serif;
+  color: var(--fg);
+}
+.aa-checklist-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.aa-checklist-head h3 {
+  margin: 0;
+  font: 800 1rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.aa-checklist-summary {
+  display: inline-flex; gap: 12px; align-items: center;
+  font: 700 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.aa-checklist-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.aa-checklist-pill.pass { color: var(--green, #4ade80); border-color: currentColor; }
+.aa-checklist-pill.warn { color: var(--amber, #fbbf24); border-color: currentColor; }
+.aa-checklist-pill.fail { color: var(--red,   #ef4444); border-color: currentColor; }
+
+.aa-checklist-actions {
+  display: inline-flex; gap: 8px;
+}
+.aa-checklist-actions .btn {
+  font-size: .68rem; padding: 6px 10px;
+}
+
+.aa-checklist-body { padding: 6px 0; }
+
+.aa-checklist-group {
+  padding: 10px 18px 4px;
+  font: 800 .62rem 'JetBrains Mono', monospace;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  border-top: 1px dashed color-mix(in srgb, var(--line) 60%, transparent);
+}
+.aa-checklist-group:first-child { border-top: 0; }
+
+.aa-checklist-item {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 8px 18px;
+  border-bottom: 1px dashed color-mix(in srgb, var(--line) 40%, transparent);
+}
+.aa-checklist-item:last-child { border-bottom: 0; }
+.aa-checklist-item:hover { background: color-mix(in srgb, var(--bg-2) 70%, var(--accent) 6%); }
+
+.aa-checklist-mark {
+  width: 18px; height: 18px;
+  display: grid; place-items: center;
+  border: 1px solid currentColor;
+  font: 800 12px/1 'JetBrains Mono', monospace;
+  margin-top: 2px;
+}
+.aa-checklist-item[data-status="pass"] .aa-checklist-mark { color: var(--green, #4ade80); background: color-mix(in srgb, var(--green, #4ade80) 18%, transparent); }
+.aa-checklist-item[data-status="warn"] .aa-checklist-mark { color: var(--amber, #fbbf24); }
+.aa-checklist-item[data-status="fail"] .aa-checklist-mark { color: var(--red,   #ef4444); }
+
+.aa-checklist-label {
+  font: 600 .9rem 'Space Grotesk', sans-serif;
+  color: var(--fg);
+  margin: 0 0 2px;
+}
+.aa-checklist-detail {
+  font: 400 .78rem 'JetBrains Mono', monospace;
+  color: var(--fg-dim);
+  letter-spacing: .02em;
+}
+.aa-checklist-action {
+  align-self: center;
+  font: 700 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  background: var(--fg);
+  color: var(--bg);
+  border: 1px solid var(--fg);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.aa-checklist-action:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.aa-checklist-action:disabled { opacity: .5; cursor: wait; }
+
+.aa-checklist-empty {
+  padding: 24px 18px;
+  font: 500 .85rem 'Space Grotesk', sans-serif;
+  color: var(--fg-dim);
+  text-align: center;
+}
+.aa-checklist-error {
+  padding: 12px 18px;
+  border-top: 1px solid var(--red, #ef4444);
+  background: color-mix(in srgb, var(--red, #ef4444) 12%, transparent);
+  color: var(--red, #ef4444);
+  font: 600 .78rem 'JetBrains Mono', monospace;
+}

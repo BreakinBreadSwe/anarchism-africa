@@ -60,6 +60,24 @@ export default async function handler (req, res) {
     }
   }
 
+  // Persist a timestamp so the LUVLAB / COOLHUNTPARIS checklist can show
+  // "Autopilot fired in last 24h" — best-effort, don't fail the cycle if
+  // the blob write fails.
+  try {
+    await fetch(`${origin}/api/blob/put`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-aa-admin-token': process.env.ADMIN_TOKEN || '',
+        'x-cron-secret': process.env.CRON_SECRET || ''
+      },
+      body: JSON.stringify({
+        key: 'content/logs/autopilot.json',
+        json: { last_run_ts: Date.now(), last_run_stages: stages, last_run_summary: out }
+      })
+    });
+  } catch {}
+
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).json(out);
 }

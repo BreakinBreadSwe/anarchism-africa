@@ -30,15 +30,15 @@
     if (matchMedia('(max-width: 768px)').matches) closeRail();
   }
 
-  $('#tabs').addEventListener('click', e => {
+  $('#tabs')?.addEventListener('click', e => {
     const t = e.target.closest('.tab');
     if (t) setTab(t.dataset.tab);
   });
   // left rail
   const rail = $('#rail');
-  function openRail ()  { rail.classList.add('expanded'); document.body.classList.add('rail-open'); }
-  function closeRail () { rail.classList.remove('expanded'); document.body.classList.remove('rail-open'); }
-  function toggleRail () { rail.classList.contains('expanded') ? closeRail() : openRail(); }
+  function openRail ()  { rail?.classList.add('expanded'); document.body.classList.add('rail-open'); }
+  function closeRail () { rail?.classList.remove('expanded'); document.body.classList.remove('rail-open'); }
+  function toggleRail () { rail?.classList.contains('expanded') ? closeRail() : openRail(); }
   $('#menu-toggle')?.addEventListener('click', toggleRail);
   $('#rail-backdrop')?.addEventListener('click', closeRail);
   rail?.addEventListener('click', e => {
@@ -163,16 +163,16 @@
   }
   function stopHero () { clearInterval(state.heroTimer); state.heroTimer = null; }
 
-  $('#hero-prev').addEventListener('click',  () => { showHero(state.heroIndex - 1); startHero(); });
-  $('#hero-next').addEventListener('click',  () => { showHero(state.heroIndex + 1); startHero(); });
-  $('#hero-toggle').addEventListener('click', e => {
+  $('#hero-prev')?.addEventListener('click',  () => { showHero(state.heroIndex - 1); startHero(); });
+  $('#hero-next')?.addEventListener('click',  () => { showHero(state.heroIndex + 1); startHero(); });
+  $('#hero-toggle')?.addEventListener('click', e => {
     state.heroPlaying = !state.heroPlaying;
     e.currentTarget.textContent = state.heroPlaying ? '⏸' : '▶';
     if (state.heroPlaying) startHero(); else stopHero();
   });
 
   // hero CTA delegation - hero items always open the full item page
-  $('#hero').addEventListener('click', e => {
+  $('#hero')?.addEventListener('click', e => {
     const goTab = e.target.dataset.heroGo;
     const detailId = e.target.dataset.heroDetail;
     if (goTab) { setTab(goTab); }
@@ -191,8 +191,8 @@
   const modal = $('#modal');
   const modalHead = $('#modal-head');
   const modalBody = $('#modal-body');
-  $('#modal-close').addEventListener('click', closeModal);
-  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  $('#modal-close')?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
   function openModal (img, html) {
     modalHead.style.backgroundImage = `url(${img})`;
@@ -536,7 +536,7 @@
       list.appendChild(row);
     });
   }
-  $('#apply-amb').addEventListener('click', () => {
+  $('#apply-amb')?.addEventListener('click', () => {
     openModal('https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80', `
       <h2>Apply to be an ambassador</h2>
       <p>Tell us about your city, your reach, and what you'd bring.</p>
@@ -799,8 +799,8 @@
     });
   }
   document.addEventListener('click', e => {
-    if (e.target.id === 'customize-open') { $('#customize-sheet').classList.add('open'); buildCustomize(); }
-    if (e.target.id === 'customize-close') $('#customize-sheet').classList.remove('open');
+    if (e.target.id === 'customize-open') { $('#customize-sheet')?.classList.add('open'); buildCustomize(); }
+    if (e.target.id === 'customize-close') $('#customize-sheet')?.classList.remove('open');
     if (e.target.id === 'customize-reset') {
       localStorage.removeItem('aa.theme'); location.reload();
     }
@@ -1016,7 +1016,7 @@
     await renderHome();
 
     // tab clicks render lazily
-    $('#tabs').addEventListener('click', e => {
+    $('#tabs')?.addEventListener('click', e => {
       const t = e.target.closest('.tab'); if (t) renderTab(t.dataset.tab);
     });
     const h = location.hash.replace('#', '');

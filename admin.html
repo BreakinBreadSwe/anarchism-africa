@@ -33,17 +33,21 @@
 <body class="admin has-rail">
 
 <header class="topbar">
-  <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
-    <span class="logo"></span>
-  </button>
   <a class="brand" href="index.html" aria-label="Admin" style="flex:1;min-width:0">
     <span class="logoword"><span class="word">ADMIN<span class="dot">·</span>LUVLAB</span></span>
   </a>
   <button class="logo-shuffle" id="logo-shuffle" title="Shuffle logo">⟳</button>
-  <a class="btn primary" href="index.html">Public site</a>
 </header>
 
 <aside class="rail" id="rail" aria-label="Studio sections">
+  <button class="menu-toggle rail-menu-toggle" id="menu-toggle" type="button" aria-label="Toggle menu" title="Menu">
+    <span class="logo"></span>
+    <span class="label">Menu</span>
+  </button>
+  <a class="rail-item rail-item--public" href="index.html" title="View the public site">
+    <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></span>
+    <span class="label">Public site</span>
+  </a>
   <button class="rail-item active" data-tab="dashboard"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/></svg></span><span class="label">Dashboard</span></button>
   <button class="rail-item" title="Content" data-tab="content"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Content</span></button>
   <button class="rail-item" title="Marketplace" data-tab="merch"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 8l2-4h14l2 4M4 8h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 12h6"/></svg></span><span class="label">Marketplace</span></button>

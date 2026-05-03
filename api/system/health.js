@@ -80,10 +80,10 @@ function checkEnv () {
     status: process.env.BLOB_READ_WRITE_TOKEN ? 'pass' : 'fail',
     detail: process.env.BLOB_READ_WRITE_TOKEN ? 'BLOB_READ_WRITE_TOKEN is set in Vercel env' : 'BLOB_READ_WRITE_TOKEN missing — the pipeline has nowhere to store articles, logos, or slogans',
     help: [
-      'WHAT: Vercel Blob is the persistent storage for every piece of generated content (articles, logos, slogans, mirrored items, autopilot logs).',
-      'WHY: Without this, every cron job and every article generation will fail to persist. Nothing reaches the public site.',
-      'HOW: 1) Open vercel.com/dashboard → your project → Storage tab. 2) Click "Create Database" → "Blob". 3) Vercel auto-injects BLOB_READ_WRITE_TOKEN as an env var across Production + Preview + Development. 4) Redeploy.',
-      'WHERE: Vercel project → Storage → Blob.'
+      'WHAT IT DOES: Stores every article, logo, slogan and saved post on the cloud so they don\'t disappear when the server restarts.',
+      'WHY YOU NEED IT: Without this, the site has nowhere to put new stuff. Articles you generate would vanish. Nothing would show up on the public site.',
+      'HOW TO FIX (5 minutes): 1) Go to vercel.com/dashboard. 2) Click your project (anarchism-africa). 3) Click the "Storage" tab at the top. 4) Click the big "Create Database" button. 5) Pick "Blob" from the list. 6) Click Create. 7) Vercel automatically adds the password (called BLOB_READ_WRITE_TOKEN) to your project — you don\'t have to copy-paste anything. 8) Wait ~30 seconds for the redeploy. Done.',
+      'CHECK: Refresh this page. Row should turn green.'
     ].join('\n'),
     action: process.env.BLOB_READ_WRITE_TOKEN ? null : { label: 'Open Vercel Storage', url: 'https://vercel.com/dashboard' }
   });
@@ -95,11 +95,11 @@ function checkEnv () {
     status: hasLLM ? 'pass' : 'fail',
     detail: hasLLM ? 'Article + slogan generators have a working LLM provider' : 'No LLM key set — articles + slogans cannot be generated',
     help: [
-      'WHAT: An LLM API key powers the article writer (outline → research → draft → polish), the slogan generator, and the in-app A.A.AI chat.',
-      'WHY: Without any LLM key, all daily content generation fails. The site stops feeling alive.',
-      'HOW (cheapest path): 1) Sign up at openrouter.ai (free tier covers most needs). 2) Create an API key. 3) Add OPENROUTER_API_KEY to Vercel env. 4) Redeploy.',
-      'ALTERNATIVES: GEMINI_API_KEY (free at aistudio.google.com) is recommended for grounded research + image generation. ANTHROPIC_API_KEY (Claude) and OPENAI_API_KEY also work — any one is enough.',
-      'WHERE: vercel.com/dashboard → project → Settings → Environment Variables.'
+      'WHAT IT DOES: An "AI key" lets the website write articles, generate slogans, and answer questions in the chat box. Think of it like a phone number for a robot writer — without the number, the robot can\'t pick up.',
+      'WHY YOU NEED IT: Daily articles, weekly slogans, and the chat assistant all stop working without a key. The library would never grow.',
+      'HOW TO FIX (10 minutes, totally free): 1) Open openrouter.ai in a new tab. 2) Click "Sign Up" (use Google or email — free, no credit card). 3) Once signed in, go to openrouter.ai/keys. 4) Click "Create Key". Name it "ANARCHISM.AFRICA". 5) Copy the long string that appears (starts with "sk-or-..."). 6) Open vercel.com/dashboard → your project → Settings tab → Environment Variables (left menu). 7) Click "Add". Name = OPENROUTER_API_KEY. Value = paste the key. Apply to "Production, Preview, Development". Save. 8) Vercel redeploys automatically (~30 seconds).',
+      'OTHER OPTIONS: If you prefer Google\'s AI, use GEMINI_API_KEY from aistudio.google.com (also free). For Claude, use ANTHROPIC_API_KEY. Any one is enough.',
+      'CHECK: Click the chat button in the bottom bar of the public site. Type "hi". If it answers, the key works.'
     ].join('\n'),
     action: hasLLM ? null : { label: 'Get free OpenRouter key', url: 'https://openrouter.ai/keys' }
   });
@@ -111,10 +111,10 @@ function checkEnv () {
     status: process.env.CRON_SECRET ? 'pass' : 'warn',
     detail: process.env.CRON_SECRET ? 'CRON_SECRET is set — cron endpoints authenticated' : 'CRON_SECRET missing — anyone can hit /api/cron/* and trigger generation cycles',
     help: [
-      'WHAT: A shared secret that authenticates Vercel\'s cron scheduler when it pings /api/cron/scan-content, /api/cron/generate-articles, etc.',
-      'WHY: Without it, anyone on the internet can trigger your content cron jobs at will, burning your LLM budget and spamming the queue.',
-      'HOW: 1) Generate a 32-char random string in your terminal: `openssl rand -hex 32`. 2) Copy the output. 3) Add CRON_SECRET in Vercel env. 4) Redeploy. The vercel.json cron configuration auto-attaches the right header — you don\'t need to change anything else.',
-      'WHERE: vercel.com/dashboard → project → Settings → Environment Variables.'
+      'WHAT IT DOES: A password that ONLY the daily timer knows. The timer uses it to wake up the site every morning to generate new articles, logos, and slogans. Without it, anyone could wake the site up and burn your AI budget.',
+      'WHY YOU NEED IT: Stops trolls from spamming your daily content jobs. Saves you money on AI calls.',
+      'HOW TO FIX (3 minutes): 1) Open Terminal on your Mac. 2) Type: openssl rand -hex 32 and press Enter. 3) Copy the long string of letters and numbers it spits out. 4) In Vercel: project → Settings → Environment Variables → Add. 5) Name = CRON_SECRET. Value = paste the string. Apply to all three environments. 6) Save. Vercel redeploys.',
+      'CHECK: Refresh this page. Row turns green.'
     ].join('\n'),
     action: process.env.CRON_SECRET ? null : { label: 'Generate + add CRON_SECRET', url: 'https://vercel.com/dashboard' }
   });
@@ -126,10 +126,10 @@ function checkEnv () {
     status: process.env.ADMIN_TOKEN ? 'pass' : 'warn',
     detail: process.env.ADMIN_TOKEN ? 'ADMIN_TOKEN set' : 'ADMIN_TOKEN missing — admin endpoints (autopilot, blob writes) accept any caller',
     help: [
-      'WHAT: A separate admin secret that gates POST /api/autopilot/run, /api/blob/put, and the manual "Fire autopilot" button on this dashboard.',
-      'WHY: Without it the autopilot endpoint can be invoked anonymously, which lets a bad actor force expensive generation cycles or overwrite your Blob.',
-      'HOW: 1) Generate another 32-char string: `openssl rand -hex 32`. 2) Add ADMIN_TOKEN to Vercel env. 3) The admin/publisher pages already send the right cookie when you sign in via PIN, so the dashboard keeps working.',
-      'WHERE: vercel.com/dashboard → project → Settings → Environment Variables.'
+      'WHAT IT DOES: A separate password that protects the "Fire autopilot now" button and the manual generate-article buttons. Only YOU should be able to push these.',
+      'WHY YOU NEED IT: Without it, anyone could click an admin button by guessing the URL and waste your AI credits.',
+      'HOW TO FIX (3 minutes): 1) Open Terminal. 2) Type: openssl rand -hex 32 and press Enter. 3) Copy the result. 4) In Vercel: project → Settings → Environment Variables → Add. 5) Name = ADMIN_TOKEN. Value = paste. Apply to all environments. Save.',
+      'CHECK: Refresh. Row turns green.'
     ].join('\n'),
     action: process.env.ADMIN_TOKEN ? null : { label: 'Add ADMIN_TOKEN', url: 'https://vercel.com/dashboard' }
   });
@@ -141,10 +141,10 @@ function checkEnv () {
     status: process.env.GEMINI_API_KEY ? 'pass' : 'warn',
     detail: process.env.GEMINI_API_KEY ? 'GEMINI_API_KEY set — logo cron + grounded article research enabled' : 'No GEMINI_API_KEY — daily logo generation skipped + articles run ungrounded',
     help: [
-      'WHAT: Google\'s Gemini 2.5 Flash image preview powers the daily afro-anarchist circle-A logo cron (4 new marks/day across 11 styles). It\'s also used for grounded research mode in the article generator (Google Search citations).',
-      'WHY: Without it, the Mark Lab queue dries up and articles lose their factual grounding step. Slogans + articles still work but lose the visual + research layer.',
-      'HOW: 1) Visit aistudio.google.com/apikey. 2) Sign in with any Google account. 3) "Create API key" → copy the value. 4) Add GEMINI_API_KEY to Vercel env. The free tier is generous enough for daily generation.',
-      'WHERE: aistudio.google.com → API keys.'
+      'WHAT IT DOES: Lets the site DRAW pictures (logos for shirts and posters) and FACT-CHECK articles using Google Search.',
+      'WHY YOU NEED IT: Without it, no daily logos get drawn for the merch shop. Articles still get written, but they won\'t have real-source citations.',
+      'HOW TO FIX (5 minutes, FREE): 1) Open aistudio.google.com/apikey. 2) Sign in with any Google account. 3) Click "Create API key" → "Create API key in new project". 4) Copy the key. 5) In Vercel: project → Settings → Environment Variables → Add. 6) Name = GEMINI_API_KEY. Value = paste. Apply to all. Save.',
+      'CHECK: Click "Generate now" on the "Last logo generated" row below. If 4 new logos appear, it works.'
     ].join('\n'),
     action: process.env.GEMINI_API_KEY ? null : { label: 'Get Gemini key (free)', url: 'https://aistudio.google.com/apikey' }
   });
@@ -157,10 +157,11 @@ function checkEnv () {
     status: hasPrintify ? 'pass' : 'warn',
     detail: hasPrintify ? 'Printify token + shop ID set — POD orders can be placed' : 'Printify keys missing — Print-On-Demand orders disabled (slogans + shirt designs still generate but cannot ship physical product)',
     help: [
-      'WHAT: Printify is the print-on-demand provider for shirts, posters, zines. Two env vars are required: PRINTIFY_API_TOKEN (account credential) and PRINTIFY_SHOP_ID (which of your shops to attach orders to).',
-      'WHY: Without these, the marketplace shows your in-house POD designs but cannot actually ship physical product to consumers. Other content (articles, logos, slogans) is unaffected.',
-      'HOW: 1) Sign up at printify.com — free, pay-per-order. 2) Create a shop (My Shops → Add new). 3) Note the shop ID from its URL. 4) Account → API → "Generate new token". 5) Add PRINTIFY_API_TOKEN and PRINTIFY_SHOP_ID to Vercel env. 6) Redeploy.',
-      'WHERE: printify.com/app/account/api'
+      'WHAT IT DOES: Connects the merch shop to a real T-shirt / poster / zine printer. When a customer orders, Printify prints + ships. You don\'t handle inventory.',
+      'WHY YOU NEED IT: Without this, the marketplace shows designs but customers can\'t actually buy a real shirt. Articles, logos, and slogans still work — only physical orders are blocked.',
+      'HOW TO FIX (15 minutes, free until first order): 1) Open printify.com → Sign up (free). 2) Click "My Shops" → "Add new shop". Pick "Manual orders" or connect to your existing Etsy/Shopify. 3) Note the shop ID from the URL after you create it (looks like /shop/12345/...). 4) Click your account avatar → API. 5) Click "Generate new token". Copy it. 6) In Vercel: add TWO env vars — PRINTIFY_API_TOKEN (the long token) and PRINTIFY_SHOP_ID (the number from step 3). 7) Save.',
+      'OPTIONAL: Skip this entirely if you don\'t want to sell physical merch yet.',
+      'CHECK: Open the public site → Marketplace → "Order" button on any merch item should work without errors.'
     ].join('\n'),
     action: { label: 'Set up Printify', url: 'https://printify.com/app/account/api' }
   });
@@ -187,10 +188,11 @@ async function checkScraper () {
     status: statusFor(age, DAY, 2 * DAY),
     detail: `Last scrape: ${fmtAge(age)} · ${pending.length} items in queue`,
     help: [
-      'WHAT: The scraper at /api/cron/scan-content pulls from 42 curated afro-anarchist feeds — ROAR Magazine, Daraja Press, Africa Is a Country, AFROPUNK, Pambazuka, Awesome Tapes from Africa, plus 36 more across anarchism, decolonial theory, afro-punk/funk music, film, books, events.',
-      'WHY: This is what keeps the library "alive" — fresh mirrors land in the Pending queue with full source credit + linkback every morning at 06:00 UTC.',
-      'HOW: Vercel cron is already configured in vercel.json. If "last scrape" is stale (>24h), click the "Trigger scrape now" button to fire it manually. Check Vercel\'s Cron Logs (project → Settings → Cron Jobs) to see whether the schedule fired.',
-      'WHERE: vercel.com/dashboard → project → Settings → Cron Jobs.'
+      'WHAT IT DOES: Every morning at 6 AM (UK time), a robot reads 42 magazine websites and brings back any new afro-anarchist articles, music releases, films, books, and events. Sources include ROAR Magazine, Africa Is A Country, AFROPUNK, Pambazuka, Awesome Tapes From Africa, and 37 more.',
+      'WHY YOU NEED IT: This is what keeps the library fresh. Every day, ~20-50 new items land in the "Pending" tray for the publisher (COOLHUNTPARIS) to approve. Without it, the library stops growing.',
+      'HOW TO FIX IF BROKEN: Click "Trigger scrape now" on the right side of this row. Watch the row update in 30 seconds.',
+      'IF IT KEEPS FAILING: It usually means CRON_SECRET or BLOB_READ_WRITE_TOKEN is missing. Fix those rows first.',
+      'WHERE TO SEE THE RESULTS: After a scrape runs, go to admin dashboard → Pending tab. New scraped items show there with full source credit.'
     ].join('\n'),
     action: age > DAY ? { label: 'Trigger scrape now', url: '/api/cron/scan-content', method: 'GET' } : null
   }, {
@@ -200,10 +202,10 @@ async function checkScraper () {
     status: pending.length < 800 ? 'pass' : pending.length < 1500 ? 'warn' : 'fail',
     detail: `${pending.length} pending items` + (pending.length >= 800 ? ' — review backlog in Pending tab' : ''),
     help: [
-      'WHAT: Number of scraped items waiting for editorial review in the Pending queue.',
-      'WHY: A healthy queue is 50–500 items. Above 800 means the publisher (COOLHUNTPARIS) is falling behind on triage. Above 1500 means stale items will start to crowd out fresh ones.',
-      'HOW: Open the Pending tab in either LUVLAB or COOLHUNTPARIS dashboard and approve / reject items in batch. Approved items move to the public library; rejections feed back into future scraping decisions.',
-      'WHERE: Admin dashboard → Pending tab (or the Curate view in publisher.html).'
+      'WHAT IT TRACKS: How many scraped items are sitting in the Pending tray waiting to be approved or rejected.',
+      'WHY IT MATTERS: A healthy queue has 50–500 items. Above 800 means COOLHUNTPARIS is falling behind on review. Above 1500 means old items will start getting pushed out by new ones before they\'re reviewed.',
+      'HOW TO FIX IF YELLOW/RED: Open the Pending tab in admin or publisher dashboards. Use the bulk Approve / Reject buttons. Approved items go live in the public library. Rejected items teach the AI what NOT to scrape next time.',
+      'WHERE: admin.html or publisher.html → Pending tab.'
     ].join('\n'),
     action: null
   }];
@@ -221,10 +223,11 @@ async function checkArticles () {
     status: statusFor(age, DAY, 3 * DAY),
     detail: `${items.length} drafts · last: ${fmtAge(age)}`,
     help: [
-      'WHAT: /api/cron/generate-articles runs daily at 09:00 UTC. It picks the top theme from the scraper queue (weighted toward 51 afro-anarchist seed keywords like decolonial, sankofa, kwaito, sun-ra, fela, lumumba, fanon, ubuntu, ujamaa) and writes a full article: outline → grounded research (Gemini + Google Search) → draft → polish → headline → media suggestions.',
-      'WHY: Constant fresh editorial keeps COOLHUNTPARIS a living magazine. Each draft lands in the Article Lab (editor view) for the publisher to polish before publishing.',
-      'HOW: If stale, click "Generate now". The cron is automatic — Vercel fires it daily as long as CRON_SECRET is set and at least one LLM key is configured. Drafts pile up to 200 most-recent in content/articles/drafts.json.',
-      'WHERE: Article Lab tab in admin or publisher dashboards.'
+      'WHAT IT DOES: Every morning at 9 AM, a robot writer picks the most-discussed afro-anarchist topic from yesterday\'s news and writes a full article — outline, research with Google citations, polished draft, headline, image suggestions. It uses 51 starter keywords (decolonial, sankofa, kwaito, sun-ra, fela, lumumba, fanon, ubuntu, ujamaa, etc.) so articles stay on-topic.',
+      'WHY YOU NEED IT: One new article per day = ~30/month, ~365/year. The library grows on autopilot. The publisher (COOLHUNTPARIS) just polishes and publishes.',
+      'HOW TO TEST IT: Click "Generate now" on the right. Wait 30-60 seconds. A new article draft appears in admin → Article Lab tab.',
+      'IF NOTHING HAPPENS: It needs an LLM key (the row above) AND Vercel Blob storage (top row). Fix those first.',
+      'WHERE TO READ DRAFTS: admin.html → Article Lab tab. Drafts wait there for the publisher to approve and publish.'
     ].join('\n'),
     action: age > DAY ? { label: 'Generate now', url: '/api/cron/generate-articles', method: 'GET' } : null
   }];
@@ -242,10 +245,11 @@ async function checkLogos () {
     status: statusFor(age, WEEK, 2 * WEEK),
     detail: `${items.length} logos in queue · last: ${fmtAge(age)}`,
     help: [
-      'WHAT: /api/cron/generate-logos runs daily at 15:00 UTC. It generates 4 new circle-A-anarchist-symbol-over-Africa marks across 11 rotating style presets: classic, kente, glitch, brutalist, risograph, gold-leaf, screenprint, graffiti, woodcut, photoreal, afrofuturist.',
-      'WHY: Every shirt, poster, and zine product needs unique afro-anarchist visual marks. The Mark Lab uses these as the base for merch designs and as featured rail imagery.',
-      'HOW: If stale (>7 days), click "Generate now". Requires GEMINI_API_KEY (Gemini 2.5 Flash image preview). Generated marks land in content/marks/queue.json (capped at 200) for the publisher to review and approve in the Mark Lab.',
-      'WHERE: Mark Lab tab in admin dashboard.'
+      'WHAT IT DOES: Every afternoon at 3 PM, a robot artist draws 4 brand-new logos — the circle-A anarchist symbol over Africa — in different art styles. Styles rotate: kente, glitch, brutalist, risograph, gold-leaf, screenprint, graffiti, woodcut, photoreal, afrofuturist, plus the classic.',
+      'WHY YOU NEED IT: Every shirt, poster, zine, and Instagram post needs unique visuals. With 4/day, you get ~120 logos a month to choose from for merch + marketing.',
+      'HOW TO TEST IT: Click "Generate now" on the right. Wait 20-30 seconds. 4 new logos appear in admin → Mark Lab tab.',
+      'IF IT FAILS: Requires GEMINI_API_KEY (the row 5 entries up). Free at aistudio.google.com.',
+      'WHERE TO REVIEW: admin.html → Mark Lab. Approve good ones, reject bad ones. Approved logos are pushed to merch.'
     ].join('\n'),
     action: age > WEEK ? { label: 'Generate now', url: '/api/cron/generate-logos', method: 'GET' } : null
   }];
@@ -263,10 +267,11 @@ async function checkSlogans () {
     status: statusFor(age, DAY, 3 * DAY),
     detail: `${items.length} slogans · last: ${fmtAge(age)}`,
     help: [
-      'WHAT: /api/cron/generate-slogans runs daily at 12:00 UTC. It generates 8 new slogans across 7 categories — afro-anarchist, afro-punk, afro-funk, afro-futurist, decolonial, abolition, pan-african — and reads recent rejections from content/feedback/merch.json to avoid clichés.',
-      'WHY: Slogans are the seed for shirt designs, poster copy, social-media headlines, and email-newsletter teasers. Without a steady stream, the merch shop and the social presence both stagnate.',
-      'HOW: If stale, click "Generate now". The category cycles automatically. Reject bad slogans in the Merch Lab — those rejections feed back into future generations so the prompts learn your taste over time.',
-      'WHERE: Merch Lab tab in admin dashboard.'
+      'WHAT IT DOES: Every day at noon, a robot writer cooks up 8 new slogans for shirts and posters. It rotates through 7 themes — afro-anarchist, afro-punk, afro-funk, afro-futurist, decolonial, abolition, pan-african. It also reads slogans you\'ve rejected in the past so it doesn\'t repeat clichés.',
+      'WHY YOU NEED IT: Slogans become shirt designs, poster headlines, social-media captions, and newsletter teasers. 8/day = ~240/month of fresh copy.',
+      'HOW TO TEST IT: Click "Generate now". 8 new slogans appear in admin → Merch Lab.',
+      'PRO TIP: Reject the bad ones. The robot learns from your rejections and gets smarter over time.',
+      'WHERE TO REVIEW: admin.html → Merch Lab.'
     ].join('\n'),
     action: age > DAY ? { label: 'Generate now', url: '/api/cron/generate-slogans', method: 'GET' } : null
   }];
@@ -282,10 +287,10 @@ async function checkContent () {
     status: 'fail',
     detail: 'seed.json missing — POST /api/blob/seed once to bootstrap',
     help: [
-      'WHAT: seed.json is the canonical content list — what the public site reads to populate Films, Library, Events, Music, Books, Marketplace.',
-      'WHY: Without it the entire public-facing site is empty. The cards on Home, the rail tabs, the search modal — all read from this file.',
-      'HOW: Click "Initialize seed". This POSTs to /api/blob/seed which creates an initial seed file with the curated demo content. After that, scraped + AI-generated items land here automatically.',
-      'WHERE: This runs once. After init, content flows in via the cron pipeline.'
+      'WHAT IT IS: The master content list. Films, articles, events, music, books, marketplace — everything the public site shows comes from this one file.',
+      'WHY YOU NEED IT: Without it, the public site is completely empty. No cards on the home page. No items in any category.',
+      'HOW TO FIX (one click): Press "Initialize seed". It loads ~30 demo items so the site looks alive immediately. After that, the daily robot adds more automatically.',
+      'WHERE TO SEE IT: After init, refresh the public site (anarchism.africa). Items appear in every category.'
     ].join('\n'),
     action: { label: 'Initialize seed', url: '/api/blob/seed', method: 'POST' }
   }];
@@ -305,10 +310,10 @@ async function checkContent () {
     status: total > 30 ? 'pass' : total > 0 ? 'warn' : 'fail',
     detail: Object.entries(counts).map(([k,v]) => `${k}:${v}`).join(' · '),
     help: [
-      'WHAT: Total count of items across all six categories on the public site.',
-      'WHY: <30 items means category pages look thin. >100 is healthy. The number grows automatically as the daily article generator + scraper land new items.',
-      'HOW: Fire the autopilot to immediately populate via scrape + generate. After a week of cron runs, this should naturally climb past 50.',
-      'WHERE: Public site → click any rail item to see the count for that category.'
+      'WHAT IT TRACKS: How many things the public can browse — across films, articles, events, music, books, and marketplace combined.',
+      'TARGETS: Under 30 = library looks empty. 30-100 = healthy starter. 100+ = looks alive. After 6 months of auto-generation, expect 500+.',
+      'HOW TO BOOST FAST: Click "Run autopilot now". It scrapes + generates all at once. Then run it again tomorrow. The count grows by ~30/day automatically once the daily cron is firing.',
+      'WHERE TO BROWSE: Public site → click any rail menu item (Films, Library, etc.) to see what\'s there.'
     ].join('\n'),
     action: total === 0 ? { label: 'Run autopilot now', url: '/api/autopilot/run', method: 'POST' } : null
   }, {
@@ -318,10 +323,10 @@ async function checkContent () {
     status: 'pass',
     detail: 'Scraper saves source URL, title, author, license, scraped_at per item — credit pill + linkback render in item.html',
     help: [
-      'WHAT: Every scraped item now records source_url, source_title, source_author, source_license, and scraped_at. The item detail page renders a "via SOURCE · by AUTHOR · LICENSE" pill with a linkback.',
-      'WHY: Ethical mirroring requires clear attribution. This protects the platform from DMCA strikes and gives credit where it\'s due — important for an afro-anarchist platform that values reciprocity.',
-      'HOW: This is automatic. The scraper extracts <author>, <dc:creator>, <license href>, <copyright>, <rights> from RSS/Atom feeds. License falls back to "all rights reserved (linkback only)" — the safest default.',
-      'WHERE: Open any scraped item via the public Library — credit pill appears below the kind tag, "Open source ↗" button at the bottom.'
+      'WHAT IT DOES: When the robot mirrors content from another site, it always records WHO wrote it, WHERE it came from, and WHAT license it has. The public page shows this as a "via SOURCE · by AUTHOR" pill with a clickable link back to the original.',
+      'WHY IT MATTERS: Ethics 101 — give credit. This also protects the platform from copyright complaints. Afro-anarchism is built on reciprocity, not extraction.',
+      'HOW IT WORKS: Automatic. Every scraped item carries this data forward. License falls back to "all rights reserved (linkback only)" if the source doesn\'t declare one — the safest default.',
+      'WHERE TO SEE IT: Click any article on the public site. The credit pill appears right under the kind tag at the top.'
     ].join('\n'),
     action: null
   }];
@@ -338,10 +343,11 @@ async function checkAutopilot () {
     status: statusFor(age, DAY, 3 * DAY),
     detail: last ? `Last full cycle: ${fmtAge(age)}` : 'No record yet — fire one manual cycle to confirm pipeline',
     help: [
-      'WHAT: /api/autopilot/run chains all four crons in sequence: scrape → articles → slogans → logos. It\'s the "fire one full cycle" endpoint, idempotent and safe to call any time.',
-      'WHY: This is your manual override when you want fresh content immediately, without waiting for the next scheduled cron tick. It also confirms the whole pipeline is wired correctly — if any stage fails, you see the per-stage error in the response.',
-      'HOW: Click "Fire autopilot". A full cycle takes 30–90 seconds depending on LLM speed. Each stage logs to content/logs/autopilot.json so this checklist can show "last fired" age.',
-      'WHERE: This dashboard, the big "Fire autopilot now" button at the top right.'
+      'WHAT IT DOES: The big red "Fire autopilot now" button runs the entire content pipeline in one click — scrape new content, write articles, generate slogans, draw logos. All four stages, in order. It\'s the "do everything now" button.',
+      'WHY YOU NEED IT: For testing (does the whole thing work?) and for manual top-ups (low on content? Click once, get a fresh batch in under 2 minutes).',
+      'HOW TO USE IT: Click "Fire autopilot" on this row OR the big button at the top of the checklist. Wait 30-90 seconds. Each stage updates as it completes — green tick by green tick.',
+      'IF A STAGE FAILS: The failed row turns red and tells you what was missing. Usually means an env var is missing.',
+      'WHERE TO RUN IT: Top right of THIS dashboard — the "Fire autopilot now" button.'
     ].join('\n'),
     action: { label: 'Fire autopilot', url: '/api/autopilot/run', method: 'POST' }
   }];

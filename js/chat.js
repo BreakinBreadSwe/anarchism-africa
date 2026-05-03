@@ -626,8 +626,21 @@
   function boot () {
     if (!$('#chat-panel')) return;
     buildPanel();
-    const fab = $('#chat-fab');
-    if (fab) fab.addEventListener('click', () => $('#chat-panel').classList.toggle('open'));
+    // Inject a floating chat button if one isn't already in the DOM. The
+    // bottombar's Chat icon also opens the panel, but a visible FAB makes
+    // the assistant discoverable from any tab on desktop.
+    let fab = $('#chat-fab');
+    if (!fab) {
+      fab = document.createElement('button');
+      fab.id = 'chat-fab';
+      fab.className = 'chat-fab';
+      fab.type = 'button';
+      fab.setAttribute('aria-label', 'Open A.A.AI assistant');
+      fab.title = 'A.A.AI — chat with the assistant';
+      fab.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11a2 2 0 01-2 2H8l-4 4z"/><circle cx="9"  cy="11" r="1" fill="currentColor"/><circle cx="13" cy="11" r="1" fill="currentColor"/><circle cx="17" cy="11" r="1" fill="currentColor"/></svg>';
+      document.body.appendChild(fab);
+    }
+    fab.addEventListener('click', () => $('#chat-panel').classList.toggle('open'));
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

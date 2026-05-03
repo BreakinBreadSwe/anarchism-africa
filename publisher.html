@@ -33,14 +33,20 @@
 <body class="admin has-rail" data-role="publisher">
 
 <header class="topbar">
-  <button class="menu-toggle" id="menu-toggle"><span class="logo"></span></button>
   <a class="brand" href="index.html" style="flex:1;min-width:0">
     <span class="logoword"><span class="word">PUBLISHER<span class="dot">·</span>COOLHUNTPARIS</span></span>
   </a>
-  <a class="btn primary" href="index.html">Public site</a>
 </header>
 
 <aside class="rail" id="rail">
+  <button class="menu-toggle rail-menu-toggle" id="menu-toggle" type="button" aria-label="Toggle menu" title="Menu">
+    <span class="logo"></span>
+    <span class="label">Menu</span>
+  </button>
+  <a class="rail-item rail-item--public" href="index.html" title="View the public site">
+    <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></span>
+    <span class="label">Public site</span>
+  </a>
   <button class="rail-item active" data-view="curate"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Curate</span></button>
   <button class="rail-item" title="Pending" data-view="pending"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/><circle cx="20" cy="18" r="2" class="fill"/></svg></span><span class="label">Pending</span></button>
   <button class="rail-item" title="Article Lab" data-view="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>

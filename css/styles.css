@@ -265,8 +265,18 @@ body.has-rail .tabs { display: none; }
   }
   body.has-rail .footer { padding-left: calc(64px + var(--content-pad-x)); padding-right: var(--content-pad-x); }
   body.has-rail.rail-open .footer { padding-left: calc(220px + var(--content-pad-x)); }
-  /* Section views fill the available width and grow with the viewport. */
-  body.has-rail section.view { width: 100%; max-width: none; box-sizing: border-box; }
+  /* Section views fill the available width and grow with the viewport.
+     !important defeats inline `style="padding:..."` set by older legacy
+     code that wiped padding-left and caused content to render under the
+     rail (the "YOUR WISHLIST" → "R WISHLIST" clipping bug). */
+  body.has-rail section.view {
+    width: 100%; max-width: none; box-sizing: border-box;
+    padding-left: calc(64px + var(--content-pad-x)) !important;
+    padding-right: var(--content-pad-x) !important;
+  }
+  body.has-rail.rail-open section.view {
+    padding-left: calc(220px + var(--content-pad-x)) !important;
+  }
 }
 
 /* Mobile backdrop when drawer open */
@@ -1721,6 +1731,18 @@ section.view { padding: 16px; }
 }
 .menu-toggle { position: relative; }
 /* Lock indicator removed — lock action lives on dbl-click of ⟳ shuffle pill */
+
+/* === "Public site" link — first rail item on admin/publisher pages.
+   Visually distinct so curators can always jump back to the live site. */
+.rail-item--public {
+  border: 1px solid var(--accent) !important;
+  color: var(--accent) !important;
+  background: transparent !important;
+  margin-bottom: 6px;
+  text-decoration: none;
+}
+.rail-item--public:hover { background: var(--accent) !important; color: var(--bg) !important; }
+.rail-item--public .label { font-weight: 700; letter-spacing: .04em; }
 
 /* === Auth rail item — top of rail, primary call-out when signed-out ==== */
 .rail-item--auth {

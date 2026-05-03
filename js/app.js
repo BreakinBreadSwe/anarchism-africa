@@ -400,7 +400,7 @@
       if (!host) {
         host = document.createElement('section');
         host.className = 'view'; host.id = 'view-languages';
-        host.style.padding = '18px var(--content-pad-x, 16px)';
+        // No inline padding — body.has-rail .view CSS handles the rail offset.
         document.querySelector('main, body').appendChild(host);
       }
       if (window.AA?.languages) {

@@ -248,14 +248,16 @@
       tabs.appendChild(tab);
     }
 
-    // 3) Public-site: ensure a #view-wishlist section exists
+    // 3) Public-site: ensure a #view-wishlist section exists. We DON'T set
+    //    inline padding here — the .has-rail CSS handles the rail offset
+    //    automatically. Inline padding shorthand wipes padding-left and
+    //    causes content to render under the rail (the "YOUR WISHLIST" →
+    //    "R WISHLIST" clipping bug).
     if (isPublic && !document.getElementById('view-wishlist')) {
       const sec = document.createElement('section');
       sec.className = 'view';
       sec.id = 'view-wishlist';
-      sec.style.padding = '18px var(--content-pad-x, 16px)';
       sec.innerHTML = '';
-      // place after the last existing view section
       const last = document.querySelector('section.view:last-of-type');
       (last?.parentNode || document.body).insertBefore(sec, last?.nextSibling || null);
     }

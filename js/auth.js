@@ -200,6 +200,24 @@
     wirePhoneForm(page);
   }
 
+  // Global navigation-aware close: when the auth sheet is open and the user
+  // clicks ANY nav target — rail item, bottombar button, in-app tab, hash
+  // jump, or the brand wordmark — the sheet should auto-close so the user
+  // doesn't have to hit the X first. Bound once at module load.
+  document.addEventListener('click', (e) => {
+    const isOpen = document.body.classList.contains('aa-auth-open');
+    if (!isOpen) return;
+    // Don't close on clicks inside the auth page itself (forms, buttons).
+    if (e.target.closest('#aa-auth-page')) return;
+    // Close on any rail-item, tab, bottombar button, or anchor that navigates.
+    const navHit = e.target.closest('.rail-item, .tab, [data-tab], [data-bbar], [data-jump], a[href^="#"], a[href$=".html"], a.brand');
+    if (navHit) closeSheet();
+  }, true);
+  // Also close on hashchange (if something programmatically navigates).
+  window.addEventListener('hashchange', () => {
+    if (document.body.classList.contains('aa-auth-open')) closeSheet();
+  });
+
   function wireEmailForm (page) {
     const form   = page.querySelector('#aa-auth-email-form');
     const input  = page.querySelector('#aa-auth-email-input');

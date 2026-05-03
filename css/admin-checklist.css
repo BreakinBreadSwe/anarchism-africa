@@ -111,6 +111,43 @@
   color: var(--fg-dim);
   text-align: center;
 }
+
+.aa-checklist-helpbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  margin-left: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg-dim);
+  cursor: pointer;
+  font: 800 .68rem 'JetBrains Mono', monospace;
+  vertical-align: middle;
+  border-radius: 0;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.aa-checklist-helpbtn:hover { color: var(--fg); border-color: var(--fg); }
+.aa-checklist-helpbtn.open { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.aa-checklist-help {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px dashed var(--line);
+  font: 500 .82rem/1.5 'Space Grotesk', sans-serif;
+  color: var(--fg);
+}
+.aa-checklist-help[hidden] { display: none; }
+.aa-checklist-help p { margin: 0 0 8px; }
+.aa-checklist-help p:last-child { margin: 0; }
+.aa-checklist-help-tag {
+  display: inline-block;
+  font: 800 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 4px;
+}
 .aa-checklist-error {
   padding: 12px 18px;
   border-top: 1px solid var(--red, #ef4444);

@@ -70,12 +70,45 @@
   }
 
   function buildItem (it) {
+    const center = el('div', {},
+      el('div', { class: 'aa-checklist-label' }, it.label),
+      el('div', { class: 'aa-checklist-detail' }, it.detail || '')
+    );
+    // If the item ships a help block, render it as an expandable accordion
+    // under the row. Closed by default; click "?" to expand.
+    if (it.help) {
+      const helpBox = el('div', { class: 'aa-checklist-help', hidden: 'hidden' });
+      // Render the help text as paragraphs split on newlines (we encode
+      // WHAT/WHY/HOW/WHERE on separate lines server-side).
+      String(it.help).split(/\n+/).forEach(line => {
+        const m = line.match(/^([A-Z]+(?:\s\([^)]+\))?):\s*(.*)$/);
+        if (m) {
+          helpBox.appendChild(el('p', {},
+            el('strong', { class: 'aa-checklist-help-tag' }, m[1] + ': '),
+            m[2]
+          ));
+        } else if (line.trim()) {
+          helpBox.appendChild(el('p', {}, line));
+        }
+      });
+      const helpBtn = el('button', {
+        class: 'aa-checklist-helpbtn',
+        type: 'button',
+        'aria-label': 'Show instructions',
+        title: 'Show / hide instructions'
+      }, '?');
+      helpBtn.addEventListener('click', () => {
+        const open = !helpBox.hidden;
+        if (open) helpBox.setAttribute('hidden', 'hidden'); else helpBox.removeAttribute('hidden');
+        helpBtn.classList.toggle('open', !open);
+      });
+      center.appendChild(helpBtn);
+      center.appendChild(helpBox);
+    }
+
     const parts = [
       el('span', { class: 'aa-checklist-mark' }, ICON[it.status] || '?'),
-      el('div', {},
-        el('div', { class: 'aa-checklist-label' }, it.label),
-        el('div', { class: 'aa-checklist-detail' }, it.detail || '')
-      )
+      center
     ];
     if (it.action && (it.status !== 'pass' || /trigger|fire|generate/i.test(it.action.label || ''))) {
       const btn = el('button', {

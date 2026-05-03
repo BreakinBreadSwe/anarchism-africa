@@ -268,15 +268,26 @@
       }
     }
 
-    // 5) Public-site click-routing: when user clicks the Wishlist tab/rail-item,
-    //    render into #view-wishlist (the existing app.js setTab will toggle .active).
+    // 5) Public-site click-routing: app.js setTab() already toggles section
+    //    .active and rail/tab .active. We just need to populate the
+    //    view-wishlist content when it activates. We hook into setTab via
+    //    a hashchange + DOM polling fallback. NO capture-phase hijack — that
+    //    used to desync section visibility with the SPA's state machine and
+    //    broke navigation back to other tabs.
     if (isPublic) {
-      document.addEventListener('click', e => {
-        const t = e.target.closest('[data-tab="wishlist"]');
-        if (!t) return;
-        location.hash = 'wishlist';
-        renderPublicView();
-      }, { capture: true });
+      const populate = () => {
+        const v = document.getElementById('view-wishlist');
+        if (v && v.classList.contains('active')) v.innerHTML = W.renderView();
+      };
+      window.addEventListener('hashchange', populate);
+      // Also react to programmatic .active toggles (setTab may run before
+      // hashchange in some races) — observe the section directly.
+      const v = document.getElementById('view-wishlist');
+      if (v && 'MutationObserver' in window) {
+        new MutationObserver(populate).observe(v, { attributes: true, attributeFilter: ['class'] });
+      }
+      // Initial paint if the user lands on /#wishlist directly.
+      if (location.hash === '#wishlist') populate();
     }
   }
 

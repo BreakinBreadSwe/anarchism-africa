@@ -485,7 +485,19 @@ section.view.active { display: block; animation: fadeIn .35s ease; }
   display: grid; place-items: center; font-weight: 700; color: #fff;
 }
 .amb-row .meta, .post-row .meta { color: var(--muted); font-size: .8rem; }
-.status-pill { font-size: .65rem; padding: 3px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: .1em; }
+/* Status pills, with breathing room and clear borders so they read as
+   distinct chips even when several stack in a table cell. */
+.status-pill {
+  display: inline-block;
+  font: 700 .65rem 'JetBrains Mono', monospace;
+  padding: 4px 10px;
+  margin: 2px 4px 2px 0;
+  border-radius: 99px;
+  border: 1px solid currentColor;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
 .status-pill.active   { background: rgba(0,119,73,.2); color: #6fffa0; }
 .status-pill.pending  { background: rgba(255,215,0,.15); color: var(--accent); }
 .status-pill.hot      { background: rgba(200,16,46,.18); color: #ff7d8a; }
@@ -2139,6 +2151,99 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
    after the read-time of the label. The CSS-only ::after fallback
    is intentionally disabled to prevent double-rendering. */
 [data-aa-tooltip]::after { display: none !important; content: none !important; }
+
+/* ============================================================
+   ADMIN FORMS — unified theme styling for any raw <input>,
+   <select>, <textarea> inside a .panel or [data-form]. Without
+   this, browser defaults look "cramped" on dark themes.
+   ============================================================ */
+.panel form,
+form[data-form] {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+.panel form input[type="text"],
+.panel form input[type="email"],
+.panel form input[type="tel"],
+.panel form input[type="number"],
+.panel form input[type="date"],
+.panel form input[type="url"],
+.panel form input:not([type]),
+.panel form select,
+.panel form textarea,
+form[data-form] input[type="text"],
+form[data-form] input[type="email"],
+form[data-form] input[type="tel"],
+form[data-form] input[type="number"],
+form[data-form] input[type="date"],
+form[data-form] input[type="url"],
+form[data-form] input:not([type]),
+form[data-form] select,
+form[data-form] textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  font: 500 .9rem 'Space Grotesk', sans-serif;
+  letter-spacing: .02em;
+  box-sizing: border-box;
+  transition: border-color .12s, background .12s;
+}
+.panel form input:focus,
+.panel form select:focus,
+.panel form textarea:focus,
+form[data-form] input:focus,
+form[data-form] select:focus,
+form[data-form] textarea:focus {
+  outline: 0;
+  border-color: var(--accent);
+  background: var(--bg-2);
+}
+.panel form textarea,
+form[data-form] textarea { min-height: 96px; resize: vertical; line-height: 1.45; }
+.panel form button,
+form[data-form] button {
+  justify-self: start;
+  margin-top: 4px;
+}
+.panel form label,
+form[data-form] label {
+  font: 700 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 2px;
+}
+
+/* Admin tables — breathing room + sticky header + pill clarity */
+.panel table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 12px;
+  font: 500 .88rem 'Space Grotesk', sans-serif;
+}
+.panel table th,
+.panel table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.panel table th {
+  font: 800 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 1;
+}
+.panel table tbody tr:hover { background: color-mix(in srgb, var(--bg-2) 60%, transparent); }
+.panel table tbody td.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .82rem; color: var(--fg-dim); letter-spacing: .04em; }
 
 /* ============================================================
    ITEM PAGE — mirror credit pill + related-content grid

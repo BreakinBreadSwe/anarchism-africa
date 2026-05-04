@@ -341,12 +341,39 @@
   <button data-role="admin">Admin (LUVLAB)</button>
 </div>
 
-<!-- STICKY MINI-PLAYER -------------------------------------------------- -->
-<div class="mini-player" id="mini-player" aria-live="polite">
-  <button class="play" id="mp-play">▶</button>
-  <div class="info"><b id="mp-title">—</b><span id="mp-artist">—</span></div>
-  <div class="progress"><i id="mp-bar"></i></div>
-  <button class="close" id="mp-close" title="Close">×</button>
+<!-- STICKY MINI-PLAYER — full controls, docks flush above bottombar ----- -->
+<div class="mini-player" id="mini-player" aria-live="polite" role="region" aria-label="Music player">
+  <div class="mp-art" id="mp-art" aria-hidden="true"></div>
+  <button class="mp-prev" id="mp-prev" type="button" aria-label="Previous track" title="Previous">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19,5 9,12 19,19" fill="currentColor"/><line x1="6" y1="5" x2="6" y2="19"/></svg>
+  </button>
+  <button class="mp-play" id="mp-play" type="button" aria-label="Play/Pause" title="Play / Pause">
+    <svg class="mp-icon-play"  viewBox="0 0 24 24" width="20" height="20"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg>
+    <svg class="mp-icon-pause" viewBox="0 0 24 24" width="20" height="20" hidden><rect x="6" y="4"  width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>
+  </button>
+  <button class="mp-next" id="mp-next" type="button" aria-label="Next track" title="Next">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5,5 15,12 5,19" fill="currentColor"/><line x1="18" y1="5" x2="18" y2="19"/></svg>
+  </button>
+  <div class="mp-info">
+    <b id="mp-title">—</b>
+    <span id="mp-artist">—</span>
+  </div>
+  <div class="mp-time mono" id="mp-cur">0:00</div>
+  <div class="mp-track" id="mp-track" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+    <div class="mp-track-buffer" id="mp-buffer"></div>
+    <div class="mp-track-fill"   id="mp-bar"></div>
+    <div class="mp-track-knob"   id="mp-knob"></div>
+  </div>
+  <div class="mp-time mono" id="mp-dur">0:00</div>
+  <button class="mp-like" id="mp-like" type="button" aria-label="Save to wishlist" title="Save (♥)">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+  </button>
+  <button class="mp-share" id="mp-share" type="button" aria-label="Share track" title="Share">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6"  cy="12" r="2.6"/><circle cx="18" cy="6"  r="2.6"/><circle cx="18" cy="18" r="2.6"/><line x1="8.2" y1="11" x2="15.8" y2="7"/><line x1="8.2" y1="13" x2="15.8" y2="17"/></svg>
+  </button>
+  <button class="mp-close" id="mp-close" type="button" aria-label="Close player" title="Close">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+  </button>
 </div>
 
 <!-- FIXED BOTTOM BAR ----------------------------------------------------- -->

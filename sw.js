@@ -7,7 +7,7 @@
  *   - Static assets (CSS/JS/SVG/PNG/fonts): stale-while-revalidate.
  *   - /api/* + POSTs: never intercepted (live-only).
  */
-const CACHE = 'aa-shell-v21';   // bump on every shell change
+const CACHE = 'aa-shell-v22';   // bump on every shell change
 
 const SHELL = [
   '/',

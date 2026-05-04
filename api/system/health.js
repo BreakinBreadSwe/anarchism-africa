@@ -13,7 +13,7 @@
  * checklist is shared. Differences in capability are surfaced via `action`.
  */
 
-const { list } = require('@vercel/blob');
+const sb = require('../../lib/supabase');
 
 function authed (req) {
   const adminToken = process.env.ADMIN_TOKEN;
@@ -28,13 +28,21 @@ function authed (req) {
   return false;
 }
 
-async function safeBlobJSON (key) {
+/* Returns the most-recent row in a table by a timestamp column.
+   Returns null if Supabase is unconfigured or the table is empty. */
+async function latestRow (table, tsCol = 'created_at') {
+  if (!sb.configured()) return null;
   try {
-    const url = `${baseUrl()}/api/blob/get?key=${encodeURIComponent(key)}`;
-    const r = await fetch(url);
-    if (!r.ok) return null;
-    return await r.json();
+    const rows = await sb.select(table, { order: '-' + tsCol, limit: 1 });
+    return rows && rows.length ? rows[0] : null;
   } catch { return null; }
+}
+async function tableCount (table, filter = {}) {
+  if (!sb.configured()) return 0;
+  try {
+    const rows = await sb.select(table, { ...filter, select: 'id', limit: 10000 });
+    return rows ? rows.length : 0;
+  } catch { return 0; }
 }
 
 function baseUrl () {
@@ -74,18 +82,18 @@ function checkEnv () {
   const items = [];
 
   items.push({
-    id: 'env-blob',
+    id: 'env-supabase',
     group: 'Setup',
-    label: 'Vercel Blob storage connected',
-    status: process.env.BLOB_READ_WRITE_TOKEN ? 'pass' : 'fail',
-    detail: process.env.BLOB_READ_WRITE_TOKEN ? 'BLOB_READ_WRITE_TOKEN is set in Vercel env' : 'BLOB_READ_WRITE_TOKEN missing — the pipeline has nowhere to store articles, logos, or slogans',
+    label: 'Supabase database connected',
+    status: sb.configured() ? 'pass' : 'fail',
+    detail: sb.configured() ? 'SUPABASE_URL + SUPABASE_SERVICE_ROLE set in Vercel env' : 'SUPABASE_URL or SUPABASE_SERVICE_ROLE missing — the pipeline has no database to read from or write to',
     help: [
-      'WHAT IT DOES: Stores every article, logo, slogan and saved post on the cloud so they don\'t disappear when the server restarts.',
-      'WHY YOU NEED IT: Without this, the site has nowhere to put new stuff. Articles you generate would vanish. Nothing would show up on the public site.',
-      'HOW TO FIX (5 minutes): 1) Go to vercel.com/dashboard. 2) Click your project (anarchism-africa). 3) Click the "Storage" tab at the top. 4) Click the big "Create Database" button. 5) Pick "Blob" from the list. 6) Click Create. 7) Vercel automatically adds the password (called BLOB_READ_WRITE_TOKEN) to your project — you don\'t have to copy-paste anything. 8) Wait ~30 seconds for the redeploy. Done.',
+      'WHAT IT DOES: Postgres database that stores every article, logo, slogan, mirrored item, ambassador, grant, and reader saved post.',
+      'WHY YOU NEED IT: Without this, the site has nowhere to put or read content. The whole library would be empty.',
+      'HOW TO FIX (3 minutes): The Supabase project "anarchism-africa" already exists. You just need the keys in Vercel. 1) Open supabase.com/dashboard, click the anarchism-africa project. 2) Sidebar → Settings → API. 3) Copy "Project URL" — paste into Vercel env as SUPABASE_URL. 4) Copy "service_role secret" — paste into Vercel env as SUPABASE_SERVICE_ROLE. 5) Save. Vercel redeploys.',
       'CHECK: Refresh this page. Row should turn green.'
     ].join('\n'),
-    action: process.env.BLOB_READ_WRITE_TOKEN ? null : { label: 'Open Vercel Storage', url: 'https://vercel.com/dashboard' }
+    action: sb.configured() ? null : { label: 'Open Supabase API settings', url: 'https://supabase.com/dashboard/project/blwaohqgvlsjsypzodlz/settings/api' }
   });
 
   items.push({
@@ -177,16 +185,16 @@ function checkCronSchedule () {
 }
 
 async function checkScraper () {
-  const queue = await safeBlobJSON('content/pending.json');
-  const pending = Array.isArray(queue?.items) ? queue.items : [];
-  const last = pending.reduce((max, it) => Math.max(max, Date.parse(it.fetched_at || it.scraped_at || it.created_at || 0) || 0), 0);
+  const latest = await latestRow('content_queue', 'scraped_at');
+  const last = latest ? Date.parse(latest.scraped_at || latest.created_at) : 0;
   const age = last ? Date.now() - last : Infinity;
+  const pending = await tableCount('content_queue', { eq: { status: 'pending' } });
   return [{
     id: 'scrape-last',
     group: 'Scraper',
     label: 'Last scrape ran < 24h ago',
     status: statusFor(age, DAY, 2 * DAY),
-    detail: `Last scrape: ${fmtAge(age)} · ${pending.length} items in queue`,
+    detail: `Last scrape: ${fmtAge(age)} · ${pending} items in queue`,
     help: [
       'WHAT IT DOES: Every morning at 6 AM (UK time), a robot reads 42 magazine websites and brings back any new afro-anarchist articles, music releases, films, books, and events. Sources include ROAR Magazine, Africa Is A Country, AFROPUNK, Pambazuka, Awesome Tapes From Africa, and 37 more.',
       'WHY YOU NEED IT: This is what keeps the library fresh. Every day, ~20-50 new items land in the "Pending" tray for the publisher (COOLHUNTPARIS) to approve. Without it, the library stops growing.',
@@ -199,8 +207,8 @@ async function checkScraper () {
     id: 'scrape-queue',
     group: 'Scraper',
     label: 'Queue depth healthy (< 800)',
-    status: pending.length < 800 ? 'pass' : pending.length < 1500 ? 'warn' : 'fail',
-    detail: `${pending.length} pending items` + (pending.length >= 800 ? ' — review backlog in Pending tab' : ''),
+    status: pending < 800 ? 'pass' : pending < 1500 ? 'warn' : 'fail',
+    detail: `${pending} pending items` + (pending >= 800 ? ' — review backlog in Pending tab' : ''),
     help: [
       'WHAT IT TRACKS: How many scraped items are sitting in the Pending tray waiting to be approved or rejected.',
       'WHY IT MATTERS: A healthy queue has 50–500 items. Above 800 means COOLHUNTPARIS is falling behind on review. Above 1500 means old items will start getting pushed out by new ones before they\'re reviewed.',
@@ -212,16 +220,24 @@ async function checkScraper () {
 }
 
 async function checkArticles () {
-  const drafts = await safeBlobJSON('content/articles/drafts.json');
-  const items  = Array.isArray(drafts?.items) ? drafts.items : Array.isArray(drafts) ? drafts : [];
-  const last = items.reduce((max, it) => Math.max(max, Number(it.ts) || Date.parse(it.created_at || 0) || 0), 0);
+  const latest = await latestRow('content', 'created_at');
+  // narrow to articles
+  let articleLatest = null;
+  if (sb.configured()) {
+    try {
+      const rows = await sb.select('content', { eq: { kind: 'article' }, order: '-created_at', limit: 1 });
+      articleLatest = rows && rows.length ? rows[0] : null;
+    } catch {}
+  }
+  const last = articleLatest ? Date.parse(articleLatest.created_at) : 0;
   const age = last ? Date.now() - last : Infinity;
+  const items = await tableCount('content', { eq: { kind: 'article' } });
   return [{
     id: 'articles-last',
     group: 'Generators',
     label: 'Last article generated < 24h ago',
     status: statusFor(age, DAY, 3 * DAY),
-    detail: `${items.length} drafts · last: ${fmtAge(age)}`,
+    detail: `${items} articles · last: ${fmtAge(age)}`,
     help: [
       'WHAT IT DOES: Every morning at 9 AM, a robot writer picks the most-discussed afro-anarchist topic from yesterday\'s news and writes a full article — outline, research with Google citations, polished draft, headline, image suggestions. It uses 51 starter keywords (decolonial, sankofa, kwaito, sun-ra, fela, lumumba, fanon, ubuntu, ujamaa, etc.) so articles stay on-topic.',
       'WHY YOU NEED IT: One new article per day = ~30/month, ~365/year. The library grows on autopilot. The publisher (COOLHUNTPARIS) just polishes and publishes.',
@@ -234,8 +250,14 @@ async function checkArticles () {
 }
 
 async function checkLogos () {
-  const queue = await safeBlobJSON('content/marks/queue.json');
-  const items = Array.isArray(queue?.items) ? queue.items : [];
+  // Logos still live in the kv table during migration. Read from there.
+  let items = [];
+  if (sb.configured()) {
+    try {
+      const v = await sb.kvGet('content/marks/queue');
+      items = Array.isArray(v?.items) ? v.items : [];
+    } catch {}
+  }
   const last = items.reduce((max, it) => Math.max(max, Number(it.ts) || 0), 0);
   const age = last ? Date.now() - last : Infinity;
   return [{
@@ -256,8 +278,13 @@ async function checkLogos () {
 }
 
 async function checkSlogans () {
-  const queue = await safeBlobJSON('content/merch/slogans.json');
-  const items = Array.isArray(queue?.items) ? queue.items : [];
+  let items = [];
+  if (sb.configured()) {
+    try {
+      const v = await sb.kvGet('content/merch/slogans');
+      items = Array.isArray(v?.items) ? v.items : [];
+    } catch {}
+  }
   const last = items.reduce((max, it) => Math.max(max, Date.parse(it.created_at || 0) || 0), 0);
   const age = last ? Date.now() - last : Infinity;
   return [{
@@ -278,31 +305,39 @@ async function checkSlogans () {
 }
 
 async function checkContent () {
-  // Read the canonical seed (mirrors content lists by kind)
-  const seed = await safeBlobJSON('seed.json');
-  if (!seed) return [{
+  // Count rows by kind in the content table
+  if (!sb.configured()) return [{
+    id: 'content-db',
+    group: 'Content',
+    label: 'Library readable',
+    status: 'fail',
+    detail: 'Supabase not configured',
+    help: 'Add SUPABASE_URL and SUPABASE_SERVICE_ROLE to Vercel env. See the top "Supabase database connected" row.',
+    action: { label: 'Open Supabase keys', url: 'https://supabase.com/dashboard/project/blwaohqgvlsjsypzodlz/settings/api' }
+  }];
+  let counts = { film: 0, article: 0, event: 0, song: 0, book: 0, merch: 0 };
+  try {
+    for (const k of Object.keys(counts)) {
+      counts[k] = await tableCount('content', { eq: { kind: k, status: 'published' } });
+    }
+  } catch (e) {
+    return [{ id: 'content-db', group: 'Content', label: 'Library readable', status: 'fail', detail: 'Read failed: ' + e.message, action: null }];
+  }
+  const total = Object.values(counts).reduce((a,b)=>a+b,0);
+  if (total === 0) return [{
     id: 'content-seed',
     group: 'Content',
-    label: 'Seed initialized',
+    label: 'Library populated',
     status: 'fail',
-    detail: 'seed.json missing — POST /api/blob/seed once to bootstrap',
+    detail: 'Library empty — import the bundled seed.json to bootstrap (~30 demo items)',
     help: [
       'WHAT IT IS: The master content list. Films, articles, events, music, books, marketplace — everything the public site shows comes from this one file.',
       'WHY YOU NEED IT: Without it, the public site is completely empty. No cards on the home page. No items in any category.',
       'HOW TO FIX (one click): Press "Initialize seed". It loads ~30 demo items so the site looks alive immediately. After that, the daily robot adds more automatically.',
       'WHERE TO SEE IT: After init, refresh the public site (anarchism.africa). Items appear in every category.'
     ].join('\n'),
-    action: { label: 'Initialize seed', url: '/api/blob/seed', method: 'POST' }
+    action: { label: 'Import seed', url: '/api/content/import-seed', method: 'POST' }
   }];
-  const counts = {
-    films:    seed.films?.length    || 0,
-    articles: seed.articles?.length || 0,
-    events:   seed.events?.length   || 0,
-    music:    seed.music?.length    || 0,
-    books:    seed.books?.length    || 0,
-    merch:    seed.merch?.length    || 0
-  };
-  const total = Object.values(counts).reduce((a,b)=>a+b,0);
   return [{
     id: 'content-counts',
     group: 'Content',
@@ -333,8 +368,8 @@ async function checkContent () {
 }
 
 async function checkAutopilot () {
-  const log = await safeBlobJSON('content/logs/autopilot.json');
-  const last = log?.last_run_ts || 0;
+  const latest = await latestRow('autopilot_log', 'ran_at');
+  const last = latest ? Date.parse(latest.ran_at) : 0;
   const age = last ? Date.now() - last : Infinity;
   return [{
     id: 'autopilot-last',

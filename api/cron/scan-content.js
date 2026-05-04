@@ -79,7 +79,7 @@ export default async function handler (req, res) {
   }
 
   const origin = process.env.SITE_URL || `https://${req.headers.host || 'anarchism.africa'}`;
-  const summary = { scanned: 0, queued: 0, deduped: 0, errors: [] };
+  const summary = { scanned: 0, queued: 0, deduped: 0, rejected_404: 0, errors: [] };
 
   for (const src of SOURCES) {
     try {
@@ -87,18 +87,29 @@ export default async function handler (req, res) {
       const items = parseFeed(xml).slice(0, 12);
       summary.scanned += items.length;
       for (const it of items) {
+        // VALIDATE the link before queueing. Many feeds publish a slug
+        // before the article goes live, or the publisher 410s old posts.
+        // We do a HEAD request, follow redirects, and only queue items
+        // that resolve to a 2xx final URL.
+        const verified = await verifyUrl(it.link);
+        if (!verified.ok) {
+          summary.rejected_404 += 1;
+          continue;
+        }
+        const finalUrl = verified.finalUrl || it.link;
+
         const payload = {
           kind:           src.kind,
           title:          it.title,
           summary:        cleanText(it.summary).slice(0, 600),
-          url:            it.link,
+          url:            finalUrl,
           // Mirror credit fields — every scraped item retains a path back
           // to its original source, so item.html can render a "via" credit
           // and a clear linkback. License falls back to the source's known
           // license when the feed entry doesn't declare one.
           source:         src.name,
           source_id:      src.id,
-          source_url:     it.link,
+          source_url:     finalUrl,
           source_title:   it.title,
           source_author:  it.author || src.author || '',
           source_license: it.license || src.license || 'all rights reserved (linkback only)',
@@ -122,6 +133,28 @@ export default async function handler (req, res) {
   }
 
   return res.status(200).json({ ok: true, ts: Date.now(), ...summary });
+}
+
+/* Cheap URL liveness check — HEAD with 5s timeout, follow up to 5 redirects.
+   Falls back to GET on servers that 405 HEAD (some CDN-fronted sites do).
+   Returns { ok: true, finalUrl } if 2xx, or { ok: false, status, finalUrl }. */
+async function verifyUrl (url) {
+  if (!url || !/^https?:\/\//i.test(url)) return { ok: false, status: 0 };
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 5000);
+  try {
+    let r = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: ctrl.signal,
+      headers: { 'User-Agent': 'ANARCHISM.AFRICA/1.0 (+url verifier)' } });
+    if (r.status === 405 || r.status === 501) {
+      r = await fetch(url, { method: 'GET', redirect: 'follow', signal: ctrl.signal,
+        headers: { 'User-Agent': 'ANARCHISM.AFRICA/1.0 (+url verifier)' } });
+    }
+    clearTimeout(t);
+    return { ok: r.ok, status: r.status, finalUrl: r.url || url };
+  } catch (e) {
+    clearTimeout(t);
+    return { ok: false, status: 0, error: String(e.message || e) };
+  }
 }
 
 async function fetchText (url) {

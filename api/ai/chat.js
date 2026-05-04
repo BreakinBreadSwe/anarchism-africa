@@ -19,16 +19,53 @@
 // while we're still in beta. Override per request via { provider, model }.
 
 const OPENROUTER_DEFAULT_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
+const GEMINI_DEFAULT_MODEL     = 'gemini-1.5-flash';
+
+// Provider chain for the default ('auto') path: try OpenRouter first,
+// fall back to Gemini if it fails (rate limit, missing key, network error,
+// quota exhausted). Each provider in the chain is tried in order.
+const FALLBACK_CHAIN = ['openrouter', 'gemini'];
 
 export default async function handler (req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
-  const { provider = 'openrouter', model, messages = [] } = req.body || {};
-  try {
-    const text = await dispatch(provider, model, messages);
-    return res.status(200).json({ text, provider, model });
-  } catch (e) {
-    return res.status(500).json({ error: String(e.message || e) });
+  const { provider, model, messages = [] } = req.body || {};
+
+  // If a specific provider is requested, honor it (no fallback). If the
+  // caller passes 'auto' OR omits provider entirely, run the fallback
+  // chain so the chat / article generator never goes dark just because
+  // OpenRouter rate-limited the free tier.
+  const useFallback = !provider || provider === 'auto';
+  const chain = useFallback ? FALLBACK_CHAIN : [provider];
+
+  const errors = [];
+  for (let i = 0; i < chain.length; i++) {
+    const p = chain[i];
+    // Only pass the user-supplied model to the FIRST provider — model
+    // names don't translate across providers (a Llama model id would
+    // make Gemini 404). Fallback providers use their own default.
+    const m = (i === 0) ? model : undefined;
+    try {
+      const text = await dispatch(p, m, messages);
+      if (text && String(text).trim()) {
+        return res.status(200).json({
+          text,
+          provider: p,
+          model: m || defaultModel(p),
+          fallbackUsed: p !== chain[0]
+        });
+      }
+      errors.push({ provider: p, error: 'empty response' });
+    } catch (e) {
+      errors.push({ provider: p, error: String(e.message || e) });
+    }
   }
+  return res.status(500).json({ error: 'all providers failed', tried: errors });
+}
+
+function defaultModel (p) {
+  if (p === 'openrouter') return OPENROUTER_DEFAULT_MODEL;
+  if (p === 'gemini')     return GEMINI_DEFAULT_MODEL;
+  return undefined;
 }
 
 async function dispatch (provider, model, messages) {

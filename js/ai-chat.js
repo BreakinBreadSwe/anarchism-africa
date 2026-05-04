@@ -45,7 +45,9 @@
   }
 
   async function ask (userText, history = []) {
-    const cfg = (window.AA && AA.cfg ? AA.cfg() : window.AA_CONFIG)?.ai || { provider: 'gemini', model: 'gemini-1.5-flash' };
+    // 'auto' triggers the OpenRouter → Gemini fallback chain on the server.
+    // Override per-request by setting window.AA_CONFIG.ai = { provider, model }.
+    const cfg = (window.AA && AA.cfg ? AA.cfg() : window.AA_CONFIG)?.ai || { provider: 'auto' };
     const messages = [
       { role: 'system', content: 'You are A.A.AI, the library oracle of ANARCHISM.AFRICA — afrofuturist, kind, terse, well-read. Cite films, books, articles or events from the archive when relevant.' },
       ...history.slice(-10),

@@ -10,6 +10,7 @@
  * have a database yet" bug — now we have one, and this endpoint persists.
  */
 const sb = require('../../lib/supabase');
+const { dropUnsafeUrls } = require('../../lib/url-safety');
 
 const ALLOWED = new Set([
   'kind','status','slug','title','subtitle','deck','summary','body','language','category','tags',
@@ -54,6 +55,13 @@ module.exports = async function handler (req, res) {
     const patch = clean(body);
     if (!patch.kind && !id) return res.status(400).json({ ok: false, error: 'kind required for new content' });
     if (!patch.title && !id) return res.status(400).json({ ok: false, error: 'title required for new content' });
+    // Strip non-http(s) URLs before they hit the DB. Stops a `javascript:` or
+    // `data:` paste in the admin form from becoming a stored XSS via the
+    // public item-page renderer.
+    const droppedUrls = dropUnsafeUrls(patch);
+    if (droppedUrls.length) {
+      res.setHeader('x-aa-dropped-urls', droppedUrls.join(','));
+    }
 
     let row;
     if (id) {

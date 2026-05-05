@@ -121,9 +121,18 @@
               <li>✦ Get the weekly digest only when something real ships</li>
             </ul>
           </div>
-          <div class="aa-auth-form">
-            <h2 class="aa-auth-form-title">Sign in</h2>
-            <p class="aa-auth-form-sub">Pick the method you prefer. Each one drops you in as a consumer.</p>
+          <div class="aa-auth-form" id="aa-auth-form" data-mode="signin">
+            <div class="aa-auth-mode-tabs" role="tablist">
+              <button type="button" class="aa-auth-mode-tab is-active" id="aa-tab-signin" role="tab" aria-selected="true"  aria-controls="aa-auth-form" data-mode="signin">Sign in</button>
+              <button type="button" class="aa-auth-mode-tab"           id="aa-tab-signup" role="tab" aria-selected="false" aria-controls="aa-auth-form" data-mode="signup">Sign up</button>
+            </div>
+
+            <p class="aa-auth-form-sub" id="aa-auth-form-sub">Welcome back — pick how you want in.</p>
+
+            <div class="aa-auth-name-row" id="aa-auth-name-row" style="display:none">
+              <div class="aa-auth-method-label mono">Your name <span style="opacity:.5">(optional)</span></div>
+              <input type="text" id="aa-auth-name-input" placeholder="How should we call you?" autocomplete="name" maxlength="60" />
+            </div>
 
             <div class="aa-auth-method">
               <div class="aa-auth-method-label mono">Google</div>
@@ -186,6 +195,28 @@
         writeUser(guest);
         closeSheet();
       });
+
+      // Sign in / Sign up mode toggle
+      const formEl   = page.querySelector('#aa-auth-form');
+      const subEl    = page.querySelector('#aa-auth-form-sub');
+      const nameRow  = page.querySelector('#aa-auth-name-row');
+      const tabSignIn  = page.querySelector('#aa-tab-signin');
+      const tabSignUp  = page.querySelector('#aa-tab-signup');
+      function setMode (mode) {
+        formEl.dataset.mode = mode;
+        const isSignUp = mode === 'signup';
+        tabSignIn.classList.toggle('is-active', !isSignUp);
+        tabSignUp.classList.toggle('is-active',  isSignUp);
+        tabSignIn.setAttribute('aria-selected', String(!isSignUp));
+        tabSignUp.setAttribute('aria-selected', String(isSignUp));
+        subEl.textContent = isSignUp
+          ? 'New here? Your account is created automatically — no password needed.'
+          : 'Welcome back — pick how you want in.';
+        nameRow.style.display = isSignUp ? '' : 'none';
+        if (isSignUp) page.querySelector('#aa-auth-name-input')?.focus();
+      }
+      tabSignIn.addEventListener('click', () => setMode('signin'));
+      tabSignUp.addEventListener('click', () => setMode('signup'));
       // Esc closes
       document.addEventListener('keydown', function onEsc (e) {
         if (e.key === 'Escape' && page.classList.contains('open')) {
@@ -218,6 +249,10 @@
     if (document.body.classList.contains('aa-auth-open')) closeSheet();
   });
 
+  function getDisplayName (page) {
+    return (page.querySelector('#aa-auth-name-input')?.value || '').trim() || null;
+  }
+
   function wireEmailForm (page) {
     const form   = page.querySelector('#aa-auth-email-form');
     const input  = page.querySelector('#aa-auth-email-input');
@@ -232,10 +267,11 @@
         status.textContent = 'Please enter a valid email.'; status.style.color = 'var(--red)'; return;
       }
       btn.disabled = true; status.style.color = 'var(--muted)'; status.textContent = 'Sending magic link...';
+      const name = getDisplayName(page);
       try {
         const r = await fetch('/api/auth/email/start', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
+          body: JSON.stringify({ email, ...(name ? { name } : {}) })
         });
         const data = await r.json();
         if (!r.ok) { status.textContent = 'Error: ' + (data.error || r.status); status.style.color = 'var(--red)'; }

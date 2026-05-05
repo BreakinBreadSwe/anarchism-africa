@@ -496,9 +496,11 @@
       if (ui.dur)    ui.dur.textContent = song.duration ? fmt(song.duration) : '0:00';
       if (ui.bar2)   ui.bar2.style.width = '0%';
       if (ui.knob)   ui.knob.style.left  = '0%';
-      show();
-      setPlayingUI(true);
-      audio.play().catch(() => setPlayingUI(false));
+      // Wire all events BEFORE calling play() so we never miss the 'play'
+      // event that drives the icon. Icon starts in play-state (not pause)
+      // and only flips to pause when audio actually begins.
+      audio.addEventListener('play',  () => setPlayingUI(true));
+      audio.addEventListener('pause', () => setPlayingUI(false));
       audio.addEventListener('loadedmetadata', () => {
         if (ui.dur) ui.dur.textContent = fmt(audio.duration);
       });
@@ -515,8 +517,6 @@
         const end = audio.buffered.end(audio.buffered.length - 1);
         if (ui.buffer) ui.buffer.style.width = (end / audio.duration * 100) + '%';
       });
-      audio.addEventListener('pause', () => setPlayingUI(false));
-      audio.addEventListener('play',  () => setPlayingUI(true));
       audio.addEventListener('ended', () => {
         if (queueIndex >= 0 && queueIndex < queue.length - 1) next();
         else { setPlayingUI(false); }
@@ -537,6 +537,9 @@
         if (queueIndex >= 0 && queueIndex < queue.length - 1) next();
         else { hide(); current = null; }
       });
+      show();
+      setPlayingUI(false);  // show play icon until browser confirms playback
+      audio.play().catch(() => setPlayingUI(false));
       syncLike();
     }
 

@@ -15,6 +15,7 @@
  * Auth: ADMIN_TOKEN header, aa_role cookie, or CRON_SECRET (for scraper).
  */
 const sb = require('../../lib/supabase');
+const { isPublicScheme } = require('../../lib/url-safety');
 
 function authed (req, allowCron = false) {
   const adminTok = process.env.ADMIN_TOKEN;
@@ -55,6 +56,16 @@ module.exports = async function handler (req, res) {
     if (action === 'enqueue') {
       if (!item || !item.url || !item.title || !item.kind) {
         return res.status(400).json({ ok: false, error: 'item.url, item.title, item.kind required' });
+      }
+      // Reject anything that isn't a public http(s) URL up front — keeps
+      // `javascript:`/`data:` payloads out of the queue (and out of the DB
+      // even before publisher review). source_url, when present, must also
+      // be public.
+      if (!isPublicScheme(item.url)) {
+        return res.status(400).json({ ok: false, error: 'item.url must be http(s)' });
+      }
+      if (item.source_url && !isPublicScheme(item.source_url)) {
+        return res.status(400).json({ ok: false, error: 'item.source_url must be http(s)' });
       }
       // Try insert; if duplicate URL hash, return deduped:true.
       try {

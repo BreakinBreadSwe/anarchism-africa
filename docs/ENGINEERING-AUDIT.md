@@ -1,28 +1,35 @@
 # Engineering Audit — ANARCHISM.AFRICA
 
-**Date:** 2026-05-01. **Scope:** all subsystems. **Reviewer:** internal pre-deploy audit.
+**Date:** 2026-05-01 (last refresh: 2026-05-05 — see Appendix A). **Scope:** all subsystems. **Reviewer:** internal pre-deploy audit.
 
 Consolidates the eight engineering perspectives (architecture, code-review,
 debug, deploy-checklist, documentation, incident-response, standup,
 system-design, tech-debt) into a single readable artefact.
 
+> **Major change since first publication:** ADR-001 was *superseded* by the
+> Blob → Supabase Postgres migration on 2026-05-04 (commit `dfbb732`). The
+> live-datastore claim in §1 is no longer accurate. See ADR-006 and the
+> findings in Appendix A.
+
 ---
 
 ## §1 ARCHITECTURE — at a glance
 
-Static-first + serverless on Vercel. Live state in Vercel Blob. Bundled
-`data/seed.json` is a cold-start fixture. Every "live" capability is a
-serverless function; nothing runs as a long-lived backend.
+Static-first + serverless on Vercel. Live state in **Supabase Postgres**
+(see ADR-006). Bundled `data/seed.json` is a cold-start fixture. Every
+"live" capability is a serverless function; nothing runs as a long-lived
+backend.
 
-**Five accepted ADRs:**
+**Six accepted ADRs:**
 
 | ADR | Decision | Why |
 |---|---|---|
-| 001 | Vercel Blob as live datastore | Lowest ops, free tier covers MVP, single vendor already |
-| 002 | OpenRouter as default LLM gateway | Free-tier covers chat + Article Lab; one key, many models |
+| 001 | ~~Vercel Blob as live datastore~~ — superseded by ADR-006 | (See ADR-006) |
+| 002 | OpenRouter as default LLM gateway with Gemini fallback | Free-tier covers chat + Article Lab; auto-fallback ships zero-downtime when OpenRouter rate-limits (commit `aa30a89`) |
 | 003 | Multi-provider image gen with rotation | Visual diversity; degrade gracefully when a key is missing |
 | 004 | PIN auth for roles, Google OAuth for consumers | Demo-grade for ~10 internal users + real auth for public |
 | 005 | RLHF-lite via prompt steering | Reject-reasons feed back as "avoid these" in next prompts; no fine-tuning |
+| 006 | Supabase Postgres as live datastore (replaces Blob) | Need for relational queries (link health views, content_queue → content promotion, autopilot_log indexing), proper schema migrations, RLS, and a unified content table across kinds. Free tier still sufficient for MVP. Blob endpoints kept as legacy read-only paths during cutover. |
 
 **Open architectural questions:** full-text search, AfroWiki layer, radio /
 TV / gallery views, real-time updates, funding scanner.
@@ -242,3 +249,86 @@ Quality cues worth flagging in standup:
 6. MJ-7 (publish race protection) — 2 h
 
 Total: 7 hours. Project goes from "demo" to "okay-to-ship-publicly."
+
+---
+
+## Appendix A — Post-Supabase-migration audit (2026-05-05)
+
+A focused re-audit after commits `dfbb732` (Supabase migration), `bb58726`
+(link verifier), `aa30a89` (OpenRouter→Gemini fallback), and `a511fee`
+(playable-songs filter). Findings new to this pass — items already in §3 or
+§9 are not repeated.
+
+**🔴 Critical, fixed in this pass:**
+
+- **A1. Open-by-default cron auth** — `api/cron/verify-links.js` returned
+  `true` from `authed()` when neither `ADMIN_TOKEN` nor `CRON_SECRET` was
+  configured. Fixed to fail closed; Vercel's own `x-vercel-cron-signature`
+  is still accepted so platform-managed schedules work.
+- **A2. SSRF in link verifier** — `verifyUrl()` accepted any
+  `^https?:` URL pulled from the DB and fetched it. A malicious admin or
+  poisoned scrape could store `http://169.254.169.254/...` (AWS IMDS) or
+  `http://localhost:3000`. Fixed via the new `lib/url-safety.js`
+  (`isSafeToFetch`) — checked both before the fetch and on the post-redirect
+  URL.
+- **A3. Stored-XSS via `external_url`** — `api/content/save.js` accepted any
+  string in `external_url` / `source_url` / `audio` etc. and `item.html`
+  renders them as `href`. Fixed: `dropUnsafeUrls()` strips non-http(s)
+  before insert. Mirrored guard in `api/content/queue.js` enqueue path
+  rejects `javascript:`/`data:` payloads up front (HTTP 400).
+- **A4. Empty Gemini responses masquerading as success** — the safety
+  filter returns 200 OK with `finishReason=SAFETY` and empty parts. The
+  fallback chain in `api/ai/chat.js` accepted the empty string as success
+  and never advanced. Fixed: `gemini()` now throws when no text is
+  returned, so the chain advances to the next provider.
+
+**🟡 Important, mitigated:**
+
+- **A5. Verifier function-timeout risk** — sequential 6 s HEADs over up to
+  1000 rows would blow Vercel Hobby's 60 s function limit. Mitigated by
+  reducing default `limit` to 120 (cap 250) and parallelising 8-at-a-time.
+  For true durability the next step is Vercel Workflow (paginated, retry-
+  safe, durable) — flagged but not taken without a product call.
+- **A6. Redirect-rewrite loop** — A→B→A redirect chains would oscillate
+  the stored `external_url` every cron run. Added a per-row guard
+  (`link_final_url` history check + per-invocation `seen` set) so we only
+  rewrite when the canonical is stably new.
+
+**🟢 Open / next:**
+
+- **A7. AI Gateway / Workflow migration** — the validation hooks in this
+  repo recommend routing all model calls through Vercel AI Gateway and
+  long-running crons through Vercel Workflow. Both are good ideas but
+  substantial: Gateway changes the auth model and cost surface, Workflow
+  changes the cron deployment shape. Defer to an explicit decision point.
+- **A8. Orphaned Blob endpoints** — `api/blob/{get,put,put-image,seed}.js`
+  still exist and read from Vercel Blob. They aren't on the read path
+  anymore (the front-end goes through `/api/content/list` per ADR-006) but
+  they remain reachable. Plan: deprecate with HTTP 410 + a redirect note,
+  or delete in the next sprint if no fallback path still depends on them.
+- **A9. KV table for marks/slogans** — `api/system/health.js` still reads
+  marks and slogans from the `kv` table (`content/marks/queue`,
+  `content/merch/slogans`). They should migrate to dedicated `marks` and
+  `slogans` tables for indexing + foreign-key integrity. Low-impact debt;
+  defer until the second wave of generation features ships.
+- **A10. ADR-001 stale references** — README, CLAUDE.md, OPS.md and
+  `docs/ARCHITECTURE.md` (if present) likely still reference Vercel Blob
+  as the live datastore. Sweep for "Vercel Blob" / "@vercel/blob" mentions
+  and refresh.
+- **A11. `package.json` still depends on `@vercel/blob`** — once the
+  legacy endpoints in A8 are removed, drop the dep too.
+- **A12. Test seeds for `lib/url-safety.js`** — pure function, easy to
+  unit-test, high-leverage (it gates every URL on the platform). Highest-
+  ROI test target.
+
+**One-day plan (post-migration):**
+
+1. A8 — deprecate Blob endpoints (1 h)
+2. A10/A11 — sweep stale Blob references + drop dep (1 h)
+3. A12 — unit tests for `lib/url-safety.js` (1 h)
+4. A9 — marks/slogans → dedicated tables (3 h)
+5. A7 — write up the AI Gateway / Workflow decision as ADR-007 + ADR-008
+   for review (1 h, no code)
+
+Total: 7 hours. Project goes from "post-migration with rough edges" to
+"clean migration with documented next architectural decisions."

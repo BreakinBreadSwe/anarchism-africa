@@ -21,23 +21,33 @@
  * we follow the redirect once and fix the link forever.
  */
 const sb = require('../../lib/supabase');
+const { isSafeToFetch } = require('../../lib/url-safety');
 
 function authed (req) {
   const adminTok = process.env.ADMIN_TOKEN;
   const cronSec  = process.env.CRON_SECRET;
-  if (cronSec && (req.headers['x-cron-secret'] === cronSec || req.headers['x-vercel-cron-signature'])) return true;
+  // Vercel Cron always sends x-vercel-cron-signature — accept that even with
+  // no shared CRON_SECRET so the platform-managed schedule still works.
+  if (req.headers['x-vercel-cron-signature']) return true;
+  if (cronSec && req.headers['x-cron-secret'] === cronSec) return true;
   if (adminTok) {
     const tok = req.headers['x-admin-token'] || req.headers['authorization'];
     if (tok === adminTok || tok === 'Bearer ' + adminTok) return true;
   }
   const cookie = req.headers.cookie || '';
   if (/aa_role=(admin|publisher|editor)/.test(cookie)) return true;
-  if (!adminTok && !cronSec) return true;
+  // Closed by default. Old behaviour returned true when neither secret was
+  // configured — that opened the verifier to the public web and let any
+  // caller burn through outbound fetches via stored URLs.
   return false;
 }
 
+// HEAD/GET a URL to learn whether it's still alive and where it ultimately
+// resolves. Refuses to fetch anything that isn't a public http(s) URL — same
+// SSRF guard the scraper uses, applied here so a poisoned external_url stored
+// in the DB can't trick the cron into probing private/loopback/metadata IPs.
 async function verifyUrl (url) {
-  if (!url || !/^https?:\/\//i.test(url)) return { status: 0 };
+  if (!isSafeToFetch(url)) return { status: 0, blocked: true };
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 6000);
   const ua = { 'User-Agent': 'ANARCHISM.AFRICA/1.0 (+link verifier)' };
@@ -47,6 +57,11 @@ async function verifyUrl (url) {
       r = await fetch(url, { method: 'GET', redirect: 'follow', signal: ctrl.signal, headers: ua });
     }
     clearTimeout(t);
+    // Re-check the post-redirect URL too — a redirect chain can land on a
+    // private IP even if the start was public.
+    if (r.url && r.url !== url && !isSafeToFetch(r.url)) {
+      return { status: 0, blocked: true };
+    }
     return { status: r.status, finalUrl: r.url || url };
   } catch {
     clearTimeout(t);
@@ -60,7 +75,13 @@ module.exports = async function handler (req, res) {
 
   const useQueue = req.query?.queue === '1';
   const archive  = req.query?.archive === '1';
-  const limit    = Math.min(parseInt(req.query?.limit || '200', 10) || 200, 1000);
+  // Bound per-invocation work so a single run fits a 60-second function
+  // timeout. Sequential 6-second HEADs would blow that at ~10 rows; running
+  // BATCH_SIZE in parallel buys us ~50–80 rows per cycle on Hobby tier.
+  // For larger sweeps the cron just runs more often, or the user upgrades to
+  // Vercel Workflow (durable, paginated, retry-safe — natural next step).
+  const limit    = Math.min(parseInt(req.query?.limit || '120', 10) || 120, 250);
+  const BATCH    = 8;
   const table    = useQueue ? 'content_queue' : 'content';
   const t0       = Date.now();
 
@@ -75,8 +96,9 @@ module.exports = async function handler (req, res) {
     let checked = 0, ok = 0, broken = 0, archived = 0, redirected = 0;
     let audioChecked = 0, audioOk = 0, audioBroken = 0;
     const errors = [];
+    const seen = new Set();  // guard against A→B→A redirect rewrite loops
 
-    for (const row of rows || []) {
+    async function processRow (row) {
       const target = row.external_url || row.source_url || row.url;
       if (target) {
         checked += 1;
@@ -86,10 +108,18 @@ module.exports = async function handler (req, res) {
           link_checked_at: new Date().toISOString(),
           link_final_url:  v.finalUrl || null
         };
-        // If the URL redirected to a different canonical, also rewrite
-        // external_url so card clicks go to the live page from now on.
-        if (v.finalUrl && v.finalUrl !== target && v.status >= 200 && v.status < 400) {
+        // Only rewrite external_url when the canonical is genuinely different
+        // AND we haven't already chased this redirect pair on this row in
+        // recent history. The seen-set is per-invocation; the row's stored
+        // link_final_url protects across invocations — if last week's run
+        // already wrote target=B, we won't flip back to A this week.
+        const stableNew = v.finalUrl && v.finalUrl !== target &&
+                          v.status >= 200 && v.status < 400 &&
+                          v.finalUrl !== row.link_final_url &&
+                          !seen.has(`${row.id}:${v.finalUrl}`);
+        if (stableNew) {
           patch.external_url = v.finalUrl;
+          seen.add(`${row.id}:${target}`);
           redirected += 1;
         }
         if (v.status >= 200 && v.status < 400) ok += 1;
@@ -125,6 +155,10 @@ module.exports = async function handler (req, res) {
         try { await sb.update('content', row.id, apatch); }
         catch (e) { errors.push({ id: row.id, audio_error: String(e.message || e).slice(0, 200) }); }
       }
+    }
+
+    for (let i = 0; i < (rows || []).length; i += BATCH) {
+      await Promise.all(rows.slice(i, i + BATCH).map(processRow));
     }
 
     res.setHeader('Cache-Control', 'no-store');

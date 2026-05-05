@@ -351,7 +351,40 @@ async function checkContent () {
       'WHERE TO BROWSE: Public site → click any rail menu item (Films, Library, etc.) to see what\'s there.'
     ].join('\n'),
     action: total === 0 ? { label: 'Run autopilot now', url: '/api/autopilot/run', method: 'POST' } : null
-  }, {
+  }, await (async function checkLinkHealth () {
+    // Count rows whose link_status is a 4xx/5xx/0(timeout) — i.e. broken.
+    let broken = 0;
+    let neverChecked = 0;
+    if (sb.configured()) {
+      try {
+        const dead = await sb.select('content', {
+          select: 'id', gt: { link_status: 399 }, limit: 5000
+        });
+        broken = dead ? dead.length : 0;
+        const unc = await sb.select('content', {
+          select: 'id', eq: { link_checked_at: null }, limit: 5000
+        });
+        neverChecked = unc ? unc.length : 0;
+      } catch {}
+    }
+    const status = broken === 0 ? 'pass' : broken < 10 ? 'warn' : 'fail';
+    return {
+      id: 'content-links',
+      group: 'Content',
+      label: 'Mirrored links healthy (no 404s)',
+      status,
+      detail: `${broken} broken link${broken === 1 ? '' : 's'}` + (neverChecked ? ` · ${neverChecked} never checked` : ''),
+      help: [
+        'WHAT IT DOES: A weekly robot HEAD-checks every external link in the library. If a publisher moves an article or takes it down, we catch the 404 instead of leaving readers with a dead linkback.',
+        'WHY IT MATTERS: Mirrored content lives or dies by its link-back. Dead links = broken trust + bad SEO + readers bouncing.',
+        'AUTO-FIX: When a link redirects to a new canonical URL, we follow the redirect and rewrite our stored URL. So even if a publisher restructures their site, the link still works.',
+        'HOW TO RUN MANUALLY: Click "Verify links now". Sweeps the 200 stalest URLs (~30 seconds). Run it again to cover more.',
+        'AUTO-ARCHIVE: The weekly cron passes ?archive=1 so any 4xx/5xx item is moved to status=archived (hidden from public site). Manual runs from this dashboard don\'t auto-archive — they just flag.',
+        'WHERE TO SEE BROKEN ITEMS: Supabase dashboard → SQL Editor → run: select * from broken_links;'
+      ].join('\n'),
+      action: { label: 'Verify links now', url: '/api/cron/verify-links?limit=200', method: 'GET' }
+    };
+  })(), {
     id: 'content-credits',
     group: 'Content',
     label: 'Mirrored items have source credits',

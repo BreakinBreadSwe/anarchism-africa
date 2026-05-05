@@ -34,23 +34,25 @@
       if (!r.ok) throw new Error('seed not reachable (blob + fixture both failed)');
       data = await r.json();
     }
-    // Overlay any live content writes on top of the seed (films, articles,
-    // events, music, books, merch, grants, etc.) so approved scraper items
-    // and publisher edits show up everywhere immediately.
-    if (useBlob) {
-      const KINDS = [
-        ['films','content/films.json'], ['articles','content/articles.json'],
-        ['events','content/events.json'], ['music','content/music.json'],
-        ['books','content/books.json'], ['merch','content/merch.json'],
-        ['grants','content/grants.json']
-      ];
-      await Promise.all(KINDS.map(async ([key, blobKey]) => {
-        try {
-          const o = await blobGet(blobKey);
-          if (o && Array.isArray(o.items) && o.items.length) data[key] = o.items;
-        } catch {}
-      }));
-    }
+    // Overlay live content from Supabase (one /api/content/list call per
+    // kind). When the new DB has rows, they replace the seed bucket so the
+    // public site is always showing the latest published items + approved
+    // scraper items + admin edits. If the call fails (DB not configured
+    // yet, network blip), we fall through silently to the bundled fixture
+    // so the site never goes blank.
+    const KIND_TO_BUCKET = {
+      film: 'films', article: 'articles', event: 'events',
+      song: 'music', book: 'books', merch: 'merch'
+    };
+    await Promise.all(Object.entries(KIND_TO_BUCKET).map(async ([kind, bucket]) => {
+      try {
+        const r = await fetch(`/api/content/list?kind=${kind}&status=published&limit=200`, { cache: 'no-store' });
+        if (!r.ok) return;
+        const j = await r.json();
+        if (Array.isArray(j.items) && j.items.length) data[bucket] = j.items;
+      } catch {}
+    }));
+
     cache.seed = data;
     return cache.seed;
   }

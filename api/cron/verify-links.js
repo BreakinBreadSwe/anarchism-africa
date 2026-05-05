@@ -67,42 +67,63 @@ module.exports = async function handler (req, res) {
   try {
     // Pull rows whose links are stalest (or never checked) first
     const rows = await sb.select(table, {
-      select: 'id,external_url,source_url,url',
+      select: 'id,kind,external_url,source_url,url,audio',
       order: 'link_checked_at.nullsfirst',
       limit
     });
 
     let checked = 0, ok = 0, broken = 0, archived = 0, redirected = 0;
+    let audioChecked = 0, audioOk = 0, audioBroken = 0;
     const errors = [];
 
     for (const row of rows || []) {
       const target = row.external_url || row.source_url || row.url;
-      if (!target) continue;
-      checked += 1;
-      const v = await verifyUrl(target);
-      const patch = {
-        link_status:     v.status || 0,
-        link_checked_at: new Date().toISOString(),
-        link_final_url:  v.finalUrl || null
-      };
-      // If the URL redirected to a different canonical, also rewrite
-      // external_url so card clicks go to the live page from now on.
-      if (v.finalUrl && v.finalUrl !== target && v.status >= 200 && v.status < 400) {
-        patch.external_url = v.finalUrl;
-        redirected += 1;
-      }
-      if (v.status >= 200 && v.status < 400) ok += 1;
-      else broken += 1;
-
-      try {
-        if (archive && !useQueue && v.status >= 400) {
-          await sb.update('content', row.id, { ...patch, status: 'archived' });
-          archived += 1;
-        } else {
-          await sb.update(table, row.id, patch);
+      if (target) {
+        checked += 1;
+        const v = await verifyUrl(target);
+        const patch = {
+          link_status:     v.status || 0,
+          link_checked_at: new Date().toISOString(),
+          link_final_url:  v.finalUrl || null
+        };
+        // If the URL redirected to a different canonical, also rewrite
+        // external_url so card clicks go to the live page from now on.
+        if (v.finalUrl && v.finalUrl !== target && v.status >= 200 && v.status < 400) {
+          patch.external_url = v.finalUrl;
+          redirected += 1;
         }
-      } catch (e) {
-        errors.push({ id: row.id, error: String(e.message || e).slice(0, 200) });
+        if (v.status >= 200 && v.status < 400) ok += 1;
+        else broken += 1;
+
+        try {
+          if (archive && !useQueue && v.status >= 400) {
+            await sb.update('content', row.id, { ...patch, status: 'archived' });
+            archived += 1;
+          } else {
+            await sb.update(table, row.id, patch);
+          }
+        } catch (e) {
+          errors.push({ id: row.id, error: String(e.message || e).slice(0, 200) });
+        }
+      }
+
+      // For songs, ALSO verify the audio URL — a song without playable audio
+      // is useless. Tracked separately as audio_status / audio_checked_at.
+      if (!useQueue && row.kind === 'song' && row.audio) {
+        audioChecked += 1;
+        const a = await verifyUrl(row.audio);
+        const apatch = {
+          audio_status:     a.status || 0,
+          audio_checked_at: new Date().toISOString()
+        };
+        // If audio redirected to a working canonical, rewrite stored URL.
+        if (a.finalUrl && a.finalUrl !== row.audio && a.status === 200) {
+          apatch.audio = a.finalUrl;
+        }
+        if (a.status === 200) audioOk += 1;
+        else audioBroken += 1;
+        try { await sb.update('content', row.id, apatch); }
+        catch (e) { errors.push({ id: row.id, audio_error: String(e.message || e).slice(0, 200) }); }
       }
     }
 
@@ -116,6 +137,7 @@ module.exports = async function handler (req, res) {
       broken,
       redirected,
       archived,
+      audio: { checked: audioChecked, ok: audioOk, broken: audioBroken },
       duration_ms: Date.now() - t0,
       errors
     });

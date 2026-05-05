@@ -240,6 +240,23 @@ body.has-rail .tabs { display: none; }
 .rail:not(.expanded) .rail-item { justify-content: center; padding: 12px 0; }
 .rail:not(.expanded) .rail-item .label { display: none; }
 
+/* Menu-toggle logo button inside rail — left-aligned when expanded */
+.rail .rail-menu-toggle {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; padding: 10px 12px; border-radius: 10px;
+  background: transparent; border: 0; color: var(--fg-dim);
+  cursor: pointer; font: inherit; font-size: .82rem; letter-spacing: .05em;
+  white-space: nowrap; text-align: left; flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.rail .rail-menu-toggle:hover { background: var(--bg-2); color: var(--fg); }
+.rail .rail-menu-toggle .logo {
+  width: 28px; height: 28px; border-radius: 6px; flex: 0 0 auto;
+  background: url('/icons/AAlogo1.svg') center/contain no-repeat;
+}
+.rail:not(.expanded) .rail-menu-toggle { justify-content: center; padding: 12px 0; }
+.rail:not(.expanded) .rail-menu-toggle .label { display: none; }
+
 /* Mobile drawer behaviour */
 @media (max-width: 768px) {
   .rail { transform: translateX(-100%); width: 220px; box-shadow: var(--shadow); }
@@ -338,8 +355,6 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
 
 /* Reserve space for the fixed bottom bar */
 body.has-rail { padding-bottom: 60px; }
-.chat-fab { bottom: 78px; }      /* lift above bottom bar */
-.chat-panel { bottom: 78px; }
 .role-strip { bottom: 60px; }
 
 /* Afro-futurist tab icons — adinkra-inspired glyphs, theme-aware */
@@ -518,13 +533,26 @@ section.view.active { display: block; animation: fadeIn .35s ease; }
 .cf-card .progress { height: 6px; border-radius: 3px; background: rgba(255,255,255,.08); margin: 8px 0 6px; overflow: hidden; }
 .cf-card .progress > i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--red)); }
 
-/* DETAIL MODAL ------------------------------------------------------------ */
+/* DETAIL MODAL — sits INSIDE the chrome, never covers topbar/rail/bottombar */
 .modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
-  z-index: 60; display: none; align-items: flex-start; justify-content: center;
+  position: fixed;
+  top: 56px; left: 0; right: 0; bottom: 60px; /* above bottombar */
+  background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+  z-index: 25; /* below rail (28), topbar (30), bottombar (35) */
+  display: none; align-items: flex-start; justify-content: center;
   padding: 20px; overflow-y: auto;
 }
 .modal.open { display: flex; animation: fadeIn .25s ease; }
+/* Respect left rail on desktop */
+@media (min-width: 769px) {
+  body.has-rail .modal { left: 64px; }
+  body.has-rail.rail-open .modal { left: 220px; }
+}
+/* No bottombar on desktop */
+@media (min-width: 1024px) { .modal { bottom: 0; } }
+/* Lift above mini-player when active */
+body.mp-active .modal { bottom: 116px; }
+@media (min-width: 1024px) { body.mp-active .modal { bottom: 56px; } }
 .modal .panel {
   width: 100%; max-width: 760px; background: var(--bg-2); border: 1px solid var(--line);
   border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow);
@@ -540,22 +568,28 @@ section.view.active { display: block; animation: fadeIn .35s ease; }
 .modal .panel-body { padding: 22px; }
 .modal h2 { margin-top: 0; }
 
-/* CHAT WIDGET ------------------------------------------------------------- */
-.chat-fab {
-  position: fixed; bottom: 18px; right: 18px; z-index: 50;
-  width: 58px; height: 58px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--red));
-  color: #000; font-weight: 800; display: grid; place-items: center;
-  cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,.6);
-  border: none; font-size: 12px; letter-spacing: .1em;
-}
+/* CHAT PANEL — fullscreen inside the chrome (rail, topbar, bottombar stay visible) */
+.chat-fab { display: none !important; }
 .chat-panel {
-  position: fixed; bottom: 18px; right: 18px; width: min(380px, calc(100vw - 24px));
-  height: min(560px, 78vh); z-index: 51; background: var(--bg-2);
-  border: 1px solid var(--line); border-radius: var(--radius-lg);
-  box-shadow: var(--shadow); display: none; flex-direction: column; overflow: hidden;
+  position: fixed;
+  top: 56px; left: 0; right: 0; bottom: 60px; /* above bottombar */
+  z-index: 27; /* below rail (28), above rail-backdrop (27)… use 27 so rail slides over on mobile */
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  display: none; flex-direction: column; overflow: hidden;
+  width: auto; height: auto; border-radius: 0; box-shadow: none;
 }
-.chat-panel.open { display: flex; animation: fadeIn .25s ease; }
+.chat-panel.open { display: flex; animation: fadeIn .25s ease-out both; }
+/* Respect left rail on desktop */
+@media (min-width: 769px) {
+  body.has-rail .chat-panel { left: 64px; }
+  body.has-rail.rail-open .chat-panel { left: 220px; }
+}
+/* No bottombar on desktop */
+@media (min-width: 1024px) { .chat-panel { bottom: 0; } }
+/* Lift above mini-player when active */
+body.mp-active .chat-panel { bottom: 116px; }
+@media (min-width: 1024px) { body.mp-active .chat-panel { bottom: 56px; } }
 .chat-head { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
 .chat-head .title { font-weight: 700; letter-spacing: .15em; font-size: .8rem; }
 .chat-head .model-pick { font-size: .7rem; padding: 4px 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 99px; color: var(--fg-dim); }
@@ -836,10 +870,10 @@ body.underground h1, body.underground h2 { animation: aa-undermode-jitter .4s st
 
 /* FOOTER ------------------------------------------------------------------ */
 .footer { padding: 50px var(--content-pad-x) 80px; width: 100%; margin: 30px auto 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; display: grid; gap: 10px; }
-.footer .row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; }
-.footer .signup { display: flex; gap: 8px; max-width: 420px; }
+.footer .row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; }
+.footer .signup { display: flex; gap: 8px; max-width: 420px; align-items: center; }
 .footer .signup input { flex: 1; padding: 10px 14px; border: 1px solid var(--line); background: var(--bg-2); color: var(--fg); border-radius: 99px; font: inherit; }
-.footer .signup button { padding: 10px 16px; border-radius: 99px; border: 0; background: var(--accent); color: #000; font-weight: 700; cursor: pointer; }
+.footer .signup button { padding: 10px 16px; border-radius: 99px; border: 0; background: var(--accent); color: #000; font-weight: 700; cursor: pointer; white-space: nowrap; }
 
 /* ROLE LOGIN STRIP -------------------------------------------------------- */
 .role-strip {
@@ -1061,10 +1095,6 @@ body.admin .kpi .stat span { font-size: .75rem; color: var(--muted); letter-spac
 /* ============================================================
    CHAT — multi-tab, embeds, calls
    ============================================================ */
-.chat-panel {
-  width: min(420px, calc(100vw - 24px));
-  height: min(640px, 82vh);
-}
 .chat-tabs { display: flex; gap: 2px; padding: 0 10px 8px; border-bottom: 1px solid var(--line); }
 .chat-tabs button {
   flex: 1; padding: 8px 10px; background: transparent; border: 0; border-radius: 8px 8px 0 0;

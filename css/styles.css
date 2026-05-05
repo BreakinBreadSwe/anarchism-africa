@@ -624,10 +624,8 @@ body.mp-active .chat-panel { bottom: 116px; }
    article body / grids never hide behind it. 56 (player) + 60 (bottombar)
    = 116px on mobile, slightly more on desktop. */
 body.mp-active { padding-bottom: calc(60px + 56px); }
-@media (min-width: 769px) {
-  body.has-rail .mini-player { left: 64px; }
-  body.has-rail.rail-open .mini-player { left: 220px; }
-}
+/* Mini-player is intentionally full-width (left:0) — it spans the rail like
+   Spotify's player bar. z-index: 36 puts it on top of the rail (28). */
 
 /* artwork thumbnail */
 .mini-player .mp-art {

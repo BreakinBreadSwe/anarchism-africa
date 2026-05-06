@@ -20,16 +20,18 @@ module.exports = async function handler (req, res) {
     if (status) filter.eq.status = status;
     if (q)      filter.like = { title: '%' + q + '%' };
 
-    // For songs: read straight from the playable_songs view (which already
-    // filters published + audio + audio_status=200). Falls through to the
-    // raw content table when include_unplayable=1 (admin) or when status
-    // isn't published (queue review etc).
+    // For songs: query content directly so newly-added tracks (audio_status = NULL,
+    // not yet verified by the cron) appear immediately. We exclude only songs
+    // where audio_status is known-broken (non-null AND not 200). Songs with
+    // audio_status = NULL (unchecked) or 200 (verified OK) are included.
+    // Pass ?include_unplayable=1 to bypass the audio filter (admin triage).
     let items;
     if (kind === 'song' && status === 'published' && !include_unplayable) {
-      const songFilter = { ...filter };
-      delete songFilter.eq.kind;
-      delete songFilter.eq.status;
-      items = await sb.select('playable_songs', songFilter);
+      items = await sb.select('content', {
+        ...filter,
+        not_null: ['audio'],
+        or: 'audio_status.eq.200,audio_status.is.null'
+      });
     } else {
       items = await sb.select('content', filter);
     }

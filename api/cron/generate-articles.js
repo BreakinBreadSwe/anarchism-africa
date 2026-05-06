@@ -12,22 +12,17 @@
 // GET /api/cron/generate-articles
 //   resp: { ok, theme, articleId, status }
 
-import { put } from '@vercel/blob';
-
-const PUBLIC_BLOB_BASE = 'https://blob.vercel-storage.com';
-const DRAFTS_KEY = 'content/articles/drafts.json';
-const PENDING_KEY = 'content/pending.json';
-const ARTICLES_KEY = 'content/articles.json';
+// Article generator now writes to Supabase (content table, status='pending').
+// Old blob keys are no longer read or written. The Article Lab editor reads
+// from /api/content/list?status=pending&kind=article for the publisher to
+// review and approve. Approved drafts get status='published' and show on
+// the public site immediately.
+const sb = require('../../lib/supabase');
 
 const STOPWORDS = new Set(['the','a','and','or','of','in','on','to','for','with','from','that','this','it','as','by','an','is','are','was','were','be','been','being','at','have','has','had','will','would','can','could','should','may','might','also','more','most','some','any','all','one','two','about','into','out','up','down','over','under','between']);
 
-async function readJSON (key, fallback) {
-  try { const r = await fetch(`${PUBLIC_BLOB_BASE}/${key}?ts=${Date.now()}`); if (!r.ok) return fallback; return await r.json(); }
-  catch { return fallback; }
-}
-async function writeJSON (key, value) {
-  return put(key, JSON.stringify(value), { access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
-}
+// (Blob helpers removed — we read recent items from Supabase content_queue
+// + content tables now.)
 
 // Curated afro-anarchist semantic seed - boosted in the trend frequency
 // table so subgenre coverage stays broad even when the news cycle drifts.
@@ -85,11 +80,26 @@ export default async function handler (req, res) {
   }
   const origin = process.env.SITE_URL || `https://${req.headers.host || 'anarchism.africa'}`;
 
+  if (!sb.configured()) return res.status(500).json({ ok: false, error: 'SUPABASE not configured' });
+
   try {
-    const pending = (await readJSON(PENDING_KEY, { items: [] })).items || [];
-    const articles = (await readJSON(ARTICLES_KEY, { items: [] })).items || [];
-    const recentItems = [...pending, ...articles].slice(0, 80);
-    const drafts = (await readJSON(DRAFTS_KEY, { items: [] })).items || [];
+    // Read source signal: recent scraped items (queue) + recent published content
+    const queue   = await sb.select('content_queue', { order: '-scraped_at', limit: 60 });
+    const recent  = await sb.select('content',       { order: '-created_at', limit: 30 });
+    const recentItems = [...(queue || []), ...(recent || [])];
+
+    // Recent drafts: existing pending or published articles in the last 14 days,
+    // mapped to a {theme, ts} shape so topTheme() can penalize repeats.
+    const recentArticles = await sb.select('content', {
+      eq: { kind: 'article' },
+      order: '-created_at',
+      limit: 60
+    });
+    const drafts = (recentArticles || []).map(a => ({
+      theme: (a.tags && a.tags[0]) || (a.title || '').toLowerCase().split(' ')[0],
+      ts: Date.parse(a.created_at) || 0
+    }));
+
     const theme = topTheme(recentItems, drafts);
     if (!theme) return res.status(200).json({ ok: true, skipped: 'no theme found' });
 
@@ -119,22 +129,41 @@ export default async function handler (req, res) {
       return res.status(200).json({ ok: false, theme, step: 'compose', error: composeData.error || 'compose failed' });
     }
     const article = composeData.article;
-    article.theme = theme;
-    article.author = 'AA · auto-draft';
-    article.status = 'pending_editor_review';
 
-    drafts.unshift(article);
-    await writeJSON(DRAFTS_KEY, { items: drafts.slice(0, 200), updated: Date.now() });
+    // Insert into content table as a pending draft. The publisher reviews
+    // it in Article Lab and can flip status to 'published' to ship it.
+    const inserted = await sb.insert('content', {
+      kind:           'article',
+      status:         'pending',
+      title:          article.title || ('Draft on ' + theme),
+      subtitle:       article.subtitle || null,
+      deck:           article.deck || null,
+      summary:        article.blurb || article.summary || null,
+      body:           article.body || null,
+      tags:           Array.isArray(article.tags) ? article.tags : [theme],
+      image:          article.hero_image || null,
+      gallery:        article.gallery || [],
+      embeds:         article.embeds || [],
+      pull_quotes:    article.pull_quotes || [],
+      stats:          article.stats || [],
+      sources_cited:  article.sources || [],
+      verify_notes:   article.verify || [],
+      author:         'AA · auto-draft',
+      reading_time:   Math.max(1, Math.round((article.body || '').split(/\s+/).length / 220)),
+      published_at:   null,
+      created_by:     'cron:generate-articles'
+    });
+    const row = Array.isArray(inserted) ? inserted[0] : inserted;
 
     return res.status(200).json({
       ok: true,
       theme,
-      articleId: article.id,
-      title: article.title,
-      grounded: article.grounded,
+      articleId: row?.id,
+      title: row?.title,
+      grounded: !!article.grounded,
       sources: (article.sources || []).length,
       sections: (article.body || '').split(/^##\s/m).length - 1,
-      status: 'queued for editor review'
+      status: 'queued for editor review (Supabase content.status=pending)'
     });
   } catch (e) {
     return res.status(500).json({ ok: false, error: String(e.message || e) });

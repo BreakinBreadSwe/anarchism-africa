@@ -109,6 +109,53 @@ body.aa-auth-open { overflow: hidden; }
   padding: 4px 12px;
 }
 
+/* Sign in / Sign up tab toggle */
+.aa-auth-mode-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--line);
+}
+.aa-auth-mode-tab {
+  flex: 1;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font: 700 .78rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color .15s, border-color .15s;
+}
+.aa-auth-mode-tab:hover { color: var(--fg); }
+.aa-auth-mode-tab.is-active {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
+
+/* Display-name row (visible in sign-up mode only) */
+.aa-auth-name-row {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 18px;
+}
+.aa-auth-name-row input {
+  padding: 11px 14px;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  font: 500 .94rem 'Space Grotesk', sans-serif;
+  border-radius: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.aa-auth-name-row input:focus {
+  outline: none;
+  border-color: var(--fg);
+}
+
 /* Right form column */
 .aa-auth-form {
   background: var(--bg-2);

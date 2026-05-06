@@ -117,7 +117,17 @@ async function gemini (model, messages) {
   });
   if (!r.ok) throw new Error('Gemini ' + r.status + ' ' + (await r.text()));
   const data = await r.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  // Gemini's safety filter returns 200 OK with finishReason=SAFETY (or RECITATION,
+  // OTHER) and an EMPTY parts array. The old `|| ''` masked that as success;
+  // the outer fallback chain then accepted empty text and never tried the next
+  // provider. Throw explicitly so the caller's chain advances.
+  const cand = data.candidates?.[0];
+  const text = cand?.content?.parts?.[0]?.text;
+  if (!text) {
+    const reason = cand?.finishReason || 'no candidate';
+    throw new Error('Gemini empty response (' + reason + ')');
+  }
+  return text;
 }
 
 async function openaiCompat (url, key, model, messages) {

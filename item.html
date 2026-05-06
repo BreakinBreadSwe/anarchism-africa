@@ -6,7 +6,7 @@
   <title>ANARCHISM.AFRICA — item</title>
   <meta name="description" content="An item on ANARCHISM.AFRICA — afrofuturist 360° on afro-anarchism." />
   <meta property="og:title" content="ANARCHISM.AFRICA" />
-  <meta property="og:description" content="An afrofuturist 360° on afro-anarchism — Africa & diaspora." />
+  <meta property="og:description" content="An afrofuturist 360° on afro-anarchism — Africa &amp; diaspora." />
   <meta property="og:image" content="/icons/AAlogo1.svg" />
   <meta property="og:type" content="article" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -24,22 +24,42 @@
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/intro-popup.css" />
   <link rel="stylesheet" href="css/responsive-fixes.css" />
+  <link rel="stylesheet" href="css/auth-page.css" />
 </head>
-<body>
+<body class="has-rail">
 
-<header class="topbar">
-  <button class="menu-toggle" id="menu-toggle" aria-label="Home" title="Home" onclick="location.href='index.html'">
-    <span class="logo"></span>
-  </button>
+<!-- TOP BAR --------------------------------------------------------------- -->
+<header class="topbar" id="topbar">
   <div class="brand-wrap">
     <a class="brand" href="index.html">
       <span class="logoword"><span class="word">ANARCHISM<span class="dot">.</span>AFRICA</span></span>
     </a>
   </div>
-  <a class="btn primary" href="index.html" style="margin-left:auto">Back to site</a>
 </header>
 
-<main id="item-main" style="padding:24px clamp(16px, 4vw, 40px);width:100%;margin:0;box-sizing:border-box">
+<!-- LEFT RAIL — all items link back to index.html with hash for the section -->
+<aside class="rail" id="rail" aria-label="Sections">
+  <button class="menu-toggle rail-menu-toggle" id="menu-toggle" type="button" aria-label="Toggle menu" title="Menu">
+    <span class="logo"></span>
+    <span class="label">Menu</span>
+  </button>
+  <button class="rail-item rail-item--auth" data-rail-auth type="button" title="Sign in">
+    <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span>
+    <span class="label" data-auth-label>Sign in</span>
+  </button>
+  <a class="rail-item" href="index.html" title="Home"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><span class="label">Home</span></a>
+  <a class="rail-item" href="index.html#films" title="Films"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-7 9-7s6 2 9 7c-3 5-6 7-9 7s-6-2-9-7z"/><circle cx="12" cy="12" r="3" class="fill"/></svg></span><span class="label">Films</span></a>
+  <a class="rail-item" href="index.html#articles" title="Library"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Library</span></a>
+  <a class="rail-item" href="index.html#events" title="Events"><span class="glyph"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2"/><path d="M5 6v8c0 2 3 4 7 4s7-2 7-4V6"/><path d="M9 8l-2 8M15 8l2 8M12 8v10"/></svg></span><span class="label">Events</span></a>
+  <a class="rail-item" href="index.html#music" title="Music"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="9" cy="14" r="4"/><path d="M13 14V4l7 2v9"/><circle cx="17" cy="15" r="3"/></svg></span><span class="label">Music</span></a>
+  <a class="rail-item" href="index.html#books" title="Books"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 013 3v13a3 3 0 00-3-3H4z"/><path d="M20 4h-7a3 3 0 00-3 3v13a3 3 0 013-3h7z"/></svg></span><span class="label">Books</span></a>
+  <a class="rail-item" href="index.html#merch" title="Marketplace"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M7 4l5-1 5 1 1 6-2 8-4 3-4-3-2-8z"/><circle cx="10" cy="10" r="1" class="fill"/><circle cx="14" cy="10" r="1" class="fill"/><path d="M10 15h4"/></svg></span><span class="label">Marketplace</span></a>
+  <a class="rail-item" href="index.html#community" title="Community"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/><circle cx="7" cy="18" r="1.6" class="fill"/><circle cx="18" cy="17" r="1.6" class="fill"/><path d="M6 7l6 6M18 6l-6 7M12 13l-5 5M12 13l6 4"/></svg></span><span class="label">Community</span></a>
+  <a class="rail-item" href="index.html#about" title="About"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M7 17l5-12 5 12M9 13h6"/></svg></span><span class="label">About</span></a>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<main id="item-main" style="padding-top:24px;padding-bottom:24px">
   <div class="panel" id="item-skeleton" style="min-height:300px;display:flex;align-items:center;justify-content:center;color:var(--muted)">
     <div>
       <div class="mono" style="font-size:.7rem;letter-spacing:.14em">LOADING</div>
@@ -48,12 +68,31 @@
   </div>
 </main>
 
-<footer class="footer">
-  <p class="mono" style="margin:0;color:var(--muted);font-size:.7rem;text-align:center">
-    app by <a href="https://luvlab.io" target="_blank" rel="noopener" style="color:var(--accent)">luvlab.io</a> ·
-    stewarded by LUVLAB · curated by COOLHUNTPARIS
-  </p>
-</footer>
+<!-- FIXED BOTTOM BAR ------------------------------------------------------ -->
+<nav class="bottombar" id="bottombar" aria-label="Quick actions">
+  <button data-bbar="menu" title="Menu" class="bottombar-logo" aria-label="Open menu"><span class="glyph logo-glyph"><span class="logo"></span></span><span>Menu</span></button>
+  <button onclick="location.href='index.html'" title="Home"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><span>Home</span></button>
+  <button onclick="location.href='index.html#films'" title="Films"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-7 9-7s6 2 9 7c-3 5-6 7-9 7s-6-2-9-7z"/><circle cx="12" cy="12" r="3" class="fill"/></svg></span><span>Films</span></button>
+  <button onclick="location.href='index.html#articles'" title="Library"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span>Library</span></button>
+  <button data-bbar="signin" title="Sign in / your profile" aria-label="Sign in or profile"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span>You</span></button>
+</nav>
+
+<!-- RAIL TOGGLE SCRIPT (minimal — no SPA tab management needed here) -->
+<script>
+(function () {
+  var rail = document.getElementById('rail');
+  var toggle = document.getElementById('menu-toggle');
+  var backdrop = document.getElementById('rail-backdrop');
+  function openRail()  { rail.classList.add('expanded'); document.body.classList.add('rail-open'); }
+  function closeRail() { rail.classList.remove('expanded'); document.body.classList.remove('rail-open'); }
+  toggle  && toggle.addEventListener('click', function () { rail.classList.contains('expanded') ? closeRail() : openRail(); });
+  backdrop && backdrop.addEventListener('click', closeRail);
+  document.getElementById('bottombar')?.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bbar]'); if (!b) return;
+    if (b.dataset.bbar === 'menu') { rail.classList.contains('expanded') ? closeRail() : openRail(); }
+  });
+})();
+</script>
 
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>

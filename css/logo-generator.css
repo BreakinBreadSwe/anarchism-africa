@@ -1,32 +1,16 @@
-/* ANARCHISM.AFRICA — Logo lab styling */
+/* ANARCHISM.AFRICA — Logo lab styling
+   Lives inside section.view#view-logogen — no overlay, no z-index fighting. */
 
-#aa-logo-gen { position: fixed; inset: 0; z-index: 80; }
 .lg-page {
-  position: absolute;
-  top: 56px; left: 0; right: 0; bottom: 0;
-  background: var(--bg);
-  color: var(--fg);
-  overflow-y: auto;
-  animation: lg-up .25s ease-out both;
+  display: block;
+  width: 100%;
+  animation: fadeIn .25s ease-out both;
 }
-@media (max-width: 1023px) { .lg-page { bottom: 64px; } }
 @media (prefers-reduced-motion: reduce) { .lg-page { animation: none; } }
-@keyframes lg-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-body.aa-logo-gen-open { overflow: hidden; }
-
-.lg-close {
-  position: absolute; top: 16px; right: 16px;
-  width: 44px; height: 44px;
-  background: transparent; color: var(--fg);
-  border: 1px solid var(--line);
-  font-size: 26px; line-height: 1; cursor: pointer; padding: 0;
-}
-.lg-close:hover { background: var(--fg); color: var(--bg); }
 
 .lg-grid {
   max-width: 980px; margin: 0 auto;
-  padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px) 80px;
+  padding: clamp(20px, 4vw, 56px) 0 80px;
   display: grid; gap: 28px;
 }
 .lg-head h1 {

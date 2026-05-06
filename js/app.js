@@ -378,7 +378,20 @@
     }
     if (tab === 'music') {
       const list = $('#music-list'); list.innerHTML = ''; list.classList.add('anim-stagger');
-      (await AA.getByType('song')).forEach(s => list.appendChild(audioRow(s)));
+      // ONLY show songs with a real audio URL. Belt-and-braces — the API
+      // already filters via the playable_songs view, but legacy bundled
+      // seed.json fixtures may still have rows without audio. Skip those.
+      const all = await AA.getByType('song');
+      const playable = all.filter(s => s.audio && /^https?:\/\//i.test(s.audio));
+      const skipped = all.length - playable.length;
+      if (!playable.length) {
+        list.innerHTML = `<div class="panel" style="padding:24px;text-align:center;color:var(--fg-dim)">
+          <p style="margin:0 0 4px;font-weight:600">No playable music yet</p>
+          <p class="mono" style="margin:0;font-size:.78rem">${skipped ? skipped + ' tracks are queued but missing audio files. ' : ''}New tracks will land here once the publisher uploads or links them.</p>
+        </div>`;
+      } else {
+        playable.forEach(s => list.appendChild(audioRow(s)));
+      }
     }
     if (tab === 'books') {
       const g = $('#books-grid'); resetGrid(g);
@@ -483,9 +496,11 @@
       if (ui.dur)    ui.dur.textContent = song.duration ? fmt(song.duration) : '0:00';
       if (ui.bar2)   ui.bar2.style.width = '0%';
       if (ui.knob)   ui.knob.style.left  = '0%';
-      show();
-      setPlayingUI(true);
-      audio.play().catch(() => setPlayingUI(false));
+      // Wire all events BEFORE calling play() so we never miss the 'play'
+      // event that drives the icon. Icon starts in play-state (not pause)
+      // and only flips to pause when audio actually begins.
+      audio.addEventListener('play',  () => setPlayingUI(true));
+      audio.addEventListener('pause', () => setPlayingUI(false));
       audio.addEventListener('loadedmetadata', () => {
         if (ui.dur) ui.dur.textContent = fmt(audio.duration);
       });
@@ -502,12 +517,29 @@
         const end = audio.buffered.end(audio.buffered.length - 1);
         if (ui.buffer) ui.buffer.style.width = (end / audio.duration * 100) + '%';
       });
-      audio.addEventListener('pause', () => setPlayingUI(false));
-      audio.addEventListener('play',  () => setPlayingUI(true));
       audio.addEventListener('ended', () => {
         if (queueIndex >= 0 && queueIndex < queue.length - 1) next();
         else { setPlayingUI(false); }
       });
+      // If the audio URL 404s or refuses to play, surface a clear toast and
+      // skip to the next track (or close the player if it's the only one).
+      audio.addEventListener('error', () => {
+        setPlayingUI(false);
+        const msg = `"${song.title}" can't be played — track unavailable.`;
+        try {
+          const t = document.createElement('div');
+          t.textContent = msg;
+          t.style.cssText = 'position:fixed;left:50%;bottom:140px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;font:600 .82rem JetBrains Mono,monospace;letter-spacing:.04em;z-index:10001;box-shadow:2px 2px 0 0 rgba(0,0,0,.25);max-width:80vw;text-align:center';
+          document.body.appendChild(t);
+          setTimeout(() => t.remove(), 3500);
+        } catch {}
+        // Skip to next if there's a queue, otherwise stop
+        if (queueIndex >= 0 && queueIndex < queue.length - 1) next();
+        else { hide(); current = null; }
+      });
+      show();
+      setPlayingUI(false);  // show play icon until browser confirms playback
+      audio.play().catch(() => setPlayingUI(false));
       syncLike();
     }
 

@@ -14,10 +14,11 @@
 // it the same way Vercel cron does).
 
 const STAGES = {
-  scrape:   '/api/cron/scan-content',
-  articles: '/api/cron/generate-articles',
-  slogans:  '/api/cron/generate-slogans',
-  logos:    '/api/cron/generate-logos'
+  scrape:    '/api/cron/scan-content',
+  articles:  '/api/cron/generate-articles',
+  slogans:   '/api/cron/generate-slogans',
+  logos:     '/api/cron/generate-logos',
+  verify:    '/api/cron/verify-links?limit=100'
 };
 
 function gate (req) {

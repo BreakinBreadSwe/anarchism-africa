@@ -69,8 +69,7 @@
   // ---- Panel UI --------------------------------------------------------
   function template () {
     return `
-      <div class="lg-page" role="dialog" aria-modal="true" aria-labelledby="lg-title">
-        <button class="lg-close" id="lg-close" aria-label="Close">&times;</button>
+      <div class="lg-page" aria-labelledby="lg-title">
         <div class="lg-grid">
           <header class="lg-head">
             <h1 id="lg-title">Logo lab</h1>
@@ -164,34 +163,35 @@
     if (msg) setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 4000);
   }
 
+  let _bound = false;
+
   function open () {
-    let host = document.getElementById('aa-logo-gen');
-    if (!host) {
-      host = document.createElement('div');
-      host.id = 'aa-logo-gen';
-      host.innerHTML = template();
-      document.body.appendChild(host);
-      bind();
+    // Navigate to the logogen section view (works from long-press on logo too)
+    if (window.AA?.setTab) {
+      window.AA.setTab('logogen');
+    } else {
+      location.hash = 'logogen';
     }
-    document.body.classList.add('aa-logo-gen-open');
+  }
+  function close () {
+    // "Closing" means navigating away — go back to home
+    if (window.AA?.setTab) window.AA.setTab('home');
+    else location.hash = 'home';
+  }
+
+  function initSection () {
+    const mount = document.getElementById('lg-logogen-mount');
+    if (!mount || mount.dataset.lgInit) return;
+    mount.dataset.lgInit = '1';
+    mount.innerHTML = template();
+    bind();
     paintPatterns();
     paintPixGrid();
   }
-  function close () {
-    document.body.classList.remove('aa-logo-gen-open');
-    document.getElementById('aa-logo-gen')?.remove();
-  }
 
   function bind () {
-    const host = document.getElementById('aa-logo-gen');
-    host.addEventListener('click', e => {
-      if (e.target.closest('#lg-close')) return close();
-    });
-    document.addEventListener('keydown', function onEsc (e) {
-      if (e.key === 'Escape' && document.body.classList.contains('aa-logo-gen-open')) {
-        close(); document.removeEventListener('keydown', onEsc);
-      }
-    });
+    if (_bound) return;
+    _bound = true;
 
     // Upload / drop
     const file = $('#lg-file');
@@ -239,5 +239,13 @@
   }
 
   window.AA = window.AA || {};
-  window.AA.logoGen = { open, close };
+  window.AA.logoGen = { open, close, initSection };
+
+  // Pre-init the section content as soon as the DOM is ready so it's
+  // immediately visible when the user switches to the logogen tab.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSection);
+  } else {
+    initSection();
+  }
 })();

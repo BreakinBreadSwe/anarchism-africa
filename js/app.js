@@ -28,6 +28,8 @@
     location.hash = name;
     // close mobile rail drawer after navigation
     if (matchMedia('(max-width: 768px)').matches) closeRail();
+    // close the chat panel whenever the user navigates to a section
+    document.getElementById('chat-panel')?.classList.remove('open');
   }
 
   $('#tabs')?.addEventListener('click', e => {
@@ -377,6 +379,47 @@
       (await AA.getByType('event')).forEach(e => { const c = card(e,'event'); attachCardClick(c, openEvent, e); g.appendChild(c); });
     }
     if (tab === 'music') {
+      // ── Curated live radio stations ──────────────────────────────────────
+      const RADIO_STATIONS = [
+        { id: 'rs-nts-1',      title: 'NTS Radio 1',         artist: 'London · LA · Shanghai',          audio: 'https://stream-relay-geo.ntslive.net/stream',         summary: 'Independent community radio. African diaspora, afrofuturist and experimental music around the clock.',        isLive: true },
+        { id: 'rs-nts-2',      title: 'NTS Radio 2',         artist: 'NTS · Alternative Stream',         audio: 'https://stream-relay-geo.ntslive.net/stream2',        summary: 'Second channel — often carries African, Afro-futurist and underground programming from the global south.',    isLive: true },
+        { id: 'rs-kpfa',       title: 'KPFA 94.1 FM',        artist: 'Pacifica Network · Berkeley CA',   audio: 'https://streams.kpfa.org/kpfa/high.aac',             summary: 'Community-funded, ad-free radical broadcasting. African diaspora, liberation and anti-imperialist politics.', isLive: true },
+        { id: 'rs-wbai',       title: 'WBAI 99.5 FM',        artist: 'Pacifica Network · New York City', audio: 'https://wbai.out.airtime.pro/wbai_a',                summary: 'NYC Pacifica station. Pan-African, abolitionist and anti-imperialist programming since 1960.',               isLive: true },
+        { id: 'rs-resonance',  title: 'Resonance FM',        artist: 'Independent · London',             audio: 'https://streamer.resonancefm.com/stream',            summary: 'Radical arts, experimental music and political commentary from London\'s independent broadcaster.',           isLive: true },
+        { id: 'rs-soma-afro',  title: 'SomaFM: African',     artist: 'SomaFM · San Francisco',           audio: 'https://ice6.somafm.com/african-128-mp3',            summary: 'Afrobeat, highlife and traditional sounds from across the continent — no ads, listener supported.',          isLive: true },
+        { id: 'rs-radio-1',    title: 'Africa Is A Country', artist: 'Pan-African · Global',             audio: 'https://streaming.tdiradio.com/aiac',                summary: 'Critical pan-African culture, politics and sound. Essays on race, colonialism and resistance.',               isLive: true },
+        { id: 'rs-worldwide',  title: 'Worldwide FM',        artist: 'Gilles Peterson · Global',         audio: 'https://worldwidefm.out.airtime.pro/worldwidefm_a',  summary: 'African, Caribbean and diaspora sounds. Deep digs into African jazz, Afrobeat and global underground music.',  isLive: true },
+      ];
+
+      const stEl = $('#radio-stations');
+      if (stEl && !stEl.dataset.rendered) {
+        stEl.dataset.rendered = '1';
+        const head = document.createElement('div');
+        head.className = 'radio-section-head';
+        head.innerHTML = '<span class="radio-live-dot"></span> Live Streams';
+        stEl.appendChild(head);
+        const grid = document.createElement('div');
+        grid.className = 'radio-stations-grid';
+        RADIO_STATIONS.forEach(s => {
+          const c = document.createElement('div');
+          c.className = 'radio-station-card';
+          c.dataset.stationId = s.id;
+          c.innerHTML = `
+            <div class="radio-station-name">${s.title}</div>
+            <div class="radio-station-meta mono">${s.artist}</div>
+            <div class="radio-station-desc">${s.summary}</div>
+            <div class="radio-live-pill"><div class="radio-live-dot"></div>LIVE</div>`;
+          c.addEventListener('click', () => {
+            stEl.querySelectorAll('.radio-station-card').forEach(x => x.classList.remove('playing'));
+            c.classList.add('playing');
+            MP.play(s);
+          });
+          grid.appendChild(c);
+        });
+        stEl.appendChild(grid);
+      }
+
+      // ── Uploaded / DB tracks ─────────────────────────────────────────────
       const list = $('#music-list'); list.innerHTML = ''; list.classList.add('anim-stagger');
       // ONLY show songs with a real audio URL. Belt-and-braces — the API
       // already filters via the playable_songs view, but legacy bundled
@@ -384,14 +427,15 @@
       const all = await AA.getByType('song');
       const playable = all.filter(s => s.audio && /^https?:\/\//i.test(s.audio));
       const skipped = all.length - playable.length;
-      if (!playable.length) {
-        list.innerHTML = `<div class="panel" style="padding:24px;text-align:center;color:var(--fg-dim)">
-          <p style="margin:0 0 4px;font-weight:600">No playable music yet</p>
-          <p class="mono" style="margin:0;font-size:.78rem">${skipped ? skipped + ' tracks are queued but missing audio files. ' : ''}New tracks will land here once the publisher uploads or links them.</p>
-        </div>`;
-      } else {
+      if (playable.length) {
+        const tracksHead = document.createElement('div');
+        tracksHead.className = 'radio-section-head';
+        tracksHead.style.marginTop = '28px';
+        tracksHead.innerHTML = 'Tracks &amp; Releases';
+        list.appendChild(tracksHead);
         playable.forEach(s => list.appendChild(audioRow(s)));
       }
+      // (no "no music yet" message — the radio stations cover the empty state)
     }
     if (tab === 'books') {
       const g = $('#books-grid'); resetGrid(g);

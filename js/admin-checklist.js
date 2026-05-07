@@ -39,7 +39,57 @@
   }
 
   async function fireAction (action, button) {
-    if (!action || !action.url) return;
+    if (!action) return;
+
+    /* ── External link — open in new tab ───────────────────────────── */
+    if (action.type === 'link') {
+      if (action.url) window.open(action.url, '_blank', 'noopener noreferrer');
+      return;
+    }
+
+    /* ── Generate random secret client-side, copy to clipboard ─────── */
+    if (action.type === 'gen-secret') {
+      const arr = new Uint8Array(32);
+      crypto.getRandomValues(arr);
+      const secret = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+      const row    = button.closest('.aa-checklist-item');
+      const detail = row && row.querySelector('.aa-checklist-detail');
+
+      function showInstructions (copied) {
+        if (!detail) return;
+        detail.innerHTML = '';
+        const wrap = document.createElement('span');
+        wrap.style.cssText = 'font-size:.78rem;line-height:1.6;color:var(--fg)';
+        if (copied) {
+          wrap.innerHTML = '<strong style="color:var(--accent)">✓ Copied!</strong> '
+            + 'Vercel → Project → Settings → Environment Variables → Add&nbsp;'
+            + '<code style="background:var(--bg-2);padding:1px 6px">' + (action.key || 'SECRET') + '</code>'
+            + '&nbsp;= (paste) → Save → Redeploy → Refresh here.';
+        } else {
+          wrap.innerHTML = 'Copy this secret:<br>'
+            + '<code style="user-select:all;background:var(--bg-2);padding:4px 8px;display:block;margin:4px 0;word-break:break-all">' + secret + '</code>'
+            + 'Vercel → Project → Settings → Environment Variables → Add&nbsp;'
+            + '<code style="background:var(--bg-2);padding:1px 6px">' + (action.key || 'SECRET') + '</code>'
+            + '&nbsp;= (paste) → Save → Redeploy.';
+        }
+        detail.appendChild(wrap);
+      }
+
+      try {
+        await navigator.clipboard.writeText(secret);
+        showInstructions(true);
+        button.textContent = '✓ Copied to clipboard';
+      } catch {
+        showInstructions(false);
+        button.textContent = 'See secret above ↑';
+      }
+      button.disabled = true;
+      setTimeout(() => { button.disabled = false; button.textContent = action.label; }, 8000);
+      return;
+    }
+
+    /* ── Internal API call (default) ────────────────────────────────── */
+    if (!action.url) return;
     const orig = button.textContent;
     button.disabled = true;
     button.textContent = 'Running…';

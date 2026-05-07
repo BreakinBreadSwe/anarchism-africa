@@ -101,8 +101,47 @@
   pointer-events: none;
 }
 
-/* === Wide screens — cap line length ================================== */
+/* === Wide screens — cap line length (not item detail pages) ========= */
 @media (min-width: 1440px) {
-  main { max-width: 1280px; margin: 0 auto; }
+  main:not(#item-main) { max-width: 1280px; margin: 0 auto; }
   .item-body, .summary, .item-lede { max-width: 70ch; }
+}
+
+/* =====================================================================
+   ITEM DETAIL PAGES — full-viewport-width, cinematic layout
+   item.html?type=film|article|event|… fills edge-to-edge on all screens.
+   ===================================================================== */
+
+/* Hero: full-bleed, no rounding, cinematic aspect ratio */
+#item-main .item-hero {
+  border-radius: 0 !important;
+  border: none !important;
+  aspect-ratio: 21 / 9;
+  /* Break out of the horizontal content padding to the left & right */
+  margin-left: calc(-1 * var(--content-pad-x));
+  margin-right: calc(-1 * var(--content-pad-x));
+  width: calc(100% + 2 * var(--content-pad-x));
+}
+
+/* On desktop: also break out of the collapsed-rail offset (64px) */
+@media (min-width: 769px) {
+  body.has-rail #item-main .item-hero {
+    margin-left: calc(-1 * (64px + var(--content-pad-x)));
+    width: calc(100% + 64px + 2 * var(--content-pad-x));
+  }
+  body.has-rail.rail-open #item-main .item-hero {
+    margin-left: calc(-1 * (220px + var(--content-pad-x)));
+    width: calc(100% + 220px + 2 * var(--content-pad-x));
+  }
+}
+
+/* No extra top padding — hero starts flush below the topbar */
+#item-main {
+  padding-top: 0 !important;
+  padding-bottom: 40px;
+}
+
+/* Tall hero on mobile too */
+@media (max-width: 768px) {
+  #item-main .item-hero { aspect-ratio: 16 / 9; }
 }

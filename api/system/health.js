@@ -93,7 +93,7 @@ function checkEnv () {
       'HOW TO FIX (3 minutes): The Supabase project "anarchism-africa" already exists. You just need the keys in Vercel. 1) Open supabase.com/dashboard, click the anarchism-africa project. 2) Sidebar → Settings → API. 3) Copy "Project URL" — paste into Vercel env as SUPABASE_URL. 4) Copy "service_role secret" — paste into Vercel env as SUPABASE_SERVICE_ROLE. 5) Save. Vercel redeploys.',
       'CHECK: Refresh this page. Row should turn green.'
     ].join('\n'),
-    action: sb.configured() ? null : { label: 'Open Supabase API settings', url: 'https://supabase.com/dashboard/project/blwaohqgvlsjsypzodlz/settings/api' }
+    action: sb.configured() ? null : { label: 'Open Supabase settings ↗', type: 'link', url: 'https://supabase.com/dashboard/project/blwaohqgvlsjsypzodlz/settings/api' }
   });
 
   items.push({
@@ -109,7 +109,7 @@ function checkEnv () {
       'OTHER OPTIONS: If you prefer Google\'s AI, use GEMINI_API_KEY from aistudio.google.com (also free). For Claude, use ANTHROPIC_API_KEY. Any one is enough.',
       'CHECK: Click the chat button in the bottom bar of the public site. Type "hi". If it answers, the key works.'
     ].join('\n'),
-    action: hasLLM ? null : { label: 'Get free OpenRouter key', url: 'https://openrouter.ai/keys' }
+    action: hasLLM ? null : { label: 'Get free OpenRouter key ↗', type: 'link', url: 'https://openrouter.ai/keys' }
   });
 
   items.push({
@@ -124,7 +124,7 @@ function checkEnv () {
       'HOW TO FIX (3 minutes): 1) Open Terminal on your Mac. 2) Type: openssl rand -hex 32 and press Enter. 3) Copy the long string of letters and numbers it spits out. 4) In Vercel: project → Settings → Environment Variables → Add. 5) Name = CRON_SECRET. Value = paste the string. Apply to all three environments. 6) Save. Vercel redeploys.',
       'CHECK: Refresh this page. Row turns green.'
     ].join('\n'),
-    action: process.env.CRON_SECRET ? null : { label: 'Generate + add CRON_SECRET', url: 'https://vercel.com/dashboard' }
+    action: process.env.CRON_SECRET ? null : { label: 'Generate + copy secret', type: 'gen-secret', key: 'CRON_SECRET' }
   });
 
   items.push({
@@ -139,7 +139,7 @@ function checkEnv () {
       'HOW TO FIX (3 minutes): 1) Open Terminal. 2) Type: openssl rand -hex 32 and press Enter. 3) Copy the result. 4) In Vercel: project → Settings → Environment Variables → Add. 5) Name = ADMIN_TOKEN. Value = paste. Apply to all environments. Save.',
       'CHECK: Refresh. Row turns green.'
     ].join('\n'),
-    action: process.env.ADMIN_TOKEN ? null : { label: 'Add ADMIN_TOKEN', url: 'https://vercel.com/dashboard' }
+    action: process.env.ADMIN_TOKEN ? null : { label: 'Open Vercel env vars ↗', type: 'link', url: 'https://vercel.com/dashboard' }
   });
 
   items.push({
@@ -154,7 +154,7 @@ function checkEnv () {
       'HOW TO FIX (5 minutes, FREE): 1) Open aistudio.google.com/apikey. 2) Sign in with any Google account. 3) Click "Create API key" → "Create API key in new project". 4) Copy the key. 5) In Vercel: project → Settings → Environment Variables → Add. 6) Name = GEMINI_API_KEY. Value = paste. Apply to all. Save.',
       'CHECK: Click "Generate now" on the "Last logo generated" row below. If 4 new logos appear, it works.'
     ].join('\n'),
-    action: process.env.GEMINI_API_KEY ? null : { label: 'Get Gemini key (free)', url: 'https://aistudio.google.com/apikey' }
+    action: process.env.GEMINI_API_KEY ? null : { label: 'Get Gemini key (free) ↗', type: 'link', url: 'https://aistudio.google.com/apikey' }
   });
 
   const hasPrintify = process.env.PRINTIFY_API_TOKEN && process.env.PRINTIFY_SHOP_ID;
@@ -171,7 +171,7 @@ function checkEnv () {
       'OPTIONAL: Skip this entirely if you don\'t want to sell physical merch yet.',
       'CHECK: Open the public site → Marketplace → "Order" button on any merch item should work without errors.'
     ].join('\n'),
-    action: { label: 'Set up Printify', url: 'https://printify.com/app/account/api' }
+    action: { label: 'Set up Printify ↗', type: 'link', url: 'https://printify.com/app/account/api' }
   });
 
   return items;

@@ -89,7 +89,7 @@
 .ae-media-fields .ae-label {
   font: 600 .65rem 'JetBrains Mono', monospace;
   letter-spacing: .14em;
-  color: var(--fg-dim);
+  color: var(--label-color);
   text-transform: uppercase;
 }
 
@@ -103,9 +103,9 @@
 .ae-section-title {
   margin: 0;
   font: 800 .72rem 'JetBrains Mono', monospace;
-  letter-spacing: .2em; color: var(--fg-dim);
+  letter-spacing: .2em; color: var(--label-color);
   text-transform: uppercase;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--input-border);
   padding-bottom: 8px;
 }
 .ae-section { display: grid; gap: 12px; }
@@ -114,7 +114,7 @@
 .ae-row--inline { display: flex; align-items: center; gap: 8px; }
 .ae-label {
   font: 600 .68rem 'JetBrains Mono', monospace;
-  letter-spacing: .12em; color: var(--fg-dim);
+  letter-spacing: .12em; color: var(--label-color);
   text-transform: uppercase;
 }
 .ae-req { color: var(--red); margin-left: 4px; }
@@ -128,7 +128,7 @@
 .ae-form-pane textarea,
 .ae-media-fields input,
 .ae-media-fields textarea {
-  border: 1px solid var(--line);
+  border: 1px solid var(--input-border);
   background: var(--bg-2);
   color: var(--fg);
   padding: 11px 14px;

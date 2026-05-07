@@ -16,92 +16,906 @@
     "teal": "#00FFE0"
   },
   "theme_presets": [
-    { "id": "tp1", "name": "BLACKOUT (default · dark)",  "by": "LUVLAB",        "tokens": { "bg":"#000000","bg-2":"#0c0c0c","fg":"#ffffff","fg-dim":"#cfcfcf","muted":"#888888","accent":"#ffffff","red":"#C8102E","green":"#007749","violet":"#8B00FF","teal":"#00FFE0" } },
-    { "id": "tp2", "name": "WHITEOUT (default · light)", "by": "LUVLAB",        "tokens": { "bg":"#ffffff","bg-2":"#f5f5f5","fg":"#000000","fg-dim":"#2a2a2a","muted":"#777777","accent":"#000000","red":"#C8102E","green":"#007749","violet":"#8B00FF","teal":"#00FFE0" } },
-    { "id": "tp7", "name": "GOLD ACCENT (legacy)",       "by": "LUVLAB",        "tokens": { "bg":"#000000","bg-2":"#0c0c0c","fg":"#ffffff","fg-dim":"#cfcfcf","muted":"#888888","accent":"#FFD700","red":"#C8102E","green":"#007749","violet":"#8B00FF","teal":"#00FFE0" } },
-    { "id": "tp3", "name": "PAN-AFRICA",                  "by": "COOLHUNTPARIS", "tokens": { "bg":"#0a0a0a","bg-2":"#160605","fg":"#FFD700","fg-dim":"#FFB000","muted":"#7a5a00","accent":"#C8102E","red":"#C8102E","green":"#007749","violet":"#8B00FF","teal":"#00FFE0" } },
-    { "id": "tp4", "name": "CYBERPUNK DUB",               "by": "Kojo Sound",    "tokens": { "bg":"#0b0014","bg-2":"#15001f","fg":"#00FFE0","fg-dim":"#9affec","muted":"#5a8a85","accent":"#FF00AA","red":"#FF3366","green":"#00FFA0","violet":"#8B00FF","teal":"#00FFE0" } },
-    { "id": "tp5", "name": "TERMINAL GREEN",              "by": "Aïcha B.",      "tokens": { "bg":"#000000","bg-2":"#001100","fg":"#5dff8a","fg-dim":"#3aaa55","muted":"#2a662f","accent":"#FFD700","red":"#ff5050","green":"#5dff8a","violet":"#8B00FF","teal":"#00FFE0" } },
-    { "id": "tp6", "name": "NEWSPRINT CREAM",             "by": "COOLHUNTPARIS", "tokens": { "bg":"#f5f1ea","bg-2":"#ffffff","fg":"#0a0a0a","fg-dim":"#3a3530","muted":"#7a716a","accent":"#C8102E","red":"#C8102E","green":"#007749","violet":"#6B00C8","teal":"#008b80" } }
+    {
+      "id": "tp1",
+      "name": "BLACKOUT (default · dark)",
+      "by": "LUVLAB",
+      "tokens": {
+        "bg": "#000000",
+        "bg-2": "#0c0c0c",
+        "fg": "#ffffff",
+        "fg-dim": "#cfcfcf",
+        "muted": "#888888",
+        "accent": "#ffffff",
+        "red": "#C8102E",
+        "green": "#007749",
+        "violet": "#8B00FF",
+        "teal": "#00FFE0"
+      }
+    },
+    {
+      "id": "tp2",
+      "name": "WHITEOUT (default · light)",
+      "by": "LUVLAB",
+      "tokens": {
+        "bg": "#ffffff",
+        "bg-2": "#f5f5f5",
+        "fg": "#000000",
+        "fg-dim": "#2a2a2a",
+        "muted": "#777777",
+        "accent": "#000000",
+        "red": "#C8102E",
+        "green": "#007749",
+        "violet": "#8B00FF",
+        "teal": "#00FFE0"
+      }
+    },
+    {
+      "id": "tp7",
+      "name": "GOLD ACCENT (legacy)",
+      "by": "LUVLAB",
+      "tokens": {
+        "bg": "#000000",
+        "bg-2": "#0c0c0c",
+        "fg": "#ffffff",
+        "fg-dim": "#cfcfcf",
+        "muted": "#888888",
+        "accent": "#FFD700",
+        "red": "#C8102E",
+        "green": "#007749",
+        "violet": "#8B00FF",
+        "teal": "#00FFE0"
+      }
+    },
+    {
+      "id": "tp3",
+      "name": "PAN-AFRICA",
+      "by": "COOLHUNTPARIS",
+      "tokens": {
+        "bg": "#0a0a0a",
+        "bg-2": "#160605",
+        "fg": "#FFD700",
+        "fg-dim": "#FFB000",
+        "muted": "#7a5a00",
+        "accent": "#C8102E",
+        "red": "#C8102E",
+        "green": "#007749",
+        "violet": "#8B00FF",
+        "teal": "#00FFE0"
+      }
+    },
+    {
+      "id": "tp4",
+      "name": "CYBERPUNK DUB",
+      "by": "Kojo Sound",
+      "tokens": {
+        "bg": "#0b0014",
+        "bg-2": "#15001f",
+        "fg": "#00FFE0",
+        "fg-dim": "#9affec",
+        "muted": "#5a8a85",
+        "accent": "#FF00AA",
+        "red": "#FF3366",
+        "green": "#00FFA0",
+        "violet": "#8B00FF",
+        "teal": "#00FFE0"
+      }
+    },
+    {
+      "id": "tp5",
+      "name": "TERMINAL GREEN",
+      "by": "Aïcha B.",
+      "tokens": {
+        "bg": "#000000",
+        "bg-2": "#001100",
+        "fg": "#5dff8a",
+        "fg-dim": "#3aaa55",
+        "muted": "#2a662f",
+        "accent": "#FFD700",
+        "red": "#ff5050",
+        "green": "#5dff8a",
+        "violet": "#8B00FF",
+        "teal": "#00FFE0"
+      }
+    },
+    {
+      "id": "tp6",
+      "name": "NEWSPRINT CREAM",
+      "by": "COOLHUNTPARIS",
+      "tokens": {
+        "bg": "#f5f1ea",
+        "bg-2": "#ffffff",
+        "fg": "#0a0a0a",
+        "fg-dim": "#3a3530",
+        "muted": "#7a716a",
+        "accent": "#C8102E",
+        "red": "#C8102E",
+        "green": "#007749",
+        "violet": "#6B00C8",
+        "teal": "#008b80"
+      }
+    }
   ],
   "hero": [
-    { "id": "h1", "type": "film",    "title": "Sankofa",                                 "subtitle": "Haile Gerima · 1993 · Ethiopia/Ghana/USA", "summary": "A fashion model is pulled into the past on the slave coast of Ghana — Gerima's landmark film on memory, return, and rebellion.",          "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1600&q=80", "tab": "films",    "ref": "f1" },
-    { "id": "h2", "type": "article", "title": "How Europe Underdeveloped Africa",        "subtitle": "Walter Rodney · 1972 · essay/book chapter", "summary": "Rodney's foundational thesis on capitalism, colonialism, and the structural impoverishment of the African continent — still naming the room.", "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1600&q=80", "tab": "articles", "ref": "a1" },
-    { "id": "h3", "type": "song",    "title": "Zombie",                                  "subtitle": "Fela Kuti & Africa '70 · 1976",            "summary": "An Afrobeat broadside against the Nigerian military — and the most-banned song of its decade.",                                              "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80", "tab": "music",    "ref": "s1" },
-    { "id": "h4", "type": "book",    "title": "African Anarchism: The History of a Movement", "subtitle": "Sam Mbah & I.E. Igariwey · 1997",      "summary": "The reference text for African anarchist tradition — written from Lagos, published by See Sharp Press.",                                       "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1600&q=80", "tab": "books",    "ref": "b3" },
-    { "id": "h5", "type": "film",    "title": "Concerning Violence",                     "subtitle": "Göran Hugo Olsson · 2014 · based on Fanon",  "summary": "Nine scenes of anti-imperial self-defence, narrated by Lauryn Hill from the pages of Frantz Fanon's <em>The Wretched of the Earth</em>.",  "image": "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1600&q=80", "tab": "films",    "ref": "f3" },
-    { "id": "h6", "type": "song",    "title": "Tezeta (Nostalgia)",                      "subtitle": "Mulatu Astatke · 1972",                    "summary": "The defining piece of Ethio-jazz — vibraphone, tezeta scale, Addis at golden hour.",                                                          "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1600&q=80", "tab": "music",    "ref": "s2" },
-    { "id": "h7", "type": "article", "title": "Anarchism and the Black Revolution",       "subtitle": "Lorenzo Kom'boa Ervin · 1979",            "summary": "Written from a U.S. federal prison, Ervin's pamphlet remains the most-circulated Black-anarchist text in English.",                          "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1600&q=80", "tab": "articles", "ref": "a2" },
-    { "id": "h8", "type": "book",    "title": "The Wretched of the Earth",               "subtitle": "Frantz Fanon · 1961",                       "summary": "Fanon's final work — colonialism, decolonial violence, and the psychology of liberation. Preface by Jean-Paul Sartre.",                       "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1600&q=80", "tab": "books",    "ref": "b1" }
+    {
+      "id": "h1",
+      "type": "film",
+      "title": "Sankofa",
+      "subtitle": "Haile Gerima · 1993 · Ethiopia/Ghana/USA",
+      "summary": "A fashion model is pulled into the past on the slave coast of Ghana — Gerima's landmark film on memory, return, and rebellion.",
+      "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1600&q=80",
+      "tab": "films",
+      "ref": "f1"
+    },
+    {
+      "id": "h2",
+      "type": "article",
+      "title": "How Europe Underdeveloped Africa",
+      "subtitle": "Walter Rodney · 1972 · essay/book chapter",
+      "summary": "Rodney's foundational thesis on capitalism, colonialism, and the structural impoverishment of the African continent — still naming the room.",
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1600&q=80",
+      "tab": "articles",
+      "ref": "a1"
+    },
+    {
+      "id": "h3",
+      "type": "song",
+      "title": "Zombie",
+      "subtitle": "Fela Kuti & Africa '70 · 1976",
+      "summary": "An Afrobeat broadside against the Nigerian military — and the most-banned song of its decade.",
+      "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80",
+      "tab": "music",
+      "ref": "s1"
+    },
+    {
+      "id": "h4",
+      "type": "book",
+      "title": "African Anarchism: The History of a Movement",
+      "subtitle": "Sam Mbah & I.E. Igariwey · 1997",
+      "summary": "The reference text for African anarchist tradition — written from Lagos, published by See Sharp Press.",
+      "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1600&q=80",
+      "tab": "books",
+      "ref": "b3"
+    },
+    {
+      "id": "h5",
+      "type": "film",
+      "title": "Concerning Violence",
+      "subtitle": "Göran Hugo Olsson · 2014 · based on Fanon",
+      "summary": "Nine scenes of anti-imperial self-defence, narrated by Lauryn Hill from the pages of Frantz Fanon's <em>The Wretched of the Earth</em>.",
+      "image": "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1600&q=80",
+      "tab": "films",
+      "ref": "f3"
+    },
+    {
+      "id": "h6",
+      "type": "song",
+      "title": "Tezeta (Nostalgia)",
+      "subtitle": "Mulatu Astatke · 1972",
+      "summary": "The defining piece of Ethio-jazz — vibraphone, tezeta scale, Addis at golden hour.",
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1600&q=80",
+      "tab": "music",
+      "ref": "s2"
+    },
+    {
+      "id": "h7",
+      "type": "article",
+      "title": "Anarchism and the Black Revolution",
+      "subtitle": "Lorenzo Kom'boa Ervin · 1979",
+      "summary": "Written from a U.S. federal prison, Ervin's pamphlet remains the most-circulated Black-anarchist text in English.",
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1600&q=80",
+      "tab": "articles",
+      "ref": "a2"
+    },
+    {
+      "id": "h8",
+      "type": "book",
+      "title": "The Wretched of the Earth",
+      "subtitle": "Frantz Fanon · 1961",
+      "summary": "Fanon's final work — colonialism, decolonial violence, and the psychology of liberation. Preface by Jean-Paul Sartre.",
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1600&q=80",
+      "tab": "books",
+      "ref": "b1"
+    }
   ],
   "films": [
-    { "id": "f1",  "title": "Sankofa",                            "director": "Haile Gerima",            "year": 1993, "duration": 125, "language": "English / Akan",                "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80", "summary": "A fashion model on a photo-shoot at Cape Coast Castle is pulled back into slavery and resistance. Gerima's landmark film of return and rebellion.",                                  "external_url": "https://www.kanopy.com/en/product/sankofa-1" },
-    { "id": "f2",  "title": "Lumumba",                            "director": "Raoul Peck",              "year": 2000, "duration": 115, "language": "French / Lingala",              "image": "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80", "summary": "Patrice Lumumba's first 200 days as Prime Minister of independent Congo — and the assassination that ended them.",                                                                  "external_url": "https://www.criterion.com/films/27892-lumumba" },
-    { "id": "f3",  "title": "Concerning Violence",                "director": "Göran Hugo Olsson",       "year": 2014, "duration": 89,  "language": "English (narration: Lauryn Hill)", "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80", "summary": "Archive footage from Africa's liberation wars, scored to Frantz Fanon's text, narrated by Lauryn Hill — produced with Mahmood Mamdani.",                                              "external_url": "https://www.imdb.com/title/tt2832470/" },
-    { "id": "f4",  "title": "The Black Power Mixtape 1967–1975", "director": "Göran Hugo Olsson",       "year": 2011, "duration": 96,  "language": "English",                       "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80", "summary": "Lost Swedish television footage of the Black Power era — Stokely Carmichael, Angela Davis, Bobby Seale — re-scored by Questlove and Om'Mas Keith.",                                  "external_url": "https://www.imdb.com/title/tt1592527/" },
-    { "id": "f5",  "title": "I Am Not Your Negro",                "director": "Raoul Peck",              "year": 2016, "duration": 93,  "language": "English",                       "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80", "summary": "James Baldwin's unfinished manuscript <em>Remember This House</em>, voiced by Samuel L. Jackson — Medgar, Malcolm, Martin.",                                                          "external_url": "https://www.iamnotyournegrofilm.com/" },
-    { "id": "f6",  "title": "Touki Bouki",                        "director": "Djibril Diop Mambéty",    "year": 1973, "duration": 95,  "language": "Wolof / French",                "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80", "summary": "Two young lovers in Dakar, dreaming of Paris on a stolen motorbike — the founding text of African new-wave cinema.",                                                                "external_url": "https://www.criterion.com/films/27894-touki-bouki" },
-    { "id": "f7",  "title": "Atlantique",                         "director": "Mati Diop",               "year": 2019, "duration": 105, "language": "Wolof / French",                "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80", "summary": "On the outskirts of Dakar, a girl waits for a boy who left across the sea — Diop's debut, Cannes Grand Prix 2019.",                                                                  "external_url": "https://www.netflix.com/title/81082007" },
-    { "id": "f8",  "title": "Soleil Ô",                           "director": "Med Hondo",               "year": 1970, "duration": 102, "language": "French",                        "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80", "summary": "A Mauritanian arrives in Paris and discovers the white sun of post-colonial Europe — Hondo's blistering debut, restored 2017.",                                                     "external_url": "https://www.criterion.com/films/30151-soleil-o" },
-    { "id": "f9",  "title": "Capitaine Thomas Sankara",           "director": "Christophe Cupelin",      "year": 2012, "duration": 90,  "language": "French",                        "image": "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80", "summary": "Documentary built from 30 hours of original Burkinabè state archive — Sankara's four-year revolution and assassination.",                                                          "external_url": "https://www.imdb.com/title/tt2547336/" },
-    { "id": "f10", "title": "Faat Kiné",                          "director": "Ousmane Sembène",         "year": 2001, "duration": 120, "language": "Wolof / French",                "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80", "summary": "A single mother running a Dakar petrol station — Sembène's portrait of African women's everyday heroism.",                                                                          "external_url": "https://www.imdb.com/title/tt0265413/" },
-    { "id": "f11", "title": "Yeelen (Brightness)",                "director": "Souleymane Cissé",        "year": 1987, "duration": 105, "language": "Bambara",                       "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80", "summary": "A young Bambara man is hunted by his sorcerer father across pre-colonial Mali — Jury Prize, Cannes 1987.",                                                                          "external_url": "https://www.criterion.com/films/29012-yeelen" },
-    { "id": "f12", "title": "Mandabi",                            "director": "Ousmane Sembène",         "year": 1968, "duration": 90,  "language": "Wolof",                         "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80", "summary": "An unemployed man in Dakar receives a money order — and runs aground on a colonial bureaucracy that survived independence.",                                                          "external_url": "https://www.criterion.com/films/30150-mandabi" }
+    {
+      "id": "f1",
+      "title": "Sankofa",
+      "director": "Haile Gerima",
+      "year": 1993,
+      "duration": 125,
+      "language": "English / Akan",
+      "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80",
+      "summary": "A fashion model on a photo-shoot at Cape Coast Castle is pulled back into slavery and resistance. Gerima's landmark film of return and rebellion.",
+      "external_url": "https://www.kanopy.com/en/product/sankofa-1",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=jUWLAXHj2SU",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "title": "Lumumba",
+      "director": "Raoul Peck",
+      "year": 2000,
+      "duration": 115,
+      "language": "French / Lingala",
+      "image": "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
+      "summary": "Patrice Lumumba's first 200 days as Prime Minister of independent Congo — and the assassination that ended them.",
+      "external_url": "https://www.criterion.com/films/27892-lumumba",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=xRPYtkQon10",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "title": "Concerning Violence",
+      "director": "Göran Hugo Olsson",
+      "year": 2014,
+      "duration": 89,
+      "language": "English (narration: Lauryn Hill)",
+      "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80",
+      "summary": "Archive footage from Africa's liberation wars, scored to Frantz Fanon's text, narrated by Lauryn Hill — produced with Mahmood Mamdani.",
+      "external_url": "https://www.imdb.com/title/tt2832470/",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=dIQwKP3j1zc",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "title": "The Black Power Mixtape 1967–1975",
+      "director": "Göran Hugo Olsson",
+      "year": 2011,
+      "duration": 96,
+      "language": "English",
+      "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80",
+      "summary": "Lost Swedish television footage of the Black Power era — Stokely Carmichael, Angela Davis, Bobby Seale — re-scored by Questlove and Om'Mas Keith.",
+      "external_url": "https://www.imdb.com/title/tt1592527/",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=jFWHNpfjByQ",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "title": "I Am Not Your Negro",
+      "director": "Raoul Peck",
+      "year": 2016,
+      "duration": 93,
+      "language": "English",
+      "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80",
+      "summary": "James Baldwin's unfinished manuscript <em>Remember This House</em>, voiced by Samuel L. Jackson — Medgar, Malcolm, Martin.",
+      "external_url": "https://www.iamnotyournegrofilm.com/",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=IPPthLK5y4M",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "title": "Touki Bouki",
+      "director": "Djibril Diop Mambéty",
+      "year": 1973,
+      "duration": 95,
+      "language": "Wolof / French",
+      "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80",
+      "summary": "Two young lovers in Dakar, dreaming of Paris on a stolen motorbike — the founding text of African new-wave cinema.",
+      "external_url": "https://www.criterion.com/films/27894-touki-bouki",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=KuPxols8FwU",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f7",
+      "title": "Atlantique",
+      "director": "Mati Diop",
+      "year": 2019,
+      "duration": 105,
+      "language": "Wolof / French",
+      "image": "https://images.unsplash.com/photo-1518930259200-3e5b48f06e88?w=1200&q=80",
+      "summary": "On the outskirts of Dakar, a girl waits for a boy who left across the sea — Diop's debut, Cannes Grand Prix 2019.",
+      "external_url": "https://www.netflix.com/title/81082007",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=vhcXyK8s-io",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f8",
+      "title": "Soleil Ô",
+      "director": "Med Hondo",
+      "year": 1970,
+      "duration": 102,
+      "language": "French",
+      "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80",
+      "summary": "A Mauritanian arrives in Paris and discovers the white sun of post-colonial Europe — Hondo's blistering debut, restored 2017.",
+      "external_url": "https://www.criterion.com/films/30151-soleil-o",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=nNrX_u2cq9w",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f9",
+      "title": "Capitaine Thomas Sankara",
+      "director": "Christophe Cupelin",
+      "year": 2012,
+      "duration": 90,
+      "language": "French",
+      "image": "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
+      "summary": "Documentary built from 30 hours of original Burkinabè state archive — Sankara's four-year revolution and assassination.",
+      "external_url": "https://www.imdb.com/title/tt2547336/",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=nPC2NB-Y8rM",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f10",
+      "title": "Faat Kiné",
+      "director": "Ousmane Sembène",
+      "year": 2001,
+      "duration": 120,
+      "language": "Wolof / French",
+      "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80",
+      "summary": "A single mother running a Dakar petrol station — Sembène's portrait of African women's everyday heroism.",
+      "external_url": "https://www.imdb.com/title/tt0265413/",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=tXUe8zCkTEs",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f11",
+      "title": "Yeelen (Brightness)",
+      "director": "Souleymane Cissé",
+      "year": 1987,
+      "duration": 105,
+      "language": "Bambara",
+      "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80",
+      "summary": "A young Bambara man is hunted by his sorcerer father across pre-colonial Mali — Jury Prize, Cannes 1987.",
+      "external_url": "https://www.criterion.com/films/29012-yeelen",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=GRlNG9lJ6rs",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    },
+    {
+      "id": "f12",
+      "title": "Mandabi",
+      "director": "Ousmane Sembène",
+      "year": 1968,
+      "duration": 90,
+      "language": "Wolof",
+      "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200&q=80",
+      "summary": "An unemployed man in Dakar receives a money order — and runs aground on a colonial bureaucracy that survived independence.",
+      "external_url": "https://www.criterion.com/films/30150-mandabi",
+      "embeds": [
+        {
+          "url": "https://www.youtube.com/watch?v=L3LJ5RJ8wOg",
+          "platform": "YouTube",
+          "kind": "trailer"
+        }
+      ]
+    }
   ],
   "articles": [
-    { "id": "a1",  "title": "How Europe Underdeveloped Africa",                    "author": "Walter Rodney",            "year": 1972, "category": "essay",      "reading_time": 35, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "The structural argument that European capitalism actively underdeveloped Africa — published in Dar es Salaam, the year before Rodney was deported.",                       "external_url": "https://abahlali.org/files/3295358-walter-rodney.pdf" },
-    { "id": "a2",  "title": "Anarchism and the Black Revolution",                  "author": "Lorenzo Kom'boa Ervin",     "year": 1979, "category": "pamphlet",   "reading_time": 28, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Written from federal prison and revised across decades — the most-circulated Black-anarchist text in English.",                                                            "external_url": "https://theanarchistlibrary.org/library/lorenzo-kom-boa-ervin-anarchism-and-the-black-revolution" },
-    { "id": "a3",  "title": "The Master's Tools Will Never Dismantle the Master's House", "author": "Audre Lorde",          "year": 1984, "category": "essay",      "reading_time": 8,  "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "Lorde's keynote at the Second Sex Conference — a Black-feminist refusal of the academic-feminist ground rules.",                                                          "external_url": "https://collectiveliberation.org/wp-content/uploads/2013/01/Lorde_The_Masters_Tools.pdf" },
-    { "id": "a4",  "title": "Discourse on Colonialism",                            "author": "Aimé Césaire",              "year": 1950, "category": "essay",      "reading_time": 60, "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "Césaire's anti-colonial pamphlet from Martinique — the text that named the boomerang of colonial violence returning to Europe as fascism.",                              "external_url": "https://www.marxists.org/archive/cesaire/1955/discourse-colonialism.htm" },
-    { "id": "a5",  "title": "Pan-African Social Ecology",                          "author": "Modibo Kadalie",            "year": 2019, "category": "interview",  "reading_time": 22, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Conversations with Andrew Zonneveld — autonomy, ecology, and African mass-democratic traditions.",                                                                       "external_url": "https://onpalgrave.com/" },
-    { "id": "a6",  "title": "On National Culture",                                 "author": "Frantz Fanon",              "year": 1961, "category": "chapter",    "reading_time": 30, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Chapter from <em>The Wretched of the Earth</em> — the role of culture in liberation and the trap of mere nativism.",                                                    "external_url": "https://abahlali.org/files/__Frantz_Fanon__The_Wretched_of_the_Earth__1961_versopdf.pdf" },
-    { "id": "a7",  "title": "A Soldier's Story: Writings by a Revolutionary New Afrikan Anarchist", "author": "Kuwasi Balagoon", "year": 2003, "category": "anthology", "reading_time": 45, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Black Liberation Army veteran turned anarchist — collected essays, communiqués and trial statements.",                                                                       "external_url": "https://www.akpress.org/asoldiersstory.html" },
-    { "id": "a8",  "title": "Decolonising the Mind: The Politics of Language in African Literature", "author": "Ngũgĩ wa Thiong'o", "year": 1986, "category": "essay", "reading_time": 50, "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "Why Ngũgĩ stopped writing in English — the politics of language as the politics of mind.",                                                                                "external_url": "https://www.jamesblackshaw.com/" },
-    { "id": "a9",  "title": "Black Marxism: The Making of the Black Radical Tradition", "author": "Cedric J. Robinson",   "year": 1983, "category": "study",      "reading_time": 90, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Robinson's argument for racial capitalism — and for a Black radical tradition that long predates Marxism.",                                                                "external_url": "https://uncpress.org/book/9780807848296/black-marxism/" },
-    { "id": "a10", "title": "Necropolitics",                                       "author": "Achille Mbembe",            "year": 2003, "category": "essay",      "reading_time": 35, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Mbembe's diagnosis of sovereignty as the power to dictate who may live and who must die.",                                                                                "external_url": "https://muse.jhu.edu/article/39984" },
-    { "id": "a11", "title": "Anarchist Panther: An Interview with Ashanti Alston", "author": "Ashanti Alston",            "year": 2003, "category": "interview",  "reading_time": 25, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Former Black Panther and BLA prisoner on his turn to anarchism, with the Institute for Anarchist Studies.",                                                                "external_url": "https://anarchiststudies.org/anarchist-panther-an-interview-with-ashanti-alston/" }
+    {
+      "id": "a1",
+      "title": "How Europe Underdeveloped Africa",
+      "author": "Walter Rodney",
+      "year": 1972,
+      "category": "essay",
+      "reading_time": 35,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "The structural argument that European capitalism actively underdeveloped Africa — published in Dar es Salaam, the year before Rodney was deported.",
+      "external_url": "https://abahlali.org/files/3295358-walter-rodney.pdf"
+    },
+    {
+      "id": "a2",
+      "title": "Anarchism and the Black Revolution",
+      "author": "Lorenzo Kom'boa Ervin",
+      "year": 1979,
+      "category": "pamphlet",
+      "reading_time": 28,
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "summary": "Written from federal prison and revised across decades — the most-circulated Black-anarchist text in English.",
+      "external_url": "https://theanarchistlibrary.org/library/lorenzo-kom-boa-ervin-anarchism-and-the-black-revolution"
+    },
+    {
+      "id": "a3",
+      "title": "The Master's Tools Will Never Dismantle the Master's House",
+      "author": "Audre Lorde",
+      "year": 1984,
+      "category": "essay",
+      "reading_time": 8,
+      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80",
+      "summary": "Lorde's keynote at the Second Sex Conference — a Black-feminist refusal of the academic-feminist ground rules.",
+      "external_url": "https://collectiveliberation.org/wp-content/uploads/2013/01/Lorde_The_Masters_Tools.pdf"
+    },
+    {
+      "id": "a4",
+      "title": "Discourse on Colonialism",
+      "author": "Aimé Césaire",
+      "year": 1950,
+      "category": "essay",
+      "reading_time": 60,
+      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80",
+      "summary": "Césaire's anti-colonial pamphlet from Martinique — the text that named the boomerang of colonial violence returning to Europe as fascism.",
+      "external_url": "https://www.marxists.org/archive/cesaire/1955/discourse-colonialism.htm"
+    },
+    {
+      "id": "a5",
+      "title": "Pan-African Social Ecology",
+      "author": "Modibo Kadalie",
+      "year": 2019,
+      "category": "interview",
+      "reading_time": 22,
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "summary": "Conversations with Andrew Zonneveld — autonomy, ecology, and African mass-democratic traditions.",
+      "external_url": "https://onpalgrave.com/"
+    },
+    {
+      "id": "a6",
+      "title": "On National Culture",
+      "author": "Frantz Fanon",
+      "year": 1961,
+      "category": "chapter",
+      "reading_time": 30,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "Chapter from <em>The Wretched of the Earth</em> — the role of culture in liberation and the trap of mere nativism.",
+      "external_url": "https://abahlali.org/files/__Frantz_Fanon__The_Wretched_of_the_Earth__1961_versopdf.pdf"
+    },
+    {
+      "id": "a7",
+      "title": "A Soldier's Story: Writings by a Revolutionary New Afrikan Anarchist",
+      "author": "Kuwasi Balagoon",
+      "year": 2003,
+      "category": "anthology",
+      "reading_time": 45,
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "summary": "Black Liberation Army veteran turned anarchist — collected essays, communiqués and trial statements.",
+      "external_url": "https://www.akpress.org/asoldiersstory.html"
+    },
+    {
+      "id": "a8",
+      "title": "Decolonising the Mind: The Politics of Language in African Literature",
+      "author": "Ngũgĩ wa Thiong'o",
+      "year": 1986,
+      "category": "essay",
+      "reading_time": 50,
+      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80",
+      "summary": "Why Ngũgĩ stopped writing in English — the politics of language as the politics of mind.",
+      "external_url": "https://www.jamesblackshaw.com/"
+    },
+    {
+      "id": "a9",
+      "title": "Black Marxism: The Making of the Black Radical Tradition",
+      "author": "Cedric J. Robinson",
+      "year": 1983,
+      "category": "study",
+      "reading_time": 90,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "Robinson's argument for racial capitalism — and for a Black radical tradition that long predates Marxism.",
+      "external_url": "https://uncpress.org/book/9780807848296/black-marxism/"
+    },
+    {
+      "id": "a10",
+      "title": "Necropolitics",
+      "author": "Achille Mbembe",
+      "year": 2003,
+      "category": "essay",
+      "reading_time": 35,
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "summary": "Mbembe's diagnosis of sovereignty as the power to dictate who may live and who must die.",
+      "external_url": "https://muse.jhu.edu/article/39984"
+    },
+    {
+      "id": "a11",
+      "title": "Anarchist Panther: An Interview with Ashanti Alston",
+      "author": "Ashanti Alston",
+      "year": 2003,
+      "category": "interview",
+      "reading_time": 25,
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "summary": "Former Black Panther and BLA prisoner on his turn to anarchism, with the Institute for Anarchist Studies.",
+      "external_url": "https://anarchiststudies.org/anarchist-panther-an-interview-with-ashanti-alston/"
+    }
   ],
   "events": [],
   "music": [
-    { "id": "s1",  "title": "Zombie",                          "artist": "Fela Kuti & Africa '70",        "year": 1976, "duration": 720, "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80", "audio": "", "summary": "12 minutes of horn-line indictment of the Nigerian military — the most-banned song of its decade.",                                "external_url": "https://www.youtube.com/watch?v=O_jryNcXVR0" },
-    { "id": "s2",  "title": "Tezeta (Nostalgia)",              "artist": "Mulatu Astatke",                 "year": 1972, "duration": 322, "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80", "audio": "", "summary": "The defining piece of Ethio-jazz, from <em>Mulatu of Ethiopia</em> — vibraphone, tezeta scale, Addis at dusk.",                "external_url": "https://mulatuastatke.bandcamp.com/" },
-    { "id": "s3",  "title": "Pata Pata",                       "artist": "Miriam Makeba",                  "year": 1967, "duration": 192, "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "audio": "", "summary": "Makeba's international anti-apartheid anthem — recorded in New York, banned at home.",                                          "external_url": "https://www.youtube.com/watch?v=ZsBz1S0p2zo" },
-    { "id": "s4",  "title": "Stimela (The Coal Train)",        "artist": "Hugh Masekela",                  "year": 1974, "duration": 540, "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80", "audio": "", "summary": "Nine minutes on the migrant labour trains pulling Africa's miners into apartheid mines.",                                       "external_url": "https://www.youtube.com/watch?v=KtOggIH3i6w" },
-    { "id": "s5",  "title": "Africa Unite",                    "artist": "Bob Marley & The Wailers",       "year": 1979, "duration": 175, "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "audio": "", "summary": "From <em>Survival</em> — Marley's pan-African call, recorded the year before the Zimbabwe independence concert.",             "external_url": "https://www.bobmarley.com/" },
-    { "id": "s6",  "title": "My Queen Is Harriet Tubman",      "artist": "Sons of Kemet (Shabaka Hutchings)", "year": 2018, "duration": 357, "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80", "audio": "", "summary": "From <em>Your Queen Is a Reptile</em> — tenor sax, two drum kits, tuba, no compromise.",                                       "external_url": "https://sonsofkemet.bandcamp.com/" },
-    { "id": "s7",  "title": "Monsters You Made",               "artist": "Burna Boy ft. Chris Martin",     "year": 2020, "duration": 210, "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "audio": "", "summary": "Lagos Afro-fusion broadside on the violence the post-colonial state inherits from its colonisers.",                              "external_url": "https://www.burnaboyofficial.com/" },
-    { "id": "s8",  "title": "Mississippi Goddam",              "artist": "Nina Simone",                    "year": 1964, "duration": 285, "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80", "audio": "", "summary": "Written after the murder of Medgar Evers and the bombing of Birmingham — a show-tune turned indictment.",                       "external_url": "https://www.ninasimone.com/" },
-    { "id": "s9",  "title": "The Revolution Will Not Be Televised", "artist": "Gil Scott-Heron",          "year": 1971, "duration": 192, "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80", "audio": "", "summary": "Scott-Heron's spoken-word salvo against media co-optation — congas, flute, no studio polish.",                                  "external_url": "https://www.youtube.com/watch?v=qGaoXAwl9kw" },
-    { "id": "s10", "title": "Fire on the Mountain",            "artist": "Asa",                            "year": 2007, "duration": 248, "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80", "audio": "", "summary": "From Lagos via Paris — a quiet warning about the soldiers waiting for orders.",                                                  "external_url": "https://www.asaofficial.com/" }
+    {
+      "id": "s1",
+      "title": "Zombie",
+      "artist": "Fela Kuti & Africa '70",
+      "year": 1976,
+      "duration": 720,
+      "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80",
+      "audio": "",
+      "summary": "12 minutes of horn-line indictment of the Nigerian military — the most-banned song of its decade.",
+      "external_url": "https://www.youtube.com/watch?v=O_jryNcXVR0"
+    },
+    {
+      "id": "s2",
+      "title": "Tezeta (Nostalgia)",
+      "artist": "Mulatu Astatke",
+      "year": 1972,
+      "duration": 322,
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80",
+      "audio": "",
+      "summary": "The defining piece of Ethio-jazz, from <em>Mulatu of Ethiopia</em> — vibraphone, tezeta scale, Addis at dusk.",
+      "external_url": "https://mulatuastatke.bandcamp.com/"
+    },
+    {
+      "id": "s3",
+      "title": "Pata Pata",
+      "artist": "Miriam Makeba",
+      "year": 1967,
+      "duration": 192,
+      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80",
+      "audio": "",
+      "summary": "Makeba's international anti-apartheid anthem — recorded in New York, banned at home.",
+      "external_url": "https://www.youtube.com/watch?v=ZsBz1S0p2zo"
+    },
+    {
+      "id": "s4",
+      "title": "Stimela (The Coal Train)",
+      "artist": "Hugh Masekela",
+      "year": 1974,
+      "duration": 540,
+      "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80",
+      "audio": "",
+      "summary": "Nine minutes on the migrant labour trains pulling Africa's miners into apartheid mines.",
+      "external_url": "https://www.youtube.com/watch?v=KtOggIH3i6w"
+    },
+    {
+      "id": "s5",
+      "title": "Africa Unite",
+      "artist": "Bob Marley & The Wailers",
+      "year": 1979,
+      "duration": 175,
+      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80",
+      "audio": "",
+      "summary": "From <em>Survival</em> — Marley's pan-African call, recorded the year before the Zimbabwe independence concert.",
+      "external_url": "https://www.bobmarley.com/"
+    },
+    {
+      "id": "s6",
+      "title": "My Queen Is Harriet Tubman",
+      "artist": "Sons of Kemet (Shabaka Hutchings)",
+      "year": 2018,
+      "duration": 357,
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80",
+      "audio": "",
+      "summary": "From <em>Your Queen Is a Reptile</em> — tenor sax, two drum kits, tuba, no compromise.",
+      "external_url": "https://sonsofkemet.bandcamp.com/"
+    },
+    {
+      "id": "s7",
+      "title": "Monsters You Made",
+      "artist": "Burna Boy ft. Chris Martin",
+      "year": 2020,
+      "duration": 210,
+      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80",
+      "audio": "",
+      "summary": "Lagos Afro-fusion broadside on the violence the post-colonial state inherits from its colonisers.",
+      "external_url": "https://www.burnaboyofficial.com/"
+    },
+    {
+      "id": "s8",
+      "title": "Mississippi Goddam",
+      "artist": "Nina Simone",
+      "year": 1964,
+      "duration": 285,
+      "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80",
+      "audio": "",
+      "summary": "Written after the murder of Medgar Evers and the bombing of Birmingham — a show-tune turned indictment.",
+      "external_url": "https://www.ninasimone.com/"
+    },
+    {
+      "id": "s9",
+      "title": "The Revolution Will Not Be Televised",
+      "artist": "Gil Scott-Heron",
+      "year": 1971,
+      "duration": 192,
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80",
+      "audio": "",
+      "summary": "Scott-Heron's spoken-word salvo against media co-optation — congas, flute, no studio polish.",
+      "external_url": "https://www.youtube.com/watch?v=qGaoXAwl9kw"
+    },
+    {
+      "id": "s10",
+      "title": "Fire on the Mountain",
+      "artist": "Asa",
+      "year": 2007,
+      "duration": 248,
+      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80",
+      "audio": "",
+      "summary": "From Lagos via Paris — a quiet warning about the soldiers waiting for orders.",
+      "external_url": "https://www.asaofficial.com/"
+    }
   ],
   "books": [
-    { "id": "b1",  "title": "The Wretched of the Earth",                      "author": "Frantz Fanon",                   "year": 1961, "publisher": "François Maspero / Grove Press", "pages": 251, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Fanon's last work — colonialism, decolonial violence, and the psychology of liberation. Preface by Jean-Paul Sartre.",                              "external_url": "https://groveatlantic.com/book/the-wretched-of-the-earth/" },
-    { "id": "b2",  "title": "How Europe Underdeveloped Africa",               "author": "Walter Rodney",                  "year": 1972, "publisher": "Bogle-L'Ouverture / Tanzania Publishing House", "pages": 312, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "The structural argument for African underdevelopment as a product of European capitalism — Rodney's defining work.",                              "external_url": "https://www.versobooks.com/products/2941-how-europe-underdeveloped-africa" },
-    { "id": "b3",  "title": "African Anarchism: The History of a Movement",   "author": "Sam Mbah & I.E. Igariwey",       "year": 1997, "publisher": "See Sharp Press",                "pages": 124, "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80", "summary": "Written from Lagos — the reference text for African anarchist tradition, from acephalous societies through to contemporary movements.",          "external_url": "https://theanarchistlibrary.org/library/sam-mbah-and-i-e-igariwey-african-anarchism-the-history-of-a-movement" },
-    { "id": "b4",  "title": "The Black Jacobins",                             "author": "C.L.R. James",                   "year": 1938, "publisher": "Secker & Warburg",               "pages": 426, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "The history of the Haitian Revolution — Toussaint L'Ouverture, San Domingo, the only successful slave revolt in modern history.",                  "external_url": "https://www.penguinrandomhouse.com/books/300948/the-black-jacobins-by-c-l-r-james/" },
-    { "id": "b5",  "title": "Decolonising the Mind",                          "author": "Ngũgĩ wa Thiong'o",              "year": 1986, "publisher": "James Currey / Heinemann",       "pages": 114, "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "Why Ngũgĩ stopped writing in English. The politics of language as the politics of mind.",                                                            "external_url": "https://www.jamescurrey.com/9780852555019/decolonising-the-mind/" },
-    { "id": "b6",  "title": "Discourse on Colonialism",                       "author": "Aimé Césaire",                   "year": 1950, "publisher": "Présence Africaine / Monthly Review", "pages": 102, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Césaire's foundational anti-colonial pamphlet — the boomerang of colonial violence returning to Europe as fascism.",                                "external_url": "https://monthlyreview.org/product/discourse_on_colonialism/" },
-    { "id": "b7",  "title": "Black Marxism: The Making of the Black Radical Tradition", "author": "Cedric J. Robinson", "year": 1983, "publisher": "Zed Books / UNC Press",          "pages": 436, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "Robinson's case for racial capitalism, and for a Black radical tradition older than Marxism.",                                                       "external_url": "https://uncpress.org/book/9780807848296/black-marxism/" },
-    { "id": "b8",  "title": "Sister Outsider",                                "author": "Audre Lorde",                    "year": 1984, "publisher": "Crossing Press",                 "pages": 190, "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80", "summary": "Fifteen essays and speeches from Lorde — Black, lesbian, mother, warrior, poet — on intersectional refusal.",                                       "external_url": "https://www.penguinrandomhouse.com/books/198292/sister-outsider-by-audre-lorde/" },
-    { "id": "b9",  "title": "Are Prisons Obsolete?",                          "author": "Angela Y. Davis",                "year": 2003, "publisher": "Seven Stories Press",            "pages": 128, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "Davis's introductory case for prison abolition — short, urgent, foundational.",                                                                     "external_url": "https://www.sevenstories.com/books/3217-are-prisons-obsolete" },
-    { "id": "b10", "title": "Necropolitics",                                  "author": "Achille Mbembe",                 "year": 2019, "publisher": "Duke University Press",          "pages": 224, "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80", "summary": "The book-length expansion of the 2003 essay — sovereignty as the power to dictate who lives and who dies.",                                          "external_url": "https://www.dukeupress.edu/necropolitics" },
-    { "id": "b11", "title": "Pan-African Social Ecology: Speeches, Conversations, and Essays", "author": "Modibo Kadalie", "year": 2019, "publisher": "Daraja Press / On Our Own Authority!", "pages": 168, "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80", "summary": "Kadalie on autonomous mass democracy and African ecological traditions — interviews with Andrew Zonneveld.",                                       "external_url": "https://darajapress.com/publication/pan-african-social-ecology" },
-    { "id": "b12", "title": "Anarchism and the Black Revolution",             "author": "Lorenzo Kom'boa Ervin",          "year": 1979, "publisher": "Pluto Press (2021 ed.)",         "pages": 224, "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80", "summary": "The 2021 expanded edition of Ervin's foundational pamphlet — with new afterword and analysis of contemporary movements.",                            "external_url": "https://www.plutobooks.com/9780745345819/anarchism-and-the-black-revolution/" }
+    {
+      "id": "b1",
+      "title": "The Wretched of the Earth",
+      "author": "Frantz Fanon",
+      "year": 1961,
+      "publisher": "François Maspero / Grove Press",
+      "pages": 251,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "Fanon's last work — colonialism, decolonial violence, and the psychology of liberation. Preface by Jean-Paul Sartre.",
+      "external_url": "https://groveatlantic.com/book/the-wretched-of-the-earth/"
+    },
+    {
+      "id": "b2",
+      "title": "How Europe Underdeveloped Africa",
+      "author": "Walter Rodney",
+      "year": 1972,
+      "publisher": "Bogle-L'Ouverture / Tanzania Publishing House",
+      "pages": 312,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "The structural argument for African underdevelopment as a product of European capitalism — Rodney's defining work.",
+      "external_url": "https://www.versobooks.com/products/2941-how-europe-underdeveloped-africa"
+    },
+    {
+      "id": "b3",
+      "title": "African Anarchism: The History of a Movement",
+      "author": "Sam Mbah & I.E. Igariwey",
+      "year": 1997,
+      "publisher": "See Sharp Press",
+      "pages": 124,
+      "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80",
+      "summary": "Written from Lagos — the reference text for African anarchist tradition, from acephalous societies through to contemporary movements.",
+      "external_url": "https://theanarchistlibrary.org/library/sam-mbah-and-i-e-igariwey-african-anarchism-the-history-of-a-movement"
+    },
+    {
+      "id": "b4",
+      "title": "The Black Jacobins",
+      "author": "C.L.R. James",
+      "year": 1938,
+      "publisher": "Secker & Warburg",
+      "pages": 426,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "The history of the Haitian Revolution — Toussaint L'Ouverture, San Domingo, the only successful slave revolt in modern history.",
+      "external_url": "https://www.penguinrandomhouse.com/books/300948/the-black-jacobins-by-c-l-r-james/"
+    },
+    {
+      "id": "b5",
+      "title": "Decolonising the Mind",
+      "author": "Ngũgĩ wa Thiong'o",
+      "year": 1986,
+      "publisher": "James Currey / Heinemann",
+      "pages": 114,
+      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80",
+      "summary": "Why Ngũgĩ stopped writing in English. The politics of language as the politics of mind.",
+      "external_url": "https://www.jamescurrey.com/9780852555019/decolonising-the-mind/"
+    },
+    {
+      "id": "b6",
+      "title": "Discourse on Colonialism",
+      "author": "Aimé Césaire",
+      "year": 1950,
+      "publisher": "Présence Africaine / Monthly Review",
+      "pages": 102,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "Césaire's foundational anti-colonial pamphlet — the boomerang of colonial violence returning to Europe as fascism.",
+      "external_url": "https://monthlyreview.org/product/discourse_on_colonialism/"
+    },
+    {
+      "id": "b7",
+      "title": "Black Marxism: The Making of the Black Radical Tradition",
+      "author": "Cedric J. Robinson",
+      "year": 1983,
+      "publisher": "Zed Books / UNC Press",
+      "pages": 436,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "Robinson's case for racial capitalism, and for a Black radical tradition older than Marxism.",
+      "external_url": "https://uncpress.org/book/9780807848296/black-marxism/"
+    },
+    {
+      "id": "b8",
+      "title": "Sister Outsider",
+      "author": "Audre Lorde",
+      "year": 1984,
+      "publisher": "Crossing Press",
+      "pages": 190,
+      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80",
+      "summary": "Fifteen essays and speeches from Lorde — Black, lesbian, mother, warrior, poet — on intersectional refusal.",
+      "external_url": "https://www.penguinrandomhouse.com/books/198292/sister-outsider-by-audre-lorde/"
+    },
+    {
+      "id": "b9",
+      "title": "Are Prisons Obsolete?",
+      "author": "Angela Y. Davis",
+      "year": 2003,
+      "publisher": "Seven Stories Press",
+      "pages": 128,
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "summary": "Davis's introductory case for prison abolition — short, urgent, foundational.",
+      "external_url": "https://www.sevenstories.com/books/3217-are-prisons-obsolete"
+    },
+    {
+      "id": "b10",
+      "title": "Necropolitics",
+      "author": "Achille Mbembe",
+      "year": 2019,
+      "publisher": "Duke University Press",
+      "pages": 224,
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "summary": "The book-length expansion of the 2003 essay — sovereignty as the power to dictate who lives and who dies.",
+      "external_url": "https://www.dukeupress.edu/necropolitics"
+    },
+    {
+      "id": "b11",
+      "title": "Pan-African Social Ecology: Speeches, Conversations, and Essays",
+      "author": "Modibo Kadalie",
+      "year": 2019,
+      "publisher": "Daraja Press / On Our Own Authority!",
+      "pages": 168,
+      "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80",
+      "summary": "Kadalie on autonomous mass democracy and African ecological traditions — interviews with Andrew Zonneveld.",
+      "external_url": "https://darajapress.com/publication/pan-african-social-ecology"
+    },
+    {
+      "id": "b12",
+      "title": "Anarchism and the Black Revolution",
+      "author": "Lorenzo Kom'boa Ervin",
+      "year": 1979,
+      "publisher": "Pluto Press (2021 ed.)",
+      "pages": 224,
+      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "summary": "The 2021 expanded edition of Ervin's foundational pamphlet — with new afterword and analysis of contemporary movements.",
+      "external_url": "https://www.plutobooks.com/9780745345819/anarchism-and-the-black-revolution/"
+    }
   ],
   "merch": [],
   "external_shops": [
-    { "id": "x1",  "name": "Bookmarks (London)",        "city": "London",       "country": "UK",          "what": "UK's only socialist bookshop — strong Black radical section, zines, posters.",       "url": "https://bookmarksbookshop.co.uk", "image": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1200&q=80" },
-    { "id": "x2",  "name": "AK Press",                  "city": "Chico, CA",    "country": "USA",         "what": "Worker-run publisher and distributor — anarchist + Black liberation books, audio, merch.", "url": "https://www.akpress.org",        "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=80" },
-    { "id": "x3",  "name": "PM Press",                  "city": "Oakland, CA",  "country": "USA",         "what": "Books, zines, music, films — anarchism, Black studies, prison abolition.",          "url": "https://www.pmpress.org",       "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80" },
-    { "id": "x4",  "name": "Casa de las Américas",      "city": "Havana",       "country": "Cuba",        "what": "Cuban publisher with a deep Pan-African / decolonial catalogue.",                   "url": "https://www.casadelasamericas.org", "image": "https://images.unsplash.com/photo-1544211076-50105ce0e36c?w=1200&q=80" },
-    { "id": "x5",  "name": "Africa Is a Country",       "city": "Online",       "country": "—",           "what": "Editorial collective publishing diaspora-led essays, podcasts, criticism.",          "url": "https://africasacountry.com",    "image": "https://images.unsplash.com/photo-1513267048331-5611cad62e41?w=1200&q=80" },
-    { "id": "x6",  "name": "Chimurenga",                "city": "Cape Town",    "country": "South Africa","what": "Pan-African chronicle, library, and pop-up press — books, music, archives.",        "url": "https://chimurengachronic.co.za",  "image": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80" },
-    { "id": "x7",  "name": "Verso Books",               "city": "London / NY",  "country": "UK / USA",    "what": "Independent radical publisher — anti-colonial, marxist, abolitionist titles.",      "url": "https://www.versobooks.com",      "image": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1200&q=80" },
-    { "id": "x8",  "name": "Cassava Republic Press",     "city": "Abuja / London","country": "NG / UK",    "what": "Africa-rooted independent publisher — fiction, non-fiction, poetry from across the continent.", "url": "https://cassavarepublic.biz", "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=80" },
-    { "id": "x9",  "name": "Daraja Press",              "city": "Ottawa",       "country": "Canada",      "what": "Decolonial publisher — strong list on African political thought, ecology, autonomy.", "url": "https://darajapress.com",        "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80" },
-    { "id": "x10", "name": "Soundway Records",          "city": "London",       "country": "UK",          "what": "African + diasporic music label and reissue house — afrobeat, highlife, dub, jazz.", "url": "https://www.soundwayrecords.com", "image": "https://images.unsplash.com/photo-1453090927415-5f45085b65c0?w=1200&q=80" },
-    { "id": "x11", "name": "Strut Records",             "city": "London",       "country": "UK",          "what": "Long-running reissue label — Sun Ra, Mulatu Astatke, Tony Allen, William Onyeabor.", "url": "https://strut-records.com",       "image": "https://images.unsplash.com/photo-1453090927415-5f45085b65c0?w=1200&q=80" },
-    { "id": "x12", "name": "Awesome Tapes from Africa", "city": "Online",       "country": "—",           "what": "Brian Shimkovitz's blog/label reissuing African cassettes — Hailu Mergia onwards.",  "url": "https://awesometapes.com",        "image": "https://images.unsplash.com/photo-1453090927415-5f45085b65c0?w=1200&q=80" }
+    {
+      "id": "x1",
+      "name": "Bookmarks (London)",
+      "city": "London",
+      "country": "UK",
+      "what": "UK's only socialist bookshop — strong Black radical section, zines, posters.",
+      "url": "https://bookmarksbookshop.co.uk",
+      "image": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1200&q=80"
+    },
+    {
+      "id": "x2",
+      "name": "AK Press",
+      "city": "Chico, CA",
+      "country": "USA",
+      "what": "Worker-run publisher and distributor — anarchist + Black liberation books, audio, merch.",
+      "url": "https://www.akpress.org",
+      "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=80"
+    },
+    {
+      "id": "x3",
+      "name": "PM Press",
+      "city": "Oakland, CA",
+      "country": "USA",
+      "what": "Books, zines, music, films — anarchism, Black studies, prison abolition.",
+      "url": "https://www.pmpress.org",
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80"
+    },
+    {
+      "id": "x4",
+      "name": "Casa de las Américas",
+      "city": "Havana",
+      "country": "Cuba",
+      "what": "Cuban publisher with a deep Pan-African / decolonial catalogue.",
+      "url": "https://www.casadelasamericas.org",
+      "image": "https://images.unsplash.com/photo-1544211076-50105ce0e36c?w=1200&q=80"
+    },
+    {
+      "id": "x5",
+      "name": "Africa Is a Country",
+      "city": "Online",
+      "country": "—",
+      "what": "Editorial collective publishing diaspora-led essays, podcasts, criticism.",
+      "url": "https://africasacountry.com",
+      "image": "https://images.unsplash.com/photo-1513267048331-5611cad62e41?w=1200&q=80"
+    },
+    {
+      "id": "x6",
+      "name": "Chimurenga",
+      "city": "Cape Town",
+      "country": "South Africa",
+      "what": "Pan-African chronicle, library, and pop-up press — books, music, archives.",
+      "url": "https://chimurengachronic.co.za",
+      "image": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80"
+    },
+    {
+      "id": "x7",
+      "name": "Verso Books",
+      "city": "London / NY",
+      "country": "UK / USA",
+      "what": "Independent radical publisher — anti-colonial, marxist, abolitionist titles.",
+      "url": "https://www.versobooks.com",
+      "image": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1200&q=80"
+    },
+    {
+      "id": "x8",
+      "name": "Cassava Republic Press",
+      "city": "Abuja / London",
+      "country": "NG / UK",
+      "what": "Africa-rooted independent publisher — fiction, non-fiction, poetry from across the continent.",
+      "url": "https://cassavarepublic.biz",
+      "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=80"
+    },
+    {
+      "id": "x9",
+      "name": "Daraja Press",
+      "city": "Ottawa",
+      "country": "Canada",
+      "what": "Decolonial publisher — strong list on African political thought, ecology, autonomy.",
+      "url": "https://darajapress.com",
+      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80"
+    },
+    {
+      "id": "x10",
+      "name": "Soundway Records",
+      "city": "London",
+      "country": "UK",
+      "what": "African + diasporic music label and reissue house — afrobeat, highlife, dub, jazz.",
+      "url": "https://www.soundwayrecords.com",
+      "image": "https://images.unsplash.com/photo-1453090927415-5f45085b65c0?w=1200&q=80"
+    },
+    {
+      "id": "x11",
+      "name": "Strut Records",
+      "city": "London",
+      "country": "UK",
+      "what": "Long-running reissue label — Sun Ra, Mulatu Astatke, Tony Allen, William Onyeabor.",
+      "url": "https://strut-records.com",
+      "image": "https://images.unsplash.com/photo-1453090927415-5f45085b65c0?w=1200&q=80"
+    },
+    {
+      "id": "x12",
+      "name": "Awesome Tapes from Africa",
+      "city": "Online",
+      "country": "—",
+      "what": "Brian Shimkovitz's blog/label reissuing African cassettes — Hailu Mergia onwards.",
+      "url": "https://awesometapes.com",
+      "image": "https://images.unsplash.com/photo-1453090927415-5f45085b65c0?w=1200&q=80"
+    }
   ],
   "services": [],
   "seminars": [],
@@ -110,17 +924,176 @@
   "community": [],
   "campaigns": [],
   "grants": [
-    { "id": "g1",  "funder": "Africa No Filter",             "title": "Narrative-shift grants for storytellers",      "amount": "Up to $20,000",  "deadline": "rolling",     "region": "Pan-African",      "themes": ["media","narrative","journalism"], "status": "open",     "external_url": "https://africanofilter.org/grants" },
-    { "id": "g2",  "funder": "Prince Claus Fund",            "title": "Cultural & Artistic Responses to Environmental Change", "amount": "€5,000–€15,000", "deadline": "annual call", "region": "Global South",     "themes": ["heritage","ecology","emergency"], "status": "watching", "external_url": "https://princeclausfund.org/" },
-    { "id": "g3",  "funder": "Ford Foundation",              "title": "Building Institutions and Networks (BUILD)",   "amount": "Multi-year unrestricted", "deadline": "by invitation", "region": "Global",      "themes": ["institutions","justice"],         "status": "watching", "external_url": "https://www.fordfoundation.org/work/our-grants/build/" },
-    { "id": "g4",  "funder": "Open Society Foundations",     "title": "OSF — Africa programs",                        "amount": "Varies",         "deadline": "rolling",     "region": "Africa",          "themes": ["rights","governance","media"],     "status": "open",     "external_url": "https://www.opensocietyfoundations.org/who-we-are/regions/africa" },
-    { "id": "g5",  "funder": "African Women's Development Fund", "title": "Main Grants Programme",                    "amount": "$8,000–$50,000", "deadline": "biennial",    "region": "Africa",          "themes": ["women","rights","autonomy"],       "status": "watching", "external_url": "https://awdf.org/" },
-    { "id": "g6",  "funder": "Andrew W. Mellon Foundation",  "title": "Higher Learning / Public Knowledge",           "amount": "Varies",         "deadline": "rolling",     "region": "Global",          "themes": ["humanities","archives"],           "status": "watching", "external_url": "https://www.mellon.org/" },
-    { "id": "g7",  "funder": "Doc Society",                  "title": "Climate Story Fund",                            "amount": "Up to $50,000",  "deadline": "annual",      "region": "Global",          "themes": ["documentary","climate"],           "status": "open",     "external_url": "https://docsociety.org/csf/" },
-    { "id": "g8",  "funder": "IDFA Bertha Fund",             "title": "Project development & post-production",        "amount": "€17,500–€70,000", "deadline": "annual",      "region": "Global South",     "themes": ["documentary"],                     "status": "open",     "external_url": "https://www.idfa.nl/en/info/idfa-bertha-fund" },
-    { "id": "g9",  "funder": "Sundance Institute",           "title": "Documentary Fund",                              "amount": "Up to $50,000",  "deadline": "rolling",     "region": "Global",          "themes": ["documentary"],                     "status": "open",     "external_url": "https://www.sundance.org/programs/documentary-film/" },
-    { "id": "g10", "funder": "Pulitzer Center",              "title": "Reporting Grants — Africa",                     "amount": "Up to $20,000",  "deadline": "rolling",     "region": "Africa",          "themes": ["journalism","investigation"],     "status": "open",     "external_url": "https://pulitzercenter.org/grants" },
-    { "id": "g11", "funder": "Mama Cash",                    "title": "Resilience grants for women-, girl-, trans- and intersex-led groups", "amount": "€5,000–€50,000", "deadline": "annual",      "region": "Global",          "themes": ["women","trans","autonomy"],        "status": "open",     "external_url": "https://www.mamacash.org/" },
-    { "id": "g12", "funder": "Goethe-Institut",              "title": "International Coproduction Fund",               "amount": "Up to €25,000",  "deadline": "annual",      "region": "Global / Africa", "themes": ["arts","coproduction"],            "status": "open",     "external_url": "https://www.goethe.de/en/uun/auf/fkt.html" }
+    {
+      "id": "g1",
+      "funder": "Africa No Filter",
+      "title": "Narrative-shift grants for storytellers",
+      "amount": "Up to $20,000",
+      "deadline": "rolling",
+      "region": "Pan-African",
+      "themes": [
+        "media",
+        "narrative",
+        "journalism"
+      ],
+      "status": "open",
+      "external_url": "https://africanofilter.org/grants"
+    },
+    {
+      "id": "g2",
+      "funder": "Prince Claus Fund",
+      "title": "Cultural & Artistic Responses to Environmental Change",
+      "amount": "€5,000–€15,000",
+      "deadline": "annual call",
+      "region": "Global South",
+      "themes": [
+        "heritage",
+        "ecology",
+        "emergency"
+      ],
+      "status": "watching",
+      "external_url": "https://princeclausfund.org/"
+    },
+    {
+      "id": "g3",
+      "funder": "Ford Foundation",
+      "title": "Building Institutions and Networks (BUILD)",
+      "amount": "Multi-year unrestricted",
+      "deadline": "by invitation",
+      "region": "Global",
+      "themes": [
+        "institutions",
+        "justice"
+      ],
+      "status": "watching",
+      "external_url": "https://www.fordfoundation.org/work/our-grants/build/"
+    },
+    {
+      "id": "g4",
+      "funder": "Open Society Foundations",
+      "title": "OSF — Africa programs",
+      "amount": "Varies",
+      "deadline": "rolling",
+      "region": "Africa",
+      "themes": [
+        "rights",
+        "governance",
+        "media"
+      ],
+      "status": "open",
+      "external_url": "https://www.opensocietyfoundations.org/who-we-are/regions/africa"
+    },
+    {
+      "id": "g5",
+      "funder": "African Women's Development Fund",
+      "title": "Main Grants Programme",
+      "amount": "$8,000–$50,000",
+      "deadline": "biennial",
+      "region": "Africa",
+      "themes": [
+        "women",
+        "rights",
+        "autonomy"
+      ],
+      "status": "watching",
+      "external_url": "https://awdf.org/"
+    },
+    {
+      "id": "g6",
+      "funder": "Andrew W. Mellon Foundation",
+      "title": "Higher Learning / Public Knowledge",
+      "amount": "Varies",
+      "deadline": "rolling",
+      "region": "Global",
+      "themes": [
+        "humanities",
+        "archives"
+      ],
+      "status": "watching",
+      "external_url": "https://www.mellon.org/"
+    },
+    {
+      "id": "g7",
+      "funder": "Doc Society",
+      "title": "Climate Story Fund",
+      "amount": "Up to $50,000",
+      "deadline": "annual",
+      "region": "Global",
+      "themes": [
+        "documentary",
+        "climate"
+      ],
+      "status": "open",
+      "external_url": "https://docsociety.org/csf/"
+    },
+    {
+      "id": "g8",
+      "funder": "IDFA Bertha Fund",
+      "title": "Project development & post-production",
+      "amount": "€17,500–€70,000",
+      "deadline": "annual",
+      "region": "Global South",
+      "themes": [
+        "documentary"
+      ],
+      "status": "open",
+      "external_url": "https://www.idfa.nl/en/info/idfa-bertha-fund"
+    },
+    {
+      "id": "g9",
+      "funder": "Sundance Institute",
+      "title": "Documentary Fund",
+      "amount": "Up to $50,000",
+      "deadline": "rolling",
+      "region": "Global",
+      "themes": [
+        "documentary"
+      ],
+      "status": "open",
+      "external_url": "https://www.sundance.org/programs/documentary-film/"
+    },
+    {
+      "id": "g10",
+      "funder": "Pulitzer Center",
+      "title": "Reporting Grants — Africa",
+      "amount": "Up to $20,000",
+      "deadline": "rolling",
+      "region": "Africa",
+      "themes": [
+        "journalism",
+        "investigation"
+      ],
+      "status": "open",
+      "external_url": "https://pulitzercenter.org/grants"
+    },
+    {
+      "id": "g11",
+      "funder": "Mama Cash",
+      "title": "Resilience grants for women-, girl-, trans- and intersex-led groups",
+      "amount": "€5,000–€50,000",
+      "deadline": "annual",
+      "region": "Global",
+      "themes": [
+        "women",
+        "trans",
+        "autonomy"
+      ],
+      "status": "open",
+      "external_url": "https://www.mamacash.org/"
+    },
+    {
+      "id": "g12",
+      "funder": "Goethe-Institut",
+      "title": "International Coproduction Fund",
+      "amount": "Up to €25,000",
+      "deadline": "annual",
+      "region": "Global / Africa",
+      "themes": [
+        "arts",
+        "coproduction"
+      ],
+      "status": "open",
+      "external_url": "https://www.goethe.de/en/uun/auf/fkt.html"
+    }
   ]
 }

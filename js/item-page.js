@@ -69,7 +69,7 @@
       <article class="item-page" data-wish-id="${escapeHTML(it.id)}" data-wish-type="${escapeHTML(type)}">
         <div class="item-meta-pill mono">${escapeHTML(label.toUpperCase())}${it.year ? ' · ' + it.year : ''}${it.category ? ' · ' + escapeHTML(it.category) : ''}</div>
         ${renderCredit(it)}
-        ${it.image ? `<div class="item-hero" style="background-image:url('${escapeHTML(it.image)}')"></div>` : ''}
+        ${renderItemHero(it, type)}
         <h1 class="item-title">${escapeHTML(it.title || '')}</h1>
         ${it.deck ? `<p class="item-lede">${escapeHTML(it.deck)}</p>` : ''}
         ${it.summary ? `<p class="item-lede">${escapeHTML(it.summary)}</p>` : ''}
@@ -110,7 +110,48 @@
       } catch {}
     });
 
+    // YouTube hero: click play → swap thumbnail for embedded player
+    const ytHero = main.querySelector('.item-hero--yt');
+    if (ytHero) {
+      ytHero.addEventListener('click', function () {
+        const id = this.dataset.yt;
+        if (!id) return;
+        this.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none"></iframe>`;
+        this.style.backgroundImage = 'none';
+        this.style.cursor = 'default';
+        this.classList.add('is-playing');
+      });
+    }
+
     renderRelated(type, it, seed);
+  }
+
+  // ----- hero cascade: image → yt thumbnail → text fallback ----------------
+  function renderItemHero (it, type) {
+    // 1. Real image supplied (from seed or DB)
+    if (it.image) {
+      return `<div class="item-hero" style="background-image:url('${escapeHTML(it.image)}')"></div>`;
+    }
+    // 2. YouTube embed → use thumbnail with play-button overlay
+    const ytEmbed = (it.embeds || []).find(e => e && e.url && /youtube\.com|youtu\.be/.test(e.url));
+    if (ytEmbed) {
+      const ytId = (ytEmbed.url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/) || [])[1];
+      if (ytId) {
+        const thumb = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+        return `<div class="item-hero item-hero--yt" data-yt="${escapeHTML(ytId)}" style="background-image:url('${thumb}')">
+          <button class="item-hero-play-btn" aria-label="Play trailer">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.65)"/><polygon points="10,8 18,12 10,16" fill="white"/></svg>
+          </button>
+        </div>`;
+      }
+    }
+    // 3. Text / gradient fallback — never show a blank black box
+    const sub = [it.director, it.artist, it.author, it.year].filter(Boolean).join(' · ');
+    return `<div class="item-hero item-hero--text">
+      <div class="item-hero-eyebrow mono">${escapeHTML((type || 'item').toUpperCase())}</div>
+      <div class="item-hero-wordmark">${escapeHTML(it.title || '')}</div>
+      ${sub ? `<div class="item-hero-sub mono">${escapeHTML(sub)}</div>` : ''}
+    </div>`;
   }
 
   function renderRelated (type, it, seed) {

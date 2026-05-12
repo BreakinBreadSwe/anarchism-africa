@@ -45,6 +45,7 @@
   <button class="rail-item active" data-view="pending"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/><circle cx="20" cy="18" r="2" class="fill"/></svg></span><span class="label">Review queue</span></button>
   <button class="rail-item" title="Article Lab" data-view="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>
   <button class="rail-item" title="My drafts" data-view="myarticles"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/></svg></span><span class="label">My drafts</span></button>
+  <button class="rail-item" title="Autopilot" data-view="autopilot"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><span class="label">Autopilot</span></button>
   <button class="rail-item" title="A.A.AI" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
 </aside>
 <div class="rail-backdrop" id="rail-backdrop"></div>
@@ -88,6 +89,7 @@
 <script src="js/wishlist.js"></script>
 <script src="js/article-lab.js"></script>
 <script src="js/content-queue.js"></script>
+<script src="js/autopilot-panel.js"></script>
 <script src="js/role-switcher.js"></script>
 <script>
   RoleShared.boot({
@@ -105,6 +107,7 @@
           </div>
         </div>`;
       },
+      autopilot:  async () => { setTimeout(() => window.AutopilotPanel?.render(), 0); return '<div id="view-autopilot"></div>'; },
       ai:         async () => RoleShared.views.ai(),
       wishlist:   async () => window.AA.wishlist.renderView()
     }

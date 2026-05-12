@@ -52,6 +52,7 @@
   <button class="rail-item" title="Article Lab" data-view="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>
   <button class="rail-item" title="Grants" data-view="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="label">Grants</span></button>
   <button class="rail-item" title="Ambassadors" data-view="ambassadors"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Ambassadors</span></button>
+  <button class="rail-item" title="Autopilot" data-view="autopilot"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><span class="label">Autopilot</span></button>
   <button class="rail-item" title="Mailing" data-view="mailing"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="label">Mailing</span></button>
   <button class="rail-item" title="Promotions" data-view="promo"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 11l13-5v12L3 13z"/><path d="M16 9v6"/><path d="M19 9c1.5 0 3 1 3 3s-1.5 3-3 3"/></svg></span><span class="label">Promotions</span></button>
   <button class="rail-item" title="Article Lab" data-view="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/></svg></span><span class="label">Article Lab</span></button>
@@ -105,6 +106,7 @@
 <script src="js/wishlist.js"></script>
 <script src="js/article-lab.js"></script>
 <script src="js/content-queue.js"></script>
+<script src="js/autopilot-panel.js"></script>
 <script src="js/role-switcher.js"></script>
 <script src="js/admin-checklist.js"></script>
 <script>
@@ -123,6 +125,7 @@
       },
       pending:     async () => { setTimeout(() => window.ContentQueue?.render('publisher'), 0); return '<div id="view-content-queue"></div>'; },
       articlelab:  async () => { setTimeout(() => window.ArticleLab?.render(), 0); return '<div id="view-articlelab"></div>'; },
+      autopilot:   async () => { setTimeout(() => window.AutopilotPanel?.render(), 0); return '<div id="view-autopilot"></div>'; },
       grants:      async () => RoleShared.views.grants(),
       ambassadors: async () => RoleShared.views.ambassadors(),
       mailing:     async () => RoleShared.views.mailing(),

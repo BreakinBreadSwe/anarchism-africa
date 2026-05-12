@@ -14,6 +14,7 @@ const { dropUnsafeUrls } = require('../../lib/url-safety');
 
 const ALLOWED = new Set([
   'kind','status','slug','title','subtitle','deck','summary','body','language','category','tags',
+  // --- ensure status + published_at always allowed (for AI draft approve/reject) ---
   'image','gallery','embeds','audio','video','duration','reading_time',
   'author','director','artist','publisher','year',
   'starts_at','ends_at','venue','city','country',

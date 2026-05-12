@@ -55,7 +55,6 @@
   <button class="rail-item" title="Autopilot" data-view="autopilot"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><span class="label">Autopilot</span></button>
   <button class="rail-item" title="Mailing" data-view="mailing"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="label">Mailing</span></button>
   <button class="rail-item" title="Promotions" data-view="promo"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 11l13-5v12L3 13z"/><path d="M16 9v6"/><path d="M19 9c1.5 0 3 1 3 3s-1.5 3-3 3"/></svg></span><span class="label">Promotions</span></button>
-  <button class="rail-item" title="Article Lab" data-view="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/></svg></span><span class="label">Article Lab</span></button>
   <button class="rail-item" title="Merch Lab" data-view="merchlab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M7 4l5-1 5 1 1 6-2 8-4 3-4-3-2-8z"/></svg></span><span class="label">Merch Lab</span></button>
   <button class="rail-item" title="A.A.AI" data-view="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
 </aside>
@@ -104,7 +103,6 @@
 <script src="js/article-lab.js"></script>
 <script src="js/merch-lab.js"></script>
 <script src="js/wishlist.js"></script>
-<script src="js/article-lab.js"></script>
 <script src="js/content-queue.js"></script>
 <script src="js/autopilot-panel.js"></script>
 <script src="js/role-switcher.js"></script>
@@ -129,7 +127,6 @@
       grants:      async () => RoleShared.views.grants(),
       ambassadors: async () => RoleShared.views.ambassadors(),
       mailing:     async () => RoleShared.views.mailing(),
-      articlelab:  async () => { setTimeout(() => window.ArticleLab?.render(), 0); return '<div id="view-articlelab"></div>'; },
       merchlab:    async () => { setTimeout(() => window.MerchLab?.render(), 0); return '<div id="view-merchlab"></div>'; },
       promo:       async () => RoleShared.views.promo(),
       ai:          async () => RoleShared.views.ai(),

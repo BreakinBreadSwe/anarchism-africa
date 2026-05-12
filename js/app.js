@@ -308,12 +308,40 @@
     return el;
   }
   function secondaryLine (it, kind) {
-    if (kind === 'film')    return `${it.director} · ${it.duration}min · ${it.language || ''}`;
-    if (kind === 'article') return `${it.author} · ${it.reading_time}min · ${it.category}`;
-    if (kind === 'event')   return `${new Date(it.starts_at).toLocaleDateString()} · ${it.city}`;
-    if (kind === 'book')    return `${it.author} · ${it.pages}p`;
-    if (kind === 'merch')   return `${it.provider}`;
+    const dateStr = fmtCardDate(it);
+    if (kind === 'film')    return `${it.director || ''} · ${it.duration ? it.duration + 'min' : ''} · ${it.language || ''}`;
+    if (kind === 'article') return `${it.author || ''} · ${it.reading_time ? it.reading_time + 'min' : ''} · ${dateStr}`;
+    if (kind === 'event')   return `${it.starts_at ? new Date(it.starts_at).toLocaleDateString() : ''} · ${it.city || ''}`;
+    if (kind === 'book')    return `${it.author || ''} · ${it.pages ? it.pages + 'p' : ''}`;
+    if (kind === 'merch')   return `${it.provider || ''}`;
     return '';
+  }
+  function fmtCardDate (it) {
+    const raw = it.published_at || it.scraped_at || it.created_at;
+    if (raw) {
+      try {
+        return new Date(raw).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      } catch {}
+    }
+    return it.year ? String(it.year) : '';
+  }
+  function archiveMonthKey (it) {
+    const raw = it.published_at || it.scraped_at || it.created_at;
+    if (raw) {
+      try {
+        const d = new Date(raw);
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      } catch {}
+    }
+    return it.year ? `${it.year}-00` : '0000-00';
+  }
+  function archiveMonthLabel (key) {
+    if (!key || key === '0000-00') return 'Archive';
+    const [y, m] = key.split('-');
+    if (m === '00') return y;
+    try {
+      return new Date(`${y}-${m}-01`).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    } catch { return key; }
   }
   function merchBlock (m) {
     const carbonPct = Math.min(100, Math.round(m.carbon_g / 80));
@@ -372,7 +400,25 @@
     }
     if (tab === 'articles') {
       const g = $('#articles-grid'); resetGrid(g);
-      (await AA.getByType('article')).forEach(a => { const c = card(a,'article'); attachCardClick(c, openArticle, a); g.appendChild(c); });
+      const arts = await AA.getByType('article');
+      // Sort newest first, group by month with archive headers
+      arts.sort((a, b) => {
+        const da = a.published_at || a.scraped_at || (a.year ? a.year + '-01-01' : '');
+        const db = b.published_at || b.scraped_at || (b.year ? b.year + '-01-01' : '');
+        return da > db ? -1 : da < db ? 1 : 0;
+      });
+      let lastMonth = null;
+      arts.forEach(a => {
+        const mk = archiveMonthKey(a);
+        if (mk !== lastMonth) {
+          const h = document.createElement('div');
+          h.className = 'archive-month-head';
+          h.innerHTML = `<span class="kente-pip"></span><span>${archiveMonthLabel(mk)}</span>`;
+          g.appendChild(h);
+          lastMonth = mk;
+        }
+        const c = card(a, 'article'); attachCardClick(c, openArticle, a); g.appendChild(c);
+      });
     }
     if (tab === 'events') {
       const g = $('#events-grid'); resetGrid(g);

@@ -59,15 +59,30 @@
     }).join('');
   }
 
+  function fmtDate (it) {
+    // published_at (ISO) → "12 May 2026"  |  scraped_at fallback  |  year only
+    const raw = it.published_at || it.scraped_at || it.created_at;
+    if (raw) {
+      try {
+        return new Date(raw).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      } catch {}
+    }
+    return it.year ? String(it.year) : '';
+  }
+
   function render (main, type, it, seed) {
     const label = KIND_LABEL[type] || type;
     const ext = (it.external_url || it.url || '').trim();
     const safeExt = /^https?:\/\//i.test(ext) ? ext : '';
     const details = detailLines(type, it);
+    const dateStr = fmtDate(it);
 
     main.innerHTML = `
       <article class="item-page" data-wish-id="${escapeHTML(it.id)}" data-wish-type="${escapeHTML(type)}">
-        <div class="item-meta-pill mono">${escapeHTML(label.toUpperCase())}${it.year ? ' · ' + it.year : ''}${it.category ? ' · ' + escapeHTML(it.category) : ''}</div>
+        <div class="item-meta-row">
+          <div class="item-meta-pill mono">${escapeHTML(label.toUpperCase())}${it.year ? ' · ' + it.year : ''}${it.category ? ' · ' + escapeHTML(it.category) : ''}</div>
+          ${dateStr ? `<time class="item-date-badge mono" datetime="${escapeHTML(it.published_at || it.year || '')}">${escapeHTML(dateStr)}</time>` : ''}
+        </div>
         ${renderCredit(it)}
         ${renderItemHero(it, type)}
         <h1 class="item-title">${escapeHTML(it.title || '')}</h1>

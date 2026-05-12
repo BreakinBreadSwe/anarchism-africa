@@ -79,7 +79,7 @@ export default async function handler (req, res) {
   }
 
   const origin = process.env.SITE_URL || `https://${req.headers.host || 'anarchism.africa'}`;
-  const summary = { scanned: 0, queued: 0, deduped: 0, rejected_404: 0, errors: [] };
+  const summary = { scanned: 0, queued: 0, deduped: 0, rejected_404: 0, og_scraped: 0, errors: [], ogScrapeCount: 0 };
 
   for (const src of SOURCES) {
     try {
@@ -98,11 +98,20 @@ export default async function handler (req, res) {
         }
         const finalUrl = verified.finalUrl || it.link;
 
+            // Grab image: feed-inline first, then OG scrape from the article page.
+        // We cap the OG scrape to 3 per source run to stay within timeout budget.
+        let image = it.image || null;
+        if (!image && summary.ogScrapeCount < 3) {
+          image = await scrapeOgImage(finalUrl);
+          summary.ogScrapeCount = (summary.ogScrapeCount || 0) + 1;
+        }
+
         const payload = {
           kind:           src.kind,
           title:          it.title,
           summary:        cleanText(it.summary).slice(0, 600),
           url:            finalUrl,
+          image:          image || null,
           // Mirror credit fields — every scraped item retains a path back
           // to its original source, so item.html can render a "via" credit
           // and a clear linkback. License falls back to the source's known
@@ -115,7 +124,7 @@ export default async function handler (req, res) {
           source_license: it.license || src.license || 'all rights reserved (linkback only)',
           scraped_at:     new Date().toISOString(),
           tags:           src.tags || [],
-          published_at:   it.date || null,
+          published_at:   it.date ? new Date(it.date).toISOString() : new Date().toISOString(),
           submitted_by:   'scraper:' + src.id
         };
         const r = await fetch(`${origin}/api/content/queue`, {
@@ -192,13 +201,20 @@ function parseFeed (xml) {
                     pick(m, /<dc:rights[^>]*>([\s\S]*?)<\/dc:rights>/) ||
                     pick(m, /<copyright[^>]*>([\s\S]*?)<\/copyright>/) ||
                     pick(m, /<rights[^>]*>([\s\S]*?)<\/rights>/);
+    // Image: media:content url, media:thumbnail url, enclosure url, itunes:image href.
+    // These are the three most common feed-inline image patterns.
+    const image = (m.match(/<media:content[^>]*url="([^"]+)"/) ||
+                   m.match(/<media:thumbnail[^>]*url="([^"]+)"/) ||
+                   m.match(/<enclosure[^>]*url="([^"]+)"[^>]*type="image/) ||
+                   m.match(/<itunes:image[^>]*href="([^"]+)"/) || [, ''])[1] || '';
     if (title && link) out.push({
       title:   cleanText(title),
       link:    cleanText(link),
       summary,
       date,
       author:  cleanText(author),
-      license: cleanText(license)
+      license: cleanText(license),
+      image:   image || ''
     });
   }
   return out;
@@ -215,4 +231,45 @@ function cleanText (s) {
     .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/\s+/g, ' ').trim();
+}
+
+/* Scrape the og:image / twitter:image meta tag from an article page.
+   Hard-capped at a 5-second fetch so a slow publisher can't block the run.
+   Returns the absolute URL string or null. */
+async function scrapeOgImage (url) {
+  if (!url || !/^https?:\/\//i.test(url)) return null;
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 5000);
+  try {
+    const r = await fetch(url, {
+      signal: ctrl.signal,
+      headers: { 'User-Agent': 'ANARCHISM.AFRICA/1.0 (+thumbnail scraper)' }
+    });
+    clearTimeout(t);
+    if (!r.ok) return null;
+    // Only read the first 64 KB — the <head> is always in there.
+    const buf  = await r.arrayBuffer();
+    const text = new TextDecoder().decode(buf.slice(0, 65536));
+    // Priority: og:image → twitter:image → first large <img src>
+    const og  = text.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i) ||
+                text.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["']/i);
+    if (og && og[1]) return toAbsolute(og[1].trim(), url);
+    const tw  = text.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i) ||
+                text.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']twitter:image["']/i);
+    if (tw && tw[1]) return toAbsolute(tw[1].trim(), url);
+    return null;
+  } catch {
+    clearTimeout(t);
+    return null;
+  }
+}
+
+function toAbsolute (src, base) {
+  if (!src) return null;
+  if (/^https?:\/\//i.test(src)) return src;
+  try {
+    return new URL(src, base).href;
+  } catch {
+    return null;
+  }
 }

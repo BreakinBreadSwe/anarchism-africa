@@ -1747,6 +1747,98 @@ section.view { padding: 16px; }
 
 /* === Item detail page (item.html) =================================== */
 .item-page { display: flex; flex-direction: column; gap: 18px; }
+/* =====================================================================
+   AFRICAN PATTERN SYSTEM
+   Kente (Pan-African woven rhythm), Adinkra (geometric symbol tiles),
+   mud-cloth chevron (Malian bogolanfini) — all pure CSS, no images.
+   ===================================================================== */
+
+/* Kente strip — 5-colour Pan-African rhythm used on section heads */
+.kente-strip,
+.kente-bar {
+  display: block; height: 6px; border-radius: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    #C8102E 0%  18%,
+    #FFD700 18% 36%,
+    #006B3F 36% 54%,
+    #000000 54% 72%,
+    #C8102E 72% 100%
+  );
+  opacity: .85;
+}
+
+/* Kente pip — small inline square used in archive headers */
+.kente-pip {
+  display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    #C8102E 0 20%, #FFD700 20% 40%, #006B3F 40% 60%, #000 60% 80%, #C8102E 80% 100%
+  );
+}
+
+/* Adinkra tile — repeating diamond lattice on hover/active card states.
+   Evokes Asante Kente weave and Adinkra cloth-stamping geometry. */
+.adinkra-tile,
+.card:hover {
+  background-image:
+    repeating-linear-gradient( 45deg, transparent 0 5px, rgba(128,128,128,.04) 5px 6px),
+    repeating-linear-gradient(-45deg, transparent 0 5px, rgba(128,128,128,.04) 5px 6px);
+}
+
+/* Mud-cloth panel — Malian bogolanfini chevron geometry for panels */
+.mudcloth-panel {
+  background-image:
+    repeating-linear-gradient( 60deg, transparent 0 9px, rgba(128,128,128,.05) 9px 10px),
+    repeating-linear-gradient(-60deg, transparent 0 9px, rgba(128,128,128,.05) 9px 10px),
+    repeating-linear-gradient( 90deg, transparent 0 14px, rgba(128,128,128,.03) 14px 15px);
+}
+
+/* Adinkra section heading accent — small Sankofa-style paired arcs */
+.section-head-african {
+  position: relative; padding-left: 18px;
+}
+.section-head-african::before {
+  content: '';
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--accent); box-shadow: 4px 0 0 0 var(--accent);
+}
+
+/* Date badge on item pages */
+.item-meta-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.item-date-badge {
+  font: 600 .65rem 'JetBrains Mono', monospace;
+  letter-spacing: .12em; color: var(--muted); text-transform: uppercase;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px;
+  background: var(--bg-2);
+}
+
+/* Archive month headers in the articles grid */
+.archive-month-head {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 10px;
+  margin: 28px 0 4px;
+  font: 700 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+}
+.archive-month-head:first-child { margin-top: 4px; }
+.archive-month-head::after {
+  content: ''; flex: 1; height: 1px; background: var(--line);
+}
+
+/* Kente strip above section h2s — runs across all view section heads */
+.section-head h2::before {
+  content: ''; display: block; height: 4px; width: 44px;
+  border-radius: 2px; margin-bottom: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    #C8102E 0 20%, #FFD700 20% 40%, #006B3F 40% 60%, #000 60% 80%, #C8102E 80% 100%
+  );
+}
+
 .item-meta-pill {
   align-self: flex-start; padding: 4px 12px;
   border: 1px solid var(--line); border-radius: 99px;

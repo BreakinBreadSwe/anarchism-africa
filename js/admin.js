@@ -8,7 +8,9 @@
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
   // ---- tabs --------------------------------------------------------------
+  let _lastTab = 'dashboard';
   function setTab (name) {
+    if (name !== 'studio') _lastTab = name;
     $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
     $$('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + name));
     if (name === 'content')      renderContent('film');
@@ -27,6 +29,8 @@
     if (name === 'marklab')      window.MarkLab?.render();
     if (name === 'marklab')      window.MarkLab?.render();
     if (name === 'articlelab')   window.ArticleLab?.render();
+    if (name === 'studio') { window.MerchStudio?.render({ prevTab: _lastTab }); return; }
+    if (name === 'pod')    { renderPOD(); return; }
   }
   $('#tabs').addEventListener('click', e => {
     const t = e.target.closest('.tab'); if (t) setTab(t.dataset.tab);
@@ -453,6 +457,49 @@
     m.textContent = text;
     $('#aw-body').appendChild(m);
     $('#aw-body').scrollTop = $('#aw-body').scrollHeight;
+  }
+
+  // ---- POD Connect -------------------------------------------------------
+  function renderPOD () {
+    const btn = document.getElementById('pod-load-btn');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', async () => {
+      const grid = document.getElementById('pod-overview');
+      grid.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+      try {
+        const r = await fetch('/api/pod/overview');
+        const data = await r.json();
+        grid.innerHTML = (data.services || []).map(svc => `
+          <div class="panel" style="border-left:3px solid ${svc.connected ? 'var(--green,#2ecc71)' : 'var(--line)'}">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+              <div>
+                <b style="font-size:1.05rem">${svc.name}</b>
+                <span class="mono" style="font-size:.7rem;color:var(--muted);margin-left:10px">${svc.endpoint}</span>
+              </div>
+              <span style="padding:3px 10px;border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.1em;background:${svc.connected ? 'rgba(46,204,113,.15)' : 'rgba(255,255,255,.06)'};color:${svc.connected ? 'var(--green,#2ecc71)' : 'var(--muted)'};border:1px solid ${svc.connected ? 'rgba(46,204,113,.3)' : 'var(--line)'}">
+                ${svc.connected ? '● CONNECTED' + (svc.shopCount ? ` · ${svc.shopCount} shop${svc.shopCount > 1 ? 's' : ''}` : '') : '○ NOT CONNECTED'}
+              </span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+              ${svc.features.map(f => `<span style="padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,215,0,.08);color:var(--accent);border:1px solid rgba(255,215,0,.18)">${f}</span>`).join('')}
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:.78rem">
+              <div><span class="mono" style="color:var(--muted);font-size:.66rem">PRODUCTS</span><br>${svc.products.join(', ')}</div>
+              <div><span class="mono" style="color:var(--muted);font-size:.66rem">PRINT AREAS</span><br>${svc.printAreas.join(', ')}</div>
+              <div><span class="mono" style="color:var(--muted);font-size:.66rem">FORMATS</span><br>${svc.fileFormats.join(', ')}</div>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              ${svc.connected ? '' : `<p class="mono" style="font-size:.72rem;color:var(--muted);margin:0">Set <code>${svc.envVar}</code> in Vercel env vars to connect.</p>`}
+              <a class="btn ghost" href="${svc.docs}" target="_blank" rel="noopener" style="font-size:.72rem;padding:4px 10px">API docs ↗</a>
+              ${svc.connected ? `<button class="btn primary" style="font-size:.72rem;padding:4px 10px" onclick="document.querySelector('.rail-item[data-tab=studio]')?.click()">Open Studio →</button>` : ''}
+              ${svc.note ? `<span class="mono" style="font-size:.7rem;color:var(--muted)">${svc.note}</span>` : ''}
+            </div>
+          </div>`).join('');
+      } catch (e) {
+        document.getElementById('pod-overview').innerHTML = `<p style="color:var(--red,#e74c3c)">Error: ${e.message}</p>`;
+      }
+    });
   }
 
   // ---- demo reset --------------------------------------------------------

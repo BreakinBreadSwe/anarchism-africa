@@ -493,8 +493,8 @@ section.view.active { display: block; animation: fadeIn .35s ease; }
 
 /* GRID CARDS -------------------------------------------------------------- */
 .grid {
-  display: grid; gap: 14px;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
 }
 .card {
   background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius);

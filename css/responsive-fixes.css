@@ -60,8 +60,8 @@
   }
 }
 
-/* === Single-column cards on phones =================================== */
-@media (max-width: 419px) {
+/* === Single-column cards on very small screens only ================== */
+@media (max-width: 319px) {
   #films-grid, #articles-grid, #events-grid,
   #books-grid, #merch-grid, #grants-grid, .grid {
     grid-template-columns: 1fr !important;

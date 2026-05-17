@@ -535,8 +535,10 @@
       like:   $('#mp-like'),
       share:  $('#mp-share'),
       close:  $('#mp-close'),
-      iconPlay:  document.querySelector('#mp-play .mp-icon-play'),
-      iconPause: document.querySelector('#mp-play .mp-icon-pause')
+      iconPlay:   document.querySelector('#mp-play .mp-icon-play'),
+      iconPause:  document.querySelector('#mp-play .mp-icon-pause'),
+      waveCanvas: document.getElementById('mp-waveform'),
+      vuCanvas:   document.getElementById('mp-vu-canvas')
     };
 
     function fmt (s) {
@@ -544,6 +546,92 @@
       const m = Math.floor(s / 60);
       const sec = Math.floor(s % 60);
       return m + ':' + String(sec).padStart(2, '0');
+    }
+
+    // ---- waveform + VU meter ------------------------------------------
+    let waveData = null;   // Float32Array of bar heights for current song
+    let vuRAF    = null;   // requestAnimationFrame handle for VU loop
+
+    function lcg (seed) {
+      let s = ((seed ^ 0xdeadbeef) >>> 0) || 1;
+      return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 0xffffffff;
+    }
+    function buildWaveData (id) {
+      const seed = id
+        ? [...String(id)].reduce((a, c) => (Math.imul(a, 31) + c.charCodeAt(0)) | 0, 7)
+        : Date.now();
+      const rng = lcg(seed >>> 0);
+      const n   = 220;
+      const d   = new Float32Array(n);
+      for (let i = 0; i < n; i++)
+        d[i] = Math.sin(i / n * Math.PI) * 0.65 + 0.12 + rng() * 0.48;
+      const mx = Math.max(...d);
+      for (let i = 0; i < n; i++) d[i] /= mx;
+      return d;
+    }
+    function drawWaveform (playedPct) {
+      const cv = ui.waveCanvas;
+      if (!cv || !waveData) return;
+      const W = cv.offsetWidth, H = cv.offsetHeight;
+      if (!W || !H) return;
+      if (cv.width !== W)  cv.width  = W;
+      if (cv.height !== H) cv.height = H;
+      const ctx    = cv.getContext('2d');
+      const n      = waveData.length;
+      const barW   = W / n;
+      const gap    = Math.max(0.4, barW * 0.28);
+      const accent = getComputedStyle(document.documentElement)
+                       .getPropertyValue('--accent').trim() || '#e04000';
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < n; i++) {
+        const x    = i * barW;
+        const barH = Math.max(2, waveData[i] * H * 0.84);
+        const y    = (H - barH) / 2;
+        ctx.fillStyle = (x / W) <= playedPct ? accent : 'rgba(255,255,255,0.17)';
+        ctx.fillRect(x + gap / 2, Math.floor(y), Math.max(1, barW - gap), Math.ceil(barH));
+      }
+    }
+    function drawVU () {
+      const cv = ui.vuCanvas;
+      if (!cv) return;
+      const W = cv.offsetWidth || cv.parentElement?.offsetWidth || 0;
+      const H = cv.offsetHeight || 12;
+      if (!W) { vuRAF = requestAnimationFrame(drawVU); return; }
+      if (cv.width !== W)  cv.width  = W;
+      if (cv.height !== H) cv.height = H;
+      const ctx = cv.getContext('2d');
+      ctx.clearRect(0, 0, W, H);
+      let level = 0;
+      if (audio && !audio.paused && audio.currentTime) {
+        const t = audio.currentTime;
+        level = 0.42
+          + 0.24 * Math.sin(t *  7.3)
+          + 0.15 * Math.sin(t * 14.7)
+          + 0.08 * Math.sin(t *  3.2)
+          + 0.07 * Math.sin(t * 29.1)
+          + 0.04 * Math.sin(t * 61.3);
+        level = Math.max(0.03, Math.min(1, level));
+      }
+      const stride = 4;
+      const nSegs  = Math.floor(W / stride);
+      const lit    = Math.floor(level * nSegs);
+      for (let i = 0; i < nSegs; i++) {
+        ctx.fillStyle = i < lit
+          ? `hsl(${(120 - (i / nSegs) * 120).toFixed(0)},88%,52%)`
+          : 'rgba(255,255,255,0.06)';
+        ctx.fillRect(i * stride, 1, 3, H - 2);
+      }
+      vuRAF = requestAnimationFrame(drawVU);
+    }
+    function startVU () {
+      if (vuRAF) cancelAnimationFrame(vuRAF);
+      vuRAF = null;
+      drawVU();
+    }
+    function stopVU () {
+      if (vuRAF) { cancelAnimationFrame(vuRAF); vuRAF = null; }
+      try { ui.waveCanvas?.getContext('2d')?.clearRect(0, 0, ui.waveCanvas.width, ui.waveCanvas.height); } catch {}
+      try { ui.vuCanvas?.getContext('2d')?.clearRect(0, 0, ui.vuCanvas.width, ui.vuCanvas.height); } catch {}
     }
 
     function show () { ui.bar?.classList.add('show'); document.body.classList.add('mp-active'); }
@@ -586,6 +674,9 @@
       if (ui.dur)    ui.dur.textContent = song.duration ? fmt(song.duration) : '0:00';
       if (ui.bar2)   ui.bar2.style.width = '0%';
       if (ui.knob)   ui.knob.style.left  = '0%';
+      waveData = buildWaveData(song.id);
+      drawWaveform(0);
+      startVU();
       // Wire all events BEFORE calling play() so we never miss the 'play'
       // event that drives the icon. Icon starts in play-state (not pause)
       // and only flips to pause when audio actually begins.
@@ -601,6 +692,7 @@
         if (ui.knob) ui.knob.style.left  = pct + '%';
         if (ui.cur)  ui.cur.textContent  = fmt(audio.currentTime);
         if (ui.track) ui.track.setAttribute('aria-valuenow', String(Math.round(pct)));
+        drawWaveform(pct / 100);
       });
       audio.addEventListener('progress', () => {
         if (!audio.duration || !audio.buffered.length) return;
@@ -685,6 +777,8 @@
       audio?.pause();
       if (audio) { try { audio.src = ''; } catch {} }
       audio = null; current = null; queueIndex = -1; queue = [];
+      waveData = null;
+      stopVU();
       hide();
       setPlayingUI(false);
     });

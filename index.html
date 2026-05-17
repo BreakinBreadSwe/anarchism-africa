@@ -352,6 +352,7 @@
 </div>
 
 <!-- STICKY MINI-PLAYER — full controls, docks flush above bottombar ----- -->
+<div class="mp-vu" id="mp-vu" aria-hidden="true"><canvas id="mp-vu-canvas"></canvas></div>
 <div class="mini-player" id="mini-player" aria-live="polite" role="region" aria-label="Music player">
   <div class="mp-art" id="mp-art" aria-hidden="true"></div>
   <button class="mp-prev" id="mp-prev" type="button" aria-label="Previous track" title="Previous">
@@ -370,6 +371,7 @@
   </div>
   <div class="mp-time mono" id="mp-cur">0:00</div>
   <div class="mp-track" id="mp-track" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+    <canvas class="mp-waveform" id="mp-waveform" aria-hidden="true"></canvas>
     <div class="mp-track-buffer" id="mp-buffer"></div>
     <div class="mp-track-fill"   id="mp-bar"></div>
     <div class="mp-track-knob"   id="mp-knob"></div>

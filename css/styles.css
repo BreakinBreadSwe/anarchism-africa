@@ -727,11 +727,27 @@ body.mp-active .chat-panel { bottom: 116px; }
 .mini-player.show { display: flex; animation: aa-fade-up .3s; }
 
 /* Reserve room at the bottom of the page when the player is on so the
-   article body / grids never hide behind it. 56 (player) + 60 (bottombar)
-   = 116px on mobile, slightly more on desktop. */
-body.mp-active { padding-bottom: calc(60px + 56px); }
+   article body / grids never hide behind it. 56 (player) + 12 (VU) + 60 (bottombar). */
+body.mp-active { padding-bottom: calc(60px + 56px + 12px); }
 /* Mini-player is intentionally full-width (left:0) — it spans the rail like
    Spotify's player bar. z-index: 36 puts it on top of the rail (28). */
+
+/* VU meter — horizontal LED strip that sits flush above the mini-player */
+.mp-vu {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: calc(60px + 56px);   /* flush atop the player bar */
+  height: 12px;
+  z-index: 35;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid var(--line);
+  display: none;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+body.mp-active .mp-vu { display: block; }
+.mp-vu canvas { display: block; width: 100%; height: 100%; }
 
 /* artwork thumbnail */
 .mini-player .mp-art {
@@ -756,6 +772,11 @@ body.mp-active { padding-bottom: calc(60px + 56px); }
   width: 40px; height: 40px;
 }
 .mini-player .mp-play.playing { background: transparent; color: var(--accent); }
+/* Exclusively show ONE icon — CSS is the authority, JS toggles .playing class */
+.mini-player .mp-play .mp-icon-play,
+.mini-player .mp-play .mp-icon-pause { display: none !important; }
+.mini-player .mp-play:not(.playing) .mp-icon-play  { display: block !important; }
+.mini-player .mp-play.playing        .mp-icon-pause { display: block !important; }
 .mini-player .mp-prev:hover,
 .mini-player .mp-next:hover { background: var(--bg-2); color: var(--accent); border-color: var(--accent); }
 
@@ -790,12 +811,22 @@ body.mp-active { padding-bottom: calc(60px + 56px); }
   border-radius: 2px;
 }
 [data-theme="light"] .mini-player .mp-track::before { background: rgba(0,0,0,.1); }
+/* Waveform canvas — sits behind progress fill */
+.mini-player .mp-waveform {
+  position: absolute; left: 0; top: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
+  border-radius: 2px;
+}
 .mini-player .mp-track-buffer {
   position: absolute; left: 0; top: 50%;
   height: 4px; transform: translateY(-50%);
   width: 0; background: color-mix(in srgb, var(--fg) 25%, transparent);
   border-radius: 2px;
   pointer-events: none;
+  z-index: 1;
 }
 .mini-player .mp-track-fill {
   position: absolute; left: 0; top: 50%;
@@ -804,6 +835,7 @@ body.mp-active { padding-bottom: calc(60px + 56px); }
   border-radius: 2px;
   pointer-events: none;
   transition: width .12s linear;
+  z-index: 2;
 }
 .mini-player .mp-track-knob {
   position: absolute; top: 50%; left: 0;
@@ -814,6 +846,7 @@ body.mp-active { padding-bottom: calc(60px + 56px); }
   pointer-events: none;
   opacity: 0;
   transition: opacity .12s ease;
+  z-index: 3;
 }
 .mini-player .mp-track:hover .mp-track-knob,
 .mini-player .mp-track:focus-visible .mp-track-knob,

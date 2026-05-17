@@ -147,14 +147,99 @@
 
   <!-- USERS -------------------------------------------------------------- -->
   <section class="view" id="view-users">
+
+    <!-- ── Users table ─────────────────────────────────────────────────────── -->
     <div class="panel">
-      <h2 style="margin-top:0">Users &amp; roles</h2>
-      <p style="color:var(--fg-dim)">Roles: admin (LUVLAB) · publisher (COOLHUNTPARIS) · merch staff · partners · consumers (can become ambassadors).</p>
-      <table>
-        <thead><tr><th>Email</th><th>Display name</th><th>Role</th><th>City</th><th></th></tr></thead>
-        <tbody id="user-rows"></tbody>
-      </table>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="margin:0 0 4px">Users &amp; roles</h2>
+          <p style="color:var(--fg-dim);margin:0;font-size:.85rem">admin · publisher · merch · partner · ambassador · consumer</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="password" id="users-admin-token" placeholder="Admin token" autocomplete="off"
+            style="padding:8px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;font:inherit;font-size:.82rem;width:180px"/>
+          <button class="btn primary" id="users-load-btn">Load</button>
+          <button class="btn primary" id="users-add-btn">+ Add user</button>
+        </div>
+      </div>
+
+      <!-- Add / Edit form -->
+      <div id="user-form-panel" class="panel" hidden
+        style="margin-bottom:18px;background:color-mix(in srgb,var(--bg-2) 60%,transparent);border:1px solid var(--accent)">
+        <h3 id="user-form-title" style="margin:0 0 14px;font-size:1rem">Add user</h3>
+        <input type="hidden" id="uf-id" />
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px">
+          <label style="display:grid;gap:4px">
+            <span class="mono" style="font-size:.68rem;color:var(--muted)">EMAIL *</span>
+            <input id="uf-email" type="email" placeholder="user@example.com"
+              style="padding:9px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:7px;font:inherit;font-size:.88rem"/>
+          </label>
+          <label style="display:grid;gap:4px">
+            <span class="mono" style="font-size:.68rem;color:var(--muted)">DISPLAY NAME</span>
+            <input id="uf-name" placeholder="Name"
+              style="padding:9px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:7px;font:inherit;font-size:.88rem"/>
+          </label>
+          <label style="display:grid;gap:4px">
+            <span class="mono" style="font-size:.68rem;color:var(--muted)">ROLE</span>
+            <select id="uf-role"
+              style="padding:9px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:7px;font:inherit;font-size:.88rem">
+              <option value="consumer">consumer</option>
+              <option value="ambassador">ambassador</option>
+              <option value="partner">partner</option>
+              <option value="merch">merch</option>
+              <option value="publisher">publisher</option>
+              <option value="admin">admin</option>
+            </select>
+          </label>
+          <label style="display:grid;gap:4px">
+            <span class="mono" style="font-size:.68rem;color:var(--muted)">CITY</span>
+            <input id="uf-city" placeholder="City"
+              style="padding:9px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:7px;font:inherit;font-size:.88rem"/>
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn primary" id="uf-submit">Save user</button>
+          <button class="btn ghost"   id="uf-cancel">Cancel</button>
+          <span id="uf-status" class="mono" style="font-size:.75rem;color:var(--muted)"></span>
+        </div>
+      </div>
+
+      <div id="users-status" class="mono" style="font-size:.78rem;color:var(--muted);min-height:18px;margin-bottom:8px"></div>
+
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Display name</th>
+              <th>Role</th>
+              <th>City</th>
+              <th>Joined</th>
+              <th style="width:180px"></th>
+            </tr>
+          </thead>
+          <tbody id="user-rows">
+            <tr><td colspan="6" style="color:var(--muted)">Enter admin token and click Load.</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- ── Role passcodes ───────────────────────────────────────────────────── -->
+    <div class="panel" style="margin-top:16px">
+      <h2 style="margin-top:0">Role passcodes</h2>
+      <p style="color:var(--fg-dim);max-width:68ch;font-size:.88rem;margin-bottom:4px">
+        Staff sign in with their email + a role passcode (instead of a full account).
+        The passcode is hashed on save — you can't read it back, only overwrite or clear it.
+        You must load users first (admin token above) for the passcode panel to appear.
+      </p>
+      <p class="mono" style="font-size:.76rem;color:var(--muted);margin-bottom:16px">
+        Sign-in endpoint: <code>POST /api/auth/passcode</code> · body: <code>{ "email": "…", "code": "…" }</code>
+      </p>
+      <div id="passcode-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px"></div>
+      <div id="passcode-status" class="mono" style="font-size:.78rem;color:var(--muted);margin-top:10px;min-height:18px"></div>
+    </div>
+
   </section>
 
   <!-- MAILING ------------------------------------------------------------ -->
@@ -415,6 +500,7 @@
 <script src="js/theme.js"></script>
 <script src="js/logo.js"></script>
 <script src="js/admin-editor.js"></script>
+<script src="js/admin-users.js"></script>
 <script src="js/admin.js"></script>
 <script src="js/admin-checklist.js"></script>
 <script src="js/article-lab.js"></script>

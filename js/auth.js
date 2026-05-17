@@ -174,6 +174,23 @@
               No password, no email — just browse. Saves favourites locally to this device. Sign in later to sync across devices.
             </p>
 
+            <details class="aa-auth-staff" style="margin-top:16px">
+              <summary class="mono" style="font-size:.78rem;color:var(--muted);cursor:pointer;user-select:none;letter-spacing:.06em">
+                STAFF / PARTNER LOGIN ▸
+              </summary>
+              <form class="aa-auth-method" id="aa-auth-passcode-form" novalidate style="margin-top:10px">
+                <div class="aa-auth-method-label mono">Email + role passcode</div>
+                <div class="aa-auth-row">
+                  <input type="email" id="aa-auth-pc-email" placeholder="your@email.com" autocomplete="email" style="flex:1"/>
+                </div>
+                <div class="aa-auth-row" style="margin-top:8px">
+                  <input type="password" id="aa-auth-pc-code" placeholder="Passcode" autocomplete="current-password" style="flex:1"/>
+                  <button type="submit" class="btn primary" id="aa-auth-pc-btn">Sign in</button>
+                </div>
+                <p class="aa-auth-status mono" id="aa-auth-pc-status"></p>
+              </form>
+            </details>
+
             <p class="aa-auth-fineprint mono">
               By signing in you agree to be a participant, not a customer. We don't sell data, don't run ads, don't pretend.
               See <a href="#about">about</a> for the boring details.
@@ -229,6 +246,7 @@
     mountSignInButton(page.querySelector('#aa-auth-google'));
     wireEmailForm(page);
     wirePhoneForm(page);
+    wirePasscodeForm(page);
   }
 
   // Global navigation-aware close: when the auth sheet is open and the user
@@ -342,6 +360,43 @@
       } finally { verify.disabled = false; }
     });
   }
+  function wirePasscodeForm (page) {
+    const form   = page.querySelector('#aa-auth-passcode-form');
+    const email  = page.querySelector('#aa-auth-pc-email');
+    const code   = page.querySelector('#aa-auth-pc-code');
+    const btn    = page.querySelector('#aa-auth-pc-btn');
+    const status = page.querySelector('#aa-auth-pc-status');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const ev = email.value.trim().toLowerCase();
+      const cv = code.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ev)) {
+        status.textContent = 'Enter a valid email.'; status.style.color = 'var(--red)'; return;
+      }
+      if (!cv) { status.textContent = 'Enter your passcode.'; status.style.color = 'var(--red)'; return; }
+      btn.disabled = true; status.style.color = 'var(--muted)'; status.textContent = 'Signing in…';
+      try {
+        const r = await fetch('/api/auth/passcode', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: ev, code: cv })
+        });
+        const data = await r.json();
+        if (!r.ok) {
+          status.textContent = 'Error: ' + (data.error || r.status);
+          status.style.color = 'var(--red)';
+        } else {
+          writeUser(data.user);
+          status.textContent = 'Signed in ✓'; status.style.color = 'var(--green)';
+          setTimeout(closeSheet, 600);
+        }
+      } catch (err) {
+        status.textContent = 'Network error: ' + err.message; status.style.color = 'var(--red)';
+      } finally { btn.disabled = false; }
+    });
+  }
+
   function closeSheet () {
     document.getElementById('aa-auth-page')?.classList.remove('open');
     document.body.classList.remove('aa-auth-open');

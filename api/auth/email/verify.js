@@ -7,23 +7,28 @@
 //   - 302 redirect to /?signed_in=email
 //   On failure: redirect to /?auth_error=<reason>
 
-import { put } from '@vercel/blob';
+import { put, list } from '@vercel/blob';
 import { signSession, setSessionCookie } from '../_session.js';
 
-const PUBLIC_BLOB_BASE = 'https://blob.vercel-storage.com';
-
 async function readBlob (key) {
-  try { const r = await fetch(`${PUBLIC_BLOB_BASE}/${key}?ts=${Date.now()}`); if (!r.ok) return null; return await r.json(); }
-  catch { return null; }
+  try {
+    const { blobs } = await list({ prefix: key.replace(/\.json$/, '') });
+    const f = blobs.find(b => b.pathname === key);
+    if (f) { const r = await fetch(f.url, { cache: 'no-store' }); if (r.ok) return await r.json(); }
+  } catch {}
+  return null;
 }
 async function writeBlob (key, value) {
-  return put(key, JSON.stringify(value), { access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
+  return put(key, JSON.stringify(value), {
+    access: 'public', addRandomSuffix: false, allowOverwrite: true,
+    contentType: 'application/json'
+  });
 }
 
 export default async function handler (req, res) {
-  const token = String((req.query || {}).token || '').trim();
+  const token  = String((req.query || {}).token || '').trim();
   const origin = process.env.SITE_URL || `https://${req.headers.host || 'anarchism.africa'}`;
-  const fail = (reason) => {
+  const fail   = (reason) => {
     res.statusCode = 302;
     res.setHeader('Location', `${origin}/?auth_error=${encodeURIComponent(reason)}`);
     res.end();
@@ -35,22 +40,27 @@ export default async function handler (req, res) {
 
   const key = 'auth/email-tokens/' + token + '.json';
   const rec = await readBlob(key);
-  if (!rec)             return fail('token-not-found');
-  if (rec.used)         return fail('token-already-used');
-  if (rec.expires < Date.now()) return fail('token-expired');
+  if (!rec)                      return fail('token-not-found');
+  if (rec.used)                  return fail('token-already-used');
+  if (rec.expires < Date.now())  return fail('token-expired');
 
   // Mark used (single-use)
   try { await writeBlob(key, { ...rec, used: true, used_at: Date.now() }); } catch {}
 
+  // Look up the user in the manifest so stored role / name carry through.
+  const usersManifest = await readBlob('users/manifest.json') || { users: [] };
+  const existing = (usersManifest.users || []).find(u => u.email === rec.email);
+
   const user = {
-    sub:       'email:' + rec.email,
-    email:     rec.email,
+    sub:            'email:' + rec.email,
+    email:          rec.email,
     email_verified: true,
-    name:      rec.email.split('@')[0],
-    picture:   '',
-    provider:  'email',
-    role:      'consumer'
+    name:           existing?.name   || rec.name || rec.email.split('@')[0],
+    picture:        existing?.avatar || '',
+    provider:       'email',
+    role:           existing?.role   || 'consumer'
   };
+
   const session = signSession(user, secret);
   setSessionCookie(res, session);
 

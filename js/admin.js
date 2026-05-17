@@ -155,24 +155,17 @@
     return `<div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden"><i style="display:block;height:100%;width:${score}%;background:linear-gradient(90deg,var(--green),var(--accent))"></i></div><span class="mono" style="font-size:.8rem">${score}</span></div>`;
   }
 
-  // ---- USERS -------------------------------------------------------------
+  // ---- USERS — delegated to js/admin-users.js ----------------------------
   function renderUsers () {
-    const seed = [
-      { email: 'admin@luvlab.io',         name: 'LUVLAB',         role: 'admin',     city: 'Brussels'   },
-      { email: 'curator@coolhuntparis.fr', name: 'COOLHUNTPARIS',  role: 'publisher', city: 'Paris'     },
-      { email: 'merch@anarchism.africa',  name: 'Merch staff',    role: 'merch',     city: 'Lisbon'    },
-      { email: 'kojo@blackstar.dub',      name: 'Kojo Sound',     role: 'partner',   city: 'Accra'     },
-      { email: 'lerato@joburg.za',        name: 'Lerato M.',      role: 'ambassador',city: 'Johannesburg' },
-      { email: 'reader@diaspora.world',   name: 'Anon reader',    role: 'consumer',  city: 'London'    }
-    ];
-    $('#user-rows').innerHTML = seed.map(u => `
-      <tr>
-        <td>${u.email}</td>
-        <td><b>${u.name}</b></td>
-        <td><span class="status-pill ${u.role === 'admin' ? 'hot' : 'active'}">${u.role}</span></td>
-        <td>${u.city}</td>
-        <td><button class="btn ghost">Manage</button></td>
-      </tr>`).join('');
+    // admin-users.js wires up all DOM events on DOMContentLoaded.
+    // When the tab is activated we do nothing extra — the admin clicks
+    // "Load" (or presses Enter in the token field) to fetch live data.
+    // We call loadPasscodes lazily only if the token is already filled in
+    // (e.g. when switching back to this tab after having loaded once).
+    if (window.AdminUsers) {
+      const tok = ($('#users-admin-token') || {}).value || '';
+      if (tok) { window.AdminUsers.loadUsers(); window.AdminUsers.loadPasscodes(); }
+    }
   }
 
   // ---- MAILING -----------------------------------------------------------

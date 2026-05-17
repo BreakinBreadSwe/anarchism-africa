@@ -494,6 +494,10 @@
     if (tab === 'community')  renderCommunity();
     if (tab === 'ambassadors') renderAmb();
     if (tab === 'crowdfund')   renderCrowdfund();
+    if (tab === 'archive') {
+      window.Archive?.render();
+      return;
+    }
     if (tab === 'languages') {
       let host = document.getElementById('view-languages');
       if (!host) {

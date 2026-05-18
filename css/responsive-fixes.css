@@ -85,6 +85,8 @@
 @media (min-width: 1024px) {
   .bottombar { display: none !important; }
   body.has-rail main, body.admin main { padding-bottom: 24px !important; }
+  /* Remove dead 60px bottom padding reserved for the (now-hidden) bottombar */
+  body.has-rail { padding-bottom: 0 !important; }
 }
 @media (max-width: 599px) {
   .bottombar button span:not(.glyph) { display: none; }

@@ -317,10 +317,17 @@ body.has-rail .tabs { display: none; }
   }
   body.has-rail .footer { padding-left: calc(64px + var(--content-pad-x)); padding-right: var(--content-pad-x); }
   body.has-rail.rail-open .footer { padding-left: calc(220px + var(--content-pad-x)); }
-  /* Section views fill the available width and grow with the viewport.
-     !important defeats inline `style="padding:..."` set by older legacy
-     code that wiped padding-left and caused content to render under the
-     rail (the "YOUR WISHLIST" → "R WISHLIST" clipping bug). */
+  /* !important defeats inline `style="padding:..."` on <main> and <section class="view">
+     in role pages (publisher, partner, journalist, etc.) that set the shorthand padding
+     inline, wiping padding-left and hiding content behind the 64px rail. */
+  body.has-rail main {
+    width: 100%; max-width: 100%; box-sizing: border-box;
+    padding-left: calc(64px + var(--content-pad-x)) !important;
+    padding-right: var(--content-pad-x) !important;
+  }
+  body.has-rail.rail-open main {
+    padding-left: calc(220px + var(--content-pad-x)) !important;
+  }
   body.has-rail section.view {
     width: 100%; max-width: none; box-sizing: border-box;
     padding-left: calc(64px + var(--content-pad-x)) !important;

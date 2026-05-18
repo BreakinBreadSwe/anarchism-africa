@@ -161,15 +161,10 @@
 
   // ---- USERS — delegated to js/admin-users.js ----------------------------
   function renderUsers () {
-    // admin-users.js wires up all DOM events on DOMContentLoaded.
-    // When the tab is activated we do nothing extra — the admin clicks
-    // "Load" (or presses Enter in the token field) to fetch live data.
-    // We call loadPasscodes lazily only if the token is already filled in
-    // (e.g. when switching back to this tab after having loaded once).
-    if (window.AdminUsers) {
-      const tok = ($('#users-admin-token') || {}).value || '';
-      if (tok) { window.AdminUsers.loadUsers(); window.AdminUsers.loadPasscodes(); }
-    }
+    // admin-users.js auto-loads on DOMContentLoaded (session-cookie auth).
+    // Re-fetch each time the tab is activated so data stays fresh.
+    window.AdminUsers?.loadUsers();
+    window.AdminUsers?.loadPasscodes();
   }
 
   // ---- MAILING -----------------------------------------------------------

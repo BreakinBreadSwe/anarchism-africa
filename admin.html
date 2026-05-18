@@ -188,12 +188,10 @@
       <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
         <div>
           <h2 style="margin:0 0 4px">Users &amp; roles</h2>
-          <p style="color:var(--fg-dim);margin:0;font-size:.85rem">admin · publisher · merch · partner · ambassador · consumer</p>
+          <p style="color:var(--fg-dim);margin:0;font-size:.85rem">consumer · ambassador · partner · merch · publisher · admin</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <input type="password" id="users-admin-token" placeholder="Admin token" autocomplete="off"
-            style="padding:8px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;font:inherit;font-size:.82rem;width:180px"/>
-          <button class="btn primary" id="users-load-btn">Load</button>
+          <button class="btn ghost" id="users-refresh-btn" title="Refresh list" style="font-size:.82rem">↺ Refresh</button>
           <button class="btn primary" id="users-add-btn">+ Add user</button>
         </div>
       </div>
@@ -250,26 +248,39 @@
               <th>Role</th>
               <th>City</th>
               <th>Joined</th>
-              <th style="width:180px"></th>
+              <th style="width:190px"></th>
             </tr>
           </thead>
           <tbody id="user-rows">
-            <tr><td colspan="6" style="color:var(--muted)">Enter admin token and click Load.</td></tr>
+            <tr><td colspan="6" style="color:var(--muted);padding:16px">Loading…</td></tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Token override (advanced / headless access) -->
+      <details style="margin-top:18px">
+        <summary style="font-size:.75rem;color:var(--muted);cursor:pointer;user-select:none">
+          Advanced — token override
+        </summary>
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="password" id="users-token-override" placeholder="x-aa-admin-token override"
+            autocomplete="off"
+            style="padding:8px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;font:inherit;font-size:.82rem;width:260px"/>
+          <button class="btn ghost" style="font-size:.82rem" onclick="window.AdminUsers?.loadUsers();window.AdminUsers?.loadPasscodes()">Apply</button>
+          <span style="font-size:.72rem;color:var(--muted)">Use only if session auth fails.</span>
+        </div>
+      </details>
     </div>
 
     <!-- ── Role passcodes ───────────────────────────────────────────────────── -->
     <div class="panel" style="margin-top:16px">
       <h2 style="margin-top:0">Role passcodes</h2>
       <p style="color:var(--fg-dim);max-width:68ch;font-size:.88rem;margin-bottom:4px">
-        Staff sign in with their email + a role passcode (instead of a full account).
-        The passcode is hashed on save — you can't read it back, only overwrite or clear it.
-        You must load users first (admin token above) for the passcode panel to appear.
+        Staff sign in with their email + a shared role passcode (no account needed).
+        Passcodes are HMAC-hashed on save — you can overwrite or clear, never read back.
       </p>
       <p class="mono" style="font-size:.76rem;color:var(--muted);margin-bottom:16px">
-        Sign-in endpoint: <code>POST /api/auth/passcode</code> · body: <code>{ "email": "…", "code": "…" }</code>
+        <code>POST /api/auth/passcode</code> · <code>{ "email": "…", "code": "…" }</code>
       </p>
       <div id="passcode-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px"></div>
       <div id="passcode-status" class="mono" style="font-size:.78rem;color:var(--muted);margin-top:10px;min-height:18px"></div>

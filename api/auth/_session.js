@@ -33,3 +33,23 @@ export function timingSafeEqual (a, b) {
   if (ab.length !== bb.length) return false;
   return crypto.timingSafeEqual(ab, bb);
 }
+
+// Read + verify the aa_session cookie from an incoming request.
+// Returns the decoded user payload, or null if missing / invalid / tampered.
+export function readSession (req) {
+  try {
+    const secret = process.env.AUTH_SECRET;
+    if (!secret) return null;
+    const raw = req.headers.cookie || '';
+    const pair = raw.split(';').find(c => c.trim().startsWith(COOKIE + '='));
+    if (!pair) return null;
+    const token = decodeURIComponent(pair.split('=').slice(1).join('=').trim());
+    const lastDot = token.lastIndexOf('.');
+    if (lastDot === -1) return null;
+    const payloadPart = token.slice(0, lastDot);
+    const sigPart     = token.slice(lastDot + 1);
+    const expected    = crypto.createHmac('sha256', secret).update(payloadPart).digest('base64url');
+    if (!timingSafeEqual(expected, sigPart)) return null;
+    return JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf8'));
+  } catch { return null; }
+}

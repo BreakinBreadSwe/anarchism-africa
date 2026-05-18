@@ -7,15 +7,18 @@
 
 import { list, put } from '@vercel/blob';
 import { randomUUID } from 'node:crypto';
+import { readSession } from '../auth/_session.js';
 
-const MANIFEST     = 'users/manifest.json';
-const ADMIN_TOKEN  = process.env.AA_ADMIN_TOKEN || '';
+const MANIFEST    = 'users/manifest.json';
+const ADMIN_TOKEN = process.env.AA_ADMIN_TOKEN || '';
 
 export const VALID_ROLES = ['admin', 'publisher', 'merch', 'partner', 'ambassador', 'consumer'];
 
+// Accept: explicit x-aa-admin-token header  OR  signed session cookie with role=admin
 export function isAdmin (req) {
-  if (!ADMIN_TOKEN) return false;
-  return req.headers['x-aa-admin-token'] === ADMIN_TOKEN;
+  if (ADMIN_TOKEN && req.headers['x-aa-admin-token'] === ADMIN_TOKEN) return true;
+  const user = readSession(req);
+  return user?.role === 'admin';
 }
 
 export async function readManifest () {

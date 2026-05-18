@@ -1,12 +1,8 @@
 /* ANARCHISM.AFRICA — Admin: Users & Roles
  *
- * Handles the #view-users section in admin.html:
- *   - Live user table: list, add, edit inline, delete, send magic link
- *   - Role passcodes panel: set / clear per-role passcodes
- *
- * All write operations require the AA_ADMIN_TOKEN sent as x-aa-admin-token.
- * The token is read from the #users-admin-token input which the admin fills
- * in (we never store it except in the input value itself).
+ * Auth: session cookie (aa_session, role=admin) is sent automatically via
+ *       credentials:'include'. A manual x-aa-admin-token override is available
+ *       in the "Advanced" collapse for headless / service-account access.
  */
 (function () {
   const $ = (s, c = document) => c.querySelector(s);
@@ -23,12 +19,15 @@
 
   let usersCache = [];
 
-  // ── Token helper ──────────────────────────────────────────────────────────
-  function adminToken () {
-    return ($('#users-admin-token')?.value || '').trim();
-  }
-  function authHeaders () {
-    return { 'Content-Type': 'application/json', 'x-aa-admin-token': adminToken() };
+  // ── Auth headers ──────────────────────────────────────────────────────────
+  // Session cookie is sent automatically. Optionally append x-aa-admin-token
+  // if the override input is filled in.
+  function authHeaders (contentType = true) {
+    const h = {};
+    if (contentType) h['Content-Type'] = 'application/json';
+    const tok = ($('#users-token-override')?.value || '').trim();
+    if (tok) h['x-aa-admin-token'] = tok;
+    return h;
   }
 
   // ── Status helpers ────────────────────────────────────────────────────────
@@ -44,19 +43,22 @@
   // ── Role pill HTML ────────────────────────────────────────────────────────
   function rolePill (role) {
     const col = ROLE_COLORS[role] || '#888';
-    return `<span style="display:inline-block;padding:2px 9px;border-radius:99px;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:${col}22;color:${col};border:1px solid ${col}55">${role}</span>`;
+    return `<span style="display:inline-block;padding:2px 9px;border-radius:99px;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:${col}22;color:${col};border:1px solid ${col}44">${role}</span>`;
   }
 
   // ── Load + render users ───────────────────────────────────────────────────
   async function loadUsers () {
-    const token = adminToken();
-    if (!token) { setStatus('#users-status', 'Enter your admin token first.', 'error'); return; }
     setStatus('#users-status', 'Loading…');
     try {
       const r = await fetch('/api/users/list', {
-        headers: { 'x-aa-admin-token': token }
+        credentials: 'include',
+        headers: authHeaders(false)
       });
       const data = await r.json();
+      if (r.status === 401) {
+        setStatus('#users-status', '⚠ Not authorised — sign in as admin or enter a token override.', 'error');
+        return;
+      }
       if (!r.ok) { setStatus('#users-status', 'Error: ' + (data.error || r.status), 'error'); return; }
       usersCache = data.users || [];
       renderTable();
@@ -74,7 +76,9 @@
       return;
     }
     tbody.innerHTML = usersCache.map(u => {
-      const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '—';
+      const joined = u.createdAt
+        ? new Date(u.createdAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
+        : '—';
       return `<tr data-uid="${u.id}">
         <td class="mono" style="font-size:.82rem">${u.email}</td>
         <td><b>${u.name || '—'}</b></td>
@@ -83,27 +87,39 @@
         <td class="mono" style="font-size:.72rem;color:var(--muted)">${joined}</td>
         <td>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="btn ghost" style="font-size:.72rem;padding:4px 10px" data-action="edit"      data-uid="${u.id}">Edit</button>
-            <button class="btn ghost" style="font-size:.72rem;padding:4px 10px" data-action="magic"     data-uid="${u.id}" data-email="${u.email}" title="Send magic link">✉ Link</button>
-            <button class="btn ghost" style="font-size:.72rem;padding:4px 10px;color:var(--red,#e74c3c)" data-action="delete" data-uid="${u.id}" data-name="${u.name || u.email}">Delete</button>
+            <button class="btn ghost" style="font-size:.72rem;padding:4px 10px"
+              data-action="edit" data-uid="${u.id}">Edit</button>
+            <button class="btn ghost" style="font-size:.72rem;padding:4px 10px"
+              data-action="magic" data-uid="${u.id}" data-email="${u.email}" title="Send magic link">✉ Link</button>
+            <button class="btn ghost" style="font-size:.72rem;padding:4px 10px;color:var(--red,#e74c3c)"
+              data-action="delete" data-uid="${u.id}" data-name="${u.name || u.email}">Delete</button>
           </div>
         </td>
       </tr>`;
     }).join('');
   }
 
+  // ── Inline role-change shortcut on pill click ─────────────────────────────
+  // (Also triggered via full Edit form — this is just a quick-toggle.)
+  async function cycleRole (uid) {
+    const user = usersCache.find(u => u.id === uid);
+    if (!user) return;
+    const next = ROLES[(ROLES.indexOf(user.role || 'consumer') + 1) % ROLES.length];
+    if (!confirm(`Change ${user.name || user.email}'s role from ${user.role} → ${next}?`)) return;
+    await patchUser({ id: uid, role: next });
+  }
+
   // ── User form (add / edit) ────────────────────────────────────────────────
   function openForm (user = null) {
     const panel = $('#user-form-panel');
     if (!panel) return;
-    $('h3#user-form-title', panel).textContent = user ? 'Edit user' : 'Add user';
-    $('#uf-id',    panel).value  = user?.id    || '';
-    $('#uf-email', panel).value  = user?.email || '';
-    $('#uf-name',  panel).value  = user?.name  || '';
-    $('#uf-city',  panel).value  = user?.city  || '';
+    $('#user-form-title', panel).textContent = user ? 'Edit user' : 'Add user';
+    $('#uf-id',    panel).value = user?.id    || '';
+    $('#uf-email', panel).value = user?.email || '';
+    $('#uf-name',  panel).value = user?.name  || '';
+    $('#uf-city',  panel).value = user?.city  || '';
     const roleEl = $('#uf-role', panel);
     if (roleEl) roleEl.value = user?.role || 'consumer';
-    // Email is read-only when editing
     $('#uf-email', panel).readOnly = !!user;
     panel.removeAttribute('hidden');
     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -124,36 +140,38 @@
 
     if (!id && !email) { setStatus('#uf-status', 'Email required.', 'error'); return; }
     setStatus('#uf-status', 'Saving…');
+    await patchUser(id ? { id, name, role, city } : { email, name, role, city }, '#uf-status');
+  }
 
-    const payload = id ? { id, name, role, city } : { email, name, role, city };
+  async function patchUser (payload, statusSel = '#users-status') {
     try {
       const r = await fetch('/api/users/upsert', {
-        method: 'POST', headers: authHeaders(), body: JSON.stringify(payload)
+        method: 'POST', credentials: 'include',
+        headers: authHeaders(), body: JSON.stringify(payload)
       });
       const data = await r.json();
-      if (!r.ok) { setStatus('#uf-status', data.error || 'Error ' + r.status, 'error'); return; }
-
-      setStatus('#uf-status', id ? 'Updated ✓' : 'Added ✓', 'ok');
-      // Patch local cache
-      if (id) {
-        const idx = usersCache.findIndex(u => u.id === id);
+      if (!r.ok) { setStatus(statusSel, data.error || 'Error ' + r.status, 'error'); return; }
+      const isNew = !payload.id;
+      setStatus(statusSel, isNew ? 'User added ✓' : 'Saved ✓', 'ok');
+      if (payload.id) {
+        const idx = usersCache.findIndex(u => u.id === payload.id);
         if (idx !== -1) usersCache[idx] = data.user;
       } else {
         usersCache.unshift(data.user);
       }
       renderTable();
-      setTimeout(closeForm, 800);
+      if (!isNew) setTimeout(closeForm, 700);
     } catch (e) {
-      setStatus('#uf-status', 'Network error: ' + e.message, 'error');
+      setStatus(statusSel, 'Network error: ' + e.message, 'error');
     }
   }
 
   // ── Delete user ───────────────────────────────────────────────────────────
   async function deleteUser (id, label) {
-    if (!confirm(`Delete ${label}? This cannot be undone.`)) return;
+    if (!confirm(`Delete ${label}?\nThis cannot be undone.`)) return;
     try {
       const r = await fetch('/api/users/delete?id=' + encodeURIComponent(id), {
-        method: 'DELETE', headers: { 'x-aa-admin-token': adminToken() }
+        method: 'DELETE', credentials: 'include', headers: authHeaders(false)
       });
       const data = await r.json();
       if (!r.ok) { alert('Delete failed: ' + (data.error || r.status)); return; }
@@ -165,14 +183,16 @@
 
   // ── Send magic link ───────────────────────────────────────────────────────
   async function sendMagicLink (email) {
-    setStatus('#users-status', 'Sending magic link to ' + email + '…');
+    if (!confirm(`Send a magic sign-in link to ${email}?`)) return;
+    setStatus('#users-status', `Sending magic link to ${email}…`);
     try {
       const r = await fetch('/api/users/send-magic-link', {
-        method: 'POST', headers: authHeaders(), body: JSON.stringify({ email })
+        method: 'POST', credentials: 'include',
+        headers: authHeaders(), body: JSON.stringify({ email })
       });
       const data = await r.json();
       if (!r.ok) { setStatus('#users-status', 'Error: ' + (data.error || r.status), 'error'); return; }
-      setStatus('#users-status', 'Magic link sent to ' + email + ' ✓', 'ok');
+      setStatus('#users-status', `Magic link sent to ${email} ✓`, 'ok');
     } catch (e) {
       setStatus('#users-status', 'Network error: ' + e.message, 'error');
     }
@@ -180,11 +200,9 @@
 
   // ── Role passcodes ────────────────────────────────────────────────────────
   async function loadPasscodes () {
-    const token = adminToken();
-    if (!token) { setStatus('#passcode-status', 'Enter your admin token first.', 'error'); return; }
     try {
       const r = await fetch('/api/auth/passcodes-admin', {
-        headers: { 'x-aa-admin-token': token }
+        credentials: 'include', headers: authHeaders(false)
       });
       const data = await r.json();
       if (!r.ok) { setStatus('#passcode-status', 'Error: ' + (data.error || r.status), 'error'); return; }
@@ -198,50 +216,50 @@
     const grid = $('#passcode-grid');
     if (!grid) return;
     grid.innerHTML = ROLES.map(role => {
-      const col = ROLE_COLORS[role] || '#888';
+      const col    = ROLE_COLORS[role] || '#888';
       const hasCode = !!roles[role];
       return `
 <div style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
     ${rolePill(role)}
-    <span style="font-size:.72rem;color:${hasCode ? 'var(--green,#2ecc71)' : 'var(--muted)'}" id="pc-status-${role}">${hasCode ? '● code set' : '○ no code'}</span>
+    <span style="font-size:.72rem;color:${hasCode ? 'var(--green,#2ecc71)' : 'var(--muted)'}" id="pc-status-${role}">
+      ${hasCode ? '● set' : '○ none'}
+    </span>
   </div>
-  <input type="password" id="pc-input-${role}" placeholder="${hasCode ? 'Enter new code to change…' : 'Set a passcode…'}"
+  <input type="password" id="pc-input-${role}"
+    placeholder="${hasCode ? 'Replace passcode…' : 'Set a passcode…'}"
     autocomplete="new-password"
     style="padding:8px 12px;border:1px solid var(--line);background:var(--bg-2);color:var(--fg);border-radius:7px;font:inherit;font-size:.82rem;width:100%;box-sizing:border-box"/>
   <div style="display:flex;gap:6px">
     <button class="btn primary" style="font-size:.75rem;padding:5px 12px;flex:1" data-pc-save="${role}">Save</button>
-    ${hasCode ? `<button class="btn ghost" style="font-size:.75rem;padding:5px 12px;color:var(--red,#e74c3c)" data-pc-clear="${role}" title="Remove passcode for ${role}">Clear</button>` : ''}
+    ${hasCode ? `<button class="btn ghost" style="font-size:.75rem;padding:5px 12px;color:var(--red,#e74c3c)" data-pc-clear="${role}">Clear</button>` : ''}
   </div>
 </div>`;
     }).join('');
 
-    // Bind events
-    grid.querySelectorAll('[data-pc-save]').forEach(btn => {
-      btn.addEventListener('click', () => savePasscode(btn.dataset.pcSave, false));
-    });
-    grid.querySelectorAll('[data-pc-clear]').forEach(btn => {
-      btn.addEventListener('click', () => savePasscode(btn.dataset.pcClear, true));
-    });
+    grid.querySelectorAll('[data-pc-save]').forEach(btn =>
+      btn.addEventListener('click', () => savePasscode(btn.dataset.pcSave, false)));
+    grid.querySelectorAll('[data-pc-clear]').forEach(btn =>
+      btn.addEventListener('click', () => savePasscode(btn.dataset.pcClear, true)));
   }
 
   async function savePasscode (role, clear = false) {
     const code = clear ? '' : ($('#pc-input-' + role)?.value || '').trim();
     if (!clear && !code) {
-      setStatus('#passcode-status', 'Enter a passcode to save.', 'error'); return;
+      setStatus('#passcode-status', 'Enter a passcode first.', 'error'); return;
     }
     if (!clear && code.length < 4) {
       setStatus('#passcode-status', 'Passcode must be at least 4 characters.', 'error'); return;
     }
-    setStatus('#passcode-status', (clear ? 'Clearing' : 'Saving') + ' passcode for ' + role + '…');
+    setStatus('#passcode-status', (clear ? 'Clearing' : 'Saving') + ` passcode for ${role}…`);
     try {
       const r = await fetch('/api/auth/passcodes-admin', {
-        method: 'POST', headers: authHeaders(), body: JSON.stringify({ role, code })
+        method: 'POST', credentials: 'include',
+        headers: authHeaders(), body: JSON.stringify({ role, code })
       });
       const data = await r.json();
       if (!r.ok) { setStatus('#passcode-status', 'Error: ' + (data.error || r.status), 'error'); return; }
-      setStatus('#passcode-status', (clear ? 'Cleared' : 'Saved') + ' passcode for ' + role + ' ✓', 'ok');
-      // Reload grid to reflect updated state
+      setStatus('#passcode-status', (clear ? 'Cleared' : 'Saved') + ` passcode for ${role} ✓`, 'ok');
       await loadPasscodes();
     } catch (e) {
       setStatus('#passcode-status', 'Network error: ' + e.message, 'error');
@@ -250,17 +268,12 @@
 
   // ── Wire DOM ──────────────────────────────────────────────────────────────
   function init () {
-    // Load button
-    $('#users-load-btn')?.addEventListener('click', () => {
-      loadUsers();
-      loadPasscodes();
-    });
-    // Enter key in token field
-    $('#users-admin-token')?.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { loadUsers(); loadPasscodes(); }
-    });
+    // Refresh button
+    $('#users-refresh-btn')?.addEventListener('click', () => { loadUsers(); loadPasscodes(); });
+
     // Add user button
     $('#users-add-btn')?.addEventListener('click', () => openForm(null));
+
     // Form buttons
     $('#uf-submit')?.addEventListener('click', submitForm);
     $('#uf-cancel')?.addEventListener('click', closeForm);
@@ -269,22 +282,22 @@
     $('#user-rows')?.addEventListener('click', e => {
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
-      const action = btn.dataset.action;
-      const uid    = btn.dataset.uid;
-      if (action === 'edit') {
-        const user = usersCache.find(u => u.id === uid);
-        if (user) openForm(user);
-      }
-      if (action === 'delete') {
-        deleteUser(uid, btn.dataset.name);
-      }
-      if (action === 'magic') {
-        sendMagicLink(btn.dataset.email);
-      }
+      const { action, uid, name: label, email } = btn.dataset;
+      if (action === 'edit')   { const u = usersCache.find(u => u.id === uid); if (u) openForm(u); }
+      if (action === 'delete') { deleteUser(uid, label); }
+      if (action === 'magic')  { sendMagicLink(email); }
     });
+
+    // Token override — Enter key
+    $('#users-token-override')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { loadUsers(); loadPasscodes(); }
+    });
+
+    // Auto-load on first init (session is already active for admin users)
+    loadUsers();
+    loadPasscodes();
   }
 
-  // Run after DOM ready (this file loads deferred via admin.html)
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

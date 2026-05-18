@@ -9,13 +9,16 @@
 
 import { list, put } from '@vercel/blob';
 import crypto from 'node:crypto';
+import { readSession } from './_session.js';
 
 const PASSCODES_KEY = 'auth/role-passcodes.json';
 const ADMIN_TOKEN   = process.env.AA_ADMIN_TOKEN || '';
 const VALID_ROLES   = ['admin', 'publisher', 'merch', 'partner', 'ambassador', 'consumer'];
 
 function isAdmin (req) {
-  return ADMIN_TOKEN && req.headers['x-aa-admin-token'] === ADMIN_TOKEN;
+  if (ADMIN_TOKEN && req.headers['x-aa-admin-token'] === ADMIN_TOKEN) return true;
+  const user = readSession(req);
+  return user?.role === 'admin';
 }
 function hashCode (code) {
   const secret = process.env.AUTH_SECRET || 'aa-dev-secret';

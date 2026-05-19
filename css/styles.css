@@ -144,7 +144,9 @@ h3 { font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; }
   position: relative;
   flex: 0 0 auto;
   --custom-logo: none;
-  background: url('/icons/AAlogo1.svg') center/contain no-repeat;
+  /* --logo-bg is set by the admin theme panel (defaults to a subtle warm lift) */
+  background: url('/icons/AAlogo1.svg') center/contain no-repeat,
+              var(--logo-bg, rgba(255,255,255,0.13));
   overflow: hidden;
   isolation: isolate;
 }
@@ -287,7 +289,8 @@ body.has-rail .tabs { display: none; }
 .rail .rail-menu-toggle:hover { background: var(--bg-2); color: var(--fg); }
 .rail .rail-menu-toggle .logo {
   width: 28px; height: 28px; border-radius: 6px; flex: 0 0 auto;
-  background: url('/icons/AAlogo1.svg') center/contain no-repeat;
+  background: url('/icons/AAlogo1.svg') center/contain no-repeat,
+              var(--logo-bg, rgba(255,255,255,0.13));
 }
 .rail:not(.expanded) .rail-menu-toggle { justify-content: center; padding: 12px 0; }
 .rail:not(.expanded) .rail-menu-toggle .label { display: none; }
@@ -361,7 +364,8 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
 .menu-toggle:not(.rail-menu-toggle) .logo {
   width: 100%; height: 100%;
   pointer-events: none;
-  background: url('/icons/AAlogo1.svg') center / contain no-repeat;
+  background: url('/icons/AAlogo1.svg') center / contain no-repeat,
+              var(--logo-bg, rgba(255,255,255,0.13));
   border-radius: 8px;
   display: block;
   filter: drop-shadow(0 0 1px var(--fg)) drop-shadow(0 0 0.5px var(--fg));
@@ -2521,7 +2525,7 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
   align-items: center;
   gap: 8px;
   padding: 10px 12px 10px 14px;
-  background: var(--fg);
+  background: var(--logo-bg, var(--fg));
   color: var(--bg);
   border: 1px solid var(--fg);
   border-radius: 0;

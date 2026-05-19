@@ -272,7 +272,7 @@
 
   // ---- SETTINGS ----------------------------------------------------------
   function renderSettings () {
-    const defaults = { bg: '#0a0a0a', fg: '#f5f0e8', accent: '#FFD700', red: '#C8102E', green: '#007749', violet: '#8B00FF', teal: '#00FFE0' };
+    const defaults = { bg: '#0a0a0a', fg: '#f5f0e8', accent: '#FFD700', red: '#C8102E', green: '#007749', violet: '#8B00FF', teal: '#00FFE0', 'logo-bg': '#242424' };
     const cur = JSON.parse(localStorage.getItem('aa.theme') || 'null') || defaults;
     $('#theme-controls').innerHTML = Object.keys(defaults).map(k => `
       <div class="form-row" style="grid-template-columns: 110px 1fr 60px;align-items:center;display:grid;gap:10px">

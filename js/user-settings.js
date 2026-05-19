@@ -84,7 +84,7 @@
       </div>
       <div class="customize-body">
         <div class="form-row">
-          <label style="font-size:.7rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Quick presets — proposed by LUVLAB</label>
+          <label style="font-size:.7rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Quick presets</label>
           <div class="preset-list" id="aa-presets"></div>
         </div>
         <div class="form-row">

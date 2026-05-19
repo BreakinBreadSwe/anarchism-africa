@@ -21,8 +21,8 @@
       reply: "Crowdfund tab. We pool resources for zines, soundsystems and expos. Pledges go to escrow — no cut for us. Each campaign reports back where money lands." },
     { match: /\b(anarchism|anarchy|anarch)/i,
       reply: "On this platform anarchism is a verb, not a flag — practices of mutual aid, horizontal decision-making, and refusing the state-as-employer logic. Africa has been doing this for centuries; we just stopped giving the credits to ourselves." },
-    { match: /\b(luvlab|coolhuntparis|who runs)/i,
-      reply: "LUVLAB is the steward (admin). COOLHUNTPARIS curates publishing — like a magazine + library + expo + giftshop. Merch is run by staff. Partners co-create projects. Consumers can become ambassadors." },
+    { match: /\b(who runs|who made|collective)/i,
+      reply: "ANARCHISM.AFRICA is collectively stewarded. Publishers curate the content pipeline — magazine, library, expo, giftshop. Partners co-create projects. Consumers can become ambassadors." },
     { match: /\b(ai|gemini|qwen|deepseek|model|chinese)/i,
       reply: "I'm A.A.AI — the platform's library oracle. By default I'm wired to Gemini, but the stack is model-agnostic: Qwen, DeepSeek, Kimi, GLM, Yi and MoonshotAI all plug in via the AI provider config in Studio." }
   ];

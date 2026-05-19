@@ -14,8 +14,8 @@
  */
 (function () {
   const ROLES = [
-    { id: 'admin',      label: 'Admin',      who: 'LUVLAB',          href: 'admin.html',      icon: '✶' },
-    { id: 'publisher',  label: 'Publisher',  who: 'COOLHUNTPARIS',   href: 'publisher.html',  icon: '✎' },
+    { id: 'admin',      label: 'Admin',                href: 'admin.html',      icon: '✶' },
+    { id: 'publisher',  label: 'Publisher',     href: 'publisher.html',  icon: '✎' },
     { id: 'editor',     label: 'Editor',     who: 'Desk',            href: 'editor.html',     icon: '⌥' },
     { id: 'journalist', label: 'Journalist', who: 'Bureau',          href: 'journalist.html', icon: '✑' },
     { id: 'market',     label: 'Market',     who: 'Merch',           href: 'market.html',     icon: '◇' },

@@ -21,7 +21,7 @@
     { id: 'u3', name: 'Yannick D.',    city: 'Brussels',      role: 'ambassador' },
     { id: 'u4', name: 'Aïcha B.',      city: 'Tunis',         role: 'consumer' },
     { id: 'u5', name: 'Kojo Sound',    city: 'Accra',         role: 'partner' },
-    { id: 'u6', name: 'COOLHUNTPARIS', city: 'Paris',         role: 'publisher' },
+    { id: 'u6', name: 'A.A. Publisher', city: 'Africa', role: 'publisher' },
     { id: 'u7', name: 'DJ Anarka',     city: 'Luanda',        role: 'partner' }
   ];
   const SEED_GROUPS = [

@@ -2,7 +2,7 @@
   "site": {
     "name": "ANARCHISM.AFRICA",
     "tagline": "an afrofuturist 360° on afro-anarchism — Africa & diaspora",
-    "stewards": "LUVLAB × COOLHUNTPARIS",
+    "stewards": "ANARCHISM.AFRICA collective",
     "data_provenance": "All works listed here are real, published cultural artifacts attributed to their creators. Community-dependent sections (events, ambassadors, services, jobs, community posts, crowdfund campaigns, merch SKUs) are empty until real submissions arrive — no fabricated entries.",
     "last_curated": "2026-04-29"
   },
@@ -19,7 +19,7 @@
     {
       "id": "tp1",
       "name": "BLACKOUT (default · dark)",
-      "by": "LUVLAB",
+      "by": "A.A.",
       "tokens": {
         "bg": "#000000",
         "bg-2": "#0c0c0c",
@@ -36,7 +36,7 @@
     {
       "id": "tp2",
       "name": "WHITEOUT (default · light)",
-      "by": "LUVLAB",
+      "by": "A.A.",
       "tokens": {
         "bg": "#ffffff",
         "bg-2": "#f5f5f5",
@@ -53,7 +53,7 @@
     {
       "id": "tp7",
       "name": "GOLD ACCENT (legacy)",
-      "by": "LUVLAB",
+      "by": "A.A.",
       "tokens": {
         "bg": "#000000",
         "bg-2": "#0c0c0c",
@@ -70,7 +70,7 @@
     {
       "id": "tp3",
       "name": "PAN-AFRICA",
-      "by": "COOLHUNTPARIS",
+      "by": "A.A.",
       "tokens": {
         "bg": "#0a0a0a",
         "bg-2": "#160605",
@@ -121,7 +121,7 @@
     {
       "id": "tp6",
       "name": "NEWSPRINT CREAM",
-      "by": "COOLHUNTPARIS",
+      "by": "A.A.",
       "tokens": {
         "bg": "#f5f1ea",
         "bg-2": "#ffffff",

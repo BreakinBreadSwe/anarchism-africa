@@ -197,10 +197,10 @@
       ));
       return;
     }
-    const role = (mount.dataset.role || 'LUVLAB').toUpperCase();
-    const title = role === 'PUBLISHER' || role === 'COOLHUNTPARIS'
-      ? 'COOLHUNTPARIS pipeline checklist'
-      : 'LUVLAB pipeline checklist';
+    const role = (mount.dataset.role || 'admin').toUpperCase();
+    const title = role === 'PUBLISHER' || role === 'publisher'
+      ? 'A.A. publisher checklist'
+      : 'A.A. admin checklist';
 
     const head = el('div', { class: 'aa-checklist-head' },
       el('h3', {}, title),

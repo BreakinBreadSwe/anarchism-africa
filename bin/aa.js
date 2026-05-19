@@ -270,7 +270,7 @@ function about () {
   banner();
   const lines = [
     'ANARCHISM.AFRICA is a 360° platform for afro-anarchism — Africa & diaspora.',
-    'Stewarded by LUVLAB · curated by COOLHUNTPARIS.',
+    'ANARCHISM.AFRICA collective.',
     '',
     'A library, a magazine, an expo and a giftshop, held together by mutual aid.',
     'Print-on-demand only. No warehouse, no waste, no boss.',

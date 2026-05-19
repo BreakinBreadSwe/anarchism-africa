@@ -58,8 +58,8 @@
           </div>
           <p style="color:var(--fg-dim);margin:0 0 14px;line-height:1.55;font-size:.95rem">
             An afrofuturist 360&deg; on afro-anarchism &mdash; Africa &amp; diaspora.
-            Films, sound, books, events, community. Curated by COOLHUNTPARIS,
-            stewarded by LUVLAB. Every &hearts; you save and every word you send
+            Films, sound, books, events, community.
+            Every &hearts; you save and every word you send
             shapes what ships next.
           </p>
           <h3 style="margin:18px 0 10px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-dim)">Pick a theme</h3>

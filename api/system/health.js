@@ -197,7 +197,7 @@ async function checkScraper () {
     detail: `Last scrape: ${fmtAge(age)} · ${pending} items in queue`,
     help: [
       'WHAT IT DOES: Every morning at 6 AM (UK time), a robot reads 42 magazine websites and brings back any new afro-anarchist articles, music releases, films, books, and events. Sources include ROAR Magazine, Africa Is A Country, AFROPUNK, Pambazuka, Awesome Tapes From Africa, and 37 more.',
-      'WHY YOU NEED IT: This is what keeps the library fresh. Every day, ~20-50 new items land in the "Pending" tray for the publisher (COOLHUNTPARIS) to approve. Without it, the library stops growing.',
+      'WHY YOU NEED IT: This is what keeps the library fresh. Every day, ~20-50 new items land in the "Pending" tray for publishers to approve. Without it, the library stops growing.',
       'HOW TO FIX IF BROKEN: Click "Trigger scrape now" on the right side of this row. Watch the row update in 30 seconds.',
       'IF IT KEEPS FAILING: It usually means CRON_SECRET or BLOB_READ_WRITE_TOKEN is missing. Fix those rows first.',
       'WHERE TO SEE THE RESULTS: After a scrape runs, go to admin dashboard → Pending tab. New scraped items show there with full source credit.'
@@ -211,7 +211,7 @@ async function checkScraper () {
     detail: `${pending} pending items` + (pending >= 800 ? ' — review backlog in Pending tab' : ''),
     help: [
       'WHAT IT TRACKS: How many scraped items are sitting in the Pending tray waiting to be approved or rejected.',
-      'WHY IT MATTERS: A healthy queue has 50–500 items. Above 800 means COOLHUNTPARIS is falling behind on review. Above 1500 means old items will start getting pushed out by new ones before they\'re reviewed.',
+      'WHY IT MATTERS: A healthy queue has 50–500 items. Above 800 means publishers are falling behind on review. Above 1500 means old items will start getting pushed out by new ones before they\'re reviewed.',
       'HOW TO FIX IF YELLOW/RED: Open the Pending tab in admin or publisher dashboards. Use the bulk Approve / Reject buttons. Approved items go live in the public library. Rejected items teach the AI what NOT to scrape next time.',
       'WHERE: admin.html or publisher.html → Pending tab.'
     ].join('\n'),
@@ -240,7 +240,7 @@ async function checkArticles () {
     detail: `${items} articles · last: ${fmtAge(age)}`,
     help: [
       'WHAT IT DOES: Every morning at 9 AM, a robot writer picks the most-discussed afro-anarchist topic from yesterday\'s news and writes a full article — outline, research with Google citations, polished draft, headline, image suggestions. It uses 51 starter keywords (decolonial, sankofa, kwaito, sun-ra, fela, lumumba, fanon, ubuntu, ujamaa, etc.) so articles stay on-topic.',
-      'WHY YOU NEED IT: One new article per day = ~30/month, ~365/year. The library grows on autopilot. The publisher (COOLHUNTPARIS) just polishes and publishes.',
+      'WHY YOU NEED IT: One new article per day = ~30/month, ~365/year. The library grows on autopilot. Publishers just polish and publish.',
       'HOW TO TEST IT: Click "Generate now" on the right. Wait 30-60 seconds. A new article draft appears in admin → Article Lab tab.',
       'IF NOTHING HAPPENS: It needs an LLM key (the row above) AND Vercel Blob storage (top row). Fix those first.',
       'WHERE TO READ DRAFTS: admin.html → Article Lab tab. Drafts wait there for the publisher to approve and publish.'

@@ -37,9 +37,9 @@
 
 import handler from './chat.js';
 
-const SYSTEM = `You are an editorial assistant for ANARCHISM.AFRICA — a 360° afrofuturist platform on afro-anarchism across Africa and the diaspora. Stewards: LUVLAB (admin) and COOLHUNTPARIS (publisher / curator). Style: rigorous, plain-spoken, anti-jargon, anti-academic-bloat; respects the reader; refuses fabrication. When you don't know something, say so. Never invent quotes from real people. Never assign positions to named individuals you can't verify. Always flag what the human editor must verify before publishing.`;
+const SYSTEM = `You are an editorial assistant for ANARCHISM.AFRICA — a 360° afrofuturist platform on afro-anarchism across Africa and the diaspora. Collectively stewarded by the A.A. collective. Style: rigorous, plain-spoken, anti-jargon, anti-academic-bloat; respects the reader; refuses fabrication. When you don't know something, say so. Never invent quotes from real people. Never assign positions to named individuals you can't verify. Always flag what the human editor must verify before publishing.`;
 
-const VOICE = `voice: COOLHUNTPARIS magazine — long-form essayistic, plain-spoken, present tense, sparing on metaphor, generous on specifics. Cite names, places, dates, page numbers when you can. Write for an afro-anarchist reader who already knows the basics. Don't sermonise. Don't pad.`;
+const VOICE = `voice: ANARCHISM.AFRICA magazine — long-form essayistic, plain-spoken, present tense, sparing on metaphor, generous on specifics. Cite names, places, dates, page numbers when you can. Write for an afro-anarchist reader who already knows the basics. Don't sermonise. Don't pad.`;
 
 async function callChat ({ messages, provider, model }) {
   // Reuse the chat handler in-process by faking req/res.

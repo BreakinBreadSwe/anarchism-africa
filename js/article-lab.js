@@ -465,7 +465,7 @@
     const blurb = $('#al-blurb')?.value || state.headlines?.blurb || '';
     if (!confirm(`Publish "${title}" to the public Library?`)) return;
     status('Publishing…');
-    const author = (document.body.dataset.role === 'admin') ? 'LUVLAB' : 'COOLHUNTPARIS';
+    const author = 'A.A.';
     const newArticle = {
       id:           'art_' + Date.now().toString(36),
       title, author, year: new Date().getFullYear(),

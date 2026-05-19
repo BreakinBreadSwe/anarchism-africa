@@ -932,7 +932,7 @@
     row.className = 'audio-row vault-row';
     row.innerHTML = `
       <img class="vault-art" src="${t.image || ''}" alt="" loading="lazy"
-           onerror="this.style.display='none'"
+           onerror="this.closest('.vault-row').remove()"
            style="width:48px;height:48px;border-radius:6px;object-fit:cover;flex-shrink:0;background:var(--bg-2)"/>
       <button class="play" title="Play">▶</button>
       <div class="info" style="min-width:0;flex:1">

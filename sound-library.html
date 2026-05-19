@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>A.A. Sound Library — ANARCHISM.AFRICA</title>
+  <meta name="description" content="Open-source archive of music, radio programs, documentaries and field recordings — in the spirit of free culture and anarchistic sharing." />
+  <meta property="og:title" content="A.A. Sound Library — ANARCHISM.AFRICA" />
+  <meta property="og:description" content="Open-source archive — music · radio programs · documentaries · mixes · field recordings." />
+  <meta property="og:image" content="/icons/og-image.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="/icons/og-image.png" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="alternate icon" type="image/x-icon" href="/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/responsive-fixes.css" />
+  <link rel="stylesheet" href="css/auth-page.css" />
+  <style>
+    /* ── Sound Library page styles ────────────────────────────────────────── */
+    #sl-root { padding: 0 0 calc(var(--bottombar-h, 64px) + 24px); }
+
+    /* Hero */
+    .sl-hero {
+      padding: 28px 20px 24px;
+      border-bottom: 1px solid var(--border, #1f1f1f);
+      background: linear-gradient(135deg, rgba(220,38,38,.06) 0%, transparent 60%);
+    }
+    .sl-hero-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .72rem; color: var(--muted, #666); text-decoration: none;
+      margin-bottom: 16px; letter-spacing: .06em;
+    }
+    .sl-hero-back:hover { color: var(--fg, #eee); }
+    .sl-hero-back svg { width: 14px; height: 14px; }
+    .sl-hero-inner { display: flex; gap: 16px; align-items: flex-start; max-width: 860px; }
+    .sl-hero-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: rgba(220,38,38,.15); color: #ef4444;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sl-hero-icon svg { width: 28px; height: 28px; }
+    .sl-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: .04em; margin: 0 0 4px; line-height: 1; }
+    .sl-hero p  { font-size: .82rem; color: var(--muted, #777); margin: 0; max-width: 520px; line-height: 1.5; }
+    .sl-hero-meta { font-size: .7rem; color: var(--muted, #666); margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+
+    /* Controls bar */
+    .sl-controls {
+      position: sticky; top: var(--topbar-h, 50px); z-index: 20;
+      background: rgba(10,10,10,.97); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border, #1f1f1f);
+      padding: 10px 16px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .sl-search-wrap { position: relative; }
+    .sl-search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--muted, #666); pointer-events: none; }
+    .sl-search {
+      width: 100%; height: 36px; padding: 0 32px 0 34px;
+      background: var(--card, #111); border: 1px solid var(--border, #222);
+      border-radius: 8px; color: var(--fg, #eee); font-size: .82rem;
+      outline: none; font-family: inherit;
+    }
+    .sl-search:focus { border-color: #ef4444; }
+    .sl-search-clear {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--muted);
+      padding: 2px; display: none;
+    }
+    .sl-search-clear.visible { display: flex; }
+    .sl-search-clear svg { width: 14px; height: 14px; }
+
+    /* Category chips */
+    .sl-cats { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+    .sl-cats::-webkit-scrollbar { display: none; }
+    .sl-cat-btn {
+      flex-shrink: 0; display: flex; align-items: center; gap: 4px;
+      padding: 4px 12px; border-radius: 999px; font-size: .72rem; font-weight: 600;
+      border: 1px solid var(--border, #222); background: var(--card, #111);
+      color: var(--muted, #777); cursor: pointer; letter-spacing: .04em; white-space: nowrap;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .sl-cat-btn:hover { border-color: #ef4444; color: var(--fg, #eee); }
+    .sl-cat-btn.active { background: #ef4444; color: #fff; border-color: #ef4444; }
+    .sl-cat-count { font-size: .65rem; opacity: .7; }
+
+    /* Sort row */
+    .sl-sort-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .sl-sort-btns { display: flex; gap: 4px; align-items: center; }
+    .sl-sort-btn {
+      height: 28px; padding: 0 10px; border-radius: 6px;
+      font-size: .72rem; border: 1px solid var(--border, #222);
+      background: var(--card, #111); color: var(--muted, #777); cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+      transition: background .12s, color .12s;
+    }
+    .sl-sort-btn:hover, .sl-sort-btn.active { background: #222; color: var(--fg, #eee); }
+    .sl-sort-btn.active { border-color: #555; }
+    .sl-sort-btn svg { width: 13px; height: 13px; }
+    .sl-sort-select {
+      height: 28px; padding: 0 8px; border-radius: 6px;
+      font-size: .72rem; border: 1px solid var(--border, #222);
+      background: var(--card, #111); color: var(--muted, #777); cursor: pointer;
+      outline: none; font-family: inherit;
+    }
+    .sl-count { font-size: .7rem; color: var(--muted, #666); white-space: nowrap; }
+
+    /* Year header */
+    .sl-year-hdr {
+      display: flex; align-items: center; gap: 12px;
+      padding: 24px 16px 10px; max-width: 900px; margin: 0 auto;
+    }
+    .sl-year-hdr h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: .06em; margin: 0; }
+    .sl-year-hdr-line { flex: 1; height: 1px; background: var(--border, #1f1f1f); }
+    .sl-year-hdr-count { font-size: .7rem; color: var(--muted, #666); white-space: nowrap; }
+
+    /* Grid */
+    .sl-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 10px; padding: 12px 14px; max-width: 900px; margin: 0 auto;
+    }
+    @media (min-width: 600px) { .sl-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 960px) { .sl-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+    /* Track card */
+    .sl-card {
+      border-radius: 12px; border: 1px solid var(--border, #1f1f1f);
+      background: var(--card, #0d0d0d); overflow: hidden;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .sl-card:hover { border-color: rgba(239,68,68,.3); box-shadow: 0 4px 20px rgba(239,68,68,.08); }
+    .sl-card.expanded { border-color: rgba(239,68,68,.5); box-shadow: 0 6px 30px rgba(239,68,68,.12); }
+
+    .sl-card-header {
+      display: flex; gap: 10px; padding: 10px; cursor: pointer;
+      width: 100%; text-align: left; background: none; border: none; color: inherit;
+    }
+    .sl-card-thumb {
+      width: 64px; height: 64px; border-radius: 8px;
+      overflow: hidden; background: var(--border, #1a1a1a); flex-shrink: 0;
+      position: relative;
+    }
+    .sl-card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .sl-card-thumb-emoji { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+    .sl-card-thumb-play {
+      position: absolute; inset: 0; background: rgba(0,0,0,0);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .sl-card:hover .sl-card-thumb-play { background: rgba(0,0,0,.45); }
+    .sl-card-thumb-play svg { width: 20px; height: 20px; color: #fff; opacity: 0; transition: opacity .15s; }
+    .sl-card:hover .sl-card-thumb-play svg { opacity: 1; }
+
+    .sl-card-meta { flex: 1; min-width: 0; text-align: left; }
+    .sl-card-title { font-size: .8rem; font-weight: 600; line-height: 1.3; margin: 0 0 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .sl-card-author { font-size: .7rem; color: var(--muted, #666); margin: 0 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sl-card-chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+    .sl-cat-chip {
+      font-size: .65rem; font-weight: 700; padding: 2px 6px; border-radius: 999px;
+      letter-spacing: .04em; line-height: 1.4;
+    }
+    .sl-embed-chip { font-size: .65rem; padding: 2px 5px; border-radius: 4px; background: rgba(255,255,255,.07); color: var(--muted, #666); }
+    .sl-year-chip { font-size: .65rem; color: var(--muted, #666); display: flex; align-items: center; gap: 2px; }
+    .sl-year-chip svg { width: 10px; height: 10px; }
+
+    .sl-card-chevron { flex-shrink: 0; align-self: center; color: var(--muted, #555); }
+    .sl-card-chevron svg { width: 14px; height: 14px; }
+
+    /* Expanded panel */
+    .sl-card-body { padding: 0 10px 12px; border-top: 1px solid rgba(255,255,255,.06); }
+    .sl-embed-tabs { display: flex; gap: 4px; flex-wrap: wrap; padding: 8px 0 6px; }
+    .sl-embed-tab {
+      font-size: .7rem; padding: 3px 10px; border-radius: 999px;
+      border: 1px solid var(--border, #222); background: none; color: var(--muted, #777);
+      cursor: pointer; transition: background .12s, color .12s;
+    }
+    .sl-embed-tab.active { background: #ef4444; color: #fff; border-color: #ef4444; }
+    .sl-embed-frame-wrap { margin-bottom: 8px; }
+    .sl-embed-frame-wrap iframe { border-radius: 8px; border: none; width: 100%; display: block; }
+    .sl-embed-frame-wrap .sl-video-aspect { position: relative; width: 100%; padding-bottom: 56.25%; }
+    .sl-embed-frame-wrap .sl-video-aspect iframe { position: absolute; inset: 0; height: 100%; }
+    .sl-excerpt { font-size: .75rem; color: var(--muted, #777); line-height: 1.5; margin: 6px 0 0; }
+    .sl-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .sl-tag { font-size: .65rem; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border, #222); color: var(--muted, #666); }
+    .sl-credits { margin-top: 8px; }
+    .sl-credits-label { font-size: .65rem; font-weight: 700; color: var(--muted, #555); text-transform: uppercase; letter-spacing: .1em; }
+    .sl-credit-row { font-size: .72rem; color: var(--muted, #777); }
+    .sl-credit-row span { color: rgba(255,255,255,.75); }
+    .sl-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .sl-link { font-size: .72rem; color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+    .sl-link:hover { text-decoration: underline; }
+    .sl-link svg { width: 11px; height: 11px; }
+
+    /* Empty / loading */
+    .sl-empty {
+      text-align: center; padding: 80px 20px; color: var(--muted, #666);
+    }
+    .sl-empty svg { width: 48px; height: 48px; opacity: .2; margin: 0 auto 12px; display: block; }
+    .sl-empty-title { font-size: .9rem; font-weight: 600; margin: 0 0 4px; }
+    .sl-empty-sub { font-size: .78rem; }
+
+    .sl-skeleton-grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 12px 14px; max-width: 900px; margin: 0 auto; }
+    @media (min-width: 600px) { .sl-skeleton-grid { grid-template-columns: 1fr 1fr; } }
+    .sl-skeleton-card { height: 86px; border-radius: 12px; background: var(--card, #0d0d0d); animation: sl-pulse 1.4s ease infinite; }
+    @keyframes sl-pulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
+
+    /* Category colour map */
+    .cat--music       { background: #059669; color: #fff; }
+    .cat--radio       { background: #2563eb; color: #fff; }
+    .cat--documentary { background: #7c3aed; color: #fff; }
+    .cat--mix         { background: #d97706; color: #000; }
+    .cat--podcast     { background: #db2777; color: #fff; }
+    .cat--field       { background: #0891b2; color: #fff; }
+    .cat--other       { background: #475569; color: #fff; }
+  </style>
+</head>
+<body class="has-rail">
+
+<!-- TOP BAR ---------------------------------------------------------------- -->
+<header class="topbar" id="topbar">
+  <div class="brand-wrap">
+    <a class="brand" href="index.html">
+      <span class="logoword"><span class="word">ANARCHISM<span class="dot">.</span>AFRICA</span></span>
+    </a>
+  </div>
+</header>
+
+<!-- LEFT RAIL -------------------------------------------------------------- -->
+<aside class="rail" id="rail" aria-label="Sections">
+  <button class="menu-toggle rail-menu-toggle" id="menu-toggle" type="button" aria-label="Toggle menu" title="Menu">
+    <span class="logo"></span>
+    <span class="label">Menu</span>
+  </button>
+  <button class="rail-item rail-item--auth" data-rail-auth type="button" title="Sign in">
+    <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span>
+    <span class="label" data-auth-label>Sign in</span>
+  </button>
+  <a class="rail-item" href="index.html" title="Home"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><span class="label">Home</span></a>
+  <a class="rail-item" href="index.html#films" title="Films"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-7 9-7s6 2 9 7c-3 5-6 7-9 7s-6-2-9-7z"/><circle cx="12" cy="12" r="3" class="fill"/></svg></span><span class="label">Films</span></a>
+  <a class="rail-item" href="index.html#articles" title="Library"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Library</span></a>
+  <a class="rail-item rail-item--active" href="sound-library.html" title="Sound Library"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="9" cy="14" r="4"/><path d="M13 14V4l7 2v9"/><circle cx="17" cy="15" r="3"/></svg></span><span class="label">Sound</span></a>
+  <a class="rail-item" href="index.html#events" title="Events"><span class="glyph"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2"/><path d="M5 6v8c0 2 3 4 7 4s7-2 7-4V6"/></svg></span><span class="label">Events</span></a>
+  <a class="rail-item" href="index.html#music" title="Music"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="9" cy="14" r="4"/><path d="M13 14V4l7 2v9"/><circle cx="17" cy="15" r="3"/></svg></span><span class="label">Music</span></a>
+  <a class="rail-item" href="index.html#books" title="Books"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 013 3v13a3 3 0 00-3-3H4z"/><path d="M20 4h-7a3 3 0 00-3 3v13a3 3 0 013-3h7z"/></svg></span><span class="label">Books</span></a>
+  <a class="rail-item" href="index.html#merch" title="Marketplace"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M7 4l5-1 5 1 1 6-2 8-4 3-4-3-2-8z"/></svg></span><span class="label">Merch</span></a>
+  <a class="rail-item" href="index.html#community" title="Community"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6" class="fill"/><circle cx="18" cy="6" r="1.6" class="fill"/><circle cx="12" cy="13" r="1.6" class="fill"/><circle cx="7" cy="18" r="1.6" class="fill"/><circle cx="18" cy="17" r="1.6" class="fill"/><path d="M6 7l6 6M18 6l-6 7M12 13l-5 5M12 13l6 4"/></svg></span><span class="label">Community</span></a>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<!-- MAIN ------------------------------------------------------------------- -->
+<main id="sl-root">
+
+  <!-- Hero -->
+  <div class="sl-hero">
+    <a class="sl-hero-back" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      ANARCHISM.AFRICA
+    </a>
+    <div class="sl-hero-inner">
+      <div class="sl-hero-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="14" r="4"/><path d="M13 14V4l7 2v9"/><circle cx="17" cy="15" r="3"/></svg>
+      </div>
+      <div>
+        <h1>A.A. Sound Library</h1>
+        <p>Open-source archive of music, radio programs, documentaries and field recordings — in the spirit of free culture &amp; anarchistic sharing.</p>
+        <p class="sl-hero-meta" id="sl-meta">Loading…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="sl-controls">
+    <!-- Search -->
+    <div class="sl-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="sl-search" id="sl-search" type="search" placeholder="Search title, artist, tag…" autocomplete="off" />
+      <button class="sl-search-clear" id="sl-search-clear" aria-label="Clear search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <!-- Category chips -->
+    <div class="sl-cats" id="sl-cats"></div>
+    <!-- Sort row -->
+    <div class="sl-sort-row">
+      <div class="sl-sort-btns">
+        <button class="sl-sort-btn" id="sl-random-btn" title="Shuffle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+          <span>Shuffle</span>
+        </button>
+        <button class="sl-sort-btn" id="sl-year-btn" title="Group by year">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span>By year</span>
+        </button>
+        <select class="sl-sort-select" id="sl-sort-select">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+          <option value="year-desc">Year ↓</option>
+          <option value="year-asc">Year ↑</option>
+        </select>
+      </div>
+      <span class="sl-count" id="sl-count"></span>
+    </div>
+  </div>
+
+  <!-- Content area -->
+  <div id="sl-content"></div>
+
+</main>
+
+<!-- FIXED BOTTOM BAR ------------------------------------------------------- -->
+<nav class="bottombar" id="bottombar" aria-label="Quick actions">
+  <button data-bbar="menu" title="Menu" class="bottombar-logo" aria-label="Open menu"><span class="glyph logo-glyph"><span class="logo"></span></span><span>Menu</span></button>
+  <button onclick="location.href='index.html'" title="Home"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><span>Home</span></button>
+  <button onclick="location.href='index.html#films'" title="Films"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-7 9-7s6 2 9 7c-3 5-6 7-9 7s-6-2-9-7z"/><circle cx="12" cy="12" r="3" class="fill"/></svg></span><span>Films</span></button>
+  <button onclick="location.href='sound-library.html'" title="Sound Library" aria-current="page"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="9" cy="14" r="4"/><path d="M13 14V4l7 2v9"/><circle cx="17" cy="15" r="3"/></svg></span><span>Sound</span></button>
+  <button data-bbar="signin" title="Sign in / your profile" aria-label="Sign in or profile"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><span>You</span></button>
+</nav>
+
+<!-- Rail toggle -->
+<script>
+(function () {
+  var rail = document.getElementById('rail');
+  var toggle = document.getElementById('menu-toggle');
+  var backdrop = document.getElementById('rail-backdrop');
+  function openRail()  { rail.classList.add('expanded'); document.body.classList.add('rail-open'); }
+  function closeRail() { rail.classList.remove('expanded'); document.body.classList.remove('rail-open'); }
+  toggle  && toggle.addEventListener('click', function () { rail.classList.contains('expanded') ? closeRail() : openRail(); });
+  backdrop && backdrop.addEventListener('click', closeRail);
+  document.getElementById('bottombar')?.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bbar]'); if (!b) return;
+    if (b.dataset.bbar === 'menu') { rail.classList.contains('expanded') ? closeRail() : openRail(); }
+  });
+})();
+</script>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/logo-mark.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/sound-library.js"></script>
+<script src="js/tooltips.js" defer></script>
+<script src="js/pwa-install.js" defer></script>
+</body>
+</html>

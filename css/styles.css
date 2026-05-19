@@ -1036,11 +1036,22 @@ body.underground h1, body.underground h2 { animation: aa-undermode-jitter .4s st
 
 /* AUDIO ROW (music tab) --------------------------------------------------- */
 .audio-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 8px; }
-.audio-row .play { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--accent); background: var(--accent); color: #000; cursor: pointer; font-weight: 800; flex: 0 0 auto; }
+.audio-row .play { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--accent); background: var(--accent); color: #000; cursor: pointer; font-weight: 800; flex: 0 0 auto; transition: background .15s, color .15s; }
+.audio-row .play:hover { background: var(--fg); border-color: var(--fg); }
 .audio-row .play.playing { background: var(--bg-2); color: var(--accent); }
 .audio-row .info { flex: 1; min-width: 0; }
 .audio-row .info h3 { margin: 0; font-family: 'Space Grotesk', sans-serif; text-transform: none; letter-spacing: 0; font-size: 1rem; }
 .audio-row .info .meta { color: var(--muted); font-size: .8rem; }
+
+/* Vault rows — richer layout with album art */
+.vault-row { align-items: flex-start; }
+.vault-row .play { margin-top: 2px; width: 36px; height: 36px; font-size: .75rem; flex: 0 0 36px; }
+.vault-desc { font-size: .75rem; color: var(--fg-dim); margin-top: 4px; line-height: 1.4; }
+.vault-src:hover { opacity: 1 !important; color: var(--accent) !important; }
+
+/* Sound Library category pills */
+.sound-cat-pill { border-radius: 99px !important; }
+.sound-cat-pill.active { background: var(--accent) !important; color: #000 !important; border-color: var(--accent) !important; }
 
 /* UTILITIES --------------------------------------------------------------- */
 .row-flex { display: flex; gap: 10px; flex-wrap: wrap; }

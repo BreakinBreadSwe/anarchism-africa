@@ -425,7 +425,7 @@
       (await AA.getByType('event')).forEach(e => { const c = card(e,'event'); attachCardClick(c, openEvent, e); g.appendChild(c); });
     }
     if (tab === 'music') {
-      // ── Curated live radio stations ──────────────────────────────────────
+      // ── A.A. Radio: curated live streams ─────────────────────────────────
       const RADIO_STATIONS = [
         { id: 'rs-nts-1',      title: 'NTS Radio 1',         artist: 'London · LA · Shanghai',          audio: 'https://stream-relay-geo.ntslive.net/stream',         summary: 'Independent community radio. African diaspora, afrofuturist and experimental music around the clock.',        isLive: true },
         { id: 'rs-nts-2',      title: 'NTS Radio 2',         artist: 'NTS · Alternative Stream',         audio: 'https://stream-relay-geo.ntslive.net/stream2',        summary: 'Second channel — often carries African, Afro-futurist and underground programming from the global south.',    isLive: true },
@@ -435,6 +435,7 @@
         { id: 'rs-soma-afro',  title: 'SomaFM: African',     artist: 'SomaFM · San Francisco',           audio: 'https://ice6.somafm.com/african-128-mp3',            summary: 'Afrobeat, highlife and traditional sounds from across the continent — no ads, listener supported.',          isLive: true },
         { id: 'rs-radio-1',    title: 'Africa Is A Country', artist: 'Pan-African · Global',             audio: 'https://streaming.tdiradio.com/aiac',                summary: 'Critical pan-African culture, politics and sound. Essays on race, colonialism and resistance.',               isLive: true },
         { id: 'rs-worldwide',  title: 'Worldwide FM',        artist: 'Gilles Peterson · Global',         audio: 'https://worldwidefm.out.airtime.pro/worldwidefm_a',  summary: 'African, Caribbean and diaspora sounds. Deep digs into African jazz, Afrobeat and global underground music.',  isLive: true },
+        { id: 'rs-icecastafrica', title: 'Radio Afrique',    artist: 'Continental · Multilingual',       audio: 'https://radioafrique.ice.infomaniak.ch/radioafrique-high.mp3', summary: 'Pan-African multilingual broadcaster — news, culture and music from across the continent.',              isLive: true },
       ];
 
       const stEl = $('#radio-stations');
@@ -442,7 +443,7 @@
         stEl.dataset.rendered = '1';
         const head = document.createElement('div');
         head.className = 'radio-section-head';
-        head.innerHTML = '<span class="radio-live-dot"></span> Live Streams';
+        head.innerHTML = '<span class="radio-live-dot"></span> A.A. Radio — Live Streams';
         stEl.appendChild(head);
         const grid = document.createElement('div');
         grid.className = 'radio-stations-grid';
@@ -465,14 +466,85 @@
         stEl.appendChild(grid);
       }
 
-      // ── Uploaded / DB tracks ─────────────────────────────────────────────
+      // ── Sound Vault: open-licensed archive tracks ─────────────────────────
+      const vaultEl  = $('#sound-vault');
+      const catsEl   = $('#sound-cats');
+      const soundEl  = $('#sound-list');
+
+      if (vaultEl && !vaultEl.dataset.rendered) {
+        vaultEl.dataset.rendered = '1';
+
+        const CATS = [
+          { id: 'all',          label: 'All',           icon: '◎' },
+          { id: 'music',        label: 'Music',         icon: '♪' },
+          { id: 'spoken-word',  label: 'Spoken Word',   icon: '🎙' },
+          { id: 'radio',        label: 'Radio',         icon: '📻' },
+          { id: 'documentary',  label: 'Documentary',   icon: '🎞' },
+          { id: 'field',        label: 'Field Rec.',    icon: '🌍' },
+        ];
+
+        let activeCat = 'all';
+        let allVaultTracks = [];
+
+        function renderVault (tracks) {
+          soundEl.innerHTML = '';
+          if (!tracks.length) {
+            soundEl.innerHTML = '<p style="color:var(--muted);padding:16px 0">Vault is building — check back soon. The scraper runs daily.</p>';
+            return;
+          }
+          const visible = tracks.slice(0, 80);
+          const sectionHead = document.createElement('div');
+          sectionHead.className = 'radio-section-head';
+          sectionHead.style.marginBottom = '12px';
+          sectionHead.innerHTML = `Sound Vault — Open Archive <span style="font-size:.72rem;color:var(--muted);font-family:var(--mono);font-weight:400;margin-left:8px">${tracks.length} recordings · CC licensed · Internet Archive</span>`;
+          soundEl.appendChild(sectionHead);
+          soundEl.classList.add('anim-stagger');
+          visible.forEach(t => soundEl.appendChild(vaultRow(t)));
+          if (tracks.length > 80) {
+            const more = document.createElement('p');
+            more.style.cssText = 'color:var(--muted);font-size:.82rem;padding:12px 0';
+            more.textContent = `+ ${tracks.length - 80} more recordings in the vault.`;
+            soundEl.appendChild(more);
+          }
+        }
+
+        function filterAndRender () {
+          const filtered = activeCat === 'all'
+            ? allVaultTracks
+            : allVaultTracks.filter(t => t.category === activeCat);
+          renderVault(filtered);
+          catsEl.querySelectorAll('.sound-cat-pill').forEach(p => {
+            p.classList.toggle('active', p.dataset.cat === activeCat);
+          });
+        }
+
+        // Build category pills
+        CATS.forEach(cat => {
+          const pill = document.createElement('button');
+          pill.className = 'sound-cat-pill btn ghost' + (cat.id === 'all' ? ' active' : '');
+          pill.dataset.cat = cat.id;
+          pill.style.cssText = 'font-size:.72rem;padding:4px 12px;border-radius:99px';
+          pill.textContent = `${cat.icon} ${cat.label}`;
+          pill.addEventListener('click', () => { activeCat = cat.id; filterAndRender(); });
+          catsEl.appendChild(pill);
+        });
+
+        // Load vault
+        soundEl.innerHTML = '<p style="color:var(--muted);padding:12px 0;font-size:.85rem">Loading sound vault…</p>';
+        try {
+          const r = await fetch('/api/sound/list');
+          const data = await r.json();
+          allVaultTracks = data.tracks || [];
+          filterAndRender();
+        } catch {
+          soundEl.innerHTML = '<p style="color:var(--muted);padding:12px 0">Could not load vault.</p>';
+        }
+      }
+
+      // ── Uploaded / DB tracks (legacy Supabase songs) ──────────────────────
       const list = $('#music-list'); list.innerHTML = ''; list.classList.add('anim-stagger');
-      // ONLY show songs with a real audio URL. Belt-and-braces — the API
-      // already filters via the playable_songs view, but legacy bundled
-      // seed.json fixtures may still have rows without audio. Skip those.
       const all = await AA.getByType('song');
       const playable = all.filter(s => s.audio && /^https?:\/\//i.test(s.audio));
-      const skipped = all.length - playable.length;
       if (playable.length) {
         const tracksHead = document.createElement('div');
         tracksHead.className = 'radio-section-head';
@@ -481,7 +553,6 @@
         list.appendChild(tracksHead);
         playable.forEach(s => list.appendChild(audioRow(s)));
       }
-      // (no "no music yet" message — the radio stations cover the empty state)
     }
     if (tab === 'books') {
       const g = $('#books-grid'); resetGrid(g);
@@ -835,10 +906,48 @@
       <button class="play">▶</button>
       <div class="info">
         <h3>${s.title}</h3>
-        <div class="meta">${s.artist} · ${Math.floor(s.duration/60)}:${String(s.duration%60).padStart(2,'0')}</div>
+        <div class="meta">${s.artist || ''}${s.duration ? ' · ' + Math.floor(s.duration/60) + ':' + String(s.duration%60).padStart(2,'0') : ''}</div>
       </div>`;
     const btn = row.querySelector('.play');
     btn.addEventListener('click', () => MP.play(s));
+    return row;
+  }
+
+  // Vault row: richer card for open-archive tracks (Internet Archive etc.)
+  function vaultRow (t) {
+    const CAT_COLORS = {
+      'music':       '#27ae60',
+      'spoken-word': '#9b59b6',
+      'radio':       '#2980b9',
+      'documentary': '#e67e22',
+      'field':       '#16a085',
+    };
+    const col = CAT_COLORS[t.category] || '#888';
+    const licBadge = t.license
+      ? `<span style="font-size:.65rem;padding:2px 6px;border-radius:4px;background:${col}22;color:${col};border:1px solid ${col}44;margin-left:6px">${t.license}</span>`
+      : '';
+    const yearTxt = t.year ? ` · ${t.year}` : '';
+
+    const row = document.createElement('div');
+    row.className = 'audio-row vault-row';
+    row.innerHTML = `
+      <img class="vault-art" src="${t.image || ''}" alt="" loading="lazy"
+           onerror="this.style.display='none'"
+           style="width:48px;height:48px;border-radius:6px;object-fit:cover;flex-shrink:0;background:var(--bg-2)"/>
+      <button class="play" title="Play">▶</button>
+      <div class="info" style="min-width:0;flex:1">
+        <h3 style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</h3>
+        <div class="meta" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+          <span>${t.artist || 'Unknown'}${yearTxt}</span>
+          ${licBadge}
+        </div>
+        ${t.description ? `<div class="vault-desc">${t.description.slice(0,120)}…</div>` : ''}
+      </div>
+      <a class="vault-src" href="${t.page || '#'}" target="_blank" rel="noopener noreferrer"
+         title="View on Internet Archive" style="flex-shrink:0;opacity:.5;font-size:.75rem;color:var(--fg-dim);text-decoration:none">↗</a>`;
+    row.querySelector('.play').addEventListener('click', () => {
+      MP.play({ id: t.id, title: t.title, artist: t.artist || '', audio: t.audio, image: t.image });
+    });
     return row;
   }
 

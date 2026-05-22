@@ -107,10 +107,78 @@
     async getTheme ()  { return (await loadSeed()).theme; },
 
     async getHero ()        {
-      if (cfg().backend === 'supabase') {
-        return sb('content_items?featured=eq.true&order=created_at.desc&limit=8');
+      // Always pull from live APIs first — gives fresh scraped content on every load.
+      // Mix articles + sounds (with images) + seed fallback, shuffle, weight recent.
+      const pool = [];
+
+      // 1. Live articles from Vercel API (works even when Supabase key is broken)
+      try {
+        const r = await fetch('/api/content/list?status=published&limit=60&_=' + Math.floor(Date.now() / 3600000));
+        if (r.ok) {
+          const d = await r.json();
+          const items = (d.items || []).filter(x => x.image);
+          items.forEach(x => pool.push({
+            id:       x.id,
+            title:    x.title,
+            summary:  x.summary || x.deck || '',
+            image:    x.image,
+            type:     x.kind || 'article',
+            tab:      ({ film:'films', article:'articles', event:'events', song:'music', book:'books' })[x.kind] || 'articles',
+            ts:       Date.parse(x.published_at || x.created_at || 0) || 0,
+          }));
+        }
+      } catch {}
+
+      // 2. Live sounds that have cover art
+      try {
+        const r = await fetch('/api/sound/list?_=' + Math.floor(Date.now() / 3600000));
+        if (r.ok) {
+          const d = await r.json();
+          (d.tracks || []).filter(x => x.image).slice(0, 20).forEach(x => pool.push({
+            id:      x.id,
+            title:   x.title,
+            summary: x.artist ? `${x.artist}${x.year ? ' · ' + x.year : ''}` : '',
+            image:   x.image,
+            type:    'song',
+            tab:     'music',
+            ts:      x.year ? new Date(String(x.year) + '-01-01').getTime() : 0,
+          }));
+        }
+      } catch {}
+
+      // 3. Seed fallback hero items (always available)
+      try {
+        const seed = await loadSeed();
+        (seed.hero || []).forEach(x => pool.push({ ...x, ts: 0 }));
+      } catch {}
+
+      if (!pool.length) return [];
+
+      // Weight: items from last 30 days get 3 copies in the shuffle bag,
+      // last 7 days get 5 copies — makes recent scrapes dominate without
+      // fully excluding older classics.
+      const now = Date.now();
+      const bag = [];
+      pool.forEach(x => {
+        const age = now - (x.ts || 0);
+        const weight = age < 7 * 86400000 ? 5 : age < 30 * 86400000 ? 3 : 1;
+        for (let i = 0; i < weight; i++) bag.push(x);
+      });
+
+      // Fisher-Yates shuffle
+      for (let i = bag.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [bag[i], bag[j]] = [bag[j], bag[i]];
       }
-      return (await loadSeed()).hero;
+
+      // Deduplicate by id and return up to 14 slides
+      const seen = new Set();
+      const out = [];
+      for (const x of bag) {
+        if (out.length >= 14) break;
+        if (!seen.has(x.id)) { seen.add(x.id); out.push(x); }
+      }
+      return out;
     },
 
     async getByType (type) {

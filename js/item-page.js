@@ -316,22 +316,26 @@
   }
 
   /* Mirror credit — every scraped item carries the source it was mirrored
-     from. We surface "via SOURCE — by AUTHOR · LICENSE" with a linkback so
-     attribution is unmistakable. */
+     from. We surface a source chip with favicon logo, linkback, author,
+     and license so attribution is unmistakable. */
   function renderCredit (it) {
     const url = it.source_url || it.url || it.external_url || '';
     if (!url || !/^https?:\/\//i.test(url)) return '';
     const source  = it.source || '';
     const author  = it.source_author || '';
     const license = it.source_license || '';
-    const display = source || (() => {
-      try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return 'source'; }
-    })();
+    let domain = '';
+    try { domain = new URL(url).hostname.replace(/^www\./, ''); } catch {}
+    const display = source || domain || 'source';
+    const logo = it.source_logo || (domain ? `https://www.google.com/s2/favicons?sz=32&domain=${encodeURIComponent(domain)}` : '');
+    const logoHtml = logo
+      ? `<img src="${escapeHTML(logo)}" alt="" width="16" height="16" loading="lazy" style="border-radius:3px;vertical-align:middle;flex-shrink:0" onerror="this.style.display='none'">`
+      : '';
     const parts = [];
-    parts.push(`via <a href="${escapeHTML(url)}" target="_blank" rel="noopener nofollow">${escapeHTML(display)}</a>`);
+    parts.push(`via ${logoHtml}<a href="${escapeHTML(url)}" target="_blank" rel="noopener nofollow">${escapeHTML(display)}</a>`);
     if (author)  parts.push('by ' + escapeHTML(author));
-    if (license) parts.push(escapeHTML(license));
-    return `<p class="item-credit mono">${parts.join(' · ')}</p>`;
+    if (license && license !== 'all rights reserved (linkback only)') parts.push(escapeHTML(license));
+    return `<p class="item-credit mono" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${parts.join(' · ')}</p>`;
   }
 
   /* Related content — pull a few items of the same kind from the seed

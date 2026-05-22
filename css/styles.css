@@ -526,6 +526,13 @@ section.view.active { display: block; animation: fadeIn .35s ease; }
 .card h3 { margin: 0 0 6px; font-family: 'Space Grotesk', sans-serif; font-size: 1rem; letter-spacing: 0; text-transform: none; }
 .card .meta { color: var(--muted); font-size: .8rem; }
 .card .summary { color: var(--fg-dim); font-size: .9rem; margin-top: 8px; }
+/* Source attribution chip — shows publisher favicon + name on scraped cards */
+.card .source-chip { display:flex; align-items:center; gap:5px; margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:.72rem; color:var(--muted); overflow:hidden; }
+.card .source-chip img { width:14px; height:14px; border-radius:2px; flex-shrink:0; object-fit:contain; }
+.card .source-chip a, .card .source-chip span { color:var(--muted); text-decoration:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.card .source-chip a:hover { color:var(--accent); text-decoration:underline; }
+/* Source credit on item detail page */
+.item-credit img { margin-right:4px; }
 
 /* MERCH-SPECIFIC ---------------------------------------------------------- */
 .merch-card .price {

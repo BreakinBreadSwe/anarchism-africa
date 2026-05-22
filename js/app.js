@@ -304,8 +304,21 @@
         <div class="meta">${secondaryLine(it, kind)}</div>
         ${it.summary ? `<p class="summary">${it.summary}</p>` : ''}
         ${kind === 'merch' ? merchBlock(it) : ''}
+        ${sourceChip(it)}
       </div>`;
     return el;
+  }
+  function sourceChip (it) {
+    const url  = it.source_url || it.url || it.external_url || '';
+    const name = it.source || '';
+    if (!name && !url) return '';
+    let domain = '';
+    try { domain = new URL(url).hostname.replace(/^www\./, ''); } catch {}
+    const logo = it.source_logo || (domain ? `https://www.google.com/s2/favicons?sz=32&domain=${encodeURIComponent(domain)}` : '');
+    const display = name || domain || url;
+    const logoHtml = logo ? `<img src="${logo}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
+    if (url) return `<div class="source-chip">${logoHtml}<a href="${url}" target="_blank" rel="noopener nofollow">${display}</a></div>`;
+    return `<div class="source-chip">${logoHtml}<span>${display}</span></div>`;
   }
   function secondaryLine (it, kind) {
     const dateStr = fmtCardDate(it);

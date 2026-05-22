@@ -137,12 +137,18 @@ export default async function handler (req, res) {
         const finalUrl = verified.finalUrl || it.link;
 
             // Grab image: feed-inline first, then OG scrape from the article page.
-        // We cap the OG scrape to 3 per source run to stay within timeout budget.
+        // Cap at 30 OG scrapes per run to stay within cron timeout budget;
+        // most feeds include inline images so real cap is typically <10.
         let image = it.image || null;
-        if (!image && summary.ogScrapeCount < 3) {
+        if (!image && summary.ogScrapeCount < 30) {
           image = await scrapeOgImage(finalUrl);
           summary.ogScrapeCount = (summary.ogScrapeCount || 0) + 1;
+          if (image) summary.og_scraped++;
         }
+
+        // Source domain — used for the favicon logo URL
+        const srcDomain = (() => { try { return new URL(src.feed).hostname.replace(/^www\./, ''); } catch { return ''; } })();
+        const source_logo = srcDomain ? `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(srcDomain)}` : '';
 
         const payload = {
           kind:           src.kind,
@@ -157,6 +163,7 @@ export default async function handler (req, res) {
           source:         src.name,
           source_id:      src.id,
           source_url:     finalUrl,
+          source_logo,
           source_title:   it.title,
           source_author:  it.author || src.author || '',
           source_license: it.license || src.license || 'all rights reserved (linkback only)',

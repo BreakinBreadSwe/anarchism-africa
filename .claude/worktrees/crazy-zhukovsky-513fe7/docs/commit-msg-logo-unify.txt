@@ -1,0 +1,18 @@
+feat(logo): AAlogo1.svg as canonical logo + thicker continent outline
+
+- Project-wide replace: every reference to /icons/icon-192.svg and
+  /icons/icon-512.svg (favicons, og:image, twitter:image, apple-touch-icon,
+  manifest icon entries, service-worker pre-cache, CSS background-images)
+  now points at /icons/AAlogo1.svg. 17 files updated:
+  index.html, admin.html, publisher.html, anarchist.html, editor.html,
+  journalist.html, market.html, partner.html, item.html, css/styles.css,
+  js/logo-mark.js, sw.js, manifest.webmanifest + 4 role manifests.
+- js/logo-mark.js resolution chain trimmed: localStorage user logo first,
+  then AAlogo1.svg (canonical), then AA-logo1.png as PNG fallback.
+- AAlogo1.svg: 8 dark-fill paths (the Africa silhouette + accents) gain
+  stroke="#000000" stroke-width="36" stroke-linejoin/cap="round".
+  At viewBox 1850, that's ~0.43px outside + 0.43px inside on a 44px
+  button display - effectively a +1px outline. Scales linearly at any
+  size (favicon 192/512, og:image, etc.).
+- CSS .menu-toggle .logo drop-shadow bumped from 0.5px to a stacked
+  1px + 0.5px to reinforce the silhouette edge against thin backgrounds.

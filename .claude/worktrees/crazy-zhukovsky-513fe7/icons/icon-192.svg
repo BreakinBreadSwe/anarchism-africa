@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="192" height="192"
+     role="img" aria-label="ANARCHISM.AFRICA — A inside the African continent">
+  <rect width="1024" height="1024" fill="#000"/>
+  <defs>
+    <!-- Africa silhouette — hand-tuned to match the geographic landmarks
+         (Mediterranean coast, Sinai notch, Horn of Africa, Cape, Gulf of
+         Guinea concavity, NW tip, Senegal bulge). Line-only stroke gives
+         a slightly hand-drawn feel that matches the reference. -->
+    <path id="africa"
+      d="M 290 138
+         L 350 132
+         L 410 130
+         L 472 134
+         L 525 138
+         L 580 144
+         L 632 156
+         L 668 178
+         L 685 200
+         L 700 226
+         L 712 254
+         L 720 282
+         L 725 314
+         L 718 340
+         L 705 358
+         L 712 380
+         L 728 405
+         L 738 428
+         L 738 460
+         L 725 488
+         L 715 514
+         L 715 540
+         L 705 568
+         L 695 596
+         L 690 626
+         L 685 658
+         L 680 690
+         L 678 720
+         L 670 750
+         L 658 778
+         L 642 802
+         L 622 822
+         L 600 838
+         L 575 845
+         L 552 838
+         L 535 822
+         L 520 800
+         L 510 776
+         L 498 752
+         L 482 728
+         L 462 705
+         L 440 682
+         L 420 658
+         L 398 632
+         L 380 605
+         L 365 578
+         L 352 550
+         L 340 522
+         L 325 492
+         L 308 460
+         L 292 428
+         L 278 396
+         L 262 360
+         L 248 322
+         L 238 285
+         L 232 252
+         L 232 220
+         L 240 192
+         L 254 170
+         L 270 152
+         L 290 138 Z"/>
+    <clipPath id="africa-clip"><use href="#africa"/></clipPath>
+  </defs>
+
+  <!-- Continent — outline only, interior matches background so the A reads carved-in -->
+  <use href="#africa" fill="#000" stroke="#fff" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Madagascar — teardrop, off the southeast coast -->
+  <path d="M 808 660 Q 814 685 814 720 Q 812 760 800 790 Q 790 800 784 790 Q 780 770 786 740 Q 790 705 798 680 Q 802 666 808 660 Z"
+        fill="#000" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Anarchist A — bold, clipped to silhouette so the legs settle into the continent -->
+  <g clip-path="url(#africa-clip)">
+    <!-- left leg -->
+    <polygon points="290,820 470,160 522,160 415,820" fill="#fff"/>
+    <!-- right leg -->
+    <polygon points="502,160 554,160 730,820 615,820" fill="#fff"/>
+    <!-- crossbar -->
+    <rect x="245" y="500" width="535" height="64" fill="#fff"/>
+    <!-- inner triangle (negative space inside the A) -->
+    <polygon points="442,500 580,500 552,564 470,564" fill="#000"/>
+  </g>
+</svg>

@@ -1,0 +1,50 @@
+feat(pwa): proper installable Chrome/Android/iOS app with AAlogo1 as canonical icon
+
+ICONS (all derived from AAlogo1.svg with the +1px outline):
+- icons/aa-logo-192.png            - Android home-screen "any" purpose
+- icons/aa-logo-512.png            - high-density Android + Windows
+- icons/aa-logo-192-maskable.png   - safe-area padded for adaptive icon mask
+- icons/aa-logo-512-maskable.png   - same at 512
+Generated with ImageMagick from the canonical SVG so they always match.
+
+MANIFESTS (manifest.webmanifest + 5 role manifests):
+- icons[] now declares: SVG (any) + PNG 192/512 (any) + PNG 192/512
+  (maskable). Chrome picks the right purpose automatically.
+- Added id, display_override (window-controls-overlay then standalone
+  then minimal-ui then browser), dir.
+- Role manifests no longer use the role-specific icon-admin SVGs in their
+  install entries - they all install with the AAlogo1 mark so every role
+  PWA on the home screen looks like the same app (visually unified).
+- Shortcut icons switched from SVG to aa-logo-192.png so Android shortcut
+  badges render reliably.
+
+SERVICE WORKER (sw.js v3 -> v5):
+- Shell pre-cache expanded to cover every HTML page (incl. item.html +
+  journalist + editor), every CSS module (auth-page, header-modes,
+  intro-popup, responsive-fixes, menu-behavior, logo-generator,
+  admin-editor), every JS module that ships with index, all 5 role
+  manifests, all 5 PNG/SVG icon variants, all 4 data files.
+- Strategies: navigation = network-first with cache fallback (per-page
+  shell, then /index.html as last resort); same-origin static =
+  stale-while-revalidate; cross-origin = cache-first (skips opaque).
+- Install uses individual fetch+put so a single 404 doesn't abort.
+- Accepts skipWaiting message from clients for live updates.
+
+INSTALL UX (js/pwa-install.js + matching CSS):
+- Captures beforeinstallprompt and surfaces a floating "Install app"
+  pill bottom-right with brutalist offset shadow.
+- Auto-hides when display-mode:standalone (already installed).
+- iOS Safari fallback (no beforeinstallprompt): pill opens an instructions
+  sheet showing the 3 manual steps to "Add to Home Screen".
+- Soft-dismiss persists 7 days via localStorage.
+- "Install app" rail menu item added to index.html (above About) so it's
+  also reachable from the menu, wired via data-pwa-install delegation.
+- Wired into all 9 HTML pages (index/item/admin/publisher/editor/
+  journalist/market/partner/anarchist).
+
+EVERY surface now uses the SAME canonical mark:
+favicon, og:image, twitter:image, apple-touch-icon, manifest icons,
+shortcut icons, topbar logo button, mobile bottom-bar logo, hero
+splash, item.html logo, install pill icon (download chevron over the
+logo), and the +1px stroked Africa silhouette is what shows on home
+screens across iOS, Android, and Chrome desktop.

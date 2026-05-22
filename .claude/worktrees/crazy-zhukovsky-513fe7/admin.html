@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ADMIN · ANARCHISM.AFRICA/admin</title>
+  <meta property="og:title" content="ANARCHISM.AFRICA" />
+  <meta property="og:description" content="An afrofuturist 360° on afro-anarchism — Africa <meta name="theme-color" diaspora." />
+  <meta property="og:image" content="/icons/AAlogo1.svg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="/icons/AAlogo1.svg" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.admin.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="alternate icon" type="image/x-icon" href="/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/intro-popup.css" />
+  <link rel="stylesheet" href="css/responsive-fixes.css" />
+  <link rel="stylesheet" href="css/menu-behavior.css" />
+  <link rel="stylesheet" href="css/header-modes.css" />
+  <link rel="stylesheet" href="css/auth-page.css" />
+  <link rel="stylesheet" href="css/logo-generator.css" />
+  <link rel="stylesheet" href="css/admin-checklist.css" />
+  <link rel="stylesheet" href="css/admin-editor.css" />
+</head>
+<body class="admin has-rail">
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Admin" style="flex:1;min-width:0">
+    <span class="logoword"><span class="word">ADMIN<span class="dot">·</span>LUVLAB</span></span>
+  </a>
+  <button class="logo-shuffle" id="logo-shuffle" title="Shuffle logo">⟳</button>
+</header>
+
+<aside class="rail" id="rail" aria-label="Studio sections">
+  <button class="menu-toggle rail-menu-toggle" id="menu-toggle" type="button" aria-label="Toggle menu" title="Menu">
+    <span class="logo"></span>
+    <span class="label">Menu</span>
+  </button>
+  <a class="rail-item rail-item--public" href="index.html" title="View the public site">
+    <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></span>
+    <span class="label">Public site</span>
+  </a>
+  <button class="rail-item active" data-tab="dashboard"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/></svg></span><span class="label">Dashboard</span></button>
+  <button class="rail-item" title="Content" data-tab="content"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Content</span></button>
+  <button class="rail-item" title="Marketplace" data-tab="merch"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 8l2-4h14l2 4M4 8h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 12h6"/></svg></span><span class="label">Marketplace</span></button>
+  <button class="rail-item" title="Users" data-tab="users"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M14 20c0-2.5 1.5-4.5 3.5-4.5S21 17.5 21 20"/></svg></span><span class="label">Users</span></button>
+  <button class="rail-item" title="Mailing" data-tab="mailing"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="label">Mailing</span></button>
+  <button class="rail-item" title="Promotions" data-tab="promotions"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 11l13-5v12L3 13z"/><path d="M16 9v6"/><path d="M19 9c1.5 0 3 1 3 3s-1.5 3-3 3"/></svg></span><span class="label">Promotions</span></button>
+  <button class="rail-item" title="Ambassadors" data-tab="ambassadors"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span><span class="label">Ambassadors</span></button>
+  <button class="rail-item" title="Crowdfund" data-tab="crowdfund"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 12c2-3 4-3 6 0M13 12c2-3 4-3 6 0M5 12c2 3 4 3 6 0M13 12c2 3 4 3 6 0"/><circle cx="12" cy="12" r="1.4" class="fill"/></svg></span><span class="label">Crowdfund</span></button>
+  <button class="rail-item" title="Grants" data-tab="grants"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 7l7-4 7 4v10l-7 4-7-4z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="label">Grants</span></button>
+  <button class="rail-item" title="Article Lab" data-tab="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>
+  <button class="rail-item" title="Mark Lab" data-tab="marklab"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 16l3-10 3 10M10 13h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Mark Lab</span></button>
+  <button class="rail-item" title="Article Lab" data-tab="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span class="label">Article Lab</span></button>
+  <button class="rail-item" title="Merch Lab" data-tab="merchlab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M7 4l5-1 5 1 1 6-2 8-4 3-4-3-2-8z"/><path d="M9 12h6"/></svg></span><span class="label">Merch Lab</span></button>
+  <button class="rail-item" title="Mark Lab" data-tab="marklab"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 16l3-10 3 10M10 13h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Mark Lab</span></button>
+  <button class="rail-item" title="Site · CSS" data-tab="settings"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 010 .8l2 1.6-2 3.4-2.4-1a7 7 0 01-1.4.8L15 21h-4l-.2-2.4a7 7 0 01-1.4-.8l-2.4 1-2-3.4 2-1.6a7 7 0 010-1.6l-2-1.6 2-3.4 2.4 1a7 7 0 011.4-.8L11 3h4l.2 2.4a7 7 0 011.4.8l2.4-1 2 3.4-2 1.6"/></svg></span><span class="label">Site · CSS</span></button>
+  <button class="rail-item" title="A.A.AI" data-tab="ai"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span class="label">A.A.AI</span></button>
+</aside>
+<div class="rail-backdrop" id="rail-backdrop"></div>
+
+<!-- legacy horizontal tabs hidden via body.has-rail; kept for hash navigation parity -->
+<nav class="tabs" id="tabs" hidden>
+  <div class="tab active" data-tab="dashboard">Dashboard</div>
+  <div class="tab" data-tab="content">Content</div>
+  <div class="tab" data-tab="merch">Merch</div>
+  <div class="tab" data-tab="users">Users</div>
+  <div class="tab" data-tab="mailing">Mailing</div>
+  <div class="tab" data-tab="promotions">Promotions</div>
+  <div class="tab" data-tab="ambassadors">Ambassadors</div>
+  <div class="tab" data-tab="crowdfund">Crowdfund</div>
+  <div class="tab" data-tab="grants">Grants</div>
+  <div class="tab" data-tab="articlelab">Article Lab</div>
+  <div class="tab" data-tab="marklab">Mark Lab</div>
+  <div class="tab" data-tab="articlelab">Article Lab</div>
+  <div class="tab" data-tab="merchlab">Merch Lab</div>
+  <div class="tab" data-tab="marklab">Mark Lab</div>
+  <div class="tab" data-tab="settings">Settings</div>
+  <div class="tab" data-tab="ai">AI</div>
+</nav>
+
+<main style="padding:18px var(--content-pad-x);width:100%;max-width:100%;margin:0 auto;box-sizing:border-box">
+
+  <!-- DASHBOARD ---------------------------------------------------------- -->
+  <section class="view active" id="view-dashboard">
+    <!-- Pipeline checklist — mirrors what's running, fires actions inline -->
+    <div id="aa-checklist-mount" data-role="LUVLAB"></div>
+    <div class="kpi" id="kpi"></div>
+    <div class="panel">
+      <h2 style="margin-top:0">Welcome back, LUVLAB</h2>
+      <p style="color:var(--fg-dim);max-width:65ch">You're stewarding a magazine, a library, an expo and a giftshop. Use the tabs above. The Grants and AI assistant tabs are tuned for COOLHUNTPARIS curators looking for funds and project ideas.</p>
+      <div class="row-flex" style="margin-top:12px">
+        <a class="btn primary" href="index.html#films">View public site</a>
+        <button class="btn ghost" id="seed-demo">Reset demo data</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENT ------------------------------------------------------------ -->
+  <section class="view" id="view-content">
+    <div class="admin-grid">
+      <aside class="sidenav">
+        <button data-content="film"    class="active">Films</button>
+        <button data-content="article">Articles</button>
+        <button data-content="event">Events</button>
+        <button data-content="song">Music</button>
+        <button data-content="book">Books</button>
+      </aside>
+      <div class="panel">
+        <div class="row-flex" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h2 style="margin:0" id="content-title">Films</h2>
+          <button class="btn primary" id="content-new">+ New</button>
+        </div>
+        <table>
+          <thead><tr><th>Title</th><th>Meta</th><th>Status</th><th></th></tr></thead>
+          <tbody id="content-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- MERCH -------------------------------------------------------------- -->
+  <section class="view" id="view-merch">
+    <div class="panel">
+      <h2 style="margin-top:0">Print-on-demand providers</h2>
+      <p style="color:var(--fg-dim)">All merch is fulfilled on-demand by certified eco providers. Connect a provider to start syncing SKUs.</p>
+      <table>
+        <thead><tr><th>Provider</th><th>Eco score</th><th>Certifications</th><th>Status</th><th></th></tr></thead>
+        <tbody id="pod-rows"></tbody>
+      </table>
+      <div class="divider"></div>
+      <h3>Catalogue</h3>
+      <table>
+        <thead><tr><th>Product</th><th>Provider</th><th>Price</th><th>Carbon</th><th></th></tr></thead>
+        <tbody id="merch-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- USERS -------------------------------------------------------------- -->
+  <section class="view" id="view-users">
+    <div class="panel">
+      <h2 style="margin-top:0">Users &amp; roles</h2>
+      <p style="color:var(--fg-dim)">Roles: admin (LUVLAB) · publisher (COOLHUNTPARIS) · merch staff · partners · consumers (can become ambassadors).</p>
+      <table>
+        <thead><tr><th>Email</th><th>Display name</th><th>Role</th><th>City</th><th></th></tr></thead>
+        <tbody id="user-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- MAILING ------------------------------------------------------------ -->
+  <section class="view" id="view-mailing">
+    <div class="panel">
+      <h2 style="margin-top:0">Mailing list</h2>
+      <div id="mail-stats" class="kpi"></div>
+      <table>
+        <thead><tr><th>Email</th><th>Name</th><th>Subscribed</th></tr></thead>
+        <tbody id="mail-rows"></tbody>
+      </table>
+      <div class="divider"></div>
+      <h3>Quick add</h3>
+      <form id="mail-add" style="display:flex;gap:8px;max-width:520px">
+        <input required type="email" placeholder="email" />
+        <input placeholder="name (optional)" />
+        <button class="btn primary" type="submit">Add</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- PROMOTIONS --------------------------------------------------------- -->
+  <section class="view" id="view-promotions">
+    <div class="panel">
+      <h2 style="margin-top:0">Promotion campaigns</h2>
+      <p style="color:var(--fg-dim)">Newsletter, event push, merch promo, crowdfund alert. Created by publishers or merch staff.</p>
+      <form id="promo-form" style="display:grid;gap:10px;max-width:640px">
+        <div class="form-row"><label>Kind</label>
+          <select><option value="newsletter">Newsletter</option><option value="promo">Merch promo</option><option value="event_push">Event push</option><option value="crowdfund">Crowdfund alert</option></select>
+        </div>
+        <div class="form-row"><label>Subject</label><input required placeholder="A new film just dropped — Concrete Moonlight"/></div>
+        <div class="form-row"><label>Body</label><textarea required>Salutations from the archive…</textarea></div>
+        <div class="form-row"><label>Audience</label><input value="all" placeholder="all | ambassadors | merch_buyers"/></div>
+        <button class="btn primary" type="submit">Send (demo)</button>
+      </form>
+      <div class="divider"></div>
+      <h3>Recent</h3>
+      <table>
+        <thead><tr><th>Subject</th><th>Kind</th><th>Audience</th><th>Sent</th></tr></thead>
+        <tbody id="promo-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- AMBASSADORS -------------------------------------------------------- -->
+  <section class="view" id="view-ambassadors">
+    <div class="panel">
+      <h2 style="margin-top:0">Ambassadors</h2>
+      <table>
+        <thead><tr><th>Name</th><th>City</th><th>Reach</th><th>Status</th><th></th></tr></thead>
+        <tbody id="amb-rows"></tbody>
+      </table>
+      <div class="divider"></div>
+      <h3>Pending applications</h3>
+      <table>
+        <thead><tr><th>Name</th><th>Location</th><th>Pitch</th><th></th></tr></thead>
+        <tbody id="amb-app-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CROWDFUND ---------------------------------------------------------- -->
+  <section class="view" id="view-crowdfund">
+    <div class="panel">
+      <h2 style="margin-top:0">Crowdfund campaigns</h2>
+      <table>
+        <thead><tr><th>Title</th><th>Raised</th><th>Goal</th><th>%</th></tr></thead>
+        <tbody id="cf-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- GRANTS ------------------------------------------------------------- -->
+  <section class="view" id="view-grants">
+    <div class="panel">
+      <h2 style="margin-top:0">Grants tracker</h2>
+      <p style="color:var(--fg-dim)">A.A.AI scans this list daily and alerts curators when deadlines approach. Add a grant and assign an owner.</p>
+      <table>
+        <thead><tr><th>Funder</th><th>Title</th><th>Amount</th><th>Deadline</th><th>Status</th></tr></thead>
+        <tbody id="grant-rows"></tbody>
+      </table>
+      <div class="divider"></div>
+      <h3>Add grant</h3>
+      <form id="grant-form" style="display:grid;gap:8px;max-width:640px">
+        <input required placeholder="Funder (Africa No Filter, Prince Claus Fund…)" />
+        <input required placeholder="Title" />
+        <input placeholder="Amount (€10,000)" />
+        <input type="date" />
+        <select><option value="open">open</option><option>watching</option><option>applying</option><option>submitted</option></select>
+        <button class="btn primary" type="submit">Save</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ARTICLE LAB -------------------------------------------------------- -->
+  <section class="view" id="view-articlelab"></section>
+
+  <!-- MARK LAB ----------------------------------------------------------- -->
+  <section class="view" id="view-marklab"></section>
+
+  <!-- SETTINGS / CSS ----------------------------------------------------- -->
+  <section class="view" id="view-articlelab"></section>
+
+  <section class="view" id="view-merchlab"></section>
+
+  <section class="view" id="view-marklab"></section>
+
+  <section class="view" id="view-settings">
+    <div class="admin-grid">
+      <div class="panel">
+        <h3>Site theme — live edit</h3>
+        <p style="color:var(--fg-dim);font-size:.9rem">Changes save to <code class="mono">localStorage</code> and apply to the public site immediately.</p>
+        <div id="theme-controls"></div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" id="theme-save">Save theme</button>
+          <button class="btn ghost" id="theme-reset">Reset</button>
+        </div>
+        <div class="divider"></div>
+        <h3>Content load animation</h3>
+        <p style="color:var(--fg-dim);font-size:.9rem">How cards animate in when a tab opens or content loads. Default: <b>fade-up</b> — fast, accessible, mobile-friendly.</p>
+        <div class="form-row">
+          <label>Effect</label>
+          <select id="anim-pick">
+            <option value="aa-fade-up">Fade up (default — recommended)</option>
+            <option value="aa-slide-left">Slide from left</option>
+            <option value="aa-slide-right">Slide from right</option>
+            <option value="aa-scale-pop">Scale pop</option>
+            <option value="aa-mask-reveal">Mask reveal (left → right wipe)</option>
+            <option value="aa-blur-clear">Blur clear</option>
+            <option value="aa-glitch-in">Glitch in (afro-punk)</option>
+            <option value="aa-rise-rotate">Rise &amp; rotate</option>
+            <option value="aa-flip-y">Flip Y (3D)</option>
+            <option value="aa-iris-in">Iris in (camera-style)</option>
+            <option value="aa-marquee-in">Marquee from left</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Duration (ms)</label>
+          <input type="number" id="anim-dur" value="550" min="120" max="2000" step="20"/>
+        </div>
+        <div style="display:flex;gap:8px"><button class="btn primary" id="anim-save">Save animation</button>
+          <button class="btn ghost" id="anim-preview">Preview</button></div>
+        <div id="anim-stage" style="margin-top:14px;padding:14px;border:1px dashed var(--line);border-radius:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          <div class="card preview-card" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center">A</div>
+          <div class="card preview-card" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center">B</div>
+          <div class="card preview-card" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center">C</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>CSS overrides</h3>
+        <p style="color:var(--fg-dim);font-size:.9rem">Drop raw CSS to override anything on the public site. Applied immediately on save.</p>
+        <textarea id="css-override" style="min-height:240px;font-family:'JetBrains Mono',monospace"></textarea>
+        <div style="margin-top:8px"><button class="btn primary" id="css-save">Save CSS</button></div>
+        <div class="divider"></div>
+        <h3>Logo behavior</h3>
+        <p style="color:var(--fg-dim);font-size:.9rem">The wordmark rotates fonts every 9s with a random entry animation. The round mark spins a pan-african gradient by default — upload a PNG/SVG/GIF/WEBP to override.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="logo-pause">Pause rotation</button><button class="btn primary" id="logo-shuffle-now">Shuffle now</button></div>
+        <div class="form-row" style="margin-top:14px">
+          <label>Custom round logo (PNG/SVG/GIF/WEBP, ≤500KB)</label>
+          <input type="file" id="logo-upload" accept="image/png,image/svg+xml,image/gif,image/webp"/>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div id="logo-preview" style="width:54px;height:54px;border-radius:50%;border:1px solid var(--line);background:var(--bg-2) center/cover no-repeat"></div>
+          <button class="btn ghost" id="logo-clear">Clear custom logo</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI ----------------------------------------------------------------- -->
+  <section class="view" id="view-ai">
+    <div class="admin-grid">
+      <div class="panel">
+        <h3>AI provider</h3>
+        <div class="form-row"><label>Provider</label>
+          <select id="ai-provider">
+            <option value="gemini">Google Gemini (default)</option>
+            <option value="qwen">Alibaba Qwen</option>
+            <option value="deepseek">DeepSeek</option>
+            <option value="kimi">Moonshot Kimi</option>
+            <option value="glm">Zhipu GLM</option>
+            <option value="yi">01.ai Yi</option>
+            <option value="claude">Anthropic Claude</option>
+            <option value="openai">OpenAI</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Model</label><input id="ai-model" value="gemini-1.5-flash"/></div>
+        <div class="form-row"><label>Endpoint (server proxy)</label><input id="ai-endpoint" value="/api/ai/chat"/></div>
+        <button class="btn primary" id="ai-save">Save</button>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:14px">Keys live server-side, never in the browser. The proxy at /api/ai/chat dispatches to the chosen provider.</p>
+      </div>
+      <div class="panel">
+        <h3>A.A.AI workbench</h3>
+        <p style="color:var(--fg-dim);font-size:.9rem">Ask the assistant to draft content, find grants, summarise the archive, or scout collaborators.</p>
+        <div id="aw-body" style="display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;padding:6px;border:1px solid var(--line);border-radius:10px"></div>
+        <form id="aw-form" style="display:flex;gap:8px;margin-top:8px">
+          <input id="aw-input" placeholder="Find me 3 grants for diaspora reading circles…" style="flex:1"/>
+          <button class="btn primary" type="submit">Ask</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Environment keys reference - which API keys to set, where to get them, current status -->
+    <div class="panel" style="margin-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+        <h3 style="margin:0">API keys & environment</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" id="env-refresh">Refresh status</button>
+          <a class="btn ghost" href="https://vercel.com/dashboard" target="_blank" rel="noopener">Open Vercel dashboard</a>
+        </div>
+      </div>
+      <p style="color:var(--fg-dim);font-size:.86rem;max-width:65ch;margin:0 0 12px">
+        These are every key the platform consumes. Paste them in <b>Vercel → Project → Settings → Environment Variables</b>
+        (one per row, scope <code>Production, Preview, Development</code>). After saving, redeploy. Each row below shows
+        whether the key is set on the live deployment, what it powers, and where to grab it. Values never leave the server.
+      </p>
+      <div id="env-table" class="mono" style="font-size:.78rem">Loading…</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FIXED BOTTOM BAR (admin) -->
+<nav class="bottombar" id="bottombar" aria-label="Studio quick actions">
+  <button data-bbar="dashboard" class="active" title="Dashboard"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="1.5" class="fill"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/></svg></span><span>Home</span></button>
+  <button data-bbar="content" title="Content"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/></svg></span><span>Content</span></button>
+  <button data-bbar="search" title="Search"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg></span><span>Search</span></button>
+  <button data-bbar="ai" title="A.A.AI"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M16 10v4M9 16c1.6 1.2 4.4 1.2 6 0"/></svg></span><span>A.A.AI</span></button>
+  <button data-bbar="public" title="Public site"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></span><span>Site</span></button>
+</nav>
+
+<!-- GLOBAL SEARCH MODAL -->
+<div class="modal" id="search-modal">
+  <div class="panel" style="max-width:680px">
+    <div class="panel-body" style="padding:18px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <input type="text" id="search-input" placeholder="Search the archive…" autocomplete="off" style="flex:1;padding:12px 16px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit;font-size:1rem"/>
+        <button class="btn ghost" id="search-close">Esc</button>
+      </div>
+      <div id="search-results" style="display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<script>document.body.dataset.role = 'admin';</script>
+<script src="js/pin-gate.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ai-chat.js"></script>
+<script src="js/intro-popup.js"></script>
+<script src="js/menu-behavior.js"></script>
+<script src="js/header-modes.js"></script>
+<script src="js/logo-mark.js"></script>
+<script src="js/logo-generator.js"></script>
+<script src="js/live-actions.js"></script>
+<script src="js/afro-books.js"></script>
+<script src="js/thumb.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/admin-editor.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/admin-checklist.js"></script>
+<script src="js/article-lab.js"></script>
+<script src="js/mark-lab.js"></script>
+<script src="js/merch-lab.js"></script>
+<script src="js/mark-lab.js"></script>
+<script src="js/article-lab.js"></script>
+<script src="js/content-queue.js"></script>
+<script src="js/role-switcher.js"></script>
+<script src="js/user-settings.js"></script>
+<script>
+  // Admin PWA service worker
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  }
+
+  // Rail + bottombar wiring (admin)
+  (function () {
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+    const rail = $('#rail');
+    function openRail ()  { rail.classList.add('expanded'); document.body.classList.add('rail-open'); }
+    function closeRail () { rail.classList.remove('expanded'); document.body.classList.remove('rail-open'); }
+    $('#menu-toggle')?.addEventListener('click', () => rail.classList.contains('expanded') ? closeRail() : openRail());
+    $('#rail-backdrop')?.addEventListener('click', closeRail);
+    rail?.addEventListener('click', e => {
+      const r = e.target.closest('.rail-item'); if (!r) return;
+      const tab = r.dataset.tab;
+      $$('.rail-item').forEach(x => x.classList.toggle('active', x === r));
+      // delegate to existing tab handler in admin.js by clicking the (hidden) horizontal tab
+      const fakeTab = document.querySelector(`.tabs .tab[data-tab="${tab}"]`); fakeTab?.click();
+      if (matchMedia('(max-width:768px)').matches) closeRail();
+    });
+    $('#bottombar')?.addEventListener('click', e => {
+      const b = e.target.closest('[data-bbar]'); if (!b) return;
+      const k = b.dataset.bbar;
+      if (k === 'dashboard') document.querySelector('.rail-item[data-tab="dashboard"]')?.click();
+      if (k === 'content')   document.querySelector('.rail-item[data-tab="content"]')?.click();
+      if (k === 'ai')        document.querySelector('.rail-item[data-tab="ai"]')?.click();
+      if (k === 'public')    location.href = 'index.html';
+      if (k === 'search')    openSearch();
+    });
+
+    // ---- global search ----
+    async function openSearch () {
+      $('#search-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      $('#search-input').focus();
+      runSearch('');
+    }
+    function closeSearch () { $('#search-modal').classList.remove('open'); document.body.style.overflow = ''; }
+    $('#search-close')?.addEventListener('click', closeSearch);
+    $('#search-modal')?.addEventListener('click', e => { if (e.target.id === 'search-modal') closeSearch(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeSearch();
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+    });
+    $('#search-input')?.addEventListener('input', e => runSearch(e.target.value));
+    async function runSearch (q) {
+      const seed = await AA.loadSeed();
+      const types = [
+        ['film',     seed.films,           x => `${x.director} · ${x.duration}min`],
+        ['article',  seed.articles,        x => `${x.author} · ${x.reading_time}min`],
+        ['event',    seed.events,          x => `${x.city} · ${new Date(x.starts_at).toLocaleDateString()}`],
+        ['song',     seed.music,           x => `${x.artist}`],
+        ['book',     seed.books,           x => `${x.author}`],
+        ['merch',    seed.merch,           x => `€${x.price_eur} · ${x.provider}`],
+        ['shop',     seed.external_shops,  x => `${x.city}, ${x.country}`],
+        ['service',  seed.services,        x => `${x.by} · ${x.rate}`],
+        ['seminar',  seed.seminars,        x => `${x.host} · ${x.format}`],
+        ['job',      seed.jobs,            x => `${x.org} · ${x.city}`],
+        ['grant',    seed.grants,          x => `${x.funder} · ${x.amount}`]
+      ];
+      const f = q.toLowerCase().trim();
+      const out = $('#search-results'); out.innerHTML = '';
+      let count = 0;
+      types.forEach(([kind, list, sub]) => {
+        (list || []).forEach(item => {
+          const hay = JSON.stringify(item).toLowerCase();
+          if (!f || hay.includes(f)) {
+            count++;
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;gap:10px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer';
+            row.innerHTML = `
+              <span style="display:inline-block;font-size:.65rem;padding:2px 8px;border-radius:99px;background:var(--accent);color:var(--bg);font-weight:700;letter-spacing:.12em;text-transform:uppercase;flex:0 0 auto;align-self:flex-start">${kind}</span>
+              <div style="flex:1;min-width:0">
+                <b style="display:block">${(item.title || item.name || item.funder)}</b>
+                <span style="color:var(--muted);font-size:.8rem">${sub(item)}</span>
+              </div>`;
+            out.appendChild(row);
+          }
+        });
+      });
+      if (!count) out.innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">no match — try a different word.</p>';
+    }
+  })();
+</script>
+<script src="js/tooltips.js" defer></script>
+<script src="js/pwa-install.js" defer></script>
+</body>
+</html>

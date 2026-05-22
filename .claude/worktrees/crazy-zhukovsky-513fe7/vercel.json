@@ -1,0 +1,54 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/cron/scan-content",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/generate-articles",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/generate-slogans",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/generate-logos",
+      "schedule": "0 15 * * *"
+    },
+    {
+      "path": "/api/cron/verify-links?archive=1",
+      "schedule": "0 3 * * 0"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(css|js|svg|png|jpg|webp|woff2)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ]
+}

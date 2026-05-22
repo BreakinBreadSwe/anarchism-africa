@@ -1,0 +1,18 @@
+node_modules/
+.vercel/
+.env
+.env.local
+.DS_Store
+*.log
+.idea/
+.vscode/
+.next/
+dist/
+build/
+.vercel
+
+# macOS resource forks
+._*
+
+*.bak
+.fuse_hidden*

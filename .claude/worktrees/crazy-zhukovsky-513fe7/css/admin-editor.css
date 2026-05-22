@@ -1,0 +1,159 @@
+/* ANARCHISM.AFRICA — full-viewport, media-first edit/add page.
+   Reference from admin.html / publisher.html / editor.html / journalist.html.
+*/
+
+#admin-editor-fs {
+  position: fixed; inset: 0; z-index: 95;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  animation: aef-pop .2s ease-out;
+}
+@keyframes aef-pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #admin-editor-fs { animation: none; } }
+
+.ae-fs { display: flex; flex-direction: column; height: 100%; }
+
+.ae-fs-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; padding: 14px clamp(12px, 2.4vw, 28px);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-2);
+  flex-shrink: 0;
+}
+.ae-fs-head-left { min-width: 0; flex: 1 1 auto; }
+.ae-fs-head-left h1 {
+  margin: 4px 0 0; font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.4rem, 3vw, 2.2rem); line-height: 1.05; letter-spacing: .02em;
+  color: var(--fg);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ae-fs-sub { margin: 4px 0 0; font-size: .82rem; color: var(--fg-dim); }
+.ae-fs-pill {
+  display: inline-block;
+  padding: 4px 12px; border: 1px solid var(--accent); color: var(--accent);
+  border-radius: 99px;
+  font: 800 .65rem 'JetBrains Mono', monospace;
+  letter-spacing: .18em;
+}
+.ae-fs-head-right { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.ae-fs-head-right .ae-del { color: var(--red) !important; border-color: var(--red) !important; }
+
+/* ====== Two-column body — media-majority on desktop ============== */
+.ae-fs-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;       /* media gets ~62%, form ~38% */
+  flex: 1; min-height: 0;
+  overflow: hidden;
+}
+@media (max-width: 900px) {
+  .ae-fs-grid { grid-template-columns: 1fr; grid-template-rows: minmax(220px, 40vh) 1fr; }
+}
+
+/* ====== Media pane (left) ======================================== */
+.ae-media {
+  background: #000;
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+  padding: clamp(14px, 2.5vw, 28px);
+  gap: 14px;
+}
+@media (max-width: 900px) { .ae-media { border-right: 0; border-bottom: 1px solid var(--line); } }
+.ae-media-cover {
+  width: 100%; flex: 1 1 0;
+  min-height: 320px;
+  background: #000 center / contain no-repeat;
+}
+.ae-media video, .ae-media audio {
+  width: 100%; max-height: calc(100vh - 220px);
+  background: #000; border-radius: 0;
+}
+.ae-media-empty {
+  flex: 1 1 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; gap: 14px;
+  border: 2px dashed var(--line); border-radius: 0;
+  padding: 36px;
+  color: var(--fg-dim);
+}
+.ae-media-empty p { margin: 0; font-size: .85rem; line-height: 1.55; max-width: 32ch; }
+.ae-media-empty-mark { opacity: .8; }
+.ae-media-fields {
+  display: grid; gap: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+  margin-top: auto;        /* anchor to bottom of media pane */
+}
+.ae-media-fields .ae-row { margin: 0; }
+.ae-media-fields .ae-label {
+  font: 600 .65rem 'JetBrains Mono', monospace;
+  letter-spacing: .14em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+
+/* ====== Form pane (right) ======================================== */
+.ae-form-pane {
+  overflow-y: auto;
+  padding: clamp(14px, 2.4vw, 28px);
+  background: var(--bg);
+}
+.ae-form-pane form { display: grid; gap: 22px; max-width: 720px; }
+.ae-section-title {
+  margin: 0;
+  font: 800 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .2em; color: var(--fg-dim);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+.ae-section { display: grid; gap: 12px; }
+
+.ae-row { display: grid; gap: 4px; }
+.ae-row--inline { display: flex; align-items: center; gap: 8px; }
+.ae-label {
+  font: 600 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .12em; color: var(--fg-dim);
+  text-transform: uppercase;
+}
+.ae-req { color: var(--red); margin-left: 4px; }
+
+.ae-form-pane input[type="text"],
+.ae-form-pane input[type="url"],
+.ae-form-pane input[type="number"],
+.ae-form-pane input[type="email"],
+.ae-form-pane input[type="datetime-local"],
+.ae-form-pane select,
+.ae-form-pane textarea,
+.ae-media-fields input,
+.ae-media-fields textarea {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--fg);
+  padding: 11px 14px;
+  font: inherit;
+  border-radius: 0;
+  width: 100%;
+  transition: border-color .15s, box-shadow .15s;
+}
+.ae-form-pane input:focus,
+.ae-form-pane textarea:focus,
+.ae-form-pane select:focus,
+.ae-media-fields input:focus,
+.ae-media-fields textarea:focus {
+  outline: 0;
+  border-color: var(--accent);
+  box-shadow: 3px 3px 0 0 var(--accent);
+}
+.ae-form-pane textarea { font-family: 'Space Grotesk', system-ui, sans-serif; line-height: 1.55; resize: vertical; }
+.ae-form-pane textarea[name="body"] { font-family: 'JetBrains Mono', monospace; font-size: .9rem; line-height: 1.65; min-height: 320px; }
+
+.ae-status {
+  font-size: .75rem;
+  color: var(--fg-dim);
+  min-height: 1.2em;
+  padding: 8px 0 0;
+}
+.ae-status[data-kind="ok"]    { color: var(--green); }
+.ae-status[data-kind="error"] { color: var(--red); }

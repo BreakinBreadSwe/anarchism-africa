@@ -67,7 +67,45 @@ const SOURCES = [
   // Events / festivals / venues - kind=event
   { id: 'sauti-za-busara',    kind: 'event',   name: 'Sauti za Busara',         feed: 'https://www.busaramusic.org/feed/',               tags: ['festival','music','africa','event'] },
   { id: 'chale-wote',         kind: 'event',   name: 'Chale Wote',              feed: 'https://chalewotefestival.org/feed/',             tags: ['art','festival','accra','event'] },
-  { id: 'nyege-nyege',        kind: 'event',   name: 'Nyege Nyege',             feed: 'https://nyegenyege.com/feed/',                    tags: ['festival','music','uganda','event'] }
+  { id: 'nyege-nyege',        kind: 'event',   name: 'Nyege Nyege',             feed: 'https://nyegenyege.com/feed/',                    tags: ['festival','music','uganda','event'] },
+
+  // ── EXPANDED SOURCES (2026) ──────────────────────────────────────────────────
+
+  // Anarchist organisations & theory
+  { id: 'zabalaza',           kind: 'article', name: 'Zabalaza (ZACF)',         feed: 'https://zabalaza.net/feed/',                      tags: ['anarchism','southafrica','liberation','zacf'] },
+  { id: 'anarchist-library',  kind: 'article', name: 'The Anarchist Library',   feed: 'https://theanarchistlibrary.org/atom.xml',        tags: ['anarchism','theory','pamphlet','history'] },
+  { id: 'freedom-news',       kind: 'article', name: 'Freedom News (UK)',       feed: 'https://freedomnews.org.uk/feed/',                tags: ['anarchism','uk','diaspora','autonomy'] },
+  { id: 'anarchist-studies',  kind: 'article', name: 'Institute for Anarchist Studies', feed: 'https://anarchiststudies.org/feed/',      tags: ['anarchism','theory','academic'] },
+  { id: 'the-ex-worker',      kind: 'article', name: 'CrimethInc. Ex-Worker',   feed: 'https://crimethinc.com/podcast.rss',             tags: ['anarchism','autonomy','podcast'] },
+
+  // Africa-focused journalism & analysis
+  { id: 'african-arguments',  kind: 'article', name: 'African Arguments',       feed: 'https://africanarguments.org/feed/',              tags: ['africa','politics','analysis','panafrican'] },
+  { id: 'the-africa-report',  kind: 'article', name: 'The Africa Report',       feed: 'https://www.theafricareport.com/feed/',           tags: ['africa','economy','politics'] },
+  { id: 'mada-masr',          kind: 'article', name: 'Mada Masr (Egypt)',       feed: 'https://www.madamasr.com/en/feed/',               tags: ['egypt','northafrica','decolonial','journalism'] },
+  { id: 'aljazeera-africa',   kind: 'article', name: 'Al Jazeera Africa',       feed: 'https://www.aljazeera.com/xml/rss/all.xml',       tags: ['africa','journalism','panafrican'] },
+  { id: 'mailandguardian',    kind: 'article', name: 'Mail & Guardian',         feed: 'https://mg.co.za/feed/',                          tags: ['southafrica','politics','labor','decolonial'] },
+  { id: 'sacsis',             kind: 'article', name: 'SACSIS',                  feed: 'https://sacsis.org.za/site/feed/',                tags: ['southafrica','labor','commons','decolonial'] },
+  { id: 'the-elephant',       kind: 'article', name: 'The Elephant (Kenya)',    feed: 'https://www.theelephant.info/feed/',              tags: ['kenya','eastafrica','politics','decolonial'] },
+  { id: 'rfi-africa',         kind: 'article', name: 'RFI Africa',              feed: 'https://www.rfi.fr/en/rss/africa.xml',            tags: ['africa','radio','francophone','panafrican'] },
+  { id: 'allafrica',          kind: 'article', name: 'AllAfrica',               feed: 'https://allafrica.com/tools/headlines/rdf/africa/headlines.rdf', tags: ['africa','news','panafrican'] },
+
+  // Radical left / theory / diaspora
+  { id: 'the-bullet',         kind: 'article', name: 'The Bullet (Socialist Project)', feed: 'https://socialistproject.ca/bullet/feed/', tags: ['socialism','labor','decolonial','theory'] },
+  { id: 'counterpunch',       kind: 'article', name: 'CounterPunch',            feed: 'https://www.counterpunch.org/feed/',              tags: ['radical','leftist','usa','diaspora'] },
+  { id: 'jacobin',            kind: 'article', name: 'Jacobin',                 feed: 'https://jacobin.com/feed/',                       tags: ['socialism','labor','theory','decolonial'] },
+  { id: 'redpepper',          kind: 'article', name: 'Red Pepper',              feed: 'https://www.redpepper.org.uk/feed/',              tags: ['leftist','ecology','commons','diaspora'] },
+  { id: 'monthly-review',     kind: 'article', name: 'Monthly Review',          feed: 'https://monthlyreview.org/feed/',                 tags: ['marxism','decolonial','theory','ecology'] },
+
+  // Black studies / afrofuturism / culture
+  { id: 'the-funambulist',    kind: 'article', name: 'The Funambulist',         feed: 'https://thefunambulist.net/feed',                 tags: ['decolonial','space','architecture','blackness'] },
+  { id: 'aaihs',              kind: 'article', name: 'AAIHS Black Perspectives', feed: 'https://www.aaihs.org/feed/',                    tags: ['blackstudies','history','diaspora','academia'] },
+  { id: 'transition-mag',     kind: 'article', name: 'Transition Magazine',     feed: 'https://transitionmagazine.org/feed/',            tags: ['africa','literature','culture','panafrican'] },
+  { id: 'africasacountry-pod',kind: 'article', name: 'Africa Is a Country Podcast', feed: 'https://africasacountry.com/podcast/feed/', tags: ['africa','podcast','decolonial','panafrican'] },
+
+  // Liberation texts & pamphlets (RSS from publisher blogs)
+  { id: 'daraja-news',        kind: 'article', name: 'Daraja Press (news)',     feed: 'https://darajapress.com/category/news/feed/',     tags: ['anarchism','panafrican','decolonial'] },
+  { id: 'spectre-journal',    kind: 'article', name: 'Spectre Journal',         feed: 'https://spectrejournal.com/feed/',                tags: ['marxism','decolonial','theory','abolition'] },
+  { id: 'africa-is-country-essays', kind: 'article', name: 'AiaC Essays',      feed: 'https://africasacountry.com/category/essays/feed/', tags: ['africa','decolonial','essay','panafrican'] },
 ];
 
 export default async function handler (req, res) {

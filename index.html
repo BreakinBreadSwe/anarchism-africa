@@ -229,8 +229,26 @@
 
 <!-- BOOKS ----------------------------------------------------------------- -->
 <section class="view" id="view-books">
-  <div class="section-head"><div><h2>Books</h2><p class="lead">A reading list and an open library.</p></div></div>
+  <div class="section-head"><div><h2>Library</h2><p class="lead">A reading list, an open archive of free texts — books, pamphlets, speeches, manifestos.</p></div></div>
   <div class="grid" id="books-grid"></div>
+
+  <!-- OPEN ARCHIVE — scraped from Internet Archive (CC / Public Domain) -->
+  <div id="text-library-section" style="margin-top:36px">
+    <div class="section-head" style="margin-bottom:16px">
+      <div>
+        <h3 style="margin:0 0 4px">Open Archive</h3>
+        <p class="lead" style="margin:0">Free-to-download texts scraped daily from Internet Archive — CC licensed &amp; public domain only.</p>
+      </div>
+    </div>
+    <div id="tl-controls" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+      <div id="tl-types" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      <input id="tl-search" type="search" placeholder="Search titles, authors, tags…"
+             style="margin-left:auto;padding:6px 10px;border:1px solid var(--border);background:var(--bg2);color:var(--fg);border-radius:6px;font-size:0.85rem;width:200px">
+    </div>
+    <div id="tl-meta" style="font-size:0.78rem;color:var(--fg-dim);margin-bottom:12px"></div>
+    <div id="tl-list"></div>
+    <button id="tl-more" hidden style="margin-top:16px;padding:8px 18px;border:1px solid var(--border);background:transparent;color:var(--fg);border-radius:6px;cursor:pointer;font-size:0.85rem">Load more</button>
+  </div>
 </section>
 
 <!-- MERCH / MARKETPLACE --------------------------------------------------- -->
@@ -478,6 +496,7 @@
 <script src="js/logo-generator.js"></script>
 <script src="js/live-actions.js"></script>
 <script src="js/afro-books.js"></script>
+<script src="js/text-library.js"></script>
 <script src="js/thumb.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/logo.js"></script>

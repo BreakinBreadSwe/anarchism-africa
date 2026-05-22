@@ -63,6 +63,74 @@ const QUERIES = [
   // Open netlabels — CC licensed African / diaspora music
   ['collection:netlabels AND subject:africa AND mediatype:audio',            'music',       'netlabel'   ],
   ['collection:opensource_audio AND subject:africa AND mediatype:audio',     'music',       'open'       ],
+
+  // ── REVOLUTIONARY FIGURES — speeches, interviews, recordings ─────────────────
+  ['creator:"Thomas Sankara" AND mediatype:audio',                           'spoken-word', 'sankara'    ],
+  ['creator:"Fela Kuti" AND mediatype:audio',                                'music',       'fela'       ],
+  ['subject:"Fela Kuti" AND mediatype:audio',                                'music',       'fela'       ],
+  ['creator:"Amilcar Cabral" AND mediatype:audio',                           'spoken-word', 'cabral'     ],
+  ['creator:"Patrice Lumumba" AND mediatype:audio',                          'spoken-word', 'lumumba'    ],
+  ['creator:"Walter Rodney" AND mediatype:audio',                            'spoken-word', 'rodney'     ],
+  ['creator:"Steve Biko" AND mediatype:audio',                               'spoken-word', 'biko'       ],
+  ['creator:"Kwame Nkrumah" AND mediatype:audio',                            'spoken-word', 'nkrumah'    ],
+  ['creator:"Frantz Fanon" AND mediatype:audio',                             'spoken-word', 'fanon'      ],
+  ['creator:"Malcolm X" AND subject:africa AND mediatype:audio',             'spoken-word', 'malcolm-x'  ],
+  ['creator:"Angela Davis" AND mediatype:audio',                             'spoken-word', 'angela-davis'],
+  ['creator:"Miriam Makeba" AND mediatype:audio',                            'music',       'miriam-makeba'],
+  ['creator:"Hugh Masekela" AND mediatype:audio',                            'music',       'masekela'   ],
+  ['creator:"Tony Allen" AND mediatype:audio',                               'music',       'tony-allen'  ],
+  ['creator:"Sun Ra" AND mediatype:audio',                                   'music',       'sun-ra'     ],
+  ['creator:"Linton Kwesi Johnson" AND mediatype:audio',                     'spoken-word', 'dub-poetry' ],
+  ['creator:"Gil Scott-Heron" AND mediatype:audio',                          'spoken-word', 'spoken-word'],
+  ['creator:"Last Poets" AND mediatype:audio',                               'spoken-word', 'spoken-word'],
+
+  // ── SOUTH AFRICAN STRUGGLE & FREEDOM MUSIC ───────────────────────────────────
+  ['subject:"struggle songs" AND subject:africa AND mediatype:audio',        'music',       'struggle'   ],
+  ['subject:"freedom songs" AND subject:africa AND mediatype:audio',         'music',       'struggle'   ],
+  ['subject:"anti-apartheid" AND mediatype:audio',                           'music',       'anti-apartheid'],
+  ['subject:"Radio Freedom" AND mediatype:audio',                            'radio',       'freedom-radio'],
+
+  // ── GRIOT / ORAL TRADITION ────────────────────────────────────────────────────
+  ['subject:griot AND mediatype:audio',                                      'spoken-word', 'griot'      ],
+  ['subject:"oral tradition" AND subject:africa AND mediatype:audio',        'spoken-word', 'oral'       ],
+
+  // ── JAZZ & DIASPORA ───────────────────────────────────────────────────────────
+  ['subject:"free jazz" AND subject:africa AND mediatype:audio',             'music',       'free-jazz'  ],
+  ['subject:"Ethiopian jazz" AND mediatype:audio',                           'music',       'ethiojazz'  ],
+  ['subject:mbalax AND mediatype:audio',                                     'music',       'mbalax'     ],
+  ['subject:soukous AND mediatype:audio',                                    'music',       'soukous'    ],
+  ['subject:benga AND mediatype:audio',                                      'music',       'benga'      ],
+  ['subject:makossa AND mediatype:audio',                                    'music',       'makossa'    ],
+
+  // ── TRADITIONAL INSTRUMENTS ───────────────────────────────────────────────────
+  ['subject:mbira AND mediatype:audio',                                      'music',       'mbira'      ],
+  ['subject:kora AND subject:africa AND mediatype:audio',                    'music',       'kora'       ],
+  ['subject:balafon AND mediatype:audio',                                    'music',       'balafon'    ],
+  ['subject:sabar AND mediatype:audio',                                      'music',       'sabar'      ],
+
+  // ── POETRY / SPOKEN WORD ──────────────────────────────────────────────────────
+  ['subject:poetry AND subject:africa AND mediatype:audio',                  'spoken-word', 'poetry'     ],
+  ['subject:"dub poetry" AND mediatype:audio',                               'spoken-word', 'dub-poetry' ],
+  ['subject:"praise poetry" AND subject:africa AND mediatype:audio',         'spoken-word', 'praise-poetry'],
+
+  // ── ROOTS REGGAE / DUB ────────────────────────────────────────────────────────
+  ['subject:reggae AND subject:africa AND mediatype:audio',                  'music',       'reggae'     ],
+  ['subject:"roots reggae" AND mediatype:audio',                             'music',       'roots'      ],
+  ['subject:rastafari AND mediatype:audio',                                  'music',       'roots'      ],
+
+  // ── COMMUNITY & PIRATE RADIO ──────────────────────────────────────────────────
+  ['collection:pacifica_radio_archives AND subject:"black power"',           'radio',       'pacifica'   ],
+  ['subject:"community radio" AND subject:africa AND mediatype:audio',       'radio',       'community'  ],
+
+  // ── DEEP ETHNOMUSICOLOGY ──────────────────────────────────────────────────────
+  ['subject:"ethnomusicology" AND subject:africa AND mediatype:audio',       'field',       'ethnomusicology'],
+  ['subject:"music of Mali" AND mediatype:audio',                            'music',       'mali'       ],
+  ['subject:"music of Ghana" AND mediatype:audio',                           'music',       'ghana'      ],
+  ['subject:"music of Nigeria" AND mediatype:audio',                         'music',       'nigeria'    ],
+  ['subject:"music of Congo" AND mediatype:audio',                           'music',       'congo'      ],
+  ['subject:"music of Zimbabwe" AND mediatype:audio',                        'music',       'zimbabwe'   ],
+  ['subject:"music of Senegal" AND mediatype:audio',                         'music',       'senegal'    ],
+  ['subject:"music of Ethiopia" AND mediatype:audio',                        'music',       'ethiopia'   ],
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -213,12 +281,12 @@ export default async function handler (req, res) {
         summary.added++;
 
         // Limit metadata fetches per run to avoid timeouts (each costs ~200ms)
-        if (summary.withAudio >= 150) break;
+        if (summary.withAudio >= 250) break;
       }
     } catch (e) {
       summary.errors.push(`${q.slice(0, 40)}: ${e.message}`);
     }
-    if (summary.withAudio >= 150) break;
+    if (summary.withAudio >= 250) break;
   }
 
   const allTracks = [...(existing.tracks || []), ...newTracks];

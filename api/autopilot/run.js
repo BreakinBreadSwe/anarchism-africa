@@ -15,6 +15,8 @@
 
 const STAGES = {
   scrape:    '/api/cron/scan-content',
+  sounds:    '/api/cron/scrape-sounds',
+  texts:     '/api/cron/scrape-texts',
   articles:  '/api/cron/generate-articles',
   slogans:   '/api/cron/generate-slogans',
   logos:     '/api/cron/generate-logos',
@@ -61,7 +63,7 @@ export default async function handler (req, res) {
     }
   }
 
-  // Persist an autopilot_log row in Supabase so the LUVLAB / COOLHUNTPARIS
+  // Persist an autopilot_log row in Supabase so the A.A. pipeline
   // checklist can show "Autopilot fired in last 24h". Best-effort —
   // don't fail the cycle if Supabase write fails.
   try {

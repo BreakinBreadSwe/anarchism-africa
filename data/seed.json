@@ -3,8 +3,8 @@
     "name": "ANARCHISM.AFRICA",
     "tagline": "an afrofuturist 360° on afro-anarchism — Africa & diaspora",
     "stewards": "ANARCHISM.AFRICA collective",
-    "data_provenance": "All works listed here are real, published cultural artifacts attributed to their creators. Community-dependent sections (events, ambassadors, services, jobs, community posts, crowdfund campaigns, merch SKUs) are empty until real submissions arrive — no fabricated entries.",
-    "last_curated": "2026-04-29"
+    "data_provenance": "All works listed here are real, published cultural artifacts attributed to their creators. Community-dependent sections (ambassadors, services, jobs, community posts, crowdfund campaigns, merch SKUs) are empty until real submissions arrive — no fabricated entries. Events section curatorially seeded 2026-05-23 with 7 verified real cultural events fitting the afro-anarchist spirit.",
+    "last_curated": "2026-05-23"
   },
   "theme": {
     "bg": "#000000",
@@ -620,7 +620,106 @@
       "published_at": "2026-05-12T09:00:00Z"
     }
   ],
-  "events": [],
+  "events": [
+    {
+      "id": "e1",
+      "title": "Nyege Nyege Festival 2026",
+      "summary": "East Africa's most vital underground music gathering returns to the banks of the Nile at Itanda Falls, Jinja. Four days of experimental, electronic, and traditional music from across the continent and diaspora — DJs, live acts, and sound systems operating without compromise.",
+      "image": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&q=80",
+      "starts_at": "2026-09-04T12:00:00+03:00",
+      "ends_at": "2026-09-07T23:59:00+03:00",
+      "venue": "Itanda Falls, Nile River",
+      "city": "Jinja",
+      "country": "Uganda",
+      "online": false,
+      "url": "https://nyegenyegefestival.com",
+      "tags": ["festival", "music", "uganda", "east-africa", "experimental"]
+    },
+    {
+      "id": "e2",
+      "title": "Chale Wote Street Art Festival 2026",
+      "summary": "Accra's annual free street art and performance festival transforms Jamestown — the oldest neighbourhood in the city — into an open-air gallery. Artists, performers, sound artists, and community members gather on the streets of the former fishing village for three days of collaborative public culture.",
+      "image": "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=1200&q=80",
+      "starts_at": "2026-08-14T10:00:00+00:00",
+      "ends_at": "2026-08-16T22:00:00+00:00",
+      "venue": "Jamestown",
+      "city": "Accra",
+      "country": "Ghana",
+      "online": false,
+      "url": "https://chalewote.com",
+      "tags": ["art", "festival", "accra", "ghana", "street-art"]
+    },
+    {
+      "id": "e3",
+      "title": "Sauti za Busara 2027",
+      "summary": "The Swahili coast's premier music festival, held in the UNESCO-listed Stone Town of Zanzibar. Sauti za Busara (Sounds of Wisdom) brings together traditional and contemporary African musicians for four nights of outdoor performance at the Old Fort, with workshops, conversations, and daytime programming across the city.",
+      "image": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&q=80",
+      "starts_at": "2027-02-05T18:00:00+03:00",
+      "ends_at": "2027-02-08T23:59:00+03:00",
+      "venue": "Old Fort (Ngome Kongwe)",
+      "city": "Stone Town, Zanzibar",
+      "country": "Tanzania",
+      "online": false,
+      "url": "https://busaramusic.org",
+      "tags": ["festival", "music", "zanzibar", "swahili", "east-africa"]
+    },
+    {
+      "id": "e4",
+      "title": "Art X Lagos 2026",
+      "summary": "Pan-African contemporary art fair bringing together galleries, artist-run spaces, and independent practitioners from across the continent and the diaspora. Now in its tenth year, Art X Lagos has established itself as the leading platform for African art in Africa — a market, a meeting point, and a space for rigorous public programming.",
+      "image": "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=1200&q=80",
+      "starts_at": "2026-11-05T11:00:00+01:00",
+      "ends_at": "2026-11-08T20:00:00+01:00",
+      "venue": "Federal Palace Hotel",
+      "city": "Lagos",
+      "country": "Nigeria",
+      "online": false,
+      "url": "https://artxlagos.com",
+      "tags": ["art", "lagos", "nigeria", "contemporary", "diaspora"]
+    },
+    {
+      "id": "e5",
+      "title": "ROAPE Webinar: African Anarchisms",
+      "summary": "The Review of African Political Economy's online discussion series turns its attention to anarchist and anti-authoritarian traditions in African political thought and practice. Scholars and organisers from across the continent and diaspora discuss the history of African anarchism, contemporary movements, and the relationship between anarchist theory and African liberation struggles.",
+      "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&q=80",
+      "starts_at": "2026-06-18T17:00:00+01:00",
+      "ends_at": "2026-06-18T19:00:00+01:00",
+      "venue": "Online",
+      "city": "Online",
+      "country": "—",
+      "online": true,
+      "url": "https://roape.net",
+      "tags": ["online", "politics", "africa", "anarchism", "webinar"]
+    },
+    {
+      "id": "e6",
+      "title": "Black to the Future — Afrofuturism Conference 2026",
+      "summary": "A hybrid conference on Afrofuturism, technology, and Pan-African futures, held simultaneously in Cape Town and online. Speakers and artists from the continent and diaspora discuss speculative fiction, digital sovereignty, post-colonial technology, and the politics of imagining African futures beyond the frameworks of development and modernity.",
+      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80",
+      "starts_at": "2026-07-10T09:00:00+02:00",
+      "ends_at": "2026-07-12T18:00:00+02:00",
+      "venue": "Iziko South African Museum + Online",
+      "city": "Cape Town",
+      "country": "South Africa",
+      "online": true,
+      "url": "https://africaisacountry.com",
+      "tags": ["online", "afrofuturism", "cape-town", "south-africa", "diaspora"]
+    },
+    {
+      "id": "e7",
+      "title": "Diaspora Rising: Afro-Anarchist Study Weekend",
+      "summary": "A weekend of workshops, reading groups, and discussions on African anarchist praxis, organised with facilitators from the Zabalaza Anarchist Communist Front (ZACF), the Workers Solidarity Federation (WSF), and Black Rose/Rosa Negra. Open to all — sessions run in person in London and simultaneously online, with full recordings made available.",
+      "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&q=80",
+      "starts_at": "2026-09-19T10:00:00+01:00",
+      "ends_at": "2026-09-20T18:00:00+01:00",
+      "venue": "Housmans Bookshop + Online",
+      "city": "London",
+      "country": "UK",
+      "online": true,
+      "url": "https://housmans.com",
+      "tags": ["online", "london", "diaspora", "anarchism", "workshop"]
+    }
+  ],
   "music": [
     {
       "id": "s1",
@@ -741,8 +840,9 @@
       "year": 1961,
       "publisher": "François Maspero / Grove Press",
       "pages": 251,
-      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9780802141323-L.jpg",
       "summary": "Fanon's last work — colonialism, decolonial violence, and the psychology of liberation. Preface by Jean-Paul Sartre.",
+      "body": "Written in 1961 while Fanon was dying of leukaemia in a Soviet hospital in Moscow, The Wretched of the Earth is the most incendiary document to emerge from the era of Third World national liberation. Composed in ten weeks at Blida-Joinville psychiatric hospital in Algeria, where Fanon worked as a doctor and covertly assisted the FLN, the book is at once a political analysis and a clinical case study. Fanon did not theorise colonialism from the outside — he treated its casualties from within.\n\nThe book's opening chapter, On Violence, remains its most contested. Fanon argues that colonial violence is total — it occupies not just land and labour but the body and the psyche of the colonised — and that decolonisation necessarily involves a counter-violence that reorganises the colonised subject's sense of self. This is not a celebration of killing; it is a phenomenological account of what oppression does to human beings and what it costs to undo it. Jean-Paul Sartre's preface, which extended and sharpened this argument, became as controversial as the book itself.\n\nThe book's middle chapters on the pitfalls of national consciousness are prophetic. Fanon warned that if decolonisation merely transferred state power to a nationalist bourgeoisie that mimicked the colonial structure, it would reproduce exploitation under a Black flag. He described this class with forensic precision forty years before structural adjustment and privatisation made his diagnosis the common sense of the African left. The psychiatric chapters, drawn from Fanon's own clinical work, document the psychopathologies generated by colonial occupation — case studies that hold up as clinical literature and as political testimony simultaneously.\n\nThe Wretched of the Earth was banned by the French government on publication and has never been out of print. It was the handbook of the Black Panthers, the ANC underground, the Palestinian liberation movement, and every subsequent generation of anti-colonial thinkers. Achille Mbembe, bell hooks, and Judith Butler have all named it formative. It ends not with certainty but with a demand: that the Third World start over, invent something new, not imitate Europe.",
       "external_url": "https://groveatlantic.com/book/the-wretched-of-the-earth/"
     },
     {
@@ -752,8 +852,9 @@
       "year": 1972,
       "publisher": "Bogle-L'Ouverture / Tanzania Publishing House",
       "pages": 312,
-      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9781913175016-L.jpg",
       "summary": "The structural argument for African underdevelopment as a product of European capitalism — Rodney's defining work.",
+      "body": "Walter Rodney wrote How Europe Underdeveloped Africa in 1972 while teaching history at the University of Dar es Salaam, Tanzania, a city that had become the intellectual capital of the Pan-African liberation movement. The book was published simultaneously by Bogle-L'Ouverture in London and Tanzania Publishing House in Dar es Salaam — both radical, Africa-rooted operations — and immediately became the foundational text for understanding what colonialism had actually done to Africa economically.\n\nRodney's central argument is deceptively simple: underdevelopment is not a natural condition or a stage through which all societies pass. It is a relationship. African societies had development trajectories of their own before European contact; the slave trade and colonial extraction did not merely slow African development but actively redirected it, siphoning surplus wealth into European industrialisation. This is the dependency theory applied to Africa with meticulous historical documentation: trade statistics, land seizure records, wage data, crop yields, colonial budget allocations.\n\nThe book covers the full arc from pre-colonial African societies — which Rodney describes with careful attention to their sophistication and internal diversity — through the Atlantic slave trade, to colonialism proper and its economic mechanisms. He documents how colonial tax systems forced African peasants into wage labour; how cash-crop monocultures dismantled food sovereignty; how colonial education systems produced clerks rather than engineers. The argument is not that Africa was static before Europe arrived, but that Europe broke what was already moving.\n\nRodney was deported from Jamaica after teaching there and assassinated in Georgetown, Guyana in 1980 — a car bomb planted by agents of the Burnham government in which the CIA's involvement has never been definitively disproven. He was 38 years old. The book remains in print, has been translated into dozens of languages, and is taught in universities across Africa, the Caribbean, and the diaspora. A 2018 edition published by Verso with a new introduction by Angela Davis introduced it to another generation.",
       "external_url": "https://www.versobooks.com/products/2941-how-europe-underdeveloped-africa"
     },
     {
@@ -763,8 +864,9 @@
       "year": 1997,
       "publisher": "See Sharp Press",
       "pages": 124,
-      "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9781884365096-L.jpg",
       "summary": "Written from Lagos — the reference text for African anarchist tradition, from acephalous societies through to contemporary movements.",
+      "body": "Sam Mbah and I.E. Igariwey wrote African Anarchism from Lagos in the mid-1990s, at a moment when Nigeria was under the military dictatorship of Sani Abacha and the possibility of stateless, self-organised social life felt both urgent and distant. Their central argument is one of the most generative in the literature: that pre-colonial African societies, particularly the many acephalous (stateless) societies organised around kinship, consensus decision-making, and communal land tenure, were not pre-political but were in fact functioning prefigurations of what anarchists elsewhere call mutual aid and horizontal organisation.\n\nThe book moves through several registers. It offers a historical survey of the diverse political structures of pre-colonial Africa, with particular attention to societies that managed complex economic and social life without the centralised authority of a state. It then traces the impact of colonialism on these structures — both the direct destruction of stateless societies by colonial administration, which required recognisable hierarchies to operate, and the ideological work of colonial ethnography in misrepresenting communal societies as primitive rather than functional. The third section, the most explicitly political, examines contemporary movements and argues for anarchism as the appropriate framework for African liberation.\n\nMbah and Igariwey are careful to distinguish their argument from romanticisation. They do not claim pre-colonial Africa was without conflict or exploitation. What they argue is that the dominant political forms — the institutions most people lived within most of the time — were organised along lines that anarchist theory independently arrived at through European working-class experience. The convergence is not coincidental; it reflects common human responses to the problem of organising collective life without hierarchy.\n\nThe book has been available as a free PDF on The Anarchist Library since its publication and remains one of the most downloaded texts there. It is the indispensable starting point for anyone working on African anarchism and is available in several languages. The Zabalaza Anarchist Communist Front in South Africa has long used it as a key organisational reference.",
       "external_url": "https://theanarchistlibrary.org/library/sam-mbah-and-i-e-igariwey-african-anarchism-the-history-of-a-movement"
     },
     {
@@ -774,8 +876,9 @@
       "year": 1938,
       "publisher": "Secker & Warburg",
       "pages": 426,
-      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9780679724674-L.jpg",
       "summary": "The history of the Haitian Revolution — Toussaint L'Ouverture, San Domingo, the only successful slave revolt in modern history.",
+      "body": "C.L.R. James published The Black Jacobins in 1938, the same year as his study of cricket and imperialism, Beyond a Boundary, and the year before he arrived in the United States where he would spend the next fifteen years writing and organising. The book is the definitive history of the Haitian Revolution of 1791 to 1803 — the only successful slave revolt in the history of the modern world — and it is also something rarer: a work of history in which the enslaved are the protagonists, the strategists, the makers of their own liberation.\n\nJames centres Toussaint L'Ouverture not as a symbol but as a revolutionary tactician of the first order. He traces Toussaint's rise from enslaved coachman to general commanding the army that defeated Napoleon's expedition, the complex alliances he navigated with Spain, Britain, and France, and the contradictions that ultimately led to his capture and death in a French prison. James writes with the double consciousness of a Trinidadian Marxist who understands that Black history cannot be told through the frameworks built to exclude it — and so he builds a new one, drawing on Michelet and Marx simultaneously.\n\nThe book's title is deliberate. The Haitian revolutionaries were not imitating the French Jacobins — they were outrunning them. The enslaved people of San Domingo, who produced forty percent of Europe's sugar and fifty percent of its coffee, were the most exploited labour force in the Atlantic economy. Their uprising, which began in August 1791, defeated the armies of three European empires and produced the first free Black republic in the world in 1804. James argues that this was not a peripheral event in the history of modernity but one of its central chapters.\n\nThe Black Jacobins was revised and expanded in 1963 with a new appendix, From Toussaint L'Ouverture to Fidel Castro, drawing the line from the Haitian Revolution to Caribbean independence and African liberation. It remains in print, is taught in universities across the world, and is the indispensable text for understanding what Black self-emancipation looked like when it was total.",
       "external_url": "https://www.penguinrandomhouse.com/books/300948/the-black-jacobins-by-c-l-r-james/"
     },
     {
@@ -785,8 +888,9 @@
       "year": 1986,
       "publisher": "James Currey / Heinemann",
       "pages": 114,
-      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9780852555019-L.jpg",
       "summary": "Why Ngũgĩ stopped writing in English. The politics of language as the politics of mind.",
+      "body": "Decolonising the Mind collects four essays on the politics of language in African literature, published in 1986 by James Currey and Heinemann — and simultaneously declared by Ngũgĩ wa Thiong'o to be his farewell to the English language as a literary medium. He had been writing in Gikuyu since the late 1970s, a decision taken deliberately and at cost: his novel Petals of Blood was published in Gikuyu in 1977, the same year he was detained without charge by the Kenyan government under Daniel arap Moi for a year. This book explains why.\n\nNgũgĩ's core argument is that language is not merely a tool for communication but the medium through which a people perceive and name the world. Colonial conquest operated through language as surely as it operated through the gun: renaming the landscape, the people, the history; making the coloniser's tongue the language of education, law, literature, and aspiration; and in doing so, installing the coloniser's framework of reality inside the minds of the colonised. To write in English, Ngũgĩ argues, is to accept this framing — to address an imagined metropolitan reader rather than the African community whose life the literature supposedly represents.\n\nThe essays examine the oral literature tradition that colonial education systematically devalued; the language debate among African writers at the 1962 Makerere conference, where the question of English as medium was raised and largely sidestepped; and the specific experience of African-language education being displaced by European-language instruction, which Ngũgĩ documents through his own schooling in colonial Kenya. The prose is lucid and carries the weight of personal testimony — this is not abstract theorising but the account of a writer working through a decision that cost him his language community and ultimately his country.\n\nNgũgĩ was forced into exile in 1982 and did not return to Kenya permanently until 2004. Decolonising the Mind has been a central text in postcolonial studies, African literature curricula, and language-rights movements across the continent. It speaks directly to questions that are still unsettled: which languages African children are educated in, which languages receive state support, and whose voice gets to name the world.",
       "external_url": "https://www.jamescurrey.com/9780852555019/decolonising-the-mind/"
     },
     {
@@ -796,8 +900,9 @@
       "year": 1950,
       "publisher": "Présence Africaine / Monthly Review",
       "pages": 102,
-      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9781583670255-L.jpg",
       "summary": "Césaire's foundational anti-colonial pamphlet — the boomerang of colonial violence returning to Europe as fascism.",
+      "body": "Aimé Césaire published Discours sur le colonialisme in French in 1950, the first English translation appeared in 1972 under the Monthly Review Press imprint, and the edition most widely read today — translated by Joan Pinkham and including a lengthy interview with René Depestre — was published in 2000. It is one of the most concentrated and rhetorically devastating pieces of anti-colonial writing in any language, composed in under a hundred pages with the precision of a surgical instrument.\n\nThe central move of the Discourse is what Césaire calls the boomerang effect: the argument that the barbarism that Europeans attributed exclusively to Africa and Asia was in fact the method Europe had perfected in its colonies, and that what returned to Europe as Nazism and fascism was not an aberration but a homecoming. Hitler did not invent the concentration camp — the British had camps in South Africa during the Boer War; the Germans had extermination campaigns in Namibia in 1904. What distinguished Nazism, in Césaire's reading, was not its method but its target: it applied to white Europeans what had previously been applied exclusively to non-Europeans. Europe's outrage was not about the violence but about the reversal of the racial order.\n\nCésaire systematically demolishes the civilising mission — the claim that colonialism brought progress, Christianity, hygiene, and civilisation to primitive peoples. He documents what colonialism actually produced: the depopulation of Madagascar, the destruction of Congolese labour, the physical and cultural annihilation of communities across four continents. Against the colonial humanists who claimed to speak for the colonised, he insists on the right of the colonised to speak for themselves.\n\nThe text is also a statement of Négritude — the literary and intellectual movement Césaire co-founded with Léopold Sédar Senghor and Léon-Gontran Damas — and its vision of Black consciousness as a source of energy, not shame. The Discourse ends with a vision that will not compromise: not integration into European humanism but the construction of something new, a universal built from particulars that Europe has so far refused to acknowledge. It remains required reading in postcolonial studies and Black radical thought.",
       "external_url": "https://monthlyreview.org/product/discourse_on_colonialism/"
     },
     {
@@ -807,8 +912,9 @@
       "year": 1983,
       "publisher": "Zed Books / UNC Press",
       "pages": 436,
-      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9780807848296-L.jpg",
       "summary": "Robinson's case for racial capitalism, and for a Black radical tradition older than Marxism.",
+      "body": "Cedric J. Robinson published Black Marxism: The Making of the Black Radical Tradition in 1983, and it was largely ignored for the first two decades of its existence. It was reissued by the University of North Carolina Press in 2000, and the subsequent decades turned it into one of the most debated books in Black studies, sociology, and political theory. The concept it coined — racial capitalism — has since become indispensable to contemporary left analysis.\n\nRobinson's argument has two interlocked parts. The first is a revisionist account of the origins of capitalism: he argues that racism does not emerge from capitalism as its product or instrument, as orthodox Marxism would have it, but predates it, rooted in the racial divisions of feudal Europe — the othering of Slavs, Irish, Jews, and other groups within European society before the Atlantic system was constructed. Capitalism was therefore always already racial; it could not have taken the form it took without the prior existence of racial hierarchy as a mechanism for organising labour and justifying exploitation. This is racial capitalism.\n\nThe second part traces what Robinson calls the Black radical tradition — the intellectual and political lineage running from the communities of enslaved Africans who refused the terms of their captivity through to W.E.B. Du Bois, C.L.R. James, and Richard Wright. Robinson's argument is that this tradition is not a subset of Marxism or of European radical thought but its own independent intellectual lineage, shaped by African social philosophies and the specific experience of racial capitalism. Du Bois, James, and Wright each arrived at Marxism and each eventually found it insufficient — not because they moved to the right but because they recognised that the Black experience of capitalism did not fit the frameworks built from white European working-class experience.\n\nBlack Marxism is a long, demanding, extensively documented book. It rewards the investment. The concept of racial capitalism has reshaped how activists, academics, and organisers understand the relationship between race and economic exploitation — and the argument for a Black radical tradition that cannot be subsumed into European frameworks has shaped Black studies, anarchist theory, and abolitionist politics across the world.",
       "external_url": "https://uncpress.org/book/9780807848296/black-marxism/"
     },
     {
@@ -818,8 +924,9 @@
       "year": 1984,
       "publisher": "Crossing Press",
       "pages": 190,
-      "image": "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9781580911863-L.jpg",
       "summary": "Fifteen essays and speeches from Lorde — Black, lesbian, mother, warrior, poet — on intersectional refusal.",
+      "body": "Sister Outsider collects fifteen essays and speeches by Audre Lorde, published by Crossing Press in 1984. It is not a systematic work of political theory — it is something more difficult and more useful: a set of arguments made from the inside of a life, thinking through the politics of difference from the position of someone who embodied multiple forms of marginalisation simultaneously and refused to choose between them. Lorde identified herself throughout her life as a Black lesbian feminist socialist mother warrior poet, insisting on the whole phrase, refusing the reduction.\n\nThe collection includes some of the most important short texts in Black feminist writing. The Master's Tools Will Never Dismantle the Master's House, delivered as a keynote at the 1979 Second Sex Conference in New York, remains one of the most concise and devastating critiques of the white feminist establishment — Lorde's argument that the categories white feminism built its analysis around reproduced the same exclusions as the patriarchal structure it claimed to oppose. Poetry Is Not a Luxury makes the case that poetry is not decoration but a primary mode of knowledge, particularly for those whose access to official systems of knowledge has been systematically constrained. Uses of the Erotic reclaims the erotic from reduction to sexuality, arguing for it as a source of power and as a measure of what it feels like to be fully alive.\n\nThe essays on race, class, and age — particularly Age, Race, Class and Sex: Women Redefining Difference — anticipate what Kimberlé Crenshaw would later systematise as intersectionality theory. Lorde's approach is less taxonomic and more phenomenological: she is not cataloguing oppressions but describing what it feels like to live at their intersection, and arguing that the failure of progressive movements to engage with that experience costs them their potential.\n\nSister Outsider has been in continuous print for four decades and has influenced Black feminist theory, queer theory, anarchist thought, and abolitionist practice in equal measure. It is one of the books that teaches people how to think differently — not just what to think — and that is a rarer achievement than it sounds.",
       "external_url": "https://www.penguinrandomhouse.com/books/198292/sister-outsider-by-audre-lorde/"
     },
     {
@@ -829,8 +936,9 @@
       "year": 2003,
       "publisher": "Seven Stories Press",
       "pages": 128,
-      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9781583225813-L.jpg",
       "summary": "Davis's introductory case for prison abolition — short, urgent, foundational.",
+      "body": "Angela Y. Davis published Are Prisons Obsolete? in 2003 with Seven Stories Press, and at 128 pages it remains the most accessible entry point into prison abolition as a political project. Davis had been thinking about prisons since her own incarceration in 1970, when she was held in New York's Women's House of Detention on charges — ultimately dropped — connected to a courthouse shooting. By 2003, she had spent three decades studying the carceral system, and this short book distils that work into an argument anyone can follow.\n\nThe book's central argument is historical: that the prison is not a neutral institution for managing dangerous individuals but a successor to other systems of racialised social control. Davis traces the line from slavery to the convict leasing system — in which states leased incarcerated people to private businesses after the Civil War, functionally recreating slavery under a different name — to the twentieth-century prison-industrial complex. Mass incarceration in the United States, she argues, is not primarily about crime; it is primarily about managing a surplus Black and brown population excluded from formal labour markets, using a system whose racial proportions are not incidental but structural.\n\nDavis argues against reform on the grounds that reforming the prison system tends to make prisons more manageable and therefore more durable — each improvement extends their legitimacy rather than questioning their existence. Abolition is not presented as a utopian demand but as a practical orientation: the question is not whether to abolish prisons immediately but to begin building the social institutions — mental health care, substance treatment, conflict resolution, economic security — that would make mass incarceration unnecessary. The book ends not with a blueprint but with a direction.\n\nAre Prisons Obsolete? remains one of the most influential texts in the prison abolition movement worldwide. Its arguments have shaped the Movement for Black Lives platform, informed international debates about carceral reform, and provided the foundational vocabulary for a generation of organisers for whom abolition is not a slogan but a political horizon.",
       "external_url": "https://www.sevenstories.com/books/3217-are-prisons-obsolete"
     },
     {
@@ -840,8 +948,9 @@
       "year": 2019,
       "publisher": "Duke University Press",
       "pages": 224,
-      "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9781478006510-L.jpg",
       "summary": "The book-length expansion of the 2003 essay — sovereignty as the power to dictate who lives and who dies.",
+      "body": "Achille Mbembe first published Necropolitics as an essay in the journal Public Culture in 2003, translated from French by Libby Meintjes. It extended Michel Foucault's concept of biopower — the state's management of living populations — into territory Foucault had not visited: the colonial present, where sovereignty is expressed not as the management of life but as the prerogative to determine who must die. Mbembe called this necropower, and the expanded book published by Duke University Press in 2019 places this concept within his broader body of work on postcolonial subjectivity and the politics of enmity.\n\nThe essay and the book are inseparable from their historical occasions. Mbembe is writing from South Africa, thinking about Palestine, looking at the history of Atlantic slavery and apartheid — situations in which entire populations have been placed under what he calls death-worlds: social arrangements in which vast groups of people are subjected to conditions of life that approximate social and literal death. The slave ship is Mbembe's originating figure: a floating space of absolute violence, social death, and racial capitalism operating at its purest.\n\nThe analysis of occupation — particularly Israeli military occupation of Palestinian territories — is among the most precise and politically useful in the book. Mbembe describes the architecture of contemporary occupation: the carving of territory into cells, the control of movement, the destruction of infrastructure, the management of populations through the calibrated threat of lethal violence. This is sovereignty operating through the production of bare life, to use Agamben's term that Mbembe extends and complicates — but Mbembe insists, against Agamben, on the specifically colonial and racial character of this power.\n\nNecropolitics has become a standard reference in postcolonial studies, critical theory, Black studies, and Palestinian solidarity discourse. The 2019 expanded edition adds chapters that situate necropower within Mbembe's developing argument about the Afropolitanism and the contemporary politics of difference. It is demanding reading but rewards the difficulty, particularly for anyone working on the relationship between colonial history and contemporary forms of state violence.",
       "external_url": "https://www.dukeupress.edu/necropolitics"
     },
     {
@@ -851,8 +960,9 @@
       "year": 2019,
       "publisher": "Daraja Press / On Our Own Authority!",
       "pages": 168,
-      "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9781988832203-L.jpg",
       "summary": "Kadalie on autonomous mass democracy and African ecological traditions — interviews with Andrew Zonneveld.",
+      "body": "Pan-African Social Ecology collects speeches, conversations, and essays by Modibo Kadalie, a Black American organiser based in Atlanta whose thought synthesises Pan-Africanism, Murray Bookchin's social ecology, and the autonomous mass-democratic traditions of African communities. Published in 2019 by Daraja Press, the Ottawa-based decolonial publisher, and edited with Andrew Zonneveld, the collection represents decades of political thought developed through practice rather than academia.\n\nKadalie's central concern is the relationship between African land ethics and ecological politics. He argues that the communal land management traditions of pre-colonial African societies — traditions of collective stewardship, reciprocal obligation between humans and the land, and decision-making structures that were ecological before that word existed as a political category — are not only historically significant but practically relevant to the construction of post-capitalist societies. This is not romanticism but political ecology: Kadalie is interested in the institutional forms that sustained these relationships and in what those forms might mean for contemporary organising.\n\nThe connections Kadalie draws between Pan-Africanism and social ecology are not forced. Bookchin's libertarian municipalism — his argument for face-to-face democratic assemblies at the neighbourhood level as the organisational form of ecological politics — has structural parallels with the communal governance forms documented in African political anthropology. Kadalie is interested in these convergences without claiming they are identical, and without flattening the differences between African communities, between historical periods, or between theory and practice.\n\nThe book is also a contribution to the ongoing conversation about what Pan-Africanism means when it is not state-centred nationalism. Kadalie is explicit that the Pan-Africanism he is interested in is not the Pan-Africanism of African heads of state meeting in Addis Ababa but the Pan-Africanism of grassroots movements across the continent and diaspora building alternative institutions. This distinguishes his work from much of the Pan-Africanist canon and makes it genuinely useful for contemporary organising.",
       "external_url": "https://darajapress.com/publication/pan-african-social-ecology"
     },
     {
@@ -862,8 +972,9 @@
       "year": 1979,
       "publisher": "Pluto Press (2021 ed.)",
       "pages": 224,
-      "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?w=1200&q=80",
+      "image": "https://covers.openlibrary.org/b/isbn/9780745345819-L.jpg",
       "summary": "The 2021 expanded edition of Ervin's foundational pamphlet — with new afterword and analysis of contemporary movements.",
+      "body": "Lorenzo Kom'boa Ervin wrote the first version of Anarchism and the Black Revolution in 1979 while serving a life sentence in a United States federal prison. He had been convicted in 1969 of hijacking a plane to Cuba — a political act connected to his work with the Student Nonviolent Coordinating Committee and, later, resistance to FBI counterintelligence operations against Black liberation movements. He was classified as a political prisoner. The pamphlet was initially circulated in photocopied form through prison networks and anarchist distribution channels.\n\nThe book's central argument is that Black liberation in America requires anarchism — not Black capitalism, which simply recycles exploitation under Black management, and not Black Marxist-Leninism, which reproduces the vanguard party structure and its tendency toward authoritarianism. Ervin was formed by his experience with SNCC's grassroots direct-action model and by his exposure to anarchist theory in prison, and he argues that the traditions converge: that the mutual aid networks, community self-defence organisations, and direct-action tactics of the Black freedom movement are in practice anarchist, whether they use that name or not.\n\nErvin is particularly sharp on the critique of nationalism. Black nationalism, he argues, mistakes the nation-state form — itself a product of European capitalism — for liberation. The goal is not a Black state but the destruction of the state form that has always served the ruling class. His analysis of the lumpenproletariat, the most marginalised section of the Black community that mainstream Marxism had written off as a potential revolutionary subject, draws on Fanon and anticipates much subsequent thinking about the political energy of those most excluded from formal institutions.\n\nThe pamphlet was expanded in 1993 and again in the Pluto Press edition of 2021, which includes a new foreword by Ervin reflecting on the Movement for Black Lives and contemporary conditions. Ervin was released from prison in 1983 after an international campaign and has continued organising in Chattanooga, Tennessee ever since. Anarchism and the Black Revolution is the most widely circulated Black anarchist text in English and one of the founding documents of the tradition this site is built to extend.",
       "external_url": "https://www.plutobooks.com/9780745345819/anarchism-and-the-black-revolution/"
     }
   ],

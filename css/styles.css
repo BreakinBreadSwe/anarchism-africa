@@ -724,6 +724,10 @@ body.mp-active .chat-panel { bottom: 116px; }
   50%       { opacity: .35; transform: scale(.65); }
 }
 @media (prefers-reduced-motion: reduce) { .radio-live-dot { animation: none; } }
+/* Page-link stations (can't be embedded — stream is HTTP-only) */
+.radio-station-card.page-only { opacity: .85; }
+.radio-station-card.page-only:hover { opacity: 1; }
+.radio-live-pill.page-link-pill { color: var(--muted); letter-spacing: .08em; }
 
 /* MINI PLAYER — docks flush above the bottombar (no gap), full-width right
    of the rail. When visible, body gets padding-bottom so content doesn't

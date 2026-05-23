@@ -439,16 +439,18 @@
     }
     if (tab === 'music') {
       // ── A.A. Radio: curated live streams ─────────────────────────────────
+      // Streams verified 2026-05. audio=null means stream is HTTP-only (browser
+      // blocks mixed content on HTTPS pages); those stations get a page link instead.
       const RADIO_STATIONS = [
-        { id: 'rs-nts-1',      title: 'NTS Radio 1',         artist: 'London · LA · Shanghai',          audio: 'https://stream-relay-geo.ntslive.net/stream',         summary: 'Independent community radio. African diaspora, afrofuturist and experimental music around the clock.',        isLive: true },
-        { id: 'rs-nts-2',      title: 'NTS Radio 2',         artist: 'NTS · Alternative Stream',         audio: 'https://stream-relay-geo.ntslive.net/stream2',        summary: 'Second channel — often carries African, Afro-futurist and underground programming from the global south.',    isLive: true },
-        { id: 'rs-kpfa',       title: 'KPFA 94.1 FM',        artist: 'Pacifica Network · Berkeley CA',   audio: 'https://streams.kpfa.org/kpfa/high.aac',             summary: 'Community-funded, ad-free radical broadcasting. African diaspora, liberation and anti-imperialist politics.', isLive: true },
-        { id: 'rs-wbai',       title: 'WBAI 99.5 FM',        artist: 'Pacifica Network · New York City', audio: 'https://wbai.out.airtime.pro/wbai_a',                summary: 'NYC Pacifica station. Pan-African, abolitionist and anti-imperialist programming since 1960.',               isLive: true },
-        { id: 'rs-resonance',  title: 'Resonance FM',        artist: 'Independent · London',             audio: 'https://streamer.resonancefm.com/stream',            summary: 'Radical arts, experimental music and political commentary from London\'s independent broadcaster.',           isLive: true },
-        { id: 'rs-soma-afro',  title: 'SomaFM: African',     artist: 'SomaFM · San Francisco',           audio: 'https://ice6.somafm.com/african-128-mp3',            summary: 'Afrobeat, highlife and traditional sounds from across the continent — no ads, listener supported.',          isLive: true },
-        { id: 'rs-radio-1',    title: 'Africa Is A Country', artist: 'Pan-African · Global',             audio: 'https://streaming.tdiradio.com/aiac',                summary: 'Critical pan-African culture, politics and sound. Essays on race, colonialism and resistance.',               isLive: true },
-        { id: 'rs-worldwide',  title: 'Worldwide FM',        artist: 'Gilles Peterson · Global',         audio: 'https://worldwidefm.out.airtime.pro/worldwidefm_a',  summary: 'African, Caribbean and diaspora sounds. Deep digs into African jazz, Afrobeat and global underground music.',  isLive: true },
-        { id: 'rs-icecastafrica', title: 'Radio Afrique',    artist: 'Continental · Multilingual',       audio: 'https://radioafrique.ice.infomaniak.ch/radioafrique-high.mp3', summary: 'Pan-African multilingual broadcaster — news, culture and music from across the continent.',              isLive: true },
+        { id: 'rs-nts-1',   title: 'NTS Radio 1',              artist: 'London · LA · Shanghai',           audio: 'https://stream-relay-geo.ntslive.net/stream',                             summary: 'Independent community radio. African diaspora, afrofuturist and experimental music around the clock.',        isLive: true },
+        { id: 'rs-nts-2',   title: 'NTS Radio 2',              artist: 'NTS · Alternative Stream',          audio: 'https://stream-relay-geo.ntslive.net/stream2',                            summary: 'Second channel — often carries African, Afro-futurist and underground programming from the global south.',    isLive: true },
+        { id: 'rs-kpfa',    title: 'KPFA 94.1 FM',             artist: 'Pacifica Network · Berkeley CA',    audio: 'https://streams.kpfa.org/kpfa_128.aac',                                  summary: 'Community-funded, ad-free radical broadcasting. African diaspora, liberation and anti-imperialist politics.', isLive: true },
+        { id: 'rs-wbai',    title: 'WBAI 99.5 FM',             artist: 'Pacifica Network · New York City',  audio: null, page: 'https://wbai.org/listen-live/',                              summary: 'NYC Pacifica station. Pan-African, abolitionist and anti-imperialist programming since 1960.',               isLive: true },
+        { id: 'rs-resonance', title: 'Resonance FM',           artist: 'Independent · London',              audio: 'https://stream.resonance.fm/resonance',                                  summary: 'Radical arts, experimental music and political commentary from London\'s independent broadcaster.',           isLive: true },
+        { id: 'rs-pass',    title: 'Pan African Space Station', artist: 'PASS · Johannesburg',               audio: 'https://pass.out.airtime.pro/pass_a',                                    summary: 'Afrofuturist broadcast collective from Johannesburg — music, sound art and politics from across the continent.', isLive: true },
+        { id: 'rs-bbc-af',  title: 'BBC World Service Africa', artist: 'BBC · West Africa',                 audio: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service_west_africa',     summary: 'Africa-focused international news, current affairs and culture from the BBC World Service.',                  isLive: true },
+        { id: 'rs-worldwide', title: 'Worldwide FM',           artist: 'Gilles Peterson · Global',          audio: 'https://worldwide-fm.radiocult.fm/stream',                                summary: 'African, Caribbean and diaspora sounds. Deep digs into African jazz, Afrobeat and global underground music.',  isLive: true },
+        { id: 'rs-afrique', title: 'Radio Afrique',            artist: 'Continental · Multilingual',        audio: null, page: 'https://radioafrique.com/',                                   summary: 'Pan-African multilingual broadcaster — news, culture and music from across the continent.',                   isLive: true },
       ];
 
       const stEl = $('#radio-stations');
@@ -462,14 +464,24 @@
         grid.className = 'radio-stations-grid';
         RADIO_STATIONS.forEach(s => {
           const c = document.createElement('div');
-          c.className = 'radio-station-card';
+          // Stations without an embeddable audio URL get a page-link style
+          const isPageOnly = !s.audio && s.page;
+          c.className = 'radio-station-card' + (isPageOnly ? ' page-only' : '');
           c.dataset.stationId = s.id;
+          const pill = isPageOnly
+            ? `<div class="radio-live-pill page-link-pill">OPEN ↗</div>`
+            : `<div class="radio-live-pill"><div class="radio-live-dot"></div>LIVE</div>`;
           c.innerHTML = `
             <div class="radio-station-name">${s.title}</div>
             <div class="radio-station-meta mono">${s.artist}</div>
             <div class="radio-station-desc">${s.summary}</div>
-            <div class="radio-live-pill"><div class="radio-live-dot"></div>LIVE</div>`;
+            ${pill}`;
           c.addEventListener('click', () => {
+            if (isPageOnly) {
+              // Can't embed — open the station's website in a new tab
+              window.open(s.page, '_blank', 'noopener');
+              return;
+            }
             stEl.querySelectorAll('.radio-station-card').forEach(x => x.classList.remove('playing'));
             c.classList.add('playing');
             MP.play(s);

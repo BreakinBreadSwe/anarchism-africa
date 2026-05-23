@@ -198,6 +198,9 @@
     // Year
     const year = yr(track);
 
+    // A direct MP3/audio URL means we can play via the footer player.
+    const hasDirectAudio = !!(track.audio || track.audioUrl || track.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i));
+
     card.innerHTML = `
       <button class="sl-card-header" aria-expanded="${isExp}">
         <div class="sl-card-thumb">
@@ -208,11 +211,11 @@
         </div>
         <div class="sl-card-meta">
           <p class="sl-card-title">${esc(track.title || 'Untitled')}</p>
-          <p class="sl-card-author">${esc(track.author || '')}</p>
+          <p class="sl-card-author">${esc(track.author || track.artist || '')}</p>
           <div class="sl-card-chips">
             <span class="sl-cat-chip cat--${cat}">${catInfo.emoji} ${catInfo.label}</span>
             ${year ? `<span class="sl-year-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${year}</span>` : ''}
-            ${embedChips}
+            ${hasDirectAudio ? '<span class="sl-embed-chip" title="Direct audio">▶</span>' : embedChips}
           </div>
         </div>
         <div class="sl-card-chevron">
@@ -225,6 +228,20 @@
     `;
 
     card.querySelector('.sl-card-header').addEventListener('click', () => {
+      // Direct audio tracks: fire footer player immediately, no expand needed
+      if (hasDirectAudio && window.MP) {
+        const audioSrc = track.audio || track.audioUrl || (track.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i) ? track.url : null);
+        if (audioSrc) {
+          window.MP.play({
+            id:     id,
+            title:  track.title || 'Untitled',
+            artist: track.author || track.artist || '',
+            audio:  audioSrc,
+            image:  track.coverImageUrl || track.image || '',
+          });
+          // Still toggle expand so metadata/tags are visible
+        }
+      }
       expandedId = expandedId === id ? null : id;
       render();
       if (expandedId === id) {

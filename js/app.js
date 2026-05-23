@@ -108,6 +108,12 @@
         ? `<video src="${it.video}" muted playsinline loop autoplay preload="metadata"></video>`
         : `<img src="${it.image}" alt="${it.title}">`;
       const audio = it.audio ? `<audio src="${it.audio}" preload="metadata"></audio>` : '';
+      // Songs get a direct "▶ Play" CTA that fires the footer player immediately.
+      // All other types get the standard "Open" tab-switch CTA.
+      const isSong = it.type === 'song' && it.audio;
+      const primaryCta = isSong
+        ? `<button class="btn primary" data-hero-play="${it.id}">▶ Play</button>`
+        : `<button class="btn primary" data-hero-go="${it.tab}">Open ${typeLabel(it.type)}</button>`;
       slide.innerHTML = `
         ${media}${audio}
         <div class="hero-overlay">
@@ -115,7 +121,7 @@
           <h1>${it.title}</h1>
           <p class="hero-sub">${it.summary || it.subtitle || ''}</p>
           <div class="hero-cta">
-            <button class="btn primary" data-hero-go="${it.tab}">Open ${typeLabel(it.type)}</button>
+            ${primaryCta}
             <button class="btn ghost" data-hero-detail="${it.id}">Details</button>
           </div>
         </div>`;
@@ -173,10 +179,16 @@
     if (state.heroPlaying) startHero(); else stopHero();
   });
 
-  // hero CTA delegation - hero items always open the full item page
+  // hero CTA delegation
   $('#hero')?.addEventListener('click', e => {
-    const goTab = e.target.dataset.heroGo;
+    const goTab    = e.target.dataset.heroGo;
+    const playId   = e.target.dataset.heroPlay;
     const detailId = e.target.dataset.heroDetail;
+    // ▶ Play — fire footer player directly for songs
+    if (playId) {
+      const item = state.hero.find(h => h.id === playId);
+      if (item?.audio) { MP.play(item); return; }
+    }
     if (goTab) { setTab(goTab); }
     if (detailId) {
       const item = state.hero.find(h => h.id === detailId);
@@ -612,11 +624,13 @@
   }
 
   // -------- MINI PLAYER (sticky across tabs, full controls) --------------
-  // Renders flush above the bottombar. Adds body.mp-active when visible so
-  // page content gets padding-bottom to avoid hiding behind the bar.
-  // Public API: MP.play(song), MP.queue([songs]), MP.next(), MP.prev(),
-  //             MP.current
-  const MP = (function () {
+  // Mini-player is now in js/mini-player.js (loaded before this script).
+  // This alias keeps all existing MP.play(...) calls working unchanged.
+  const MP = window.MP;
+
+  // ---- DEAD CODE GUARD — the block below is superseded by mini-player.js
+  //      but kept as fallback if mini-player.js fails to load.
+  if (!MP) window.MP = (function () {
     let audio = null, current = null, queue = [], queueIndex = -1;
     const ui = {
       bar:    $('#mini-player'),
@@ -922,7 +936,7 @@
       next, prev,
       get current () { return current; }
     };
-  })();
+  })() || undefined; // end fallback block
 
   function audioRow (s) {
     const row = document.createElement('div');

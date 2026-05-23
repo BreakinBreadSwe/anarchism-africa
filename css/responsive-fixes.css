@@ -105,7 +105,7 @@
 
 /* === Wide screens — cap line length (not item detail pages) ========= */
 @media (min-width: 1440px) {
-  main:not(#item-main) { max-width: 1280px; margin: 0 auto; }
+  /* No max-width on main — content fills the full viewport */
   .item-body, .summary, .item-lede { max-width: 70ch; }
 }
 

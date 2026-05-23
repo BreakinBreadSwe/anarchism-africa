@@ -306,38 +306,27 @@ body.has-rail .tabs { display: none; }
 
 /* Desktop push — content is full-width to the right of the rail. The right
    side has the standard content padding so text doesn't run to the viewport
-   edge, but no max-width is enforced so cards and grids fill the space. */
+   edge. The rail is position:fixed so it overlays content — no 64px push.
+   Content fills 100vw; the rail floats over the left edge (64px wide). */
 @media (min-width: 769px) {
   body.has-rail main,
   body.has-rail section.view {
-    padding-left: calc(64px + var(--content-pad-x));
+    padding-left: var(--content-pad-x);
     padding-right: var(--content-pad-x);
-    transition: padding-left .26s ease;
   }
-  body.has-rail.rail-open main,
-  body.has-rail.rail-open section.view {
-    padding-left: calc(220px + var(--content-pad-x));
-  }
-  body.has-rail .footer { padding-left: calc(64px + var(--content-pad-x)); padding-right: var(--content-pad-x); }
-  body.has-rail.rail-open .footer { padding-left: calc(220px + var(--content-pad-x)); }
+  body.has-rail .footer { padding-left: var(--content-pad-x); padding-right: var(--content-pad-x); }
   /* !important defeats inline `style="padding:..."` on <main> and <section class="view">
      in role pages (publisher, partner, journalist, etc.) that set the shorthand padding
-     inline, wiping padding-left and hiding content behind the 64px rail. */
+     inline, wiping padding-left. Rail is fixed-position so no push needed. */
   body.has-rail main {
     width: 100%; max-width: 100%; box-sizing: border-box;
-    padding-left: calc(64px + var(--content-pad-x)) !important;
+    padding-left: var(--content-pad-x) !important;
     padding-right: var(--content-pad-x) !important;
-  }
-  body.has-rail.rail-open main {
-    padding-left: calc(220px + var(--content-pad-x)) !important;
   }
   body.has-rail section.view {
     width: 100%; max-width: none; box-sizing: border-box;
-    padding-left: calc(64px + var(--content-pad-x)) !important;
+    padding-left: var(--content-pad-x) !important;
     padding-right: var(--content-pad-x) !important;
-  }
-  body.has-rail.rail-open section.view {
-    padding-left: calc(220px + var(--content-pad-x)) !important;
   }
 }
 

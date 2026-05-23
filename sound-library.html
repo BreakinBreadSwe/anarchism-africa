@@ -25,19 +25,8 @@
   <link rel="stylesheet" href="css/auth-page.css" />
   <style>
     /* ── Sound Library page styles ────────────────────────────────────────── */
-
-    /* Full-width override — the global body.has-rail rule adds
-       padding-left: calc(64px + gap) !important to <main>.
-       We cancel it here so the library grid fills the full viewport.
-       The collapsed rail icons (64 px) float over the edge of the grid,
-       which is acceptable for a magazine-style archive layout.           */
     #sl-root {
-      padding: 0 0 calc(var(--bottombar-h, 64px) + 24px) !important;
-    }
-    body.has-rail #sl-root,
-    body.has-rail.rail-open #sl-root {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
+      padding: 0 0 calc(var(--bottombar-h, 64px) + 24px);
     }
 
     /* Hero */

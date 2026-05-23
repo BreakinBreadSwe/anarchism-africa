@@ -25,7 +25,20 @@
   <link rel="stylesheet" href="css/auth-page.css" />
   <style>
     /* ── Sound Library page styles ────────────────────────────────────────── */
-    #sl-root { padding: 0 0 calc(var(--bottombar-h, 64px) + 24px); }
+
+    /* Full-width override — the global body.has-rail rule adds
+       padding-left: calc(64px + gap) !important to <main>.
+       We cancel it here so the library grid fills the full viewport.
+       The collapsed rail icons (64 px) float over the edge of the grid,
+       which is acceptable for a magazine-style archive layout.           */
+    #sl-root {
+      padding: 0 0 calc(var(--bottombar-h, 64px) + 24px) !important;
+    }
+    body.has-rail #sl-root,
+    body.has-rail.rail-open #sl-root {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
 
     /* Hero */
     .sl-hero {
@@ -40,7 +53,7 @@
     }
     .sl-hero-back:hover { color: var(--fg, #eee); }
     .sl-hero-back svg { width: 14px; height: 14px; }
-    .sl-hero-inner { display: flex; gap: 16px; align-items: flex-start; max-width: 860px; }
+    .sl-hero-inner { display: flex; gap: 16px; align-items: flex-start; }
     .sl-hero-icon {
       width: 52px; height: 52px; border-radius: 14px;
       background: rgba(220,38,38,.15); color: #ef4444;
@@ -206,7 +219,7 @@
     .sl-empty-title { font-size: .9rem; font-weight: 600; margin: 0 0 4px; }
     .sl-empty-sub { font-size: .78rem; }
 
-    .sl-skeleton-grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 12px 14px; max-width: 900px; margin: 0 auto; }
+    .sl-skeleton-grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 12px 14px; }
     @media (min-width: 600px) { .sl-skeleton-grid { grid-template-columns: 1fr 1fr; } }
     .sl-skeleton-card { height: 86px; border-radius: 12px; background: var(--card, #0d0d0d); animation: sl-pulse 1.4s ease infinite; }
     @keyframes sl-pulse { 0%,100%{opacity:.4} 50%{opacity:.9} }

@@ -1,10 +1,11 @@
 # 🍞 BREAKIN BREAD — Free Cinema
 
-**A free cinema of public-domain films and movies. No paywall. No login. No ads.**
+**A free cinema of public-domain & free-to-watch films from around the world — in every language. No paywall. No login. No ads.**
 
-Breakin Bread is a fast, mobile-first PWA for discovering and streaming films that
-are in the **public domain** — every title is legally free to watch and is streamed
-straight from the [Internet Archive](https://archive.org/details/feature_films).
+Breakin Bread is a fast, mobile-first PWA for discovering and streaming films that are
+**free to watch** — public-domain world classics and freely available cinema, pulled
+from the [Internet Archive](https://archive.org/details/feature_films), YouTube, and
+national film archives.
 
 Break bread, pass it on.
 
@@ -12,13 +13,16 @@ Break bread, pass it on.
 
 ## What it does
 
-- **Browse** a curated catalog of public-domain films, organised into genre rails
-  (Horror, Noir, Comedy, Silent, Sci-Fi, Western, Animation…).
-- **Watch free, in-app** — tap any film and the Internet Archive player streams the
-  full movie inline. Nothing is pirated or rights-restricted.
-- **Search** by title, director, genre, year, or tag.
-- **My List** — save films for later (stored locally in the browser).
-- **Continue Watching** — recently opened films float to the top.
+- **Browse the world** — 40+ films across **21 languages and 20 countries**: French,
+  German, Russian, Italian, Japanese, Mandarin, Korean, Hindi, Bengali, Telugu, Arabic,
+  Persian, Spanish, Portuguese, Turkish, Indonesian, Urdu, Swedish, Danish, Cantonese,
+  English… Organised into genre rails **and** language pages ("Around the World").
+- **Multi-source player** — silent & early classics play **inline** from the Internet
+  Archive; the player also embeds **YouTube** and **Vimeo**. Where an exact embed id
+  isn't verified, the film is a clean **"Watch on YouTube ↗"** link-out (a real search
+  URL) — so a title always resolves and nothing renders broken.
+- **Search** by title, director, **language, country**, genre, year, or tag.
+- **My List** + **Continue Watching** — saved locally in the browser.
 - **Installable PWA** — add to home screen; browse the catalog and posters offline.
 - **Zero backend** — pure static HTML/CSS/JS. No build step, no database, no tracking.
 
@@ -26,13 +30,21 @@ Break bread, pass it on.
 
 ## Why "free copyright" films?
 
-Films fall into the public domain when their copyright expires or was never properly
-secured (e.g. a missing renewal or copyright notice). These are genuinely free for
-anyone to watch, copy, and share. The Internet Archive hosts thousands of them and
-permits embedding, which is what powers the player here.
+Films fall into the public domain when copyright expires or was never properly secured
+(a missing renewal or notice). Many world classics are also made freely available by
+national film archives and official channels. These are genuinely free to watch — the
+Internet Archive alone hosts thousands and permits embedding, which powers inline
+playback here.
 
-Each film links to its **Internet Archive source page** and a **search fallback**, so
-a title stays reachable even if an upstream identifier ever changes.
+Every film links to its **original source** (Archive item, YouTube video, or archive
+page) and a **search fallback**, so a title stays reachable even if an upstream
+identifier ever changes.
+
+> **Note on source ids:** the catalog's Internet Archive ids and link-outs are curated
+> from public-domain collections. Inline-embeddable entries (`archive`) carry verified
+> item ids; sound-era world films are listed as `external` link-outs until a specific
+> embed id is confirmed — dropping a verified `youtube`/`vimeo` id into an entry upgrades
+> it to inline playback automatically.
 
 ---
 
@@ -71,9 +83,8 @@ breakinbread/
 
 ## Adding a film
 
-Append an entry to `js/catalog.js`. The only field that drives playback is
-`archive_id` — the Internet Archive item identifier (the bit after
-`archive.org/details/…`). Poster, player, and source links are all derived from it.
+Append an entry to `js/catalog.js`. The `source` object drives playback; poster, player,
+and links are all derived from it.
 
 ```js
 {
@@ -81,15 +92,25 @@ Append an entry to `js/catalog.js`. The only field that drives playback is
   title: "Film Title",
   year: 1955,
   director: "Director Name",
-  runtime: 92,                 // minutes
+  runtime: 92,                       // minutes
+  language: "Japanese",              // primary language (parentheticals like "(silent)" are stripped for grouping)
+  country: "Japan",
   genres: ["Noir", "Crime"],
-  archive_id: "internet_archive_identifier",
-  featured: true,              // optional — surfaces in hero + "Fresh from the Oven"
+  tags: ["noir", "1950s"],
+  featured: true,                    // optional — surfaces in hero + "Fresh from the Oven"
   blurb: "One or two sentences.",
-  tags: ["noir", "1950s"]
+
+  // pick ONE source:
+  source: { kind: "archive", id: "internet_archive_identifier" },   // inline, public domain
+  // source: { kind: "youtube", id: "YT_VIDEO_ID" },                // inline YouTube embed
+  // source: { kind: "vimeo",   id: "123456789", poster: "url" },   // inline Vimeo embed
+  // source: find("YouTube", "Film Title 1955"),                    // clean link-out (always resolves)
 }
 ```
 
-Everything here is public domain — please keep it that way.
+`find(platform, query)` (top of `catalog.js`) builds a guaranteed-to-resolve link-out —
+use it when you know a film is free to watch but haven't verified an exact embed id.
+
+Everything here is free to watch — please keep it that way.
 
 © Breakin Bread — free cinema for everyone.

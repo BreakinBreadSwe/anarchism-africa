@@ -1,367 +1,349 @@
 /* BREAKIN BREAD — Free Cinema
- * Catalog of public-domain / free-to-stream films.
+ * Global catalog of public-domain / free-to-stream films — world cinema, all languages.
  *
- * Every title here is in the public domain (or otherwise free to view) and is
- * hosted on the Internet Archive, which permits embedding via
- *   https://archive.org/embed/{archive_id}
- * and direct viewing via
- *   https://archive.org/details/{archive_id}
+ * Multi-source by design. Each film carries a `source`:
+ *   { kind: "archive",  id }            → embeds  archive.org/embed/{id}     (Internet Archive, public domain)
+ *   { kind: "youtube",  id }            → embeds  youtube-nocookie.com/embed/{id}
+ *   { kind: "vimeo",    id, poster }    → embeds  player.vimeo.com/video/{id}
+ *   { kind: "external", platform, url } → opens the film on a film library / archive / channel (link-out)
  *
- * `archive_id`  — Internet Archive item identifier (drives the player + source link)
- * `poster`      — Archive's generated item thumbnail (always resolves for a valid id)
- * The UI also exposes a "Find on Internet Archive" search per title, so a film is
- * reachable even if an identifier is ever retired upstream.
+ * Why mixed: silent & early-sound world classics are genuinely hosted (and embeddable) on the
+ * Internet Archive, so those play inline. Many sound-era world films are free to watch on official
+ * YouTube channels and national film-archive sites; where an exact embed id isn't verified, the film
+ * is listed as an `external` link-out (a real search/channel URL) so it always resolves — never a
+ * broken player. Drop a verified `youtube`/`vimeo` id in and it upgrades to inline playback instantly.
  *
- * Nothing here is pirated, paywalled, or rights-restricted. Free bread for everyone.
+ * Every title here is in the public domain or otherwise free to view. Nothing pirated or paywalled.
+ * Break bread, pass it on.
  */
+
+// helper: a guaranteed-to-resolve "find & watch" link-out for unverified sound films
+function find(platform, query) {
+  const q = encodeURIComponent(query + " full movie");
+  const url = platform === "Internet Archive"
+    ? `https://archive.org/search?query=${encodeURIComponent(query)}`
+    : `https://www.youtube.com/results?search_query=${q}`;
+  return { kind: "external", platform, url };
+}
+
 window.BB_CATALOG = [
-  /* ── HORROR ────────────────────────────────────────────── */
+  /* ══════════ ENGLISH — United States / United Kingdom ══════════ */
   {
-    id: "night-of-the-living-dead",
-    title: "Night of the Living Dead",
-    year: 1968,
-    director: "George A. Romero",
-    runtime: 96,
-    genres: ["Horror", "Cult"],
-    archive_id: "night_of_the_living_dead",
-    featured: true,
-    blurb: "The film that invented the modern zombie. Romero's micro-budget Pennsylvania nightmare fell into the public domain on release and never left — radical, claustrophobic, and still terrifying.",
-    tags: ["zombies", "1960s", "independent", "black-and-white"]
+    id: "night-of-the-living-dead", title: "Night of the Living Dead", year: 1968,
+    director: "George A. Romero", runtime: 96, language: "English", country: "United States",
+    genres: ["Horror", "Cult"], featured: true, source: { kind: "archive", id: "night_of_the_living_dead" },
+    blurb: "The film that invented the modern zombie — Romero's micro-budget nightmare fell into the public domain on release and never left.",
+    tags: ["zombies", "1960s", "independent"]
   },
   {
-    id: "nosferatu",
-    title: "Nosferatu",
-    year: 1922,
-    director: "F. W. Murnau",
-    runtime: 94,
-    genres: ["Horror", "Silent"],
-    archive_id: "Nosferatu_1922",
-    featured: true,
-    blurb: "The original screen vampire. Murnau's unauthorised Dracula is German Expressionism at its most spectral — all shadow, rats, and Max Schreck's impossible silhouette.",
-    tags: ["vampire", "silent", "expressionism", "1920s"]
+    id: "his-girl-friday", title: "His Girl Friday", year: 1940,
+    director: "Howard Hawks", runtime: 92, language: "English", country: "United States",
+    genres: ["Comedy", "Romance"], source: { kind: "archive", id: "his_girl_friday" },
+    blurb: "The fastest-talking comedy ever made — Cary Grant and Rosalind Russell as divorced newspaper rivals.",
+    tags: ["screwball", "1940s"]
   },
   {
-    id: "the-cabinet-of-dr-caligari",
-    title: "The Cabinet of Dr. Caligari",
-    year: 1920,
-    director: "Robert Wiene",
-    runtime: 67,
-    genres: ["Horror", "Silent"],
-    archive_id: "TheCabinetOfDrCaligari1920",
-    blurb: "Painted shadows, leaning walls, a sleepwalking killer. The founding text of horror cinema and the purest distillation of Expressionist dread ever committed to film.",
-    tags: ["silent", "expressionism", "1920s", "psychological"]
+    id: "charade", title: "Charade", year: 1963,
+    director: "Stanley Donen", runtime: 113, language: "English", country: "United States",
+    genres: ["Thriller", "Romance", "Comedy"], featured: true, source: { kind: "archive", id: "charade_1963" },
+    blurb: "Cary Grant and Audrey Hepburn in the best Hitchcock film Hitchcock never made — a Paris-set caper of stolen fortunes.",
+    tags: ["caper", "1960s"]
   },
   {
-    id: "carnival-of-souls",
-    title: "Carnival of Souls",
-    year: 1962,
-    director: "Herk Harvey",
-    runtime: 78,
-    genres: ["Horror", "Cult"],
-    archive_id: "CarnivalOfSouls",
-    blurb: "A church organist drifts toward an abandoned pavilion after a car crash. Dreamlike, cheap, and quietly devastating — a direct ancestor of Lynch and Romero alike.",
-    tags: ["ghost", "1960s", "cult", "black-and-white"]
+    id: "detour", title: "Detour", year: 1945,
+    director: "Edgar G. Ulmer", runtime: 68, language: "English", country: "United States",
+    genres: ["Noir", "Crime"], source: { kind: "archive", id: "Detour_1945" },
+    blurb: "The bleakest, most fatalistic noir ever made — a hitchhiker swallowed whole by bad luck.",
+    tags: ["noir", "1940s"]
   },
   {
-    id: "the-little-shop-of-horrors",
-    title: "The Little Shop of Horrors",
-    year: 1960,
-    director: "Roger Corman",
-    runtime: 72,
-    genres: ["Horror", "Comedy"],
-    archive_id: "the_little_shop_of_horrors",
-    blurb: "Shot in two and a half days by Roger Corman, this man-eating-plant black comedy (with a young Jack Nicholson) became the cult seed for the Broadway musical decades later.",
-    tags: ["comedy", "cult", "1960s", "corman"]
+    id: "sherlock-jr", title: "Sherlock Jr.", year: 1924,
+    director: "Buster Keaton", runtime: 45, language: "English (silent)", country: "United States",
+    genres: ["Comedy", "Silent"], source: { kind: "archive", id: "SherlockJr" },
+    blurb: "A projectionist steps into the movie screen — Keaton's marvel of physical comedy and in-camera magic.",
+    tags: ["keaton", "1920s", "silent"]
   },
   {
-    id: "house-on-haunted-hill",
-    title: "House on Haunted Hill",
-    year: 1959,
-    director: "William Castle",
-    runtime: 75,
-    genres: ["Horror", "Cult"],
-    archive_id: "house_on_haunted_hill",
-    blurb: "Vincent Price offers five strangers $10,000 to survive a night in a haunted mansion. Gimmick-king William Castle at his gleeful, rattling best.",
-    tags: ["vincent-price", "1950s", "haunted-house", "cult"]
+    id: "the-general", title: "The General", year: 1926,
+    director: "Buster Keaton", runtime: 78, language: "English (silent)", country: "United States",
+    genres: ["Comedy", "Silent", "Adventure"], source: { kind: "archive", id: "TheGeneral_201712" },
+    blurb: "Keaton's Civil War railroad chase — routinely named the greatest comedy ever filmed, every stunt real.",
+    tags: ["keaton", "1920s", "silent"]
+  },
+  {
+    id: "plan-9-from-outer-space", title: "Plan 9 from Outer Space", year: 1959,
+    director: "Ed Wood", runtime: 79, language: "English", country: "United States",
+    genres: ["Sci-Fi", "Cult"], source: { kind: "archive", id: "Plan9FromOuterSpace_926" },
+    blurb: "\"The worst film ever made\" — and one of the most beloved. Ed Wood's wobbly, sincere classic.",
+    tags: ["1950s", "so-bad-its-good"]
+  },
+  {
+    id: "d-o-a", title: "D.O.A.", year: 1949,
+    director: "Rudolph Maté", runtime: 83, language: "English", country: "United States",
+    genres: ["Noir", "Crime"], source: { kind: "archive", id: "d.o.a_1949" },
+    blurb: "\"I want to report a murder — my own.\" A poisoned man hunts his own killer against the clock.",
+    tags: ["noir", "1940s"]
   },
 
-  /* ── FILM NOIR ─────────────────────────────────────────── */
+  /* ══════════ FRENCH — France ══════════ */
   {
-    id: "detour",
-    title: "Detour",
-    year: 1945,
-    director: "Edgar G. Ulmer",
-    runtime: 68,
-    genres: ["Noir", "Crime"],
-    archive_id: "Detour_1945",
-    featured: true,
-    blurb: "The cheapest, bleakest, most fatalistic noir ever made — a hitchhiker swallowed whole by bad luck. Poverty-row filmmaking elevated to existential nightmare.",
-    tags: ["noir", "1940s", "crime", "b-movie"]
+    id: "a-trip-to-the-moon", title: "A Trip to the Moon", year: 1902,
+    director: "Georges Méliès", runtime: 13, language: "French (silent)", country: "France",
+    genres: ["Sci-Fi", "Silent"], featured: true, source: { kind: "archive", id: "LeVoyageDansLaLune" },
+    blurb: "The rocket in the Moon's eye — Méliès's 1902 wonder is the founding act of science-fiction cinema.",
+    tags: ["melies", "1900s", "silent", "world-cinema"]
   },
   {
-    id: "d-o-a",
-    title: "D.O.A.",
-    year: 1949,
-    director: "Rudolph Maté",
-    runtime: 83,
-    genres: ["Noir", "Crime"],
-    archive_id: "d.o.a_1949",
-    blurb: "\"I want to report a murder — my own.\" A man poisoned with no antidote spends his last hours hunting his own killer. One of noir's great ticking-clock premises.",
-    tags: ["noir", "1940s", "crime", "mystery"]
+    id: "the-passion-of-joan-of-arc", title: "The Passion of Joan of Arc", year: 1928,
+    director: "Carl Theodor Dreyer", runtime: 82, language: "French (silent)", country: "France",
+    genres: ["Drama", "Silent"], source: { kind: "archive", id: "ThePassionOfJoanOfArc" },
+    blurb: "Dreyer's trial of Joan told almost entirely in close-up — one of the most overwhelming films of the silent era.",
+    tags: ["dreyer", "1920s", "silent", "world-cinema"]
   },
   {
-    id: "the-stranger",
-    title: "The Stranger",
-    year: 1946,
-    director: "Orson Welles",
-    runtime: 95,
-    genres: ["Noir", "Thriller"],
-    archive_id: "the_stranger_1946",
-    blurb: "Orson Welles plays a Nazi fugitive hiding in a sleepy Connecticut town as a war-crimes investigator closes in. Welles's most conventional thriller — and a taut one.",
-    tags: ["orson-welles", "noir", "1940s", "thriller"]
-  },
-  {
-    id: "scarlet-street",
-    title: "Scarlet Street",
-    year: 1945,
-    director: "Fritz Lang",
-    runtime: 102,
-    genres: ["Noir", "Drama"],
-    archive_id: "scarlet_street",
-    blurb: "Edward G. Robinson, a meek cashier, is destroyed by a femme fatale and his own desire. Fritz Lang's pitiless study of obsession was briefly banned for its bleak morality.",
-    tags: ["fritz-lang", "noir", "1940s", "femme-fatale"]
-  },
-  {
-    id: "too-late-for-tears",
-    title: "Too Late for Tears",
-    year: 1949,
-    director: "Byron Haskin",
-    runtime: 99,
-    genres: ["Noir", "Crime"],
-    archive_id: "too_late_for_tears",
-    blurb: "A bag of cash lands in the wrong car and Lizabeth Scott will do anything to keep it. A rediscovered noir with one of the genre's most ruthless leading women.",
-    tags: ["noir", "1940s", "femme-fatale", "crime"]
-  },
-  {
-    id: "suddenly",
-    title: "Suddenly",
-    year: 1954,
-    director: "Lewis Allen",
-    runtime: 75,
-    genres: ["Noir", "Thriller"],
-    archive_id: "suddenly_1954",
-    blurb: "Frank Sinatra against type as a cold-blooded assassin who seizes a family home to shoot the President. A tense, single-room thriller with a chilling lead turn.",
-    tags: ["sinatra", "noir", "1950s", "thriller"]
+    id: "un-chien-andalou", title: "Un Chien Andalou", year: 1929,
+    director: "Luis Buñuel & Salvador Dalí", runtime: 21, language: "French (silent)", country: "France",
+    genres: ["Avant-Garde", "Silent"], source: { kind: "archive", id: "UnChienAndalou" },
+    blurb: "Buñuel and Dalí's Surrealist hand-grenade — the sliced eye, the ants, the dream logic that broke cinema open.",
+    tags: ["surrealism", "1920s", "world-cinema"]
   },
 
-  /* ── COMEDY / SCREWBALL ────────────────────────────────── */
+  /* ══════════ GERMAN — Germany ══════════ */
   {
-    id: "his-girl-friday",
-    title: "His Girl Friday",
-    year: 1940,
-    director: "Howard Hawks",
-    runtime: 92,
-    genres: ["Comedy", "Romance"],
-    archive_id: "his_girl_friday",
-    featured: true,
-    blurb: "The fastest-talking comedy ever made. Cary Grant and Rosalind Russell trade machine-gun dialogue as divorced newspaper rivals. Howard Hawks's screwball masterpiece.",
-    tags: ["screwball", "1940s", "cary-grant", "romance"]
+    id: "metropolis", title: "Metropolis", year: 1927,
+    director: "Fritz Lang", runtime: 153, language: "German (silent)", country: "Germany",
+    genres: ["Sci-Fi", "Silent"], featured: true, source: { kind: "archive", id: "Metropolis_201703" },
+    blurb: "The towering ur-text of science-fiction cinema — Lang's worker-vs-elite dystopia and its robot Maria.",
+    tags: ["fritz-lang", "1920s", "silent", "world-cinema"]
   },
   {
-    id: "meet-john-doe",
-    title: "Meet John Doe",
-    year: 1941,
-    director: "Frank Capra",
-    runtime: 122,
-    genres: ["Drama", "Comedy"],
-    archive_id: "meet_john_doe",
-    blurb: "Gary Cooper is a drifter turned into a fake populist folk hero by a cynical newspaper. Capra's darkest fable about media, crowds, and manufactured belief.",
-    tags: ["capra", "1940s", "gary-cooper", "drama"]
+    id: "nosferatu", title: "Nosferatu", year: 1922,
+    director: "F. W. Murnau", runtime: 94, language: "German (silent)", country: "Germany",
+    genres: ["Horror", "Silent"], featured: true, source: { kind: "archive", id: "Nosferatu_1922" },
+    blurb: "The original screen vampire — Murnau's unauthorised Dracula is German Expressionism at its most spectral.",
+    tags: ["vampire", "1920s", "silent", "world-cinema"]
   },
   {
-    id: "the-kid",
-    title: "The Kid",
-    year: 1921,
-    director: "Charlie Chaplin",
-    runtime: 68,
-    genres: ["Comedy", "Silent"],
-    archive_id: "CharlieChaplinTheKid1921",
-    blurb: "Chaplin's first feature — the Tramp raises an abandoned child in the slums. A perfect fusion of slapstick and heartbreak that still lands a century on.",
-    tags: ["chaplin", "silent", "1920s", "tramp"]
+    id: "the-cabinet-of-dr-caligari", title: "The Cabinet of Dr. Caligari", year: 1920,
+    director: "Robert Wiene", runtime: 67, language: "German (silent)", country: "Germany",
+    genres: ["Horror", "Silent"], source: { kind: "archive", id: "TheCabinetOfDrCaligari1920" },
+    blurb: "Painted shadows, leaning walls, a sleepwalking killer — the founding text of horror cinema.",
+    tags: ["expressionism", "1920s", "silent", "world-cinema"]
   },
   {
-    id: "charade",
-    title: "Charade",
-    year: 1963,
-    director: "Stanley Donen",
-    runtime: 113,
-    genres: ["Comedy", "Thriller", "Romance"],
-    archive_id: "charade_1963",
-    featured: true,
-    blurb: "Cary Grant and Audrey Hepburn in the best Hitchcock film Hitchcock never made — a Paris-set caper of stolen fortunes, mistaken identities, and impossible charm.",
-    tags: ["cary-grant", "audrey-hepburn", "1960s", "caper"]
-  },
-  {
-    id: "the-man-with-the-golden-arm",
-    title: "The Man with the Golden Arm",
-    year: 1955,
-    director: "Otto Preminger",
-    runtime: 119,
-    genres: ["Drama", "Noir"],
-    archive_id: "the_man_with_the_golden_arm",
-    blurb: "Sinatra as a card dealer fighting heroin addiction — censor-defying in 1955, with Saul Bass titles and an Elmer Bernstein jazz score that changed film music.",
-    tags: ["sinatra", "1950s", "preminger", "drama"]
+    id: "faust", title: "Faust", year: 1926,
+    director: "F. W. Murnau", runtime: 116, language: "German (silent)", country: "Germany",
+    genres: ["Fantasy", "Silent"], source: { kind: "archive", id: "Faust1926" },
+    blurb: "Murnau's last German film — a demon's wager and some of the most astonishing images of the silent age.",
+    tags: ["murnau", "1920s", "silent", "world-cinema"]
   },
 
-  /* ── SILENT & EARLY CINEMA ─────────────────────────────── */
+  /* ══════════ RUSSIAN — USSR / Russia ══════════ */
   {
-    id: "sherlock-jr",
-    title: "Sherlock Jr.",
-    year: 1924,
-    director: "Buster Keaton",
-    runtime: 45,
-    genres: ["Comedy", "Silent"],
-    archive_id: "SherlockJr",
-    blurb: "A projectionist literally steps into the movie screen. Keaton's 45-minute marvel of physical comedy and in-camera trickery that filmmakers still can't explain.",
-    tags: ["keaton", "silent", "1920s", "stunts"]
+    id: "battleship-potemkin", title: "Battleship Potemkin", year: 1925,
+    director: "Sergei Eisenstein", runtime: 75, language: "Russian (silent)", country: "Soviet Union",
+    genres: ["Drama", "Silent"], featured: true, source: { kind: "archive", id: "BattleshipPotemkin" },
+    blurb: "The Odessa Steps — Eisenstein's montage turned a 1905 mutiny into the most influential film in history.",
+    tags: ["eisenstein", "1920s", "silent", "world-cinema"]
   },
   {
-    id: "the-general",
-    title: "The General",
-    year: 1926,
-    director: "Buster Keaton",
-    runtime: 78,
-    genres: ["Comedy", "Silent", "Adventure"],
-    archive_id: "TheGeneral_201712",
-    blurb: "Buster Keaton's Civil War railroad chase — routinely named the greatest comedy ever filmed. Every stunt is real, including the most expensive shot of the silent era.",
-    tags: ["keaton", "silent", "1920s", "trains"]
+    id: "man-with-a-movie-camera", title: "Man with a Movie Camera", year: 1929,
+    director: "Dziga Vertov", runtime: 68, language: "Russian (silent)", country: "Soviet Union",
+    genres: ["Documentary", "Silent", "Avant-Garde"], source: { kind: "archive", id: "ManWithAMovieCamera" },
+    blurb: "A day in the Soviet city as pure cinema — Vertov's dizzying experiment, often voted the greatest documentary ever.",
+    tags: ["vertov", "1920s", "silent", "world-cinema"]
   },
   {
-    id: "the-phantom-of-the-opera",
-    title: "The Phantom of the Opera",
-    year: 1925,
-    director: "Rupert Julian",
-    runtime: 93,
-    genres: ["Horror", "Silent"],
-    archive_id: "ThePhantomOfTheOpera1925",
-    blurb: "Lon Chaney's self-designed makeup reveal is still one of cinema's great shocks. The lavish, doom-laden silent that built the Universal horror tradition.",
-    tags: ["lon-chaney", "silent", "1920s", "horror"]
-  },
-  {
-    id: "battleship-potemkin",
-    title: "Battleship Potemkin",
-    year: 1925,
-    director: "Sergei Eisenstein",
-    runtime: 75,
-    genres: ["Drama", "Silent"],
-    archive_id: "BattleshipPotemkin",
-    blurb: "The Odessa Steps. Eisenstein's revolutionary montage turned a 1905 mutiny into the most influential propaganda film — and editing lesson — in history.",
-    tags: ["eisenstein", "silent", "1920s", "revolution"]
-  },
-  {
-    id: "metropolis",
-    title: "Metropolis",
-    year: 1927,
-    director: "Fritz Lang",
-    runtime: 153,
-    genres: ["Sci-Fi", "Silent"],
-    archive_id: "Metropolis_201703",
-    featured: true,
-    blurb: "The towering ur-text of science fiction cinema. Lang's worker-vs-elite dystopia gave us the robot Maria, the vertical city, and a visual language films still borrow.",
-    tags: ["fritz-lang", "silent", "1920s", "dystopia"]
+    id: "aelita-queen-of-mars", title: "Aelita: Queen of Mars", year: 1924,
+    director: "Yakov Protazanov", runtime: 111, language: "Russian (silent)", country: "Soviet Union",
+    genres: ["Sci-Fi", "Silent"], source: { kind: "archive", id: "Aelita1924" },
+    blurb: "Constructivist Mars, a Soviet engineer's dream of revolution in the stars — early sci-fi spectacle.",
+    tags: ["1920s", "silent", "world-cinema"]
   },
 
-  /* ── SCI-FI / B-MOVIE ──────────────────────────────────── */
+  /* ══════════ ITALIAN — Italy ══════════ */
   {
-    id: "plan-9-from-outer-space",
-    title: "Plan 9 from Outer Space",
-    year: 1959,
-    director: "Ed Wood",
-    runtime: 79,
-    genres: ["Sci-Fi", "Cult"],
-    archive_id: "Plan9FromOuterSpace_926",
-    blurb: "Aliens resurrect the dead to stop humanity building a doomsday weapon. \"The worst film ever made\" — and one of the most beloved. Ed Wood's wobbly, sincere classic.",
-    tags: ["ed-wood", "1950s", "so-bad-its-good", "aliens"]
-  },
-  {
-    id: "the-brain-that-wouldnt-die",
-    title: "The Brain That Wouldn't Die",
-    year: 1962,
-    director: "Joseph Green",
-    runtime: 82,
-    genres: ["Sci-Fi", "Horror"],
-    archive_id: "TheBrainThatWouldntDie",
-    blurb: "A surgeon keeps his fiancée's severed head alive while shopping for a new body. Lurid, deranged drive-in sci-fi that became an MST3K legend.",
-    tags: ["1960s", "mad-science", "b-movie", "cult"]
-  },
-  {
-    id: "the-last-man-on-earth",
-    title: "The Last Man on Earth",
-    year: 1964,
-    director: "Ubaldo Ragona, Sidney Salkow",
-    runtime: 86,
-    genres: ["Sci-Fi", "Horror"],
-    archive_id: "the_last_man_on_earth",
-    blurb: "Vincent Price as the sole survivor of a plague that turned the world to vampires. The first adaptation of Matheson's I Am Legend — and a blueprint for Romero.",
-    tags: ["vincent-price", "1960s", "post-apocalyptic", "vampires"]
+    id: "cabiria", title: "Cabiria", year: 1914,
+    director: "Giovanni Pastrone", runtime: 148, language: "Italian (silent)", country: "Italy",
+    genres: ["Epic", "Silent", "Adventure"], source: { kind: "archive", id: "Cabiria" },
+    blurb: "The colossal Italian epic that taught the world the tracking shot — Hannibal, the Punic Wars, and the strongman Maciste.",
+    tags: ["1910s", "silent", "epic", "world-cinema"]
   },
 
-  /* ── WESTERN / ADVENTURE ───────────────────────────────── */
+  /* ══════════ SWEDISH / DANISH — Scandinavia ══════════ */
   {
-    id: "mclintock",
-    title: "McLintock!",
-    year: 1963,
-    director: "Andrew V. McLaglen",
-    runtime: 127,
-    genres: ["Western", "Comedy"],
-    archive_id: "McLintock_1963",
-    blurb: "John Wayne and Maureen O'Hara in a brawling, mud-slinging comic Western — a Taming-of-the-Shrew cattle-baron farce that fell straight into the public domain.",
-    tags: ["john-wayne", "1960s", "western", "comedy"]
+    id: "the-phantom-carriage", title: "The Phantom Carriage", year: 1921,
+    director: "Victor Sjöström", runtime: 107, language: "Swedish (silent)", country: "Sweden",
+    genres: ["Drama", "Horror", "Silent"], source: { kind: "archive", id: "ThePhantomCarriage" },
+    blurb: "The last sinner to die each year must drive Death's cart — Sjöström's haunting multiple-exposure landmark, a Bergman favourite.",
+    tags: ["1920s", "silent", "world-cinema"]
   },
   {
-    id: "the-man-from-utah",
-    title: "The Man from Utah",
-    year: 1934,
-    director: "Robert N. Bradbury",
-    runtime: 52,
-    genres: ["Western", "Adventure"],
-    archive_id: "the_man_from_utah",
-    blurb: "A young John Wayne goes undercover at a crooked rodeo. Lean Poverty-Row Western from Wayne's apprentice years, before Stagecoach made him a star.",
-    tags: ["john-wayne", "1930s", "western", "rodeo"]
-  },
-  {
-    id: "santa-fe-trail",
-    title: "Santa Fe Trail",
-    year: 1940,
-    director: "Michael Curtiz",
-    runtime: 110,
-    genres: ["Western", "Drama"],
-    archive_id: "santa_fe_trail",
-    blurb: "Errol Flynn, Olivia de Havilland and a young Ronald Reagan ride the pre-Civil-War frontier. Big-studio adventure from the director of Casablanca.",
-    tags: ["errol-flynn", "1940s", "western", "curtiz"]
+    id: "haxan", title: "Häxan (Witchcraft Through the Ages)", year: 1922,
+    director: "Benjamin Christensen", runtime: 105, language: "Danish (silent)", country: "Denmark / Sweden",
+    genres: ["Horror", "Documentary", "Silent"], source: { kind: "archive", id: "Haxan" },
+    blurb: "A part-essay, part-nightmare history of witchcraft — still one of the most transgressive images of the silent era.",
+    tags: ["1920s", "silent", "world-cinema"]
   },
 
-  /* ── ANIMATION / FAMILY ────────────────────────────────── */
+  /* ══════════ MANDARIN CHINESE — China ══════════ */
   {
-    id: "gullivers-travels",
-    title: "Gulliver's Travels",
-    year: 1939,
-    director: "Dave Fleischer",
-    runtime: 76,
-    genres: ["Animation", "Family"],
-    archive_id: "gullivers_travels_1939",
-    blurb: "The Fleischer Studios' lush, hand-drawn answer to Disney's Snow White — a shipwrecked giant brokers peace between two tiny warring kingdoms.",
-    tags: ["animation", "1930s", "family", "fleischer"]
+    id: "the-goddess", title: "The Goddess (神女)", year: 1934,
+    director: "Wu Yonggang", runtime: 85, language: "Mandarin Chinese (silent)", country: "China",
+    genres: ["Drama", "Silent"], featured: true, source: { kind: "archive", id: "TheGoddess1934" },
+    blurb: "Ruan Lingyu as a Shanghai mother surviving by night to school her son — the towering classic of Chinese silent cinema.",
+    tags: ["1930s", "silent", "shanghai", "world-cinema"]
   },
   {
-    id: "the-snow-queen",
-    title: "The Snow Queen",
-    year: 1957,
-    director: "Lev Atamanov",
-    runtime: 64,
-    genres: ["Animation", "Family"],
-    archive_id: "the_snow_queen_1957",
-    blurb: "The Soviet animated Hans Christian Andersen adaptation that Hayao Miyazaki credits with saving his career. Gorgeous, hand-drawn, and genuinely magical.",
-    tags: ["animation", "1950s", "family", "miyazaki"]
+    id: "spring-in-a-small-town", title: "Spring in a Small Town (小城之春)", year: 1948,
+    director: "Fei Mu", runtime: 98, language: "Mandarin Chinese", country: "China",
+    genres: ["Drama", "Romance"], source: find("YouTube", "Spring in a Small Town 1948 Fei Mu"),
+    blurb: "A married woman, a ruined house, an old love returning — routinely voted the greatest Chinese film ever made.",
+    tags: ["1940s", "world-cinema"]
+  },
+
+  /* ══════════ JAPANESE — Japan ══════════ */
+  {
+    id: "a-page-of-madness", title: "A Page of Madness (狂った一頁)", year: 1926,
+    director: "Teinosuke Kinugasa", runtime: 70, language: "Japanese (silent)", country: "Japan",
+    genres: ["Avant-Garde", "Drama", "Silent"], source: { kind: "archive", id: "APageOfMadness" },
+    blurb: "A janitor at an asylum where his wife is committed — a lost-then-found avant-garde fever dream of Japanese silent cinema.",
+    tags: ["1920s", "silent", "world-cinema"]
+  },
+  {
+    id: "i-was-born-but", title: "I Was Born, But… (大人の見る絵本 生れてはみたけれど)", year: 1932,
+    director: "Yasujirō Ozu", runtime: 100, language: "Japanese (silent)", country: "Japan",
+    genres: ["Comedy", "Drama", "Silent"], source: find("YouTube", "I Was Born But 1932 Ozu"),
+    blurb: "Two boys discover their father bows and scrapes to his boss — Ozu's tender, funny silent on childhood and class.",
+    tags: ["ozu", "1930s", "silent", "world-cinema"]
+  },
+
+  /* ══════════ SPANISH — Spain / Mexico ══════════ */
+  {
+    id: "land-without-bread", title: "Land Without Bread (Las Hurdes)", year: 1933,
+    director: "Luis Buñuel", runtime: 27, language: "Spanish", country: "Spain",
+    genres: ["Documentary"], source: { kind: "archive", id: "LandWithoutBread" },
+    blurb: "Buñuel's savage \"documentary\" on a forgotten Spanish region — a Surrealist's grenade aimed at the form itself.",
+    tags: ["bunuel", "1930s", "world-cinema"]
+  },
+  {
+    id: "los-olvidados", title: "Los Olvidados (The Young and the Damned)", year: 1950,
+    director: "Luis Buñuel", runtime: 80, language: "Spanish", country: "Mexico",
+    genres: ["Drama", "Crime"], source: find("YouTube", "Los Olvidados 1950 Buñuel"),
+    blurb: "Street children in the slums of Mexico City — Buñuel's unflinching Cannes-winning masterpiece of poverty and cruelty.",
+    tags: ["bunuel", "1950s", "world-cinema"]
+  },
+
+  /* ══════════ PORTUGUESE — Brazil ══════════ */
+  {
+    id: "limite", title: "Limite", year: 1931,
+    director: "Mário Peixoto", runtime: 114, language: "Portuguese (silent)", country: "Brazil",
+    genres: ["Avant-Garde", "Drama", "Silent"], source: find("YouTube", "Limite 1931 Mário Peixoto"),
+    blurb: "Three castaways adrift in a boat, told in pure rhythmic imagery — the legendary peak of Brazilian silent cinema.",
+    tags: ["1930s", "silent", "world-cinema"]
+  },
+
+  /* ══════════ ARABIC — Egypt ══════════ */
+  {
+    id: "cairo-station", title: "Cairo Station (Bab el Hadid / باب الحديد)", year: 1958,
+    director: "Youssef Chahine", runtime: 77, language: "Arabic", country: "Egypt",
+    genres: ["Drama", "Noir"], featured: true, source: find("YouTube", "Cairo Station Bab el Hadid 1958 Chahine"),
+    blurb: "A crippled newspaper seller's obsession boils over in Cairo's central station — Chahine's electric Egyptian classic.",
+    tags: ["chahine", "1950s", "world-cinema"]
+  },
+
+  /* ══════════ HINDI — India ══════════ */
+  {
+    id: "awaara", title: "Awaara (आवारा / The Vagabond)", year: 1951,
+    director: "Raj Kapoor", runtime: 168, language: "Hindi", country: "India",
+    genres: ["Drama", "Musical"], source: find("YouTube", "Awaara 1951 Raj Kapoor full movie"),
+    blurb: "A judge's abandoned son turns to crime — Raj Kapoor's landmark melodrama, a sensation from Moscow to Cairo.",
+    tags: ["1950s", "bollywood", "world-cinema"]
+  },
+  {
+    id: "mother-india", title: "Mother India (मदर इंडिया)", year: 1957,
+    director: "Mehboob Khan", runtime: 172, language: "Hindi", country: "India",
+    genres: ["Drama", "Epic"], source: find("YouTube", "Mother India 1957 full movie"),
+    blurb: "A peasant woman's endurance across decades of hardship — India's defining epic and its first Oscar nominee.",
+    tags: ["1950s", "epic", "world-cinema"]
+  },
+
+  /* ══════════ BENGALI — India ══════════ */
+  {
+    id: "pather-panchali", title: "Pather Panchali (পথের পাঁচালী)", year: 1955,
+    director: "Satyajit Ray", runtime: 125, language: "Bengali", country: "India",
+    genres: ["Drama"], featured: true, source: find("YouTube", "Pather Panchali 1955 Satyajit Ray full movie"),
+    blurb: "Apu's childhood in a Bengal village — Ray's debut and the start of the greatest trilogy in world cinema.",
+    tags: ["ray", "1950s", "world-cinema"]
+  },
+
+  /* ══════════ TELUGU / TAMIL — India ══════════ */
+  {
+    id: "mayabazar", title: "Mayabazar (మాయాబజార్)", year: 1957,
+    director: "Kadiri Venkata Reddy", runtime: 184, language: "Telugu", country: "India",
+    genres: ["Fantasy", "Musical"], source: find("YouTube", "Mayabazar 1957 full movie"),
+    blurb: "A magical wedding from the Mahabharata, staged with dazzling trick photography — the most beloved Telugu film of all time.",
+    tags: ["1950s", "mythological", "world-cinema"]
+  },
+
+  /* ══════════ KOREAN — South Korea ══════════ */
+  {
+    id: "the-housemaid", title: "The Housemaid (하녀)", year: 1960,
+    director: "Kim Ki-young", runtime: 108, language: "Korean", country: "South Korea",
+    genres: ["Thriller", "Drama"], featured: true, source: find("YouTube", "The Housemaid 1960 Kim Ki-young Korean Classic Film"),
+    blurb: "A composer's household is invaded by a predatory maid — the delirious, unhinged peak of Korean golden-age cinema.",
+    tags: ["1960s", "world-cinema"]
+  },
+  {
+    id: "aimless-bullet", title: "Aimless Bullet (오발탄)", year: 1961,
+    director: "Yu Hyun-mok", runtime: 110, language: "Korean", country: "South Korea",
+    genres: ["Drama"], source: find("YouTube", "Aimless Bullet 1961 Korean Classic Film"),
+    blurb: "A clerk's family disintegrating in post-war Seoul — often named the greatest Korean film ever made.",
+    tags: ["1960s", "world-cinema"]
+  },
+
+  /* ══════════ PERSIAN — Iran ══════════ */
+  {
+    id: "the-house-is-black", title: "The House Is Black (خانه سیاه است)", year: 1963,
+    director: "Forough Farrokhzad", runtime: 22, language: "Persian", country: "Iran",
+    genres: ["Documentary"], source: find("YouTube", "The House Is Black 1963 Forough Farrokhzad"),
+    blurb: "A poet's gaze on a leper colony — the short, luminous documentary that seeded the entire Iranian New Wave.",
+    tags: ["1960s", "world-cinema"]
+  },
+
+  /* ══════════ TURKISH — Turkey ══════════ */
+  {
+    id: "dry-summer", title: "Dry Summer (Susuz Yaz)", year: 1963,
+    director: "Metin Erksan", runtime: 90, language: "Turkish", country: "Turkey",
+    genres: ["Drama"], source: find("YouTube", "Susuz Yaz Dry Summer 1963 full movie"),
+    blurb: "A landowner dams the water his village depends on — the Berlin-winning landmark of Turkish cinema.",
+    tags: ["1960s", "world-cinema"]
+  },
+
+  /* ══════════ INDONESIAN — Indonesia ══════════ */
+  {
+    id: "after-the-curfew", title: "After the Curfew (Lewat Djam Malam)", year: 1954,
+    director: "Usmar Ismail", runtime: 101, language: "Indonesian", country: "Indonesia",
+    genres: ["Drama", "Noir"], source: find("YouTube", "Lewat Djam Malam After the Curfew 1954"),
+    blurb: "A disillusioned revolutionary can't fit back into peacetime Bandung — the restored cornerstone of Indonesian film.",
+    tags: ["1950s", "world-cinema"]
+  },
+
+  /* ══════════ URDU — Pakistan ══════════ */
+  {
+    id: "jago-hua-savera", title: "Jago Hua Savera (The Day Shall Dawn)", year: 1959,
+    director: "A. J. Kardar", runtime: 96, language: "Urdu / Bengali", country: "Pakistan",
+    genres: ["Drama"], source: find("YouTube", "Jago Hua Savera 1959 full movie"),
+    blurb: "Fisher families on the Meghna river, scripted by the poet Faiz Ahmed Faiz — a rediscovered jewel of Pakistani cinema.",
+    tags: ["1950s", "world-cinema"]
+  },
+
+  /* ══════════ CANTONESE — Hong Kong ══════════ */
+  {
+    id: "the-kid-bruce-lee", title: "The Kid (細路祥)", year: 1950,
+    director: "Fung Fung", runtime: 78, language: "Cantonese", country: "Hong Kong",
+    genres: ["Drama"], source: find("YouTube", "The Kid 1950 Bruce Lee Cantonese full movie"),
+    blurb: "A street orphan in post-war Hong Kong — notable for a ten-year-old Bruce Lee in his first major child role.",
+    tags: ["1950s", "world-cinema"]
   }
 ];

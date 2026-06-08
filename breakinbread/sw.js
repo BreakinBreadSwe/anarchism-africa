@@ -6,7 +6,7 @@
  *   - archive.org thumbnails: cache-first (so browsed posters survive offline).
  *   - archive.org /embed/ player iframes are never cached (live streaming only).
  */
-const CACHE = "bb-shell-v1";
+const CACHE = "bb-shell-v2";
 const SCOPE = new URL(self.registration.scope).pathname; // e.g. /breakinbread/
 
 const SHELL = [

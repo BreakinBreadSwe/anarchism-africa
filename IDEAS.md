@@ -70,3 +70,44 @@ colosseum. Names, numbers, sources; refuses to fabricate.
 
 **Next step:** deep-research pass for real cited figures (rights deals, audience,
 sponsorship media value, wages/bonuses), then draft via the article pipeline in house voice.
+
+---
+
+## The FairPlay Thermometer — a scale-invariant impact index for football
+
+**Status:** 💡 idea (product concept) — captured 2026-06-16. Extends "The Modern Colosseum."
+**Owner link:** FairPlay (fairplayfoot.com) / LUVLAB.
+
+**What.** A single instrument — a "thermometer" — that reads the planetary and social
+*heat* of any football event, at any caliber. Same metrics whether it's a World Cup
+final watched by a billion or a Sunday youth match: the index is computed **per event
+and per attendee**, so it's scale-invariant. The point is to make impact *legible*
+down the whole pyramid, not just at the mega-event top — because even small leagues,
+multiplied across thousands of fixtures, move the needle on the planet and on society.
+
+**Why.** Turns the "modern colosseum" critique into a usable, repeatable measurement
+that FairPlay can own. Lets a club, league, or organiser see their own number and
+lower it. Connects the platform's analysis to a concrete tool.
+
+**Reading dimensions (each scores per-event + per-attendee):**
+1. **Planet** — carbon (the dominant line is travel), water, waste, energy. Footprint
+   per spectator and per match, scalable from grassroots to World Cup.
+2. **Spectator transportation** — how fans get there (car / coach / rail / air), the
+   single biggest swing factor; local league = short car trips × thousands of fixtures,
+   mega-event = long-haul flights.
+3. **Youth & spectator health** — exposure of young spectators to gambling/alcohol/
+   junk-food advertising, air quality, crowd safety, and the positive side (activity,
+   belonging) — net health signal, not one-sided.
+4. **Society** — labor behind the event, local economic benefit vs. cost, inclusion,
+   and goodwill.
+
+**Design questions:**
+- Output: a 0–100 "temperature," a letter grade, or a multi-dial readout?
+- Data inputs: what's the minimum an organiser must supply (attendance, distances,
+  transport mix, sponsor categories) for a credible reading?
+- Benchmarks: World Cup match vs. national-league match vs. grassroots youth match —
+  publish reference values so any event can place itself on the scale.
+
+**Next step:** extend the in-progress research to cover fan-travel emissions, youth-
+spectator health, and grassroots/amateur cumulative footprint; from that, draft a
+first methodology + reference benchmarks for the thermometer.

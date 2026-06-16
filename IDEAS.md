@@ -33,3 +33,40 @@ ANARCHISM.AFRICA into the wider LUVLAB / FairPlay family.
 
 **Next step:** confirm canonical link + placement, then ship the footer/About credit
 (scope 1) as a quick first pass.
+
+---
+
+## "The Modern Colosseum" — financial/political anatomy of a France–Sénégal match
+
+**Status:** 💡 idea + 🔬 research in progress — captured 2026-06-16
+
+**What.** A data-driven long-read (article + possible interactive) that dissects a
+France vs Sénégal men's football match as an economic and political machine. The
+former colonizer meets the colonized in a stadium ringed by sponsors; the Senegalese
+players lighting up the pitch were largely developed by, and earn inside, European
+leagues. Who owns the spectacle, who profits, who is watched.
+
+**Why.** Fits the platform's afro-anarchist lens exactly — football as the modern
+colosseum. Names, numbers, sources; refuses to fabricate.
+
+**Analysis layers (each measurable):**
+1. **Airtime economics** — seconds of brand exposure per sponsor, per broadcaster
+   (TF1/FR, RTS/SN, beIN, SuperSport…), modeled to ad-equivalent / media value.
+2. **Air rights & reach** — who holds broadcast rights per market, what they paid,
+   audience reach (viewers touched per territory).
+3. **Player economics** — wages, appearance/scoring bonuses, and transfer-value
+   swings before vs after scoring (one goal moving a valuation).
+4. **Colosseum / political layer** — France–Sénégal colonial history, soft power &
+   goodwill, football-as-diplomacy vs "sportswashing," prestige, and the cost of
+   *hosting* (stadium debt, displacement).
+5. **Society & nature** — labor behind the spectacle, gambling-ad saturation, and the
+   carbon/water/waste footprint of a mega-event.
+
+**Open questions:**
+- Which specific fixture (World Cup 2026 group stage? friendly? AFCON?) — pins down
+  the sponsor set and rights holders.
+- Output format: standalone article via the AI article pipeline, or article + an
+  interactive "where the money goes" graphic?
+
+**Next step:** deep-research pass for real cited figures (rights deals, audience,
+sponsorship media value, wages/bonuses), then draft via the article pipeline in house voice.

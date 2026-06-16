@@ -38,7 +38,8 @@ ANARCHISM.AFRICA into the wider LUVLAB / FairPlay family.
 
 ## "The Modern Colosseum" — financial/political anatomy of a France–Sénégal match
 
-**Status:** 💡 idea + 🔬 research in progress — captured 2026-06-16
+**Status:** 💡 idea + ✅ research done — captured 2026-06-16.
+**Dossier:** [`docs/RESEARCH-modern-colosseum.md`](docs/RESEARCH-modern-colosseum.md) — six cited research passes, contested figures flagged.
 
 **What.** A data-driven long-read (article + possible interactive) that dissects a
 France vs Sénégal men's football match as an economic and political machine. The

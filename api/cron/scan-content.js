@@ -117,14 +117,26 @@ export default async function handler (req, res) {
   }
 
   const origin = process.env.SITE_URL || `https://${req.headers.host || 'anarchism.africa'}`;
-  const summary = { scanned: 0, queued: 0, deduped: 0, rejected_404: 0, og_scraped: 0, errors: [], ogScrapeCount: 0 };
+  const summary = { scanned: 0, queued: 0, deduped: 0, rejected_404: 0, og_scraped: 0, errors: [], ogScrapeCount: 0, sources_skipped_deadline: 0 };
+
+  // HARD deadline so the function returns before Vercel kills it. Hobby caps
+  // at 10s, Pro at 60s — 50s leaves headroom for the final JSON response
+  // serialisation. Without this, ~55 sources × 5-10s each blows the budget
+  // every run and the function never logs ANY scrape (the symptom the
+  // health checker reads as "Last scrape: never"). Dedupe makes re-runs
+  // cheap so a deadline-truncated run is safe to retry hourly.
+  const deadline = Date.now() + 50_000;
 
   for (const src of SOURCES) {
+    if (Date.now() > deadline) { summary.sources_skipped_deadline++; continue; }
     try {
       const xml = await fetchText(src.feed);
-      const items = parseFeed(xml).slice(0, 12);
+      // Cap per-source items at 6 (was 12) — same total coverage across a few
+      // hourly runs, each run finishes faster.
+      const items = parseFeed(xml).slice(0, 6);
       summary.scanned += items.length;
       for (const it of items) {
+        if (Date.now() > deadline) break;
         // VALIDATE the link before queueing. Many feeds publish a slug
         // before the article goes live, or the publisher 410s old posts.
         // We do a HEAD request, follow redirects, and only queue items

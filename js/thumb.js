@@ -192,17 +192,30 @@
     return { kind: '', title: h?.textContent?.trim() || '' };
   }
 
+  // OPT-IN duplicate substitution.
+  // Default (false): a duplicate scraped image stays as-is. Vector fallback
+  // ONLY fires when the element has no real image at all. Scraped thumbnails
+  // are never overridden — your actual editorial work shows through.
+  // Opt-in (true): aggressive de-duplication — every duplicate scraped image
+  // gets swapped for a unique procedural pattern (the previous behaviour).
+  // Flip from the console:  localStorage.setItem('aa-thumb-dedupe', '1')
+  const DEDUPE_DUPLICATES = (() => {
+    try { return localStorage.getItem('aa-thumb-dedupe') === '1'; } catch { return false; }
+  })();
+
   function fixOne (el) {
     if (el.dataset.thumbFixed === '1') return;
     const url = styleUrl(el);
     let needFallback = false;
     if (!url || url === 'undefined' || url === 'null' || url === '#' || url === 'about:blank') {
+      // Truly empty — fall back to the procedural generator so the card
+      // isn't a blank rectangle. This is the only default-on path.
       needFallback = true;
-    } else if (usedUrls.has(url)) {
-      // duplicate — substitute
+    } else if (DEDUPE_DUPLICATES && usedUrls.has(url)) {
+      // Opt-in only: substitute when a duplicate scraped URL is detected.
       needFallback = true;
     } else {
-      // unique real image — register it
+      // Unique (or duplicate but dedupe is off) — leave the real image.
       usedUrls.add(url);
     }
     if (needFallback) {

@@ -25,7 +25,14 @@
         </p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <button class="btn primary" id="ml-load">Load quotes</button>
-          <button class="btn ghost" id="ml-printify-shops" title="Verify Printify connection">Check Printify</button>
+          <label class="mono" style="display:inline-flex;align-items:center;gap:6px;font-size:.72rem;color:var(--muted)">
+            POD
+            <select id="ml-provider" style="padding:6px 10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit">
+              <option value="printful">Printful (account-level, eco blueprints)</option>
+              <option value="printify">Printify (shop-level)</option>
+            </select>
+          </label>
+          <button class="btn ghost" id="ml-check-pod" title="Verify selected POD connection">Check connection</button>
           <span id="ml-status" class="mono" style="font-size:.75rem;color:var(--muted);margin-left:6px"></span>
         </div>
       </div>
@@ -74,7 +81,24 @@
   }
   function bind () {
     $('#ml-load').addEventListener('click', loadQuotes);
-    $('#ml-printify-shops').addEventListener('click', checkPrintify);
+    $('#ml-check-pod').addEventListener('click', checkPOD);
+    // Provider selector persisted across sessions so the publisher's
+    // chosen default sticks. Default 'printful' since the AA account-level
+    // token spans many stores and the eco Stanley/Stella blueprints sit
+    // under Printful's catalog.
+    const savedProvider = (() => { try { return localStorage.getItem('aa-pod-provider'); } catch { return null; } })();
+    state.provider = ['printful', 'printify'].includes(savedProvider) ? savedProvider : 'printful';
+    const $prov = $('#ml-provider');
+    if ($prov) {
+      $prov.value = state.provider;
+      $prov.addEventListener('change', () => {
+        state.provider = $prov.value;
+        try { localStorage.setItem('aa-pod-provider', state.provider); } catch {}
+        // Reset connection state so the new provider re-checks on next push.
+        state.shopId = null; state.printfulStoreId = null; state.variants = [];
+        status(`POD switched to ${state.provider}`, 'ok');
+      });
+    }
     $('#ml-q-search').addEventListener('input', e => filterQuotes(e.target.value));
     $('#ml-quotes').addEventListener('click', e => {
       // Make-merch button: one-click pipeline. Stop propagation so the
@@ -128,43 +152,139 @@
      Designed so a publisher can blast through approving 20 quotes per session
      without clicking through the 5-button manual flow each time. */
   async function makeMerchOneClick (id, btn) {
-    if (btn) { btn.disabled = true; btn.dataset.orig = btn.textContent; btn.textContent = '1/5 design…'; }
+    const provider = state.provider || 'printful';
+    if (btn) { btn.disabled = true; btn.dataset.orig = btn.textContent; btn.textContent = '1/4 design…'; }
     try {
       // 1. Generate design (sets state.selected, state.front, state.back)
       await pickQuote(id);
       if (!state.front || !state.back || state.selected?.id !== id) { throw new Error('design generation failed'); }
-      if (btn) btn.textContent = '2/5 connecting…';
 
-      // 2. Check Printify connection (sets shopId / blueprintId / printProviderId)
-      if (!state.shopId) {
-        try { await checkPrintify(); } catch { /* fall through — handled below */ }
-      }
-      if (!state.shopId) {
-        status('Design ready ✓ — set PRINTIFY_API_TOKEN + PRINTIFY_SHOP_ID in Vercel env to one-click-publish. Preview + PNG download still available below.', 'ok');
+      // 2. Check connection for the selected provider
+      if (btn) btn.textContent = `2/4 ${provider}…`;
+      const connected = await ensureProviderConnected(provider);
+      if (!connected.ok) {
+        status(`Design ready ✓ — ${connected.message}`, 'ok');
         if (btn) { btn.textContent = 'Design ready ✓'; setTimeout(() => { btn.disabled = false; btn.textContent = btn.dataset.orig; }, 4000); }
         return;
       }
 
-      // 3. Fetch variants if not loaded yet (cached for the rest of the session)
-      if (btn) btn.textContent = '3/5 variants…';
-      if (!state.variants?.length) await fetchVariants();
-      if (!state.variants?.length) throw new Error('no variants — set blueprint/printProvider in admin');
+      // 3. Push to the provider (uploads PNGs + creates product)
+      if (btn) btn.textContent = '3/4 uploading…';
+      if (provider === 'printful') {
+        await pushPrintful();
+      } else {
+        if (!state.variants?.length) await fetchVariants();
+        if (!state.variants?.length) throw new Error('no variants — set blueprint/printProvider');
+        await pushPrintify();
+      }
+      if (!state.productId) throw new Error(`${provider} product create failed`);
 
-      // 4. Push to Printify (uploads PNGs + creates unpublished product)
-      if (btn) btn.textContent = '4/5 uploading…';
-      await pushPrintify();
-      if (!state.productId) throw new Error('Printify product create failed');
-
-      // 5. Publish to the connected shop
-      if (btn) btn.textContent = '5/5 publishing…';
-      await publishProduct();
-
-      status('Merch live ✓ — check your Printify dashboard', 'ok');
+      // 4. Publish to the connected shop (Printify only — Printful adds as
+      // draft to the store, manual publish in Printful dashboard)
+      if (btn) btn.textContent = '4/4 publishing…';
+      if (provider === 'printify') {
+        await publishProduct();
+      }
+      status(`Merch live on ${provider} ✓`, 'ok');
       if (btn) { btn.textContent = 'Live ✓'; setTimeout(() => { btn.disabled = false; btn.textContent = btn.dataset.orig; }, 5000); }
     } catch (e) {
       status('Make merch failed: ' + e.message, 'error');
       if (btn) { btn.textContent = 'Failed'; setTimeout(() => { btn.disabled = false; btn.textContent = btn.dataset.orig; }, 3000); }
     }
+  }
+
+  /* Provider connection check — returns { ok, message }.
+     If the provider isn't configured, .ok is false and .message tells the
+     publisher exactly which env vars to set. */
+  async function ensureProviderConnected (provider) {
+    if (provider === 'printful') {
+      if (state.printfulStoreId) return { ok: true };
+      try {
+        const r = await fetch('/api/pod/printful?op=status');
+        const data = await r.json();
+        if (r.ok && data.store_id) {
+          state.printfulStoreId = data.store_id;
+          return { ok: true };
+        }
+        return { ok: false, message: 'Printful: set PRINTFUL_API_KEY (+ optionally PRINTFUL_STORE_ID) in Vercel env. ' + (data.error || '') };
+      } catch (e) {
+        return { ok: false, message: 'Printful: ' + e.message };
+      }
+    }
+    if (provider === 'printify') {
+      if (state.shopId) return { ok: true };
+      try { await checkPrintify(); } catch {}
+      if (state.shopId) return { ok: true };
+      return { ok: false, message: 'Printify: set PRINTIFY_API_TOKEN + PRINTIFY_SHOP_ID in Vercel env.' };
+    }
+    return { ok: false, message: 'Unknown POD provider: ' + provider };
+  }
+
+  /* Push to Printful — uploads front + back PNGs as files, then creates a
+     sync_product with the eco Stanley/Stella organic-cotton tee as default
+     (catalog product 162; override via the panel inputs once we surface them).
+     Printful's API returns the product as a DRAFT in the store — publisher
+     finalises pricing / mockups / publish from the Printful dashboard. */
+  async function pushPrintful () {
+    if (!state.front || !state.back) { status('Generate a design first', 'error'); return; }
+    const q = state.selected;
+    const title = ($('#ml-title')?.value) || `ANARCHISM.AFRICA · ${q.author} — quote tee`;
+
+    status('Uploading front to Printful…'); logPF('--- printful front upload ---');
+    const upFront = await uploadImagePrintful(state.front.svg, `aa-${q.id}-front.png`);
+    logPF('front file id: ' + upFront.id);
+    status('Uploading back…');
+    const upBack = await uploadImagePrintful(state.back.svg, `aa-${q.id}-back.png`);
+    logPF('back file id: ' + upBack.id);
+
+    // Default eco catalog: 162 = Stanley/Stella Creator 2.0 (GOTS organic
+    // cotton). Default variant: the canonical Black Medium. The publisher
+    // can multiply variants in the Printful dashboard once the product lands.
+    const catalogProductId = 162;
+    const defaultVariantId = 4011; // Stanley/Stella Creator 2.0 — Black M
+    const retailPrice = '29.00';
+
+    status('Creating product on Printful…');
+    const created = await fetch('/api/pod/printful', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        op: 'product',
+        syncProduct: { name: title, thumbnail: '' },
+        syncVariants: [{
+          variant_id: defaultVariantId,
+          retail_price: retailPrice,
+          files: [
+            { type: 'front', url: upFront.url || upFront.preview_url || '' },
+            { type: 'back',  url: upBack.url  || upBack.preview_url  || '' }
+          ]
+        }]
+      })
+    });
+    const cdata = await created.json();
+    if (!created.ok) throw new Error(cdata.error || ('HTTP ' + created.status));
+    state.productId = cdata.id || cdata.sync_product?.id;
+    logPF('printful product: ' + JSON.stringify(cdata).slice(0, 300));
+    status('Printful product created — finish in Printful dashboard', 'ok');
+  }
+
+  async function uploadImagePrintful (svg, fileName) {
+    const r = await rasterise(svg);
+    const b64 = r.dataUrl.split(',')[1];
+    const up = await fetch('/api/pod/printful', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ op: 'upload', imageB64: b64, fileName })
+    });
+    const data = await up.json();
+    if (!up.ok) throw new Error(data.error || ('HTTP ' + up.status));
+    return data;
+  }
+
+  /* Provider-aware connection check used by the 'Check connection' button. */
+  async function checkPOD () {
+    const provider = state.provider || 'printful';
+    status(`Checking ${provider}…`);
+    const r = await ensureProviderConnected(provider);
+    status(r.ok ? `${provider} connected ✓` : r.message, r.ok ? 'ok' : 'error');
   }
   function filterQuotes (q) {
     const f = (q||'').toLowerCase().trim();

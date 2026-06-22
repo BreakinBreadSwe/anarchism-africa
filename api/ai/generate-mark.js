@@ -23,6 +23,7 @@ const SUBJECT_DEFAULT =
   "the anarchist circle-A symbol overlaid on the silhouette of the African continent, with the horizontal crossbar of the A extending past the continent's outline on both sides — a single iconic mark";
 
 const STYLE_PROMPTS = {
+  // ── Graphic styles (output = the mark itself, screenprint-ready) ───────
   classic:     'bold, high-contrast, two-tone (black + gold), screenprint-ready, no text, centered on a square canvas, generous margin, clean vector look',
   kente:       'kente-cloth weaving pattern integrated into the negative space, pan-african red/gold/green/violet, ceremonial, sharp edges, no text',
   glitch:      'cyberpunk glitch aesthetic, RGB chromatic aberration, scanlines, neon teal and magenta, brutalist, no text',
@@ -32,6 +33,17 @@ const STYLE_PROMPTS = {
   screenprint: 'four-color screenprint, halftone fills, slight ink-bleed, vintage poster, pan-african palette, no text',
   graffiti:    'spraypaint stencil, drips, masked sharpness, sprayed onto a concrete wall texture, two-tone, no text',
   woodcut:     'traditional woodcut/linocut, hand-carved chisel marks, single black ink on cream, high contrast, no text',
+  // ── Tileable pattern (no central focal point — covers the canvas edge to edge) ─
+  pattern:     'a TILEABLE seamless repeating pattern derived from the AA mark — many small copies of the mark interlocking on a grid, plus geometric kente / Adinkra motifs filling the spaces. Edge-to-edge coverage, no central focal point, no margin, deep saturated pan-african palette. Suitable for textile, wrapping paper, or background fill. No text.',
+  // ── Product mockups (output = a photoreal product with the mark printed on it) ─
+  poster:      'a large-format graphic POSTER hanging on a concrete or brick wall in soft directional light, the AA mark as the dominant central design, pan-african screenprint palette, slight paper texture and pinhole shadows, photoreal, no extra text beyond the mark itself',
+  tshirt:      'a photoreal product mockup: an organic-cotton crew-neck T-SHIRT shot flat on a neutral muted background (or worn by a young African person against a coloured studio backdrop), the AA mark screenprinted centered on the chest at iconic poster scale, slight fabric weave visible, soft daylight, magazine-quality. No mannequin plastic look. No extra text.',
+  hoodie:      'a photoreal product mockup: a heavyweight organic-cotton HOODIE in dark stone grey, worn by a young African person against a warm-lit concrete studio backdrop, the AA mark screenprinted large and centered on the chest, soft daylight, magazine-quality. No extra text.',
+  mug:         'a photoreal product mockup: a matte ceramic MUG in deep black, the AA mark wrapped onto the front face at clean screenprint scale, sitting on a warm wood surface with a soft shadow, gentle directional light, no liquid, no extra text',
+  tote:        'a photoreal product mockup: an undyed natural-cotton TOTE BAG hanging or lying flat against a neutral textured wall, the AA mark screenprinted at full chest scale in two ink colours, slight fabric weave visible, soft daylight, no extra text',
+  towel:       'a photoreal product mockup: a large terry BEACH TOWEL laid out on warm sand or a wooden deck, the AA mark as a repeating pan-african pattern across the full surface, edge-to-edge coverage, soft warm sunlight, no extra text',
+  blanket:     'a photoreal product mockup: a woven WOOL or COTTON BLANKET folded on a wooden bench or bed, kente-inspired pan-african colours, the AA mark integrated as one motif within a wider geometric weaving pattern that covers the whole blanket, warm interior lighting, magazine-quality, no extra text',
+  sticker:     'a photoreal product mockup: a DIE-CUT VINYL STICKER of the AA mark, slight depth and white bleed border around the silhouette, peeling slightly off a paper backing on a wooden desk, glossy reflection, no extra text',
   photoreal:   'photoreal physical object: an embossed brass medallion of the mark on a black velvet, soft studio lighting, macro detail, no text'
 };
 

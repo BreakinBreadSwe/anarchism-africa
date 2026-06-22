@@ -17,17 +17,28 @@
  */
 (function () {
   const STYLES = [
-    ['random',      'Random'],
-    ['classic',     'Classic two-tone'],
-    ['kente',       'Kente woven'],
-    ['glitch',      'Glitch / cyberpunk'],
-    ['brutalist',   'Brutalist 1-bit'],
-    ['risograph',   'Risograph print'],
-    ['goldleaf',    'Gold leaf'],
-    ['screenprint', 'Screenprint poster'],
-    ['graffiti',    'Spraypaint stencil'],
-    ['woodcut',     'Woodcut / linocut'],
-    ['photoreal',   'Photoreal medallion']
+    ['random',           'Random'],
+    // ── Graphic style presets ─────────────────────────────────────────────
+    ['classic',          'Classic two-tone'],
+    ['kente',            'Kente woven'],
+    ['glitch',           'Glitch / cyberpunk'],
+    ['brutalist',        'Brutalist 1-bit'],
+    ['risograph',        'Risograph print'],
+    ['goldleaf',         'Gold leaf'],
+    ['screenprint',      'Screenprint poster'],
+    ['graffiti',         'Spraypaint stencil'],
+    ['woodcut',          'Woodcut / linocut'],
+    ['pattern',          'Repeating pattern (tile)'],
+    // ── Product mockups (shown in context) ────────────────────────────────
+    ['poster',           'Graphic poster'],
+    ['tshirt',           'T-shirt mockup'],
+    ['hoodie',           'Hoodie mockup'],
+    ['mug',              'Ceramic mug mockup'],
+    ['tote',             'Tote bag mockup'],
+    ['towel',            'Beach towel mockup'],
+    ['blanket',          'Woven blanket'],
+    ['sticker',          'Die-cut vinyl sticker'],
+    ['photoreal',        'Photoreal medallion']
   ];
 
   const RECENT_KEY = 'aa.marks.recent';

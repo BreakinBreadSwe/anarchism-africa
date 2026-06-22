@@ -11,7 +11,11 @@ const ADMIN_TOKEN = process.env.AA_ADMIN_TOKEN || '';
 const TTL_MS = 15 * 60 * 1000;
 
 function isAdmin (req) {
-  return ADMIN_TOKEN && req.headers['x-aa-admin-token'] === ADMIN_TOKEN;
+  if (ADMIN_TOKEN && req.headers['x-aa-admin-token'] === ADMIN_TOKEN) return true;
+  // Setup-mode fallback (mirrors users/_manifest.js): when AA_ADMIN_TOKEN isn't
+  // configured yet, allow magic-link sends so the admin can bootstrap.
+  if (!ADMIN_TOKEN) return true;
+  return false;
 }
 
 function randomToken () {

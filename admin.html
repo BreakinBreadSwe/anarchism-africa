@@ -272,19 +272,11 @@
       </details>
     </div>
 
-    <!-- ── Role passcodes ───────────────────────────────────────────────────── -->
-    <div class="panel" style="margin-top:16px">
-      <h2 style="margin-top:0">Role passcodes</h2>
-      <p style="color:var(--fg-dim);max-width:68ch;font-size:.88rem;margin-bottom:4px">
-        Staff sign in with their email + a shared role passcode (no account needed).
-        Passcodes are HMAC-hashed on save — you can overwrite or clear, never read back.
-      </p>
-      <p class="mono" style="font-size:.76rem;color:var(--muted);margin-bottom:16px">
-        <code>POST /api/auth/passcode</code> · <code>{ "email": "…", "code": "…" }</code>
-      </p>
-      <div id="passcode-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px"></div>
-      <div id="passcode-status" class="mono" style="font-size:.78rem;color:var(--muted);margin-top:10px;min-height:18px"></div>
-    </div>
+    <!-- Role passcodes panel removed 2026-06 — shared role passcodes are
+         insecure (one leak compromises everyone with that role) and
+         redundant now that magic-link covers all sign-ins. Server-side
+         role assignment lives in /api/auth/email/verify against the
+         email allowlist managed via Users & Roles above. -->
 
   </section>
 

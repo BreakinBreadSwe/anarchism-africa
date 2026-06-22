@@ -199,18 +199,11 @@
   }
 
   // ── Role passcodes ────────────────────────────────────────────────────────
-  async function loadPasscodes () {
-    try {
-      const r = await fetch('/api/auth/passcodes-admin', {
-        credentials: 'include', headers: authHeaders(false)
-      });
-      const data = await r.json();
-      if (!r.ok) { setStatus('#passcode-status', 'Error: ' + (data.error || r.status), 'error'); return; }
-      renderPasscodeGrid(data.roles || {});
-    } catch (e) {
-      setStatus('#passcode-status', 'Network error: ' + e.message, 'error');
-    }
-  }
+  // Stub: the passcode UI was removed in 2026-06 (shared role passcodes are
+  // insecure — one leak compromises everyone with that role). All callers
+  // remain so window.AdminUsers.loadPasscodes still exists; this no-ops
+  // instead of network-erroring on its missing DOM nodes + locked endpoint.
+  async function loadPasscodes () { /* no-op — feature deprecated */ }
 
   function renderPasscodeGrid (roles) {
     const grid = $('#passcode-grid');

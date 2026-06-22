@@ -18,19 +18,28 @@
 // Default provider is OpenRouter on a free model — drops the cost to zero
 // while we're still in beta. Override per request via { provider, model }.
 
-// OpenRouter retires free-tier slugs without notice. The old
-// 'meta-llama/llama-3.1-8b-instruct:free' was removed in 2026 ("This model is
-// unavailable for free — use the paid version") which silently broke chat
-// for anyone whose config still pointed at it. 3.3-70B-instruct is the
-// current stable free Meta endpoint; if it drops too, the fallback chain
-// below cascades to direct Gemini.
-const OPENROUTER_DEFAULT_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
+// Default models per provider. OpenRouter retires free-tier slugs without
+// notice — the old llama-3.1-8b-free was removed in 2026, llama-3.3-70b-free
+// is now rate-limited upstream. We point at DeepSeek-V3.1 free (Chinese,
+// open-weights, currently stable). If that drops too the chain cascades.
+const OPENROUTER_DEFAULT_MODEL = 'deepseek/deepseek-chat-v3.1:free';
 const GEMINI_DEFAULT_MODEL     = 'gemini-1.5-flash';
+const KIMI_DEFAULT_MODEL       = 'kimi-k2-0905-preview';
+const DEEPSEEK_DEFAULT_MODEL   = 'deepseek-chat';
+const QWEN_DEFAULT_MODEL       = 'qwen-plus';
 
-// Provider chain for the default ('auto') path: try OpenRouter first,
-// fall back to Gemini if it fails (rate limit, missing key, network error,
-// quota exhausted). Each provider in the chain is tried in order.
-const FALLBACK_CHAIN = ['openrouter', 'gemini'];
+// Provider chain for the default ('auto') path. Order is deliberately
+// "anarchistic": independent / non-US-Big-Tech / open-weights providers
+// first, Google as a last-resort safety-net. Each step is attempted only
+// if the prior one failed (rate limit, missing key, network blip, deprecated
+// model). A provider whose env key is missing throws immediately and the
+// chain advances — so the chain self-heals as you add keys.
+//   kimi     — Moonshot K2 direct (user has account; ~$0.15/M input)
+//   deepseek — DeepSeek V3 direct (~$0.27/M input, open weights)
+//   qwen     — Alibaba Qwen direct (cheap, often has free credits)
+//   openrouter — gateway to all the above + Llama free tiers
+//   gemini   — Google fallback (last resort; closed weights, US Big Tech)
+const FALLBACK_CHAIN = ['kimi', 'deepseek', 'qwen', 'openrouter', 'gemini'];
 
 export default async function handler (req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
@@ -74,19 +83,25 @@ export default async function handler (req, res) {
 function defaultModel (p) {
   if (p === 'openrouter') return OPENROUTER_DEFAULT_MODEL;
   if (p === 'gemini')     return GEMINI_DEFAULT_MODEL;
+  if (p === 'kimi')       return KIMI_DEFAULT_MODEL;
+  if (p === 'deepseek')   return DEEPSEEK_DEFAULT_MODEL;
+  if (p === 'qwen')       return QWEN_DEFAULT_MODEL;
   return undefined;
 }
 
 async function dispatch (provider, model, messages) {
   switch (provider) {
     case 'openrouter': return openrouter(model || OPENROUTER_DEFAULT_MODEL, messages);
-    case 'gemini':     return gemini(model || 'gemini-1.5-flash', messages);
-    case 'qwen':       return openaiCompat('https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions', process.env.QWEN_API_KEY, model || 'qwen-turbo', messages);
-    case 'deepseek':   return openaiCompat('https://api.deepseek.com/chat/completions', process.env.DEEPSEEK_API_KEY, model || 'deepseek-chat', messages);
-    case 'kimi':       return openaiCompat('https://api.moonshot.cn/v1/chat/completions', process.env.KIMI_API_KEY, model || 'moonshot-v1-8k', messages);
-    case 'glm':        return openaiCompat('https://open.bigmodel.cn/api/paas/v4/chat/completions', process.env.GLM_API_KEY, model || 'glm-4', messages);
-    case 'yi':         return openaiCompat('https://api.01.ai/v1/chat/completions', process.env.YI_API_KEY, model || 'yi-large', messages);
-    case 'openai':     return openaiCompat('https://api.openai.com/v1/chat/completions', process.env.OPENAI_API_KEY, model || 'gpt-4o-mini', messages);
+    case 'gemini':     return gemini(model || GEMINI_DEFAULT_MODEL, messages);
+    case 'qwen':       return openaiCompat(process.env.QWEN_API_URL     || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions', process.env.QWEN_API_KEY, model || QWEN_DEFAULT_MODEL, messages);
+    case 'deepseek':   return openaiCompat(process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com/chat/completions',                              process.env.DEEPSEEK_API_KEY, model || DEEPSEEK_DEFAULT_MODEL, messages);
+    // Kimi: defaults to platform.moonshot.ai (international, Google-sign-in
+    // accounts). Override with KIMI_API_URL=https://api.moonshot.cn/v1/chat/completions
+    // if you registered with a Chinese ID through the .cn console instead.
+    case 'kimi':       return openaiCompat(process.env.KIMI_API_URL     || 'https://api.moonshot.ai/v1/chat/completions',                            process.env.KIMI_API_KEY, model || KIMI_DEFAULT_MODEL, messages);
+    case 'glm':        return openaiCompat(process.env.GLM_API_URL      || 'https://open.bigmodel.cn/api/paas/v4/chat/completions',                  process.env.GLM_API_KEY, model || 'glm-4', messages);
+    case 'yi':         return openaiCompat(process.env.YI_API_URL       || 'https://api.01.ai/v1/chat/completions',                                  process.env.YI_API_KEY, model || 'yi-large', messages);
+    case 'openai':     return openaiCompat(process.env.OPENAI_API_URL   || 'https://api.openai.com/v1/chat/completions',                             process.env.OPENAI_API_KEY, model || 'gpt-4o-mini', messages);
     case 'claude':     return claude(model || 'claude-haiku-4-5', messages);
     default:           throw new Error('Unknown provider: ' + provider);
   }

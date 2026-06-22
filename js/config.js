@@ -29,12 +29,14 @@ window.AA_CONFIG = {
   },
 
   // ---------- AI PROVIDER (model-agnostic) -------------------------------
-  // OpenRouter default — free tier covers chat, article lab, grant assist.
-  // Mark Lab uses Gemini directly (image generation isn't on OpenRouter).
+  // 'auto' lets the server pick from its FALLBACK_CHAIN in api/ai/chat.js:
+  // kimi → deepseek → qwen → openrouter (DeepSeek V3 free) → gemini.
+  // Independent / open-weights providers first; Google as last-resort
+  // safety net. Set the model only when overriding a specific call.
   ai: {
-    provider: 'openrouter',
-    model:    'meta-llama/llama-3.1-8b-instruct:free',
-    fallbacks: ['google/gemini-flash-1.5:free', 'gemini-1.5-flash', 'qwen-3', 'deepseek-v3', 'kimi-k2', 'glm-4', 'claude-haiku-4-5'],
+    provider: 'auto',
+    model:    null,
+    fallbacks: ['deepseek/deepseek-chat-v3.1:free', 'qwen/qwen3-235b-a22b:free', 'kimi-k2-0905-preview', 'deepseek-chat', 'qwen-plus', 'gemini-1.5-flash'],
     // Routes are server-side proxies (api/ai/[provider].js) — keys never live in browser.
     endpoint: '/api/ai/chat'
   },

@@ -89,8 +89,9 @@ export default async function handler (req, res) {
     }
     try {
       const xml = await fetchText(src.feed);
-      // Event feeds tend to publish less, so we take the top 6 per source.
-      const items = parseFeed(xml).slice(0, 6);
+      // Event feeds tend to publish less, but raising to 12 lets us catch
+      // tour-date drops and lineup announcements that arrive in batches.
+      const items = parseFeed(xml).slice(0, 12);
       summary.scanned += items.length;
       for (const it of items) {
         const verified = await verifyUrl(it.link);

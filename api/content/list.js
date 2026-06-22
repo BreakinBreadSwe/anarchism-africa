@@ -21,7 +21,10 @@ module.exports = async function handler (req, res) {
     // created_at fall back when scraped_at is null (seed/manually-added
     // rows). nullslast keeps NULL columns from poisoning the top.
     const order = req.query.order || 'scraped_at.desc.nullslast,published_at.desc.nullslast,created_at.desc.nullslast';
-    const filter = { eq: {}, order, limit: Math.min(parseInt(limit, 10) || 60, 200), offset: parseInt(offset, 10) || 0 };
+    // Cap raised from 200 → 2000 to expose the whole archive as the library
+    // grows. Default stays at 60 so existing callers (hero pool, etc.) don't
+    // suddenly pull thousands. Pass ?limit=2000 explicitly to flood.
+    const filter = { eq: {}, order, limit: Math.min(parseInt(limit, 10) || 60, 2000), offset: parseInt(offset, 10) || 0 };
     if (kind)   filter.eq.kind = kind;
     if (status) filter.eq.status = status;
     if (q)      filter.like = { title: '%' + q + '%' };

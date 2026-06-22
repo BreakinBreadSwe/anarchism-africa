@@ -131,9 +131,11 @@ export default async function handler (req, res) {
     if (Date.now() > deadline) { summary.sources_skipped_deadline++; continue; }
     try {
       const xml = await fetchText(src.feed);
-      // Cap per-source items at 6 (was 12) — same total coverage across a few
-      // hourly runs, each run finishes faster.
-      const items = parseFeed(xml).slice(0, 6);
+      // Per-source slice raised 6 → 15. The 50s deadline budget still
+      // truncates correctly — fewer sources per run but each one gets
+      // deeper coverage. Dedupe + hourly cadence makes wide vs deep
+      // a wash over a day.
+      const items = parseFeed(xml).slice(0, 15);
       summary.scanned += items.length;
       for (const it of items) {
         if (Date.now() > deadline) break;
@@ -190,8 +192,13 @@ export default async function handler (req, res) {
           body: JSON.stringify({ action: 'enqueue', item: payload })
         });
         const j = await r.json().catch(() => ({}));
+        // Surface queue failures explicitly. Previous code silently dropped
+        // items when the queue POST returned anything other than ok/deduped,
+        // which is exactly how 'scanned: 18, queued: 0' happened — schema
+        // mismatch / 500s were invisible.
         if (j.deduped) summary.deduped += 1;
         else if (j.ok) summary.queued += 1;
+        else summary.errors.push({ src: src.id, item_title: it.title, status: r.status, err: j.error || j.message || 'unknown queue error' });
       }
     } catch (e) {
       summary.errors.push({ src: src.id, error: String(e.message || e) });

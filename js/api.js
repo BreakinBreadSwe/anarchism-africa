@@ -46,7 +46,7 @@
     };
     await Promise.all(Object.entries(KIND_TO_BUCKET).map(async ([kind, bucket]) => {
       try {
-        const r = await fetch(`/api/content/list?kind=${kind}&status=published&limit=200`, { cache: 'no-store' });
+        const r = await fetch(`/api/content/list?kind=${kind}&status=published&limit=2000`, { cache: 'no-store' });
         if (!r.ok) return;
         const j = await r.json();
         if (Array.isArray(j.items) && j.items.length) data[bucket] = j.items;
@@ -120,7 +120,7 @@
 
       // 1. Live articles from Vercel API (works even when Supabase key is broken)
       try {
-        const r = await fetch('/api/content/list?status=published&limit=60&_=' + Math.floor(Date.now() / 3600000));
+        const r = await fetch('/api/content/list?status=published&limit=400&_=' + Math.floor(Date.now() / 3600000));
         if (r.ok) {
           const d = await r.json();
           const items = (d.items || []).filter(x => x.image);
@@ -141,7 +141,7 @@
         const r = await fetch('/api/sound/list?_=' + Math.floor(Date.now() / 3600000));
         if (r.ok) {
           const d = await r.json();
-          (d.tracks || []).filter(x => x.image).slice(0, 20).forEach(x => pool.push({
+          (d.tracks || []).filter(x => x.image).slice(0, 80).forEach(x => pool.push({
             id:      x.id,
             title:   x.title,
             summary: x.artist ? `${x.artist}${x.year ? ' · ' + x.year : ''}` : '',

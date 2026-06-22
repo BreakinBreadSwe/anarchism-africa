@@ -314,9 +314,15 @@ body.has-rail .tabs { display: none; }
      rail width + breathing room; when the rail is open, push to 220px. */
   body.has-rail main,
   body.has-rail section.view,
-  body.has-rail .footer {
+  body.has-rail .footer,
+  body.has-rail .topbar {
     padding-left: calc(64px + var(--content-pad-x));
     padding-right: var(--content-pad-x);
+    /* Smooth shift when the rail opens/closes. Without the transition, the
+       content snaps from 64px to 220px instantly — which reads as 'the rail
+       covered the page' rather than 'the rail pushed the page over'. The
+       240ms cubic-bezier matches the rail's own width-expand transition. */
+    transition: padding-left 240ms cubic-bezier(.4, 0, .2, 1);
   }
   /* !important defeats inline `style="padding:..."` on <main>/<section class="view">
      in role pages (publisher, partner, journalist, etc.) that set the shorthand
@@ -331,12 +337,22 @@ body.has-rail .tabs { display: none; }
     padding-left: calc(64px + var(--content-pad-x)) !important;
     padding-right: var(--content-pad-x) !important;
   }
-  /* Rail expanded → push content to clear the 220px rail. */
+  /* Rail expanded → push content to clear the 220px rail. main/section.view
+     use !important (above), footer + topbar don't need it. */
   body.rail-open.has-rail main,
   body.rail-open.has-rail section.view {
     padding-left: calc(220px + var(--content-pad-x)) !important;
   }
-  body.rail-open.has-rail .footer { padding-left: calc(220px + var(--content-pad-x)); }
+  body.rail-open.has-rail .footer,
+  body.rail-open.has-rail .topbar {
+    padding-left: calc(220px + var(--content-pad-x));
+  }
+  /* The rail itself transitions width so the push and the rail expand land
+     at the same time. (Just in case the existing rail styles don't already
+     declare this — harmless if duplicated.) */
+  body.has-rail .rail {
+    transition: width 240ms cubic-bezier(.4, 0, .2, 1);
+  }
 }
 
 /* Mobile backdrop when drawer open */

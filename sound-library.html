@@ -121,15 +121,73 @@
     .sl-year-hdr-line { flex: 1; height: 1px; background: var(--border, #1f1f1f); }
     .sl-year-hdr-count { font-size: .7rem; color: var(--muted, #666); white-space: nowrap; }
 
-    /* Grid */
+    /* ── View-mode segmented toggle ────────────────────────────────────────── */
+    .sl-view-toggle {
+      display: inline-flex; align-items: center; gap: 0;
+      border: 1px solid var(--border, #222); border-radius: 8px;
+      padding: 2px; background: var(--card, #111);
+    }
+    .sl-view-btn {
+      width: 32px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
+      background: none; border: none; color: var(--muted, #777); cursor: pointer;
+      border-radius: 6px; transition: background .12s, color .12s;
+    }
+    .sl-view-btn:hover { color: var(--fg, #eee); }
+    .sl-view-btn.active { background: #ef4444; color: #fff; }
+    .sl-view-btn svg { width: 14px; height: 14px; }
+
+    /* ── Grid view modes ────────────────────────────────────────────────────
+       Default (.view-grid-sm) keeps the horizontal-row cards with a 64px square
+       thumb on the left.
+       .view-grid-lg switches to vertical cards with a 1:1 hero thumb on top
+       (Bandcamp / Pinterest style).
+       .view-list collapses to dense single-column rows — no card chrome, max
+       information density. All three keep thumbnails locked to 1:1 ratio.   */
     .sl-grid {
       display: grid; grid-template-columns: 1fr;
       gap: 10px; padding: 12px 14px;
     }
-    @media (min-width: 600px)  { .sl-grid { grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 960px)  { .sl-grid { grid-template-columns: 1fr 1fr 1fr; } }
-    @media (min-width: 1280px) { .sl-grid { grid-template-columns: 1fr 1fr 1fr 1fr; } }
-    @media (min-width: 1600px) { .sl-grid { grid-template-columns: repeat(5, 1fr); } }
+    /* ── view-grid-sm — DEFAULT (horizontal cards) ────────────────────────── */
+    .sl-grid.view-grid-sm { grid-template-columns: 1fr; }
+    @media (min-width: 600px)  { .sl-grid.view-grid-sm { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 960px)  { .sl-grid.view-grid-sm { grid-template-columns: 1fr 1fr 1fr; } }
+    @media (min-width: 1280px) { .sl-grid.view-grid-sm { grid-template-columns: 1fr 1fr 1fr 1fr; } }
+    @media (min-width: 1600px) { .sl-grid.view-grid-sm { grid-template-columns: repeat(5, 1fr); } }
+
+    /* ── view-grid-lg — BIG square thumbs, vertical layout ─────────────────── */
+    .sl-grid.view-grid-lg { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    @media (min-width: 960px)  { .sl-grid.view-grid-lg { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
+    @media (min-width: 1280px) { .sl-grid.view-grid-lg { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); } }
+    .sl-grid.view-grid-lg .sl-card-header { flex-direction: column; gap: 0; padding: 0; }
+    .sl-grid.view-grid-lg .sl-card-thumb {
+      width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 12px 12px 0 0;
+    }
+    .sl-grid.view-grid-lg .sl-card-meta { padding: 10px 12px 12px; }
+    .sl-grid.view-grid-lg .sl-card-title { font-size: .88rem; -webkit-line-clamp: 2; }
+    .sl-grid.view-grid-lg .sl-card-author { font-size: .72rem; }
+    .sl-grid.view-grid-lg .sl-card-chevron { display: none; }
+    .sl-grid.view-grid-lg .sl-card-thumb-play svg { width: 32px; height: 32px; }
+
+    /* ── view-list — DENSE single-column rows ──────────────────────────────── */
+    .sl-grid.view-list { grid-template-columns: 1fr; gap: 0; padding: 4px 14px; }
+    .sl-grid.view-list .sl-card {
+      border-radius: 0; border-left: none; border-right: none;
+      border-top: none;
+    }
+    .sl-grid.view-list .sl-card:first-child { border-top: 1px solid var(--border, #1f1f1f); }
+    .sl-grid.view-list .sl-card:hover { box-shadow: none; background: rgba(255,255,255,.02); }
+    .sl-grid.view-list .sl-card-header { gap: 12px; padding: 8px 6px; }
+    .sl-grid.view-list .sl-card-thumb { width: 40px; height: 40px; border-radius: 6px; aspect-ratio: 1 / 1; }
+    .sl-grid.view-list .sl-card-thumb-emoji { font-size: 1.1rem; }
+    .sl-grid.view-list .sl-card-title { font-size: .8rem; -webkit-line-clamp: 1; margin-bottom: 1px; }
+    .sl-grid.view-list .sl-card-author { font-size: .68rem; margin-bottom: 0; }
+    .sl-grid.view-list .sl-card-chips { display: none; }
+    .sl-grid.view-list .sl-card-chevron svg { width: 12px; height: 12px; }
+
+    /* Locked 1:1 thumbnail across all views (the width/height pair in
+       .sl-card-thumb already enforces this for sm; explicit aspect-ratio
+       keeps lg/list correct when only one dimension is sized). */
+    .sl-card-thumb { aspect-ratio: 1 / 1; }
 
     /* Track card */
     .sl-card {
@@ -308,6 +366,18 @@
           <option value="year-desc">Year ↓</option>
           <option value="year-asc">Year ↑</option>
         </select>
+        <!-- View-mode segmented toggle: list / small grid (default) / big grid -->
+        <div class="sl-view-toggle" role="radiogroup" aria-label="View mode">
+          <button class="sl-view-btn" data-view="list" role="radio" aria-label="List view" title="List">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6"  x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
+          </button>
+          <button class="sl-view-btn" data-view="grid-sm" role="radio" aria-label="Small grid view" title="Grid">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3"  width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="sl-view-btn" data-view="grid-lg" role="radio" aria-label="Large grid view" title="Large grid">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3"  width="9" height="9"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="9" height="8"/><rect x="14" y="13" width="7" height="8"/></svg>
+          </button>
+        </div>
       </div>
       <span class="sl-count" id="sl-count"></span>
     </div>

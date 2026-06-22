@@ -54,6 +54,12 @@
   let groupByYear = false;
   let expandedId  = null;
   let randomSeed  = 0;
+  // View mode persists across reloads. Valid values: 'list' | 'grid-sm' | 'grid-lg'.
+  // Default is the small grid (most info-dense + recognisable on first visit).
+  let viewMode   = (() => {
+    try { const v = localStorage.getItem('sl-view-mode'); return ['list','grid-sm','grid-lg'].includes(v) ? v : 'grid-sm'; }
+    catch { return 'grid-sm'; }
+  })();
 
   // ── DOM refs ──────────────────────────────────────────────────────────────────
 
@@ -154,7 +160,7 @@
 
   function renderFlat(tracks) {
     const grid = document.createElement('div');
-    grid.className = 'sl-grid';
+    grid.className = 'sl-grid view-' + viewMode;
     tracks.forEach(t => grid.appendChild(makeCard(t)));
     $content.innerHTML = '';
     $content.appendChild(grid);
@@ -179,7 +185,7 @@
       frag.appendChild(hdr);
 
       const grid = document.createElement('div');
-      grid.className = 'sl-grid';
+      grid.className = 'sl-grid view-' + viewMode;
       items.forEach(t => grid.appendChild(makeCard(t)));
       frag.appendChild(grid);
     });
@@ -389,6 +395,30 @@
     $yearBtn.classList.toggle('active', groupByYear);
     expandedId = null;
     render();
+  });
+
+  // ── View-mode toggle (list / grid-sm / grid-lg) ──────────────────────────────
+  const $viewBtns = document.querySelectorAll('.sl-view-btn');
+  function setViewMode (mode) {
+    if (!['list','grid-sm','grid-lg'].includes(mode)) return;
+    viewMode = mode;
+    try { localStorage.setItem('sl-view-mode', mode); } catch {}
+    $viewBtns.forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+    expandedId = null;
+    render();
+  }
+  // Mark initial active button (persisted value or default).
+  $viewBtns.forEach(b => b.classList.toggle('active', b.dataset.view === viewMode));
+  $viewBtns.forEach(b => b.addEventListener('click', () => setViewMode(b.dataset.view)));
+  // Keyboard ergonomics: arrow keys cycle through the segmented control.
+  document.querySelector('.sl-view-toggle')?.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const modes = ['list','grid-sm','grid-lg'];
+    const i = modes.indexOf(viewMode);
+    const next = e.key === 'ArrowRight' ? (i + 1) % modes.length : (i - 1 + modes.length) % modes.length;
+    setViewMode(modes[next]);
+    $viewBtns[next]?.focus();
+    e.preventDefault();
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────────

@@ -18,7 +18,13 @@
 // Default provider is OpenRouter on a free model — drops the cost to zero
 // while we're still in beta. Override per request via { provider, model }.
 
-const OPENROUTER_DEFAULT_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
+// OpenRouter retires free-tier slugs without notice. The old
+// 'meta-llama/llama-3.1-8b-instruct:free' was removed in 2026 ("This model is
+// unavailable for free — use the paid version") which silently broke chat
+// for anyone whose config still pointed at it. 3.3-70B-instruct is the
+// current stable free Meta endpoint; if it drops too, the fallback chain
+// below cascades to direct Gemini.
+const OPENROUTER_DEFAULT_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
 const GEMINI_DEFAULT_MODEL     = 'gemini-1.5-flash';
 
 // Provider chain for the default ('auto') path: try OpenRouter first,
@@ -28,14 +34,17 @@ const FALLBACK_CHAIN = ['openrouter', 'gemini'];
 
 export default async function handler (req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
-  const { provider, model, messages = [] } = req.body || {};
+  const { provider, model, messages = [], strict } = req.body || {};
 
-  // If a specific provider is requested, honor it (no fallback). If the
-  // caller passes 'auto' OR omits provider entirely, run the fallback
-  // chain so the chat / article generator never goes dark just because
-  // OpenRouter rate-limited the free tier.
-  const useFallback = !provider || provider === 'auto';
-  const chain = useFallback ? FALLBACK_CHAIN : [provider];
+  // Default: always cascade. If the explicit provider errors (deprecated
+  // free model, rate limit, missing key, network blip), the chain still
+  // tries Gemini so chat never silently dies. Pass {strict: true} to
+  // disable cascading and surface the first error.
+  // The requested provider always leads the chain when given — preserving
+  // model intent for the first try.
+  const chain = (!provider || provider === 'auto')
+    ? FALLBACK_CHAIN
+    : (strict ? [provider] : [provider, ...FALLBACK_CHAIN.filter(p => p !== provider)]);
 
   const errors = [];
   for (let i = 0; i < chain.length; i++) {

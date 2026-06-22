@@ -532,6 +532,25 @@
         </div>
       </div>
 
+      <div class="ms-section" id="ms-sec-sessions">
+        <button class="ms-section-head" data-ms-toggle="ms-sec-sessions">
+          Sessions <span class="ms-chevron">▾</span>
+        </button>
+        <div class="ms-section-body">
+          <div class="ms-control-row">
+            <span class="ms-label">Title</span>
+            <input class="ms-input" id="ms-session-title" placeholder="Untitled session" />
+          </div>
+          <div class="ms-btn-row">
+            <button class="ms-btn primary" id="ms-save-session" title="Save the current design to your account">💾 Save</button>
+            <button class="ms-btn" id="ms-load-sessions" title="Load a saved session">📂 Load…</button>
+            <button class="ms-btn danger" id="ms-new-session" title="Start a fresh design">🗑 Clear</button>
+          </div>
+          <div id="ms-session-status" class="mono" style="font-size:.7rem;color:var(--muted);min-height:14px;margin-top:6px"></div>
+          <div id="ms-sessions-list" style="display:none;max-height:300px;overflow:auto;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)"></div>
+        </div>
+      </div>
+
       <div class="ms-section" id="ms-sec-export">
         <button class="ms-section-head" data-ms-toggle="ms-sec-export">
           Export <span class="ms-chevron">▾</span>
@@ -1060,8 +1079,8 @@
       setStatus(msg, 0);
     }
 
-    if (!token) { pyStatus('Enter admin token first.'); return; }
-
+    // Token is server-side (PRINTIFY_API_TOKEN env var) — removed the client
+    // gate. The proxy endpoint /api/pod/printify reads from env on every call.
     pyStatus('Rendering high-res canvas…');
     const prod     = PRODUCTS[state.product];
     const area     = prod.areas[state.area];
@@ -1124,8 +1143,7 @@
       setStatus(msg, 0);
     }
 
-    if (!token) { pfStatus('Enter admin token first.'); return; }
-
+    // Token is server-side (PRINTFUL_API_KEY env var) — removed the client gate.
     pfStatus('Rendering high-res canvas…');
     const prod  = PRODUCTS[state.product];
     const area  = prod.areas[state.area];
@@ -1340,6 +1358,10 @@
 
     // Add text
     document.getElementById('ms-add-text')?.addEventListener('click', () => addTextLayer('NO GODS\nNO MASTERS'));
+    // ── Session save / load / clear ───────────────────────────────────────
+    document.getElementById('ms-save-session')?.addEventListener('click', saveSession);
+    document.getElementById('ms-load-sessions')?.addEventListener('click', toggleSessionsList);
+    document.getElementById('ms-new-session')?.addEventListener('click', clearSession);
     // Shape primitives
     document.querySelectorAll('[data-ms-add-shape]').forEach(b =>
       b.addEventListener('click', () => addShapeLayer(b.dataset.msAddShape)));
@@ -1451,6 +1473,142 @@
     renderLayerList();
     renderLayerControls();
     scheduleRender();
+  }
+
+  /* ── Session persistence (Supabase studio_sessions table) ─────────────
+     Save the whole state.layers/bg/product/area snapshot under the
+     signed-in user's account. Admin + publisher roles see every user's
+     sessions in the load list; everyone else only sees their own.
+     state.sessionId tracks the currently-loaded row so consecutive saves
+     UPDATE rather than INSERT. */
+  function sessionStatus (msg) {
+    const el = document.getElementById('ms-session-status');
+    if (el) el.textContent = msg || '';
+  }
+  async function captureThumbnail () {
+    // Tiny 240×240 JPEG thumbnail for the sessions list — keeps DB rows
+    // light. Renders off-screen at low res so the live canvas isn't disturbed.
+    const dl = document.createElement('canvas');
+    dl.width = 240; dl.height = 240;
+    const savedCanvas = canvas, savedCtx = ctx;
+    canvas = dl; ctx = dl.getContext('2d');
+    try { await renderCanvas(); } catch {}
+    canvas = savedCanvas; ctx = savedCtx;
+    try { return dl.toDataURL('image/jpeg', 0.7); } catch { return null; }
+  }
+  async function saveSession () {
+    sessionStatus('Saving…');
+    const titleEl = document.getElementById('ms-session-title');
+    const title = (titleEl?.value || '').trim() || (state.sessionTitle || 'Untitled session');
+    state.sessionTitle = title;
+    const thumbnail = await captureThumbnail();
+    const body = {
+      id: state.sessionId || undefined,
+      title,
+      product: state.product,
+      area:    state.area,
+      state: {
+        bg: state.bg,
+        bgImage: state.bgImage,
+        layers: state.layers
+      },
+      thumbnail,
+      status: 'draft'
+    };
+    try {
+      const r = await fetch('/api/studio/sessions', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if (!r.ok || !data.ok) throw new Error(data.error || 'save failed');
+      state.sessionId = data.item.id;
+      sessionStatus(`Saved ✓ — ${new Date().toLocaleTimeString()}`);
+    } catch (e) {
+      sessionStatus('Save failed: ' + e.message);
+    }
+  }
+  async function toggleSessionsList () {
+    const host = document.getElementById('ms-sessions-list');
+    if (!host) return;
+    if (host.style.display === '' || host.style.display === 'block') {
+      host.style.display = 'none';
+      return;
+    }
+    host.style.display = 'block';
+    host.innerHTML = '<p class="mono" style="font-size:.7rem;color:var(--muted);padding:6px">Loading…</p>';
+    try {
+      const r = await fetch('/api/studio/sessions?limit=80', { credentials: 'same-origin' });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'fetch failed');
+      const items = data.items || [];
+      const youAreAdmin = ['admin','publisher'].includes(data.caller?.role);
+      if (!items.length) {
+        host.innerHTML = '<p class="mono" style="font-size:.7rem;color:var(--muted);padding:6px">No saved sessions yet.</p>';
+        return;
+      }
+      host.innerHTML = items.map(it => `
+        <div class="ms-session-row" data-ms-load="${it.id}" style="display:flex;gap:8px;align-items:center;padding:6px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;cursor:pointer">
+          <img src="${it.thumbnail || ''}" alt="" style="width:42px;height:42px;border-radius:6px;background:var(--bg);object-fit:cover;flex-shrink:0" onerror="this.style.visibility='hidden'"/>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(it.title || 'Untitled')}</div>
+            <div class="mono" style="font-size:.62rem;color:var(--muted)">${it.product}/${it.area} · ${new Date(it.updated_at).toLocaleString()}${youAreAdmin && it.owner_email !== data.caller.email ? ' · by ' + it.owner_email : ''}</div>
+          </div>
+          <button class="ms-btn" data-ms-del-session="${it.id}" title="Delete" style="padding:4px 8px;font-size:.7rem">✕</button>
+        </div>
+      `).join('');
+      host.querySelectorAll('[data-ms-load]').forEach(row => row.addEventListener('click', (e) => {
+        if (e.target.closest('[data-ms-del-session]')) return; // delete handled separately
+        loadSession(row.dataset.msLoad);
+      }));
+      host.querySelectorAll('[data-ms-del-session]').forEach(b => b.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm('Delete this saved session?')) return;
+        const id = b.dataset.msDelSession;
+        const r = await fetch('/api/studio/sessions?id=' + id, { method: 'DELETE', credentials: 'same-origin' });
+        if (r.ok) toggleSessionsList(), toggleSessionsList(); // refresh by closing + reopening
+      }));
+    } catch (e) {
+      host.innerHTML = '<p class="mono" style="font-size:.7rem;color:var(--red,#e74c3c);padding:6px">' + escHtml(e.message) + '</p>';
+    }
+  }
+  async function loadSession (id) {
+    sessionStatus('Loading…');
+    try {
+      const r = await fetch('/api/studio/sessions?limit=1', { credentials: 'same-origin' });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'load failed');
+      const all = await fetch('/api/studio/sessions?limit=200', { credentials: 'same-origin' }).then(x => x.json());
+      const row = (all.items || []).find(x => x.id === id);
+      if (!row) throw new Error('session not found');
+      state.sessionId    = row.id;
+      state.sessionTitle = row.title;
+      state.product      = row.product;
+      state.area         = row.area;
+      state.bg           = row.state.bg || '#000000';
+      state.bgImage      = row.state.bgImage || null;
+      state.layers       = row.state.layers || [];
+      state.selected     = null;
+      const titleEl = document.getElementById('ms-session-title');
+      if (titleEl) titleEl.value = row.title;
+      rebuildAreaTabs();
+      renderLayerList(); renderLayerControls(); scheduleRender();
+      sessionStatus(`Loaded "${row.title}"`);
+    } catch (e) { sessionStatus('Load failed: ' + e.message); }
+  }
+  function clearSession () {
+    if (state.layers.length && !confirm('Discard the current design? (Unsaved work will be lost.)')) return;
+    state.sessionId = null;
+    state.sessionTitle = '';
+    state.layers = [];
+    state.selected = null;
+    state.bg = '#000000';
+    state.bgImage = null;
+    const titleEl = document.getElementById('ms-session-title');
+    if (titleEl) titleEl.value = '';
+    renderLayerList(); renderLayerControls(); scheduleRender();
+    sessionStatus('New session');
   }
 
   /* AI generate-into-studio. Fires /api/ai/generate-mark with a random

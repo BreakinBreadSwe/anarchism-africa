@@ -57,22 +57,63 @@
         </div>
       </div>
       <div class="panel" id="ml-printify-panel" style="display:none">
-        <h3 style="margin:0 0 10px">Printify push</h3>
-        <div style="display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px">
-          <label style="display:grid;gap:4px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Blueprint ID</span>
-            <input id="ml-blueprint" type="number" value="${state.blueprintId}" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
-          <label style="display:grid;gap:4px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Print provider ID</span>
-            <input id="ml-pp" type="number" value="${state.printProviderId}" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
-          <label style="display:grid;gap:4px;grid-column:1/-1"><span class="mono" style="font-size:.7rem;color:var(--muted)">Title</span>
-            <input id="ml-title" placeholder="ANARCHISM.AFRICA · Quote tee" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
+        <h3 style="margin:0 0 4px" id="ml-pod-heading">POD push</h3>
+        <p style="color:var(--fg-dim);font-size:.78rem;margin:0 0 14px">
+          Manual fallback. The <b>→ Make merch</b> button on each quote runs the same
+          steps as a one-click pipeline. Use these buttons to push a specific design
+          you've already generated, or to override defaults.
+        </p>
+
+        <!-- Title shared across providers -->
+        <label style="display:grid;gap:4px;margin-bottom:12px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Product title</span>
+          <input id="ml-title" placeholder="ANARCHISM.AFRICA · Quote tee" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
+
+        <!-- PRINTIFY controls (shown when provider === 'printify') -->
+        <div id="ml-pod-printify" style="display:none">
+          <div style="display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px">
+            <label style="display:grid;gap:4px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Blueprint ID</span>
+              <input id="ml-blueprint" type="number" value="${state.blueprintId}" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
+            <label style="display:grid;gap:4px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Print provider ID</span>
+              <input id="ml-pp" type="number" value="${state.printProviderId}" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn primary" id="ml-fetch-variants">Fetch variants</button>
+            <button class="btn primary" id="ml-push-printify">Upload + create product</button>
+            <button class="btn ghost" id="ml-publish">Publish to shop</button>
+          </div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn primary" id="ml-fetch-variants">Fetch variants</button>
-          <button class="btn primary" id="ml-push-printify">Upload + create product</button>
-          <button class="btn ghost" id="ml-publish">Publish to shop</button>
+
+        <!-- PRINTFUL controls (shown when provider === 'printful') -->
+        <div id="ml-pod-printful" style="display:none">
+          <div style="display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px">
+            <label style="display:grid;gap:4px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Catalog product ID</span>
+              <input id="ml-pf-product" type="number" value="162" title="162 = Stanley/Stella Creator 2.0 (GOTS organic cotton). Other eco picks: 71 (Bella+Canvas 3001 — semi-eco), 380 (Stanley/Stella Imagine)" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
+            <label style="display:grid;gap:4px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Variant ID (Black M default)</span>
+              <input id="ml-pf-variant" type="number" value="4011" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
+            <label style="display:grid;gap:4px"><span class="mono" style="font-size:.7rem;color:var(--muted)">Retail price (€)</span>
+              <input id="ml-pf-price" type="text" value="29.00" style="padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;font:inherit"/></label>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn primary" id="ml-pf-check">Verify store</button>
+            <button class="btn primary" id="ml-pf-push">Upload + create draft</button>
+            <a class="btn ghost" id="ml-pf-open" href="https://www.printful.com/dashboard/store/sync" target="_blank" rel="noopener">Open in Printful ↗</a>
+          </div>
         </div>
+
         <pre id="ml-pf-log" style="margin-top:14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.72rem;color:var(--fg-dim);max-height:240px;overflow:auto;white-space:pre-wrap"></pre>
       </div>`;
+  }
+  /* Show only the provider's section in the manual POD panel. Called on
+     init + whenever the dropdown changes. Heading flips so the publisher
+     sees which provider the manual buttons will hit. */
+  function refreshPodPanel () {
+    const provider = state.provider || 'printful';
+    const printify = document.getElementById('ml-pod-printify');
+    const printful = document.getElementById('ml-pod-printful');
+    const heading  = document.getElementById('ml-pod-heading');
+    if (printify) printify.style.display = provider === 'printify' ? '' : 'none';
+    if (printful) printful.style.display = provider === 'printful' ? '' : 'none';
+    if (heading)  heading.textContent     = provider === 'printify' ? 'Printify push (manual)' : 'Printful push (manual)';
   }
   function paint () {
     const root = $('#view-merchlab');
@@ -96,9 +137,24 @@
         try { localStorage.setItem('aa-pod-provider', state.provider); } catch {}
         // Reset connection state so the new provider re-checks on next push.
         state.shopId = null; state.printfulStoreId = null; state.variants = [];
+        refreshPodPanel();
         status(`POD switched to ${state.provider}`, 'ok');
       });
     }
+    // Initial provider-aware panel paint
+    refreshPodPanel();
+    // Wire Printful manual buttons (the Printify ones are bound below)
+    document.getElementById('ml-pf-check')?.addEventListener('click', async () => {
+      status('Verifying Printful store…');
+      const r = await ensureProviderConnected('printful');
+      status(r.ok ? `Printful store ${state.printfulStoreId} connected ✓` : r.message, r.ok ? 'ok' : 'error');
+    });
+    document.getElementById('ml-pf-push')?.addEventListener('click', async () => {
+      if (!state.front || !state.back) { status('Pick a quote first', 'error'); return; }
+      const r = await ensureProviderConnected('printful');
+      if (!r.ok) { status(r.message, 'error'); return; }
+      try { await pushPrintful(); } catch (e) { status('Printful push failed: ' + e.message, 'error'); }
+    });
     $('#ml-q-search').addEventListener('input', e => filterQuotes(e.target.value));
     $('#ml-quotes').addEventListener('click', e => {
       // Make-merch button: one-click pipeline. Stop propagation so the
@@ -240,9 +296,11 @@
     // Default eco catalog: 162 = Stanley/Stella Creator 2.0 (GOTS organic
     // cotton). Default variant: the canonical Black Medium. The publisher
     // can multiply variants in the Printful dashboard once the product lands.
-    const catalogProductId = 162;
-    const defaultVariantId = 4011; // Stanley/Stella Creator 2.0 — Black M
-    const retailPrice = '29.00';
+    // Pull values from the manual panel inputs if the user changed them;
+    // fall back to the eco defaults (Stanley/Stella Creator 2.0 organic cotton).
+    const catalogProductId = parseInt(document.getElementById('ml-pf-product')?.value, 10) || 162;
+    const defaultVariantId = parseInt(document.getElementById('ml-pf-variant')?.value, 10) || 4011;
+    const retailPrice = (document.getElementById('ml-pf-price')?.value || '29.00').trim();
 
     status('Creating product on Printful…');
     const created = await fetch('/api/pod/printful', {

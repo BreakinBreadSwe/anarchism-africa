@@ -56,17 +56,14 @@ function composePrompt ({ subject, style, prompt }) {
   ].join(' ');
 }
 
+// Vercel function config — image gen can take 10-30s per image × 4 = up to 2min.
+export const config = { maxDuration: 300 };
+
 export default async function handler (req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
   const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.status(500).json({ error: 'GEMINI_API_KEY missing — set it in Vercel project env vars' });
 
   const body  = req.body || {};
-  // Try in order: explicit body.model, env override, then a fallback list.
-  // First model that returns a non-404 is used for the rest of the batch.
-  // Current generation first; older slugs as fallbacks for accounts that
-  // don't yet have 3.x access. Direct Gemini API uses the bare slug
-  // (no 'google/' prefix — that's the AI Gateway routing form).
   const MODEL_CHAIN = [
     body.model,
     process.env.GEMINI_IMAGE_MODEL,
@@ -79,40 +76,95 @@ export default async function handler (req, res) {
   ].filter(Boolean);
   const count = Math.min(4, Math.max(1, parseInt(body.count, 10) || 1));
 
+  // PROVIDER CASCADE. Image-gen has even more brittle providers than text:
+  // Gemini's prepay tier exhausts, model slugs deprecate without notice,
+  // and there's no equivalent free fallback inside Google. So we chain
+  // independent providers, with Pollinations (no key, no billing, Flux
+  // under the hood) as the always-on safety net so the Mark Lab never
+  // returns blank when Google's down.
+  //   1. Gemini  — quality leader, requires GEMINI_API_KEY + paid credits
+  //   2. Pollinations.ai — Flux model, free, no key, no billing
+  //                       https://image.pollinations.ai (CC0 outputs)
+  // Provider advances on 429/402/RESOURCE_EXHAUSTED (billing/quota),
+  // 401/403 (auth), or hard 5xx. 404 stays inside the Gemini model chain.
   let workingModel = null;
+  let workingProvider = null;
   let lastErr = null;
+  const tried = [];
+
+  const tryGeminiOnce = async (prompt) => {
+    if (!key) throw new Error('GEMINI_API_KEY missing');
+    if (workingModel) return await callGemini(workingModel, key, prompt);
+    for (const m of MODEL_CHAIN) {
+      try {
+        const r = await callGemini(m, key, prompt);
+        workingModel = m;
+        return r;
+      } catch (e) {
+        lastErr = e;
+        const msg = String(e.message || e);
+        // 404 = model slug dead, try next slug. Anything else (429 quota,
+        // 401 auth, 5xx infra) = provider dead, abort the Gemini chain.
+        if (!msg.includes('404')) throw e;
+      }
+    }
+    throw lastErr || new Error('No Gemini image model worked');
+  };
+
+  const tryProviderChain = async (prompt) => {
+    if (workingProvider === 'pollinations') return { ...(await callPollinations(prompt)), provider: 'pollinations' };
+    if (workingProvider === 'gemini')       return { ...(await tryGeminiOnce(prompt)),    provider: 'gemini' };
+    // Probe Gemini first; fall through to Pollinations on quota/auth/5xx.
+    try {
+      const r = await tryGeminiOnce(prompt);
+      workingProvider = 'gemini';
+      tried.push({ provider: 'gemini', ok: true, model: workingModel });
+      return { ...r, provider: 'gemini' };
+    } catch (e) {
+      tried.push({ provider: 'gemini', ok: false, error: String(e.message || e).slice(0, 200) });
+      const r = await callPollinations(prompt);
+      workingProvider = 'pollinations';
+      tried.push({ provider: 'pollinations', ok: true });
+      return { ...r, provider: 'pollinations' };
+    }
+  };
+
   try {
     const items = [];
     for (let i = 0; i < count; i++) {
       const style  = pickStyle(body.style);
       const prompt = composePrompt({ subject: body.subject, style, prompt: body.prompt });
-      // Use the first model that worked this run; otherwise probe the chain.
-      if (workingModel) {
-        items.push({ ...(await callGemini(workingModel, key, prompt)), prompt, style });
-        continue;
-      }
-      let success = false;
-      for (const m of MODEL_CHAIN) {
-        try {
-          const result = await callGemini(m, key, prompt);
-          workingModel = m;
-          items.push({ ...result, prompt, style });
-          success = true;
-          break;
-        } catch (e) {
-          lastErr = e;
-          // 404 means the slug is gone — try the next one. Other errors
-          // (auth, quota) surface to the user since they won't be fixed
-          // by a slug change.
-          if (!String(e.message || e).includes('404')) throw e;
-        }
-      }
-      if (!success) throw lastErr || new Error('No image-gen model in chain worked');
+      const result = await tryProviderChain(prompt);
+      items.push({ ...result, prompt, style });
     }
-    return res.status(200).json({ items, model: workingModel, tried: MODEL_CHAIN });
+    return res.status(200).json({ items, model: workingModel, provider: workingProvider, tried });
   } catch (e) {
-    return res.status(500).json({ error: String(e.message || e), tried: MODEL_CHAIN });
+    return res.status(500).json({ error: String(e.message || e), tried });
   }
+}
+
+/* Pollinations.ai image generator — free, no API key, Flux model.
+   Endpoint: https://image.pollinations.ai/prompt/{encoded prompt}
+            ?width=1024&height=1024&model=flux&nologo=true&seed=...
+   Returns image bytes directly. We fetch, convert to base64, and match
+   the existing API contract { b64, mimeType }. */
+async function callPollinations (prompt) {
+  const seed = Math.floor(Math.random() * 1e9);
+  const params = new URLSearchParams({
+    width: '1024', height: '1024',
+    model: 'flux', nologo: 'true', enhance: 'true',
+    seed: String(seed)
+  });
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params}`;
+  const r = await fetch(url, {
+    headers: { 'User-Agent': 'ANARCHISM.AFRICA/1.0 (+image-gen fallback)' }
+  });
+  if (!r.ok) throw new Error(`Pollinations ${r.status}: ${(await r.text()).slice(0, 200)}`);
+  const buf = await r.arrayBuffer();
+  if (!buf.byteLength) throw new Error('Pollinations returned empty body');
+  // Convert ArrayBuffer → base64. Node 18+ has Buffer.from(...).toString('base64').
+  const b64 = Buffer.from(buf).toString('base64');
+  return { b64, mimeType: r.headers.get('content-type') || 'image/jpeg' };
 }
 
 async function callGemini (model, key, prompt) {

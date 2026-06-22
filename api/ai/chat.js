@@ -41,9 +41,69 @@ const QWEN_DEFAULT_MODEL       = 'qwen-plus';
 //   gemini   — Google fallback (last resort; closed weights, US Big Tech)
 const FALLBACK_CHAIN = ['kimi', 'deepseek', 'qwen', 'openrouter', 'gemini'];
 
+/* ──────────────────────────────────────────────────────────────────────────
+   AA CONTENT GROUNDING
+   Inject the current library into the system prompt as clickable markdown
+   links so the model can cite real items by exact title with a working URL.
+   Cached for 5 min to avoid hitting Supabase on every chat call. The model
+   is instructed not to invent items; downstream the client only renders
+   links whose URLs start with /item.html so any hallucinated absolute URL
+   still gets sanitised.
+   ────────────────────────────────────────────────────────────────────── */
+let _aaCatalogCache = { text: '', expires: 0 };
+async function getAACatalog () {
+  if (Date.now() < _aaCatalogCache.expires) return _aaCatalogCache.text;
+  try {
+    const sb = require('../../lib/supabase');
+    if (!sb.configured()) return '';
+    const items = await sb.select('content', {
+      eq: { status: 'published' },
+      order: 'scraped_at.desc.nullslast,published_at.desc.nullslast,created_at.desc.nullslast',
+      limit: 80
+    });
+    const byKind = {};
+    for (const it of items) (byKind[it.kind || 'misc'] ||= []).push(it);
+    const order = ['film', 'article', 'event', 'song', 'book', 'merch'];
+    const lines = [];
+    for (const kind of order) {
+      const list = byKind[kind];
+      if (!list || !list.length) continue;
+      lines.push(`## ${kind.toUpperCase()}S`);
+      for (const it of list.slice(0, 15)) {
+        const t = String(it.title || '').replace(/[\[\]\n\r]/g, ' ').slice(0, 90);
+        const blurb = String(it.summary || it.author || '').replace(/[\n\r]/g, ' ').slice(0, 80);
+        if (!t) continue;
+        lines.push(`- [${t}](/item.html?type=${kind}&id=${it.id})${blurb ? ' — ' + blurb : ''}`);
+      }
+    }
+    _aaCatalogCache = { text: lines.join('\n'), expires: Date.now() + 5 * 60_000 };
+    return _aaCatalogCache.text;
+  } catch { return ''; }
+}
+
 export default async function handler (req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
-  const { provider, model, messages = [], strict } = req.body || {};
+  const { provider, model, messages: rawMessages = [], strict } = req.body || {};
+
+  // Inject the AA library catalog into the first system message so the model
+  // always knows what's actually on the site. Falls through silently if
+  // Supabase isn't configured (returns the messages unchanged).
+  const catalog = await getAACatalog();
+  let messages = rawMessages;
+  if (catalog) {
+    const grounding =
+      '\n\nWhen relevant, cite specific items from the ANARCHISM.AFRICA library ' +
+      'using their exact markdown link format from the list below — readers can ' +
+      'click them. Do NOT invent items not in this list; if nothing fits, say so. ' +
+      'Keep answers short (3 sentences max) and end with 1-3 relevant links.\n\n' +
+      'CURRENT LIBRARY:\n' + catalog;
+    const first = messages[0];
+    if (first && first.role === 'system') {
+      messages = [{ role: 'system', content: first.content + grounding }, ...messages.slice(1)];
+    } else {
+      messages = [{ role: 'system', content: 'You are A.A.AI, the library oracle of ANARCHISM.AFRICA.' + grounding }, ...messages];
+    }
+  }
 
   // Default: always cascade. If the explicit provider errors (deprecated
   // free model, rate limit, missing key, network blip), the chain still

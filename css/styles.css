@@ -648,6 +648,8 @@ body.mp-active .chat-panel { bottom: 116px; }
 .chat-msg { padding: 10px 12px; border-radius: 12px; max-width: 88%; font-size: .9rem; line-height: 1.4; }
 .chat-msg.user { background: var(--accent); color: #000; align-self: flex-end; border-bottom-right-radius: 4px; }
 .chat-msg.bot  { background: #1f1c19; color: var(--fg); align-self: flex-start; border-bottom-left-radius: 4px; }
+.chat-msg.bot .ai-link { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.chat-msg.bot .ai-link:hover { color: var(--fg); text-decoration: none; background: rgba(255,255,255,.06); border-radius: 2px; }
 .chat-form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
 .chat-form input { flex: 1; padding: 10px 12px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 99px; font: inherit; }
 .chat-form button { padding: 10px 14px; border-radius: 99px; border: 0; background: var(--accent); color: #000; font-weight: 700; cursor: pointer; }

@@ -244,9 +244,34 @@
     aiHistory.push({ role: 'user', content: q });
     const m = pushMsg('ai-body', 'bot', '…');
     const ans = await window.AA_AI.ask(q, aiHistory);
-    m.innerHTML = '';
-    m.appendChild(document.createTextNode(ans));
+    m.innerHTML = renderBotText(ans);
     aiHistory.push({ role: 'assistant', content: ans });
+  }
+
+  /* Minimal-safe renderer for bot replies.
+     - Escapes ALL text first to neutralise HTML/script injection from the
+       model (or from a malicious upstream source content blob).
+     - Then renders two whitelisted patterns: markdown links [text](url)
+       and **bold**. Links are restricted to /item.html paths and absolute
+       https URLs — anything else (javascript:, data:, http:) renders as
+       plain bracketed text. Internal AA links open in-window; external
+       links get target=_blank rel=noopener.
+     - Newlines become <br>. */
+  function renderBotText (s) {
+    const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const safeUrl = (u) => /^\/item\.html(\?|$)/.test(u) || /^https:\/\/[^\s"<>]+$/i.test(u);
+    let out = esc(s);
+    out = out.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, label, url) => {
+      if (!safeUrl(url)) return m;
+      const isInternal = url.startsWith('/');
+      const attrs = isInternal
+        ? `href="${esc(url)}" class="ai-link"`
+        : `href="${esc(url)}" class="ai-link" target="_blank" rel="noopener"`;
+      return `<a ${attrs}>${label}</a>`;
+    });
+    out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    out = out.replace(/\n/g, '<br>');
+    return out;
   }
 
   // ---------- DMs ----------

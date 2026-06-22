@@ -209,7 +209,18 @@
         el('button', {
           class: 'btn ghost',
           type: 'button',
-          onclick: () => render().catch(() => {})
+          onclick: (e) => {
+            const btn = e.currentTarget;
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Refreshing…';
+            render()
+              .then(() => { btn.textContent = 'Updated ✓'; })
+              .catch(err => { btn.textContent = 'Failed'; console.error('checklist refresh', err); })
+              .finally(() => {
+                setTimeout(() => { btn.disabled = false; btn.textContent = original; }, 1200);
+              });
+          }
         }, 'Refresh'),
         el('button', {
           class: 'btn primary',

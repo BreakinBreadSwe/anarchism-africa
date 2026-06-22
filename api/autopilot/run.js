@@ -33,6 +33,13 @@ function gate (req) {
   // role cookie check (lightweight: trust HMAC session set by /api/auth/google)
   const cookie = req.headers.cookie || '';
   if (/aa_role=(admin|publisher)/.test(cookie)) return true;
+  // SETUP-MODE FALLBACK: if neither ADMIN_TOKEN nor CRON_SECRET is configured
+  // in env, allow any caller. Without this, the "Fire autopilot" button in
+  // the admin checklist is unusable until BOTH the user signs in AND sets
+  // ADMIN_TOKEN — chicken-and-egg since you can't sign in to admin until
+  // Google/Resend env vars are also set. Self-healing: the moment ADMIN_TOKEN
+  // is configured the gate becomes strict. Same pattern as queue.js.
+  if (!adminTok && !cronSec) return true;
   return false;
 }
 

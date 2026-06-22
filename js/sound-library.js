@@ -34,6 +34,21 @@
 
   let allTracks  = [];
   let category   = 'all';
+
+  // Resolve a directly-playable audio URL for a track (used to build the player queue).
+  function slAudioSrc(t) {
+    return t?.audio || t?.audioUrl || (t?.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i) ? t.url : null);
+  }
+  // Map a track → the song shape the mini-player expects.
+  function slToSong(t) {
+    return {
+      id:     t.id || t.slug || (t.title || 'track'),
+      title:  t.title || 'Untitled',
+      artist: t.author || t.artist || '',
+      audio:  slAudioSrc(t),
+      image:  t.coverImageUrl || t.image || '',
+    };
+  }
   let sortMode   = 'newest';
   let searchTerm = '';
   let groupByYear = false;
@@ -230,15 +245,15 @@
     card.querySelector('.sl-card-header').addEventListener('click', () => {
       // Direct audio tracks: fire footer player immediately, no expand needed
       if (hasDirectAudio && window.MP) {
-        const audioSrc = track.audio || track.audioUrl || (track.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i) ? track.url : null);
+        const audioSrc = slAudioSrc(track);
         if (audioSrc) {
-          window.MP.play({
-            id:     id,
-            title:  track.title || 'Untitled',
-            artist: track.author || track.artist || '',
-            audio:  audioSrc,
-            image:  track.coverImageUrl || track.image || '',
-          });
+          // Build a queue of every playable track in the current archive so the
+          // player's prev/next actually navigate (they were no-ops because the
+          // queue was never populated — callers only ever used MP.play(one)).
+          const playable = allTracks.filter(slAudioSrc);
+          const startIdx = Math.max(0, playable.indexOf(track));
+          if (window.MP.queue) window.MP.queue(playable.map(slToSong), startIdx);
+          else window.MP.play(slToSong(track));
           // Still toggle expand so metadata/tags are visible
         }
       }

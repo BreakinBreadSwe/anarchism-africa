@@ -309,25 +309,34 @@ body.has-rail .tabs { display: none; }
    edge. The rail is position:fixed so it overlays content — no 64px push.
    Content fills 100vw; the rail floats over the left edge (64px wide). */
 @media (min-width: 769px) {
+  /* The rail is position:fixed (64px collapsed / 220px when open). Content must
+     be PUSHED past it or the rail overlays + hides the body. Push left by the
+     rail width + breathing room; when the rail is open, push to 220px. */
   body.has-rail main,
-  body.has-rail section.view {
-    padding-left: var(--content-pad-x);
+  body.has-rail section.view,
+  body.has-rail .footer {
+    padding-left: calc(64px + var(--content-pad-x));
     padding-right: var(--content-pad-x);
   }
-  body.has-rail .footer { padding-left: var(--content-pad-x); padding-right: var(--content-pad-x); }
-  /* !important defeats inline `style="padding:..."` on <main> and <section class="view">
-     in role pages (publisher, partner, journalist, etc.) that set the shorthand padding
-     inline, wiping padding-left. Rail is fixed-position so no push needed. */
+  /* !important defeats inline `style="padding:..."` on <main>/<section class="view">
+     in role pages (publisher, partner, journalist, etc.) that set the shorthand
+     inline, wiping padding-left. */
   body.has-rail main {
     width: 100%; max-width: 100%; box-sizing: border-box;
-    padding-left: var(--content-pad-x) !important;
+    padding-left: calc(64px + var(--content-pad-x)) !important;
     padding-right: var(--content-pad-x) !important;
   }
   body.has-rail section.view {
     width: 100%; max-width: none; box-sizing: border-box;
-    padding-left: var(--content-pad-x) !important;
+    padding-left: calc(64px + var(--content-pad-x)) !important;
     padding-right: var(--content-pad-x) !important;
   }
+  /* Rail expanded → push content to clear the 220px rail. */
+  body.rail-open.has-rail main,
+  body.rail-open.has-rail section.view {
+    padding-left: calc(220px + var(--content-pad-x)) !important;
+  }
+  body.rail-open.has-rail .footer { padding-left: calc(220px + var(--content-pad-x)); }
 }
 
 /* Mobile backdrop when drawer open */

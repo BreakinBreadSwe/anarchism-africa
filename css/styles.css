@@ -760,6 +760,17 @@ body.mp-active { padding-bottom: calc(60px + 56px + 12px); }
 body.mp-active .mp-vu { display: block; }
 .mp-vu canvas { display: block; width: 100%; height: 100%; }
 
+/* DESKTOP: dock the player IN the bottom footer (flush to the viewport bottom).
+   Desktop navigates via the left rail, so the bottombar (mobile footer menu) is
+   redundant while a track plays — hide it and let the player own the footer.
+   MOBILE keeps the player just above the footer menu (bottom:60px, above). */
+@media (min-width: 769px) {
+  .mini-player { bottom: 0; }                 /* in the bottom footer */
+  body.mp-active .bottombar { display: none; }/* player owns the bottom footer (rail = nav) */
+  .mp-vu { bottom: 56px; }                     /* flush atop the player (no 60px bottombar below) */
+  body.mp-active { padding-bottom: calc(56px + 12px); } /* player(56) + VU(12), no bottombar */
+}
+
 /* artwork thumbnail */
 .mini-player .mp-art {
   width: 40px; height: 40px; flex: 0 0 auto;

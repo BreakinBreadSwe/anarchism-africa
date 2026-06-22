@@ -116,12 +116,18 @@ function backSVG (q, storeUrl) {
 
 export default async function handler (req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
-  const { quoteId, side = 'front', both = false, storeUrl } = req.body || {};
+  // portraitOverride: when the client has a verified-good portrait URL for
+  // this quote (e.g. from /api/merch/scrape-portrait or a paste-in), pass
+  // it here to replace the stale q.portrait_url from the JSON fixture for
+  // THIS render only. The base JSON isn't mutated — overrides live in the
+  // client's localStorage map (aa-quote-portraits).
+  const { quoteId, side = 'front', both = false, storeUrl, portraitOverride } = req.body || {};
   if (!quoteId) return res.status(400).json({ error: 'quoteId required' });
   try {
     const quotes = await loadQuotes();
-    const q = quotes.find(x => x.id === quoteId);
-    if (!q) return res.status(404).json({ error: 'quote not found: ' + quoteId });
+    const qRaw = quotes.find(x => x.id === quoteId);
+    if (!qRaw) return res.status(404).json({ error: 'quote not found: ' + quoteId });
+    const q = portraitOverride ? { ...qRaw, portrait_url: portraitOverride } : qRaw;
     if (both) {
       return res.status(200).json({
         quote: q,

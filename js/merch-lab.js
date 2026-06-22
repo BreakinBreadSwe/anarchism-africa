@@ -55,6 +55,8 @@
           <button class="btn ghost" id="ml-dl-png-front">Front PNG (300dpi)</button>
           <button class="btn ghost" id="ml-dl-png-back">Back PNG (300dpi)</button>
         </div>
+        <!-- Portrait controls — populated by paintPortraitControls() after a quote is picked -->
+        <div id="ml-portrait-controls" style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)"></div>
       </div>
       <div class="panel" id="ml-printify-panel" style="display:none">
         <h3 style="margin:0 0 4px" id="ml-pod-heading">POD push</h3>
@@ -354,14 +356,27 @@
       (x.tags||[]).some(t => t.toLowerCase().includes(f))
     ));
   }
+  /* Portrait overrides live in localStorage so the editor can fix a 400'ing
+     Wikimedia thumb (or paste a different image) without touching the JSON
+     fixture. Map of { quoteId: url }. */
+  function readPortraitOverrides () {
+    try { return JSON.parse(localStorage.getItem('aa-quote-portraits') || '{}'); }
+    catch { return {}; }
+  }
+  function writePortraitOverride (id, url) {
+    const m = readPortraitOverrides();
+    if (url) m[id] = url; else delete m[id];
+    try { localStorage.setItem('aa-quote-portraits', JSON.stringify(m)); } catch {}
+  }
   async function pickQuote (id) {
     const q = state.quotes.find(x => x.id === id); if (!q) return;
     state.selected = q;
+    state.portraitOverride = readPortraitOverrides()[id] || null;
     status('Generating design…');
     try {
       const r = await fetch('/api/merch/generate-shirt', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quoteId: id, both: true, storeUrl: STORE_URL_BASE + id })
+        body: JSON.stringify({ quoteId: id, both: true, storeUrl: STORE_URL_BASE + id, portraitOverride: state.portraitOverride })
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
@@ -373,8 +388,66 @@
       $('#ml-front-host').innerHTML = state.front.svg;
       $('#ml-back-host').innerHTML = state.back.svg;
       $('#ml-title').value = `ANARCHISM.AFRICA · ${q.author} — quote tee`;
+      paintPortraitControls();
       status('Design ready', 'ok');
     } catch (e) { status('Error: ' + e.message, 'error'); }
+  }
+
+  /* Render the portrait controls below the design preview. Shows the
+     current portrait URL + 3 action buttons: auto-find via Wikipedia,
+     paste a custom URL, or reset to the JSON fixture value. */
+  function paintPortraitControls () {
+    const host = document.getElementById('ml-portrait-controls');
+    if (!host || !state.selected) return;
+    const q = state.selected;
+    const overrideUrl = state.portraitOverride || '';
+    const effective = overrideUrl || q.portrait_url || '(none — initials fallback)';
+    host.innerHTML = `
+      <div class="mono" style="font-size:.7rem;color:var(--muted);margin-bottom:6px">PORTRAIT FOR THE BACK</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+        <img id="ml-portrait-thumb" alt="" style="width:48px;height:48px;border-radius:8px;border:1px solid var(--line);object-fit:cover;background:var(--bg-2)" src="${(overrideUrl || q.portrait_url || '').replace(/"/g, '&quot;')}" onerror="this.style.display='none'"/>
+        <code style="font-size:.7rem;color:var(--fg-dim);word-break:break-all;flex:1">${effective}</code>
+        ${overrideUrl ? '<span class="mono" style="font-size:.65rem;color:var(--accent);padding:2px 8px;border:1px solid var(--accent);border-radius:99px">OVERRIDE</span>' : ''}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn ghost" id="ml-portrait-find" type="button">🔍 Auto-find on Wikipedia</button>
+        <button class="btn ghost" id="ml-portrait-paste" type="button">✏️ Paste URL</button>
+        ${overrideUrl ? '<button class="btn ghost" id="ml-portrait-reset" type="button">↺ Reset to JSON</button>' : ''}
+      </div>
+    `;
+    document.getElementById('ml-portrait-find')?.addEventListener('click', () => portraitAutoFind(q));
+    document.getElementById('ml-portrait-paste')?.addEventListener('click', () => portraitPaste(q));
+    document.getElementById('ml-portrait-reset')?.addEventListener('click', () => portraitReset(q));
+  }
+
+  async function portraitAutoFind (q) {
+    status('Searching Wikipedia for ' + q.author + '…');
+    try {
+      const r = await fetch('/api/merch/scrape-portrait?author=' + encodeURIComponent(q.author));
+      const data = await r.json();
+      if (!r.ok || !data.url) throw new Error(data.error || 'no result');
+      writePortraitOverride(q.id, data.url);
+      state.portraitOverride = data.url;
+      await pickQuote(q.id); // regenerate with the new portrait
+      status(`Portrait updated from Wikipedia: ${data.title}`, 'ok');
+    } catch (e) { status('Auto-find failed: ' + e.message, 'error'); }
+  }
+
+  function portraitPaste (q) {
+    const current = state.portraitOverride || q.portrait_url || '';
+    const url = prompt('Paste a portrait URL (https://… image)\n\nLeave blank to clear.', current);
+    if (url === null) return; // cancelled
+    const trimmed = url.trim();
+    if (trimmed && !/^https?:\/\//i.test(trimmed)) { status('URL must start with http(s)://', 'error'); return; }
+    writePortraitOverride(q.id, trimmed);
+    state.portraitOverride = trimmed || null;
+    pickQuote(q.id).then(() => status(trimmed ? 'Portrait override saved' : 'Override cleared', 'ok'));
+  }
+
+  function portraitReset (q) {
+    writePortraitOverride(q.id, null);
+    state.portraitOverride = null;
+    pickQuote(q.id).then(() => status('Reset to JSON portrait', 'ok'));
   }
   function downloadSVG (side) {
     const obj = side === 'back' ? state.back : state.front;

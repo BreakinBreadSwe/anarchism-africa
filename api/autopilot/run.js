@@ -15,6 +15,7 @@
 
 const STAGES = {
   scrape:    '/api/cron/scan-content',
+  events:    '/api/cron/scrape-events',
   sounds:    '/api/cron/scrape-sounds',
   texts:     '/api/cron/scrape-texts',
   articles:  '/api/cron/generate-articles',

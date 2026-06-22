@@ -44,6 +44,30 @@ const STYLE_PROMPTS = {
   towel:       'a photoreal product mockup: a large terry BEACH TOWEL laid out on warm sand or a wooden deck, the AA mark as a repeating pan-african pattern across the full surface, edge-to-edge coverage, soft warm sunlight, no extra text',
   blanket:     'a photoreal product mockup: a woven WOOL or COTTON BLANKET folded on a wooden bench or bed, kente-inspired pan-african colours, the AA mark integrated as one motif within a wider geometric weaving pattern that covers the whole blanket, warm interior lighting, magazine-quality, no extra text',
   sticker:     'a photoreal product mockup: a DIE-CUT VINYL STICKER of the AA mark, slight depth and white bleed border around the silhouette, peeling slightly off a paper backing on a wooden desk, glossy reflection, no extra text',
+
+  // ── Typography eras + movements ─────────────────────────────────────────
+  artdeco:     '1920s ART DECO poster aesthetic, symmetrical geometric ornament, gold + black + cream, fan motifs and sunburst rays radiating from the centre of the mark, sharp chamfered edges, machine-age elegance, Cassandre lineage, no text',
+  bauhaus:     '1920s BAUHAUS poster, primary colours (red/yellow/blue) on cream, strict grid, geometric circle/square/triangle building blocks, Herbert Bayer Universal-typeface clean lines, modular construction, the mark deconstructed into primitives, no text',
+  constructivist: '1920s SOVIET CONSTRUCTIVIST poster, diagonal compositions, red + black on cream, Rodchenko / El Lissitzky lineage, photomontage feel, urgent revolutionary energy, raw printed paper texture, no text',
+  cubanrev:    '1960s-70s CUBAN REVOLUTIONARY POSTER (OSPAAAL lineage), flat saturated tropical colours (red, yellow, teal, hot pink), bold simplified shapes, Edel Rodríguez aesthetic, anti-imperial pan-Caribbean energy, no text',
+  blackpanthers:'Emory Douglas / BLACK PANTHER PARTY newspaper-illustration style, black + red + bold yellow, woodcut-thick outlines, fist + sunburst iconography woven around the mark, raw 1970s mimeograph texture, no text',
+  afrofuturist:'AFROFUTURIST poster, deep cosmic indigo + glowing gold + Mars red, Sun Ra Arkestra cosmic mythology lineage, geometric Adinkra symbols orbiting the mark, holographic foil sheen, Octavia Butler era-jump energy, no text',
+  adinkra:     'traditional GHANAIAN ADINKRA stamp aesthetic, hand-carved stamp marks, the mark surrounded by Adinkra symbols (Gye Nyame, Sankofa, Adinkrahene), single black ink on hand-pressed brown paper, ancestral, no text',
+  ndebele:     'SOUTHERN AFRICAN NDEBELE wall-painting style, sharp angular geometric outlines, saturated primaries (red, blue, yellow, green, black, white), bold zig-zag borders, the mark integrated as one geometric shape within the larger pattern, no text',
+  swissintl:   '1950s SWISS INTERNATIONAL TYPOGRAPHIC poster, Akzidenz-Grotesk discipline, asymmetric grid, lots of white space, single accent colour, mathematically precise spacing, Müller-Brockmann lineage, no text',
+  memphis:     '1980s MEMPHIS GROUP design, squiggles + dots + zigzags, hot pink + mint + lemon + electric blue + black, postmodern playful chaos, terrazzo texture, Ettore Sottsass lineage, no text',
+  cuttest:     'PUNK ZINE / cut-and-paste aesthetic, photocopied black-and-white, ransom-note collage, torn paper edges, halftone bleed, safety-pin energy, late-70s Crass / Riot Grrrl lineage, no text',
+  ukiyoe:      'Japanese UKIYO-E woodblock print aesthetic, flat fields of muted colour, fine outlining, kabuki composition, the mark rendered as if Hokusai had carved it, no text',
+  islamicgeo:  'ISLAMIC GEOMETRIC PATTERN tradition, intricate tessellation around and inside the mark, gold leaf on deep indigo, the mark woven into infinite repeating ornament, North African / Moroccan / Andalusi lineage, no text',
+  haitianvev:  'HAITIAN VÈVÈ / VODOU ceremonial symbol drawing, flour-on-floor ritual aesthetic, fine line work, cosmological geometry (Erzulie, Damballa motifs) around the mark, sacred + protective, no text',
+  ethiopiancross:'ETHIOPIAN ORTHODOX manuscript illumination, intricate interlace crosses, ochre + deep red + indigo + gold leaf on parchment, Aksumite / Lalibela lineage, the mark framed by ornament, no text',
+  taino:       'TAÍNO petroglyph aesthetic, simplified spiral + face motifs, carved into stone surface texture, ochre and umber, pre-Columbian Caribbean indigenous lineage, no text',
+  riso:        'RISOGRAPH overprint, two saturated inks misregistered (fluoro pink + teal, or sunflower + black), halftone dot texture, slight tactile paper grain, contemporary indie-print aesthetic, no text',
+  vaporwave:   '1990s VAPORWAVE aesthetic, pastel pink + cyan + white grid, Roman bust silhouette + palm shadows, CRT scanlines, MS Sans Serif type lockup, retrofuture melancholy, no text',
+  cyberafro:   'cyberpunk AFRO-FUTURE aesthetic, neon magenta + cyan on jet black, circuit-trace geometry weaving through the mark, glitched holographic foil, Black Quantum Futurism lineage, no text',
+  brutalconcrete:'BRUTALIST poster on raw concrete texture, ultra-thick sans-serif typography lockups around the mark, mono ink-stamp red on grey, 1970s architectural-school aesthetic, no text',
+  zellige:     'MOROCCAN ZELLIGE tile aesthetic, hand-cut geometric mosaic, deep teal + ochre + cream + cobalt, the mark assembled out of individual tile pieces, fine grout lines, no text',
+  ankara:      'WEST AFRICAN ANKARA / wax-print fabric pattern, bold high-contrast repeating motifs, saturated complementary colours (turquoise + orange, red + indigo), the mark woven into the larger textile pattern, no text',
   photoreal:   'photoreal physical object: an embossed brass medallion of the mark on a black velvet, soft studio lighting, macro detail, no text'
 };
 
@@ -161,22 +185,56 @@ export default async function handler (req, res) {
    Returns image bytes directly. We fetch, convert to base64, and match
    the existing API contract { b64, mimeType }. */
 async function callPollinations (prompt) {
+  // Pollinations rate-limits per IP — Vercel functions share a small IP
+  // pool so multi-user batches cluster onto the same source and hit
+  // 'Queue full for IP: ...: 1 requests already queued (max: 1)'.
+  // Mitigation: retry up to 3× with exponential backoff (3s, 6s, 12s)
+  // before surfacing the error. Most 429s clear within ~10s. Optional
+  // POLLINATIONS_TOKEN env var raises the per-IP cap if you sign up at
+  // enter.pollinations.ai (free tier exists).
   const seed = Math.floor(Math.random() * 1e9);
   const params = new URLSearchParams({
     width: '1024', height: '1024',
     model: 'flux', nologo: 'true', enhance: 'true',
     seed: String(seed)
   });
+  if (process.env.POLLINATIONS_TOKEN) params.set('token', process.env.POLLINATIONS_TOKEN);
   const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params}`;
-  const r = await fetch(url, {
-    headers: { 'User-Agent': 'ANARCHISM.AFRICA/1.0 (+image-gen fallback)' }
-  });
-  if (!r.ok) throw new Error(`Pollinations ${r.status}: ${(await r.text()).slice(0, 200)}`);
-  const buf = await r.arrayBuffer();
-  if (!buf.byteLength) throw new Error('Pollinations returned empty body');
-  // Convert ArrayBuffer → base64. Node 18+ has Buffer.from(...).toString('base64').
-  const b64 = Buffer.from(buf).toString('base64');
-  return { b64, mimeType: r.headers.get('content-type') || 'image/jpeg' };
+
+  const DELAYS_MS = [3000, 6000, 12000];
+  let lastErr = null;
+  for (let attempt = 0; attempt <= DELAYS_MS.length; attempt++) {
+    try {
+      const r = await fetch(url, {
+        headers: { 'User-Agent': 'ANARCHISM.AFRICA/1.0 (+image-gen fallback)' }
+      });
+      if (r.ok) {
+        const buf = await r.arrayBuffer();
+        if (!buf.byteLength) throw new Error('Pollinations returned empty body');
+        const b64 = Buffer.from(buf).toString('base64');
+        return { b64, mimeType: r.headers.get('content-type') || 'image/jpeg' };
+      }
+      // 429 / 5xx — retryable. 4xx other = give up immediately.
+      const body = (await r.text()).slice(0, 200);
+      if (r.status === 429 || r.status >= 500) {
+        lastErr = new Error(`Pollinations ${r.status}: ${body}`);
+        if (attempt < DELAYS_MS.length) {
+          await new Promise(res => setTimeout(res, DELAYS_MS[attempt]));
+          continue;
+        }
+      }
+      throw new Error(`Pollinations ${r.status}: ${body}`);
+    } catch (e) {
+      // Network blip: retry. Real error: bail.
+      if (/network|fetch|aborted/i.test(String(e.message)) && attempt < DELAYS_MS.length) {
+        lastErr = e;
+        await new Promise(res => setTimeout(res, DELAYS_MS[attempt]));
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw lastErr || new Error('Pollinations failed after retries');
 }
 
 async function callGemini (model, key, prompt) {

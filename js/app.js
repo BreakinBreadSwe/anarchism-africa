@@ -466,15 +466,76 @@
       sortNewestFirst(await AA.getByType('film')).forEach(f => { const c = card(f,'film'); attachCardClick(c, openFilm, f); g.appendChild(c); });
     }
     if (tab === 'articles') {
-      const g = $('#articles-grid'); resetGrid(g);
-      const arts = await AA.getByType('article');
-      // Sort newest first, group by month with archive headers
-      arts.sort((a, b) => {
-        const da = a.published_at || a.scraped_at || (a.year ? a.year + '-01-01' : '');
-        const db = b.published_at || b.scraped_at || (b.year ? b.year + '-01-01' : '');
-        return da > db ? -1 : da < db ? 1 : 0;
+      const g = $('#articles-grid');
+      // Strip the .grid class — this container is now a stack of {header,
+      // grid-per-month} pairs. The old approach had month headers using
+      // grid-column: 1/-1 inside a single .grid, which made auto-fit treat
+      // ALL tracks as occupied (a 1/-1 span counts as content in every
+      // track). Result: lone cards stayed narrow on the left. Per-month
+      // sub-grids fix this — each sub-grid genuinely has only N cards so
+      // auto-fit collapses empty tracks correctly.
+      g.innerHTML = '';
+      g.className = 'articles-archive anim-stagger';
+      const allArts = sortNewestFirst(await AA.getByType('article'));
+
+      // Derive a category for each article from its tags + title heuristics.
+      // Categories visible in the UI: Essays / Interviews / Library notes /
+      // Book reviews / Portraits / News. Falls back to 'note' (Library notes).
+      const categoryOf = (a) => {
+        const tags = (a.tags || []).map(t => String(t).toLowerCase());
+        const title = String(a.title || '').toLowerCase();
+        if (tags.includes('interview') || /^(an? )?interview /i.test(a.title || '')) return 'interview';
+        if (tags.includes('essay'))                                                    return 'essay';
+        if (tags.includes('review') || tags.includes('book-review'))                   return 'review';
+        if (tags.includes('portrait'))                                                 return 'portrait';
+        if (tags.some(t => ['news','journalism','analysis','politics'].includes(t)))  return 'news';
+        return 'note';
+      };
+      const CAT_META = [
+        { key: 'all',       label: 'All' },
+        { key: 'essay',     label: 'Essays' },
+        { key: 'interview', label: 'Interviews' },
+        { key: 'note',      label: 'Library notes' },
+        { key: 'review',    label: 'Book reviews' },
+        { key: 'portrait',  label: 'Portraits' },
+        { key: 'news',      label: 'News' }
+      ];
+      // Counts per category (driven by the actual data, drop empties).
+      const counts = {};
+      allArts.forEach(a => { const k = categoryOf(a); counts[k] = (counts[k] || 0) + 1; });
+      counts.all = allArts.length;
+      const activeCat = state.libCategory || 'all';
+
+      // Chip row above the per-month stacks.
+      const chips = document.createElement('div');
+      chips.className = 'lib-cats';
+      CAT_META.forEach(c => {
+        if (c.key !== 'all' && !counts[c.key]) return;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'lib-cat-btn' + (c.key === activeCat ? ' active' : '');
+        b.dataset.cat = c.key;
+        b.innerHTML = `${c.label} <span class="lib-cat-count">${counts[c.key] || 0}</span>`;
+        b.addEventListener('click', () => { state.libCategory = c.key; renderTab('articles'); });
+        chips.appendChild(b);
       });
-      let lastMonth = null;
+      g.appendChild(chips);
+
+      // Apply filter.
+      const arts = activeCat === 'all'
+        ? allArts
+        : allArts.filter(a => categoryOf(a) === activeCat);
+
+      if (!arts.length) {
+        const empty = document.createElement('p');
+        empty.className = 'lib-empty';
+        empty.textContent = 'No articles in this category yet.';
+        g.appendChild(empty);
+        return;
+      }
+
+      // Per-month sub-grids — each one is its own .grid so auto-fit works.
+      let lastMonth = null, currentMonthGrid = null;
       arts.forEach(a => {
         const mk = archiveMonthKey(a);
         if (mk !== lastMonth) {
@@ -482,9 +543,12 @@
           h.className = 'archive-month-head';
           h.innerHTML = `<span class="kente-pip"></span><span>${archiveMonthLabel(mk)}</span>`;
           g.appendChild(h);
+          currentMonthGrid = document.createElement('div');
+          currentMonthGrid.className = 'grid';
+          g.appendChild(currentMonthGrid);
           lastMonth = mk;
         }
-        const c = card(a, 'article'); attachCardClick(c, openArticle, a); g.appendChild(c);
+        const c = card(a, 'article'); attachCardClick(c, openArticle, a); currentMonthGrid.appendChild(c);
       });
     }
     if (tab === 'events') {

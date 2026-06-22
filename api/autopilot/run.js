@@ -18,6 +18,7 @@ const STAGES = {
   events:    '/api/cron/scrape-events',
   sounds:    '/api/cron/scrape-sounds',
   texts:     '/api/cron/scrape-texts',
+  rescrape:  '/api/cron/rescrape-images',
   articles:  '/api/cron/generate-articles',
   slogans:   '/api/cron/generate-slogans',
   logos:     '/api/cron/generate-logos',

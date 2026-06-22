@@ -37,6 +37,10 @@
     {
       "path": "/api/cron/scrape-texts",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/rescrape-images",
+      "schedule": "0 5 * * *"
     }
   ],
   "headers": [

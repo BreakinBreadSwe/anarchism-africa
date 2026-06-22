@@ -1908,9 +1908,35 @@ section.view { padding: 16px; }
   background: var(--bg-2);
 }
 
-/* Archive month headers in the articles grid */
+/* Library & Magazine archive: stack of (chip row, header, per-month grid).
+   The container is NOT a grid — each month is its own .grid below so the
+   article cards fill row width via auto-fit. */
+.articles-archive { display: block; width: 100%; }
+.articles-archive > .grid { margin-top: 6px; margin-bottom: 18px; }
+.lib-empty { padding: 24px 0; color: var(--muted); font-size: .9rem; }
+
+/* Category chip row above the articles archive */
+.lib-cats {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.lib-cat-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px;
+  font-size: .78rem; font-weight: 600; letter-spacing: .04em;
+  background: var(--bg-2); color: var(--fg-dim);
+  border: 1px solid var(--line); cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.lib-cat-btn:hover { color: var(--fg); border-color: var(--fg-dim); }
+.lib-cat-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.lib-cat-count { font-size: .68rem; opacity: .7; font-weight: 500; }
+.lib-cat-btn.active .lib-cat-count { opacity: .85; }
+
+/* Archive month headers — now plain block elements between sub-grids */
 .archive-month-head {
-  grid-column: 1 / -1;
   display: flex; align-items: center; gap: 10px;
   margin: 28px 0 4px;
   font: 700 .68rem 'JetBrains Mono', monospace;

@@ -64,9 +64,14 @@ export default async function handler (req, res) {
   const body  = req.body || {};
   // Try in order: explicit body.model, env override, then a fallback list.
   // First model that returns a non-404 is used for the rest of the batch.
+  // Current generation first; older slugs as fallbacks for accounts that
+  // don't yet have 3.x access. Direct Gemini API uses the bare slug
+  // (no 'google/' prefix — that's the AI Gateway routing form).
   const MODEL_CHAIN = [
     body.model,
     process.env.GEMINI_IMAGE_MODEL,
+    'gemini-3.1-flash-image-preview',
+    'gemini-3.1-flash-image',
     'gemini-2.5-flash-image-preview',
     'gemini-2.5-flash-image',
     'gemini-2.0-flash-preview-image-generation',

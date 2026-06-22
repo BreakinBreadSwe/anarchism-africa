@@ -1802,6 +1802,9 @@ section.view { padding: 16px; }
 .ml-quote-meta { margin-top: 8px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .72rem; color: var(--muted); letter-spacing: .04em; }
 .ml-quote-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .ml-quote-tags span { font-size: .65rem; padding: 2px 8px; border: 1px solid var(--line); border-radius: 99px; color: var(--fg-dim); letter-spacing: .04em; }
+.ml-quote-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.ml-q-makemerch { font-size: .72rem; padding: 6px 12px; min-height: 32px; }
+.ml-q-makemerch:disabled { opacity: .7; cursor: progress; }
 .ml-shirt-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 .ml-shirt-side { border: 1px solid var(--line); border-radius: 16px; background: #000; overflow: hidden; display: flex; flex-direction: column; }
 .ml-side-label { padding: 8px 12px; font: 700 .7rem 'JetBrains Mono', monospace; letter-spacing: .14em; border-bottom: 1px solid var(--line); color: var(--fg-dim); background: var(--bg-2); }

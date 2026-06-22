@@ -76,7 +76,13 @@
     $('#ml-load').addEventListener('click', loadQuotes);
     $('#ml-printify-shops').addEventListener('click', checkPrintify);
     $('#ml-q-search').addEventListener('input', e => filterQuotes(e.target.value));
-    $('#ml-quotes').addEventListener('click', e => { const c = e.target.closest('[data-q-id]'); if (c) pickQuote(c.dataset.qId); });
+    $('#ml-quotes').addEventListener('click', e => {
+      // Make-merch button: one-click pipeline. Stop propagation so the
+      // outer quote-card click (which just previews) doesn't also fire.
+      const mkBtn = e.target.closest('.ml-q-makemerch');
+      if (mkBtn) { e.stopPropagation(); makeMerchOneClick(mkBtn.dataset.qId, mkBtn); return; }
+      const c = e.target.closest('[data-q-id]'); if (c) pickQuote(c.dataset.qId);
+    });
     $('#ml-dl-svg-front').addEventListener('click', () => downloadSVG('front'));
     $('#ml-dl-svg-back').addEventListener('click', () => downloadSVG('back'));
     $('#ml-dl-png-front').addEventListener('click', () => downloadPNG('front'));
@@ -110,7 +116,55 @@
         <div class="ml-quote-text">"${escapeHTML((q.text||'').slice(0,160))}${(q.text||'').length>160?'…':''}"</div>
         <div class="ml-quote-meta">— ${escapeHTML(q.author||'')}${q.year?' · '+q.year:''}</div>
         <div class="ml-quote-tags">${(q.tags||[]).slice(0,4).map(t=>`<span>${escapeHTML(t)}</span>`).join('')}</div>
+        <div class="ml-quote-actions">
+          <button type="button" class="btn primary ml-q-makemerch" data-q-id="${q.id}" title="One-click: generate design + push to Printify if configured">→ Make merch</button>
+        </div>
       </div>`).join('');
+  }
+  /* One-click pipeline: pickQuote → checkPrintify → fetchVariants → pushPrintify → publish.
+     Each stage handles its own state and short-circuits if a prereq fails.
+     When PRINTIFY_API_TOKEN is missing, we still generate + preview the design
+     and tell the user to set the env var to enable the push.
+     Designed so a publisher can blast through approving 20 quotes per session
+     without clicking through the 5-button manual flow each time. */
+  async function makeMerchOneClick (id, btn) {
+    if (btn) { btn.disabled = true; btn.dataset.orig = btn.textContent; btn.textContent = '1/5 design…'; }
+    try {
+      // 1. Generate design (sets state.selected, state.front, state.back)
+      await pickQuote(id);
+      if (!state.front || !state.back || state.selected?.id !== id) { throw new Error('design generation failed'); }
+      if (btn) btn.textContent = '2/5 connecting…';
+
+      // 2. Check Printify connection (sets shopId / blueprintId / printProviderId)
+      if (!state.shopId) {
+        try { await checkPrintify(); } catch { /* fall through — handled below */ }
+      }
+      if (!state.shopId) {
+        status('Design ready ✓ — set PRINTIFY_API_TOKEN + PRINTIFY_SHOP_ID in Vercel env to one-click-publish. Preview + PNG download still available below.', 'ok');
+        if (btn) { btn.textContent = 'Design ready ✓'; setTimeout(() => { btn.disabled = false; btn.textContent = btn.dataset.orig; }, 4000); }
+        return;
+      }
+
+      // 3. Fetch variants if not loaded yet (cached for the rest of the session)
+      if (btn) btn.textContent = '3/5 variants…';
+      if (!state.variants?.length) await fetchVariants();
+      if (!state.variants?.length) throw new Error('no variants — set blueprint/printProvider in admin');
+
+      // 4. Push to Printify (uploads PNGs + creates unpublished product)
+      if (btn) btn.textContent = '4/5 uploading…';
+      await pushPrintify();
+      if (!state.productId) throw new Error('Printify product create failed');
+
+      // 5. Publish to the connected shop
+      if (btn) btn.textContent = '5/5 publishing…';
+      await publishProduct();
+
+      status('Merch live ✓ — check your Printify dashboard', 'ok');
+      if (btn) { btn.textContent = 'Live ✓'; setTimeout(() => { btn.disabled = false; btn.textContent = btn.dataset.orig; }, 5000); }
+    } catch (e) {
+      status('Make merch failed: ' + e.message, 'error');
+      if (btn) { btn.textContent = 'Failed'; setTimeout(() => { btn.disabled = false; btn.textContent = btn.dataset.orig; }, 3000); }
+    }
   }
   function filterQuotes (q) {
     const f = (q||'').toLowerCase().trim();

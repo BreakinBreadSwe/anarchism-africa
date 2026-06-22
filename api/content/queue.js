@@ -85,7 +85,23 @@ module.exports = async function handler (req, res) {
           scraped_at:     item.scraped_at || new Date().toISOString(),
           status:         'pending'
         });
-        return res.status(200).json({ ok: true, queued: 1, item: Array.isArray(out) ? out[0] : out });
+        const inserted = Array.isArray(out) ? out[0] : out;
+        // Auto-approve mode: when AUTO_APPROVE_SCRAPED=1 in Vercel env,
+        // every scraper-enqueued item ALSO lands in the public 'content'
+        // table immediately. Skips the publisher review queue — useful when
+        // sources are curated and you trust the pipeline. Set this to false
+        // (or unset) to keep the editorial-review workflow.
+        if (process.env.AUTO_APPROVE_SCRAPED === '1' && inserted && inserted.id) {
+          try {
+            const promoted = await promoteToContent(inserted);
+            return res.status(200).json({ ok: true, queued: 1, auto_approved: true, content_id: promoted.id, item: inserted });
+          } catch (e) {
+            // Don't fail the enqueue just because promotion failed —
+            // the item is safely in the queue and can be approved later.
+            return res.status(200).json({ ok: true, queued: 1, auto_approve_error: String(e.message || e).slice(0, 200), item: inserted });
+          }
+        }
+        return res.status(200).json({ ok: true, queued: 1, item: inserted });
       } catch (err) {
         const msg = String(err.message || err);
         if (msg.includes('duplicate') || msg.includes('content_queue_url_hash_idx')) {
@@ -99,29 +115,29 @@ module.exports = async function handler (req, res) {
       if (!id) return res.status(400).json({ ok: false, error: 'id required' });
       const q = await sb.getById('content_queue', id);
       if (!q) return res.status(404).json({ ok: false, error: 'queue item not found' });
-      // Insert into content + mark queue item approved + link
-      const newItemArr = await sb.insert('content', {
-        kind:           q.kind,
-        title:          q.title,
-        summary:        q.summary,
-        external_url:   q.url,
-        source_url:     q.source_url,
-        source_title:   q.source_title,
-        source_author:  q.source_author,
-        source_license: q.source_license,
-        source_name:    q.source_name,
-        tags:           q.tags,
-        published_at:   q.published_at || new Date().toISOString(),
-        scraped_at:     q.scraped_at,
-        status:         'published'
-      });
-      const newItem = Array.isArray(newItemArr) ? newItemArr[0] : newItemArr;
-      await sb.update('content_queue', id, {
-        status:         'approved',
-        reviewed_at:    new Date().toISOString(),
-        promoted_to_id: newItem.id
-      });
+      const newItem = await promoteToContent(q);
       return res.status(200).json({ ok: true, approved: true, content_id: newItem.id });
+    }
+
+    // Bulk approve: flush every pending row through promoteToContent. Useful
+    // for bootstrapping ('I have 61 items in queue, push them all live now')
+    // and for unattended autopilot runs. Caps at 200 per call so we don't
+    // blow Vercel's function timeout. Run it multiple times to drain a
+    // huge backlog.
+    if (action === 'approve-all') {
+      const pending = await sb.select('content_queue', {
+        eq: { status: 'pending' }, order: '-scraped_at', limit: 200
+      });
+      const results = { approved: 0, errors: [] };
+      for (const q of pending) {
+        try {
+          await promoteToContent(q);
+          results.approved++;
+        } catch (e) {
+          results.errors.push({ id: q.id, title: (q.title || '').slice(0, 80), error: String(e.message || e).slice(0, 200) });
+        }
+      }
+      return res.status(200).json({ ok: true, total: pending.length, ...results });
     }
 
     if (action === 'reject') {
@@ -141,3 +157,34 @@ module.exports = async function handler (req, res) {
     return res.status(500).json({ ok: false, error: String(e.message || e) });
   }
 };
+
+/* Copy a queue row into the public 'content' table with status='published'
+   and link the queue row back via promoted_to_id. Single source of truth
+   for both the manual 'approve' action and the bulk 'approve-all' action
+   AND the AUTO_APPROVE_SCRAPED enqueue path below. */
+async function promoteToContent (q) {
+  const newItemArr = await sb.insert('content', {
+    kind:           q.kind,
+    title:          q.title,
+    summary:        q.summary,
+    external_url:   q.url,
+    source_url:     q.source_url,
+    image:          q.image,
+    source_title:   q.source_title,
+    source_author:  q.source_author,
+    source_license: q.source_license,
+    source_name:    q.source_name,
+    source_logo:    q.source_logo,
+    tags:           q.tags,
+    published_at:   q.published_at || new Date().toISOString(),
+    scraped_at:     q.scraped_at,
+    status:         'published'
+  });
+  const newItem = Array.isArray(newItemArr) ? newItemArr[0] : newItemArr;
+  await sb.update('content_queue', q.id, {
+    status:         'approved',
+    reviewed_at:    new Date().toISOString(),
+    promoted_to_id: newItem.id
+  });
+  return newItem;
+}

@@ -93,8 +93,12 @@ export default async function handler_article (req, res) {
   }
 }
 
-// Re-export so Vercel uses the right handler name on this route file.
-export { handler_article as default };
+// (Previously had `export { handler_article as default }` here — but line 77
+// already does `export default async function handler_article`, so this was
+// a DUPLICATE default export. Modules with two default exports fail to
+// parse, which is why every article-endpoint call returned
+// 'A server error has occurred / FUNCTION_INVOCATION_FAILED' on the
+// outline path. Removed.)
 
 async function stepOutline (p, provider, model) {
   const { topic, angle = '', length = 1500, audience = 'general afro-anarchist reader' } = p;

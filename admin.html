@@ -85,10 +85,10 @@
   <button class="rail-item" title="Article Lab" data-tab="articlelab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h12a3 3 0 010 6H8a2 2 0 00-2 2v6a2 2 0 002 2h12"/><path d="M9 10v8M19 4v6"/><path d="M11 14h6M11 17h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Article Lab</span></button>
   <button class="rail-item" title="Mark Lab" data-tab="marklab"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 16l3-10 3 10M10 13h4" stroke="currentColor" stroke-width="2" fill="none"/></svg></span><span class="label">Mark Lab</span></button>
   <button class="rail-item" title="Merch Lab" data-tab="merchlab"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M7 4l5-1 5 1 1 6-2 8-4 3-4-3-2-8z"/><path d="M9 12h6"/></svg></span><span class="label">Merch Lab</span></button>
-  <button class="rail-item" title="POD Connect" data-tab="pod" type="button">
-    <span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>
-    <span class="label">POD Connect</span>
-  </button>
+  <!-- POD Connect rail item removed 2026-06 — merged into Merch tab.
+       Real-time provider status now lives in the same place as the
+       merch catalogue, reducing the back-and-forth between two views. -->
+
   <button class="rail-item" title="Design Studio" data-tab="studio" type="button">
     <span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="6" r="3"/><path d="M3 19c0-4 2-6 5-6h8c3 0 5 2 5 6"/><path d="M9 11v8M15 11v8M9 19h6"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg></span>
     <span class="label">Studio</span>
@@ -113,7 +113,6 @@
   <div class="tab" data-tab="articlelab">Article Lab</div>
   <div class="tab" data-tab="marklab">Mark Lab</div>
   <div class="tab" data-tab="merchlab">Merch Lab</div>
-  <div class="tab" data-tab="pod">POD Connect</div>
   <div class="tab" data-tab="studio">Studio</div>
   <div class="tab" data-tab="settings">Settings</div>
   <div class="tab" data-tab="ai">AI</div>
@@ -162,12 +161,23 @@
   <!-- MERCH -------------------------------------------------------------- -->
   <section class="view" id="view-merch">
     <div class="panel">
-      <h2 style="margin-top:0">Print-on-demand providers</h2>
-      <p style="color:var(--fg-dim)">All merch is fulfilled on-demand by certified eco providers. Connect a provider to start syncing SKUs.</p>
-      <table>
-        <thead><tr><th>Provider</th><th>Eco score</th><th>Certifications</th><th>Status</th><th></th></tr></thead>
-        <tbody id="pod-rows"></tbody>
-      </table>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px">
+        <div>
+          <h2 style="margin:0 0 6px">Print-on-demand providers</h2>
+          <p style="color:var(--fg-dim);margin:0;max-width:68ch;font-size:.88rem">
+            All merch is fulfilled on-demand by certified eco providers. API keys live as Vercel env vars —
+            calls route through <code>/api/pod/</code> proxies so your keys never touch the browser.
+          </p>
+        </div>
+        <div class="aa-pod-filters" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <button type="button" class="btn ghost aa-pod-filter active" data-podf="all">All</button>
+          <button type="button" class="btn ghost aa-pod-filter" data-podf="connected">Connected</button>
+          <button type="button" class="btn ghost aa-pod-filter" data-podf="pending">Pending</button>
+          <button type="button" class="btn ghost aa-pod-filter" data-podf="eco">Eco ≥ 90</button>
+        </div>
+      </div>
+      <div id="pod-cards" style="display:grid;gap:14px;margin-top:14px"></div>
+
       <div class="divider"></div>
       <h3>Catalogue</h3>
       <table>
@@ -444,18 +454,8 @@
   <!-- DESIGN STUDIO ------------------------------------------------------ -->
   <section class="view" id="view-studio"></section>
 
-  <!-- POD CONNECT -------------------------------------------------------- -->
-  <section class="view" id="view-pod">
-    <div class="panel">
-      <h2 style="margin-top:0">POD Services — API Overview</h2>
-      <p style="color:var(--fg-dim);max-width:68ch;font-size:.88rem;margin-bottom:18px">
-        Connected print-on-demand services. Set API keys as Vercel environment variables to activate each service.
-        All features route through <code>/api/pod/</code> server-side proxies — your keys never touch the browser.
-      </p>
-      <button class="btn primary" id="pod-load-btn" style="margin-bottom:18px">Load service status</button>
-      <div id="pod-overview" style="display:grid;gap:14px"></div>
-    </div>
-  </section>
+  <!-- POD Connect section removed 2026-06 — merged into #view-merch. -->
+
 
   <!-- AI ----------------------------------------------------------------- -->
   <section class="view" id="view-ai">

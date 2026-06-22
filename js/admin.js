@@ -63,7 +63,9 @@
     if (name === 'marklab')      window.MarkLab?.render();
     if (name === 'articlelab')   window.ArticleLab?.render();
     if (name === 'studio') { window.MerchStudio?.render({ prevTab: _lastTab }); return; }
-    if (name === 'pod')    { renderPOD(); return; }
+    // 'pod' tab removed 2026-06 — merged into 'merch'. Redirect any
+    // saved-tab pointers or stale hash links so users land on the merged page.
+    if (name === 'pod')    { setTab('merch'); return; }
     restoreScroll(name);
   }
   $('#tabs').addEventListener('click', e => {
@@ -169,11 +171,14 @@
   });
 
   // ---- MERCH -------------------------------------------------------------
-  // Map curated config slugs → /api/pod/overview ids so we can show REAL
-  // connection status instead of the previous always-'connected' lie.
-  // Providers without a backing proxy (Ohh Deer, FairShare for now) get a
-  // 'needs proxy' state — the eco metadata still surfaces in the catalogue
-  // but no Sync button until we ship that proxy.
+  // Single merged POD view: combines the curated eco metadata from
+  // AA_CONFIG.pod_providers (eco score, certifications, marketing name)
+  // with the live API status from /api/pod/overview (connection, shop
+  // count, features, products, print areas, formats, env var name, docs).
+  //
+  // Replaces the two former pages: 'Print-on-demand providers' (curated
+  // marketing list — always showed 'connected') and 'POD Connect' (API
+  // overview — had real status but no eco data).
   const POD_SLUG_TO_ID = {
     stanley_stella: 'printful',  // Stanley/Stella organic cotton fulfilled via Printful API
     teemill:        'teemill',
@@ -181,9 +186,9 @@
     ohh_deer:       null,         // no proxy yet
     gelato:         'gelato'
   };
+  let _podFilter = 'all';
   async function renderMerch () {
     const providers = (window.AA_CONFIG?.pod_providers) || [];
-    // Fetch real status — fall back to all-unknown if the endpoint errors.
     let statusById = {};
     try {
       const r = await fetch('/api/pod/overview');
@@ -192,33 +197,120 @@
         for (const s of (data.services || [])) statusById[s.id] = s;
       }
     } catch {}
-    $('#pod-rows').innerHTML = providers.map(p => {
+
+    /* Build a unified row per provider: curated eco metadata + live API
+       data merged. Providers without a backing proxy get state='pending'. */
+    const rows = providers.map(p => {
       const id = POD_SLUG_TO_ID[p.slug];
       const live = id ? statusById[id] : null;
-      let pill, action;
-      if (!id) {
-        pill = '<span class="status-pill" style="opacity:.6">proxy pending</span>';
-        action = '<span class="mono" style="font-size:.7rem;color:var(--muted)">build queued</span>';
-      } else if (live?.connected) {
-        pill = '<span class="status-pill active">connected</span>';
-        action = `<button class="btn ghost" data-pod-sync="${id}">Sync SKUs</button>`;
-      } else if (live) {
-        pill = '<span class="status-pill" style="color:var(--amber)">not connected</span>';
-        const env = live.envVar ? ` (set ${live.envVar})` : '';
-        action = `<a class="btn ghost" href="https://vercel.com/breakinbreadswes-projects/anarchism-africa/settings/environment-variables" target="_blank" rel="noopener" title="Set ${live.envVar || 'API key'} in Vercel env">Set up ↗${env}</a>`;
-      } else {
-        pill = '<span class="status-pill" style="opacity:.6">status unknown</span>';
-        action = '';
+      let state = 'unknown';
+      if (!id) state = 'pending';
+      else if (live?.connected) state = 'connected';
+      else if (live) state = 'disconnected';
+      return { p, id, live, state };
+    });
+    // Sort: connected first, then highest eco score, then pending, then disconnected.
+    const stateRank = { connected: 0, disconnected: 1, pending: 2, unknown: 3 };
+    rows.sort((a, b) => {
+      const sa = stateRank[a.state] - stateRank[b.state];
+      return sa !== 0 ? sa : (b.p.eco || 0) - (a.p.eco || 0);
+    });
+
+    const filtered = rows.filter(r => {
+      if (_podFilter === 'connected') return r.state === 'connected';
+      if (_podFilter === 'pending')   return r.state === 'pending' || r.state === 'disconnected';
+      if (_podFilter === 'eco')       return (r.p.eco || 0) >= 90;
+      return true;
+    });
+
+    const VERCEL_ENV_URL = 'https://vercel.com/breakinbreadswes-projects/anarchism-africa/settings/environment-variables';
+    const cards = filtered.map(({ p, live, state }) => {
+      // Pill colour + label per state.
+      const pill = state === 'connected'
+        ? `<span style="padding:3px 10px;border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.1em;background:rgba(46,204,113,.15);color:var(--green,#2ecc71);border:1px solid rgba(46,204,113,.3)">● CONNECTED${live.shopCount ? ' · ' + live.shopCount + ' shop' + (live.shopCount > 1 ? 's' : '') : ''}</span>`
+        : state === 'disconnected'
+        ? `<span style="padding:3px 10px;border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.1em;background:rgba(251,191,36,.10);color:var(--amber,#fbbf24);border:1px solid rgba(251,191,36,.3)">○ NOT CONNECTED</span>`
+        : state === 'pending'
+        ? '<span style="padding:3px 10px;border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.1em;background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--line)">⚙ PROXY PENDING</span>'
+        : '<span style="padding:3px 10px;border-radius:99px;font-size:.7rem;color:var(--muted);opacity:.7">status unknown</span>';
+      // Border colour as a left strip — visual sort by state.
+      const borderColor = state === 'connected' ? 'var(--green,#2ecc71)'
+                        : state === 'disconnected' ? 'var(--amber,#fbbf24)'
+                        : 'var(--line)';
+      const features = (live?.features || []).map(f =>
+        `<span style="padding:2px 8px;border-radius:4px;font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,215,0,.08);color:var(--accent);border:1px solid rgba(255,215,0,.18)">${f}</span>`
+      ).join('');
+      const certs = (p.cert || []).map(c =>
+        `<span class="eco-tag">${c}</span>`
+      ).join(' ');
+      const productsLine = live ? `<div><span class="mono" style="color:var(--muted);font-size:.62rem">PRODUCTS</span><br>${live.products.join(', ')}</div>` : '';
+      const areasLine    = live ? `<div><span class="mono" style="color:var(--muted);font-size:.62rem">PRINT AREAS</span><br>${live.printAreas.join(', ')}</div>` : '';
+      const formatsLine  = live ? `<div><span class="mono" style="color:var(--muted);font-size:.62rem">FORMATS</span><br>${live.fileFormats.join(', ')}</div>` : '';
+
+      // Action buttons differ per state.
+      let actions = '';
+      if (state === 'connected') {
+        actions = `
+          <button class="btn primary" data-pod-sync="${live.id}" style="font-size:.72rem;padding:6px 12px">Sync SKUs</button>
+          <button class="btn ghost" data-pod-open-merchlab="1" style="font-size:.72rem;padding:6px 12px">Open in Merch Lab →</button>
+          <a class="btn ghost" href="${live.docs}" target="_blank" rel="noopener" style="font-size:.72rem;padding:6px 12px">API docs ↗</a>`;
+      } else if (state === 'disconnected') {
+        actions = `
+          <a class="btn primary" href="${VERCEL_ENV_URL}" target="_blank" rel="noopener" style="font-size:.72rem;padding:6px 12px" title="Set ${live.envVar} in Vercel env">Set up ↗</a>
+          <code style="font-size:.7rem;color:var(--muted);padding:6px 8px;background:var(--bg);border:1px solid var(--line);border-radius:6px">${live.envVar}</code>
+          <a class="btn ghost" href="${live.docs}" target="_blank" rel="noopener" style="font-size:.72rem;padding:6px 12px">API docs ↗</a>`;
+      } else if (state === 'pending') {
+        actions = '<span class="mono" style="font-size:.7rem;color:var(--muted)">proxy not built yet — open an issue to prioritise</span>';
       }
+
       return `
-      <tr>
-        <td><b>${p.name}</b></td>
-        <td>${ecoBar(p.eco)}</td>
-        <td>${p.cert.map(c => `<span class="eco-tag">${c}</span>`).join(' ')}</td>
-        <td>${pill}</td>
-        <td>${action}</td>
-      </tr>`;
+        <div class="panel" style="border-left:3px solid ${borderColor};padding:14px 16px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+            <div style="min-width:0">
+              <b style="font-size:1rem">${p.name}</b>
+              ${live ? `<span class="mono" style="font-size:.66rem;color:var(--muted);margin-left:8px">${live.endpoint}</span>` : ''}
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:.7rem;color:var(--muted);font-family:'JetBrains Mono',monospace">
+                <span style="display:inline-block;width:34px;height:6px;background:linear-gradient(90deg,${p.eco>=90?'#22c55e':p.eco>=80?'#a3e635':'#facc15'} ${p.eco}%, var(--line) ${p.eco}%);border-radius:99px"></span>
+                ECO ${p.eco}
+              </span>
+              ${pill}
+            </div>
+          </div>
+          ${certs ? `<div style="margin-bottom:10px">${certs}</div>` : ''}
+          ${features ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${features}</div>` : ''}
+          ${live ? `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:.76rem;margin-bottom:12px">${productsLine}${areasLine}${formatsLine}</div>` : ''}
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${actions}</div>
+        </div>`;
     }).join('');
+
+    const host = document.getElementById('pod-cards');
+    if (host) host.innerHTML = cards || '<p style="color:var(--muted)">No providers match this filter.</p>';
+
+    // Filter chips — bind once.
+    document.querySelectorAll('.aa-pod-filter').forEach(btn => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        _podFilter = btn.dataset.podf;
+        document.querySelectorAll('.aa-pod-filter').forEach(b => b.classList.toggle('active', b === btn));
+        renderMerch();
+      });
+    });
+    // Action button delegation — Sync SKUs + Open in Merch Lab.
+    if (host && !host.dataset.bound) {
+      host.dataset.bound = '1';
+      host.addEventListener('click', (e) => {
+        const sync = e.target.closest('[data-pod-sync]');
+        if (sync) {
+          window.alert('Sync SKUs flow not wired yet — for now, push individual designs via Merch Lab.');
+          return;
+        }
+        const ml = e.target.closest('[data-pod-open-merchlab]');
+        if (ml) { document.querySelector('.rail-item[data-tab=merchlab]')?.click(); return; }
+      });
+    }
     const merch = await AA.getByType('merch');
     $('#merch-rows').innerHTML = merch.map(m => `
       <tr>

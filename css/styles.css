@@ -1084,6 +1084,19 @@ body.underground h1, body.underground h2 { animation: aa-undermode-jitter .4s st
 
 /* ADMIN OVERRIDES (loaded only on admin.html) ----------------------------- */
 body.admin .admin-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+/* Settings + CSS view has TWO content panels (Theme/Animation + CSS/Logo)
+   — neither is a narrow nav, so the 260px-fixed first column from the
+   default .admin-grid rule cropped the left panel. Use equal flex columns
+   that wrap to single-column below ~720px container width. Panels never
+   horizontal-scroll their own content. */
+body.admin #view-settings .admin-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)) !important;
+}
+body.admin #view-settings .admin-grid > .panel { min-width: 0; overflow: visible; }
+body.admin #view-settings .admin-grid select,
+body.admin #view-settings .admin-grid input,
+body.admin #view-settings .admin-grid textarea { max-width: 100%; box-sizing: border-box; }
 @media (min-width: 900px) { body.admin .admin-grid { grid-template-columns: 240px 1fr; } }
 /* Pin admin topbar to exactly 56px so fixed overlays (top:56px) align flush */
 body.admin .topbar { height: 56px !important; min-height: 56px !important; max-height: 56px !important; overflow: hidden !important; }

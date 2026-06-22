@@ -12,7 +12,12 @@
 //   resp: { items: [{ b64, mimeType, prompt, style }], model }
 //
 // Reads GEMINI_API_KEY from env (already used by /api/ai/chat.js).
-// Default model: gemini-2.5-flash-image-preview (Gemini's image model).
+//
+// Model fallback chain — Google retires image-gen model slugs without
+// notice (the original 'gemini-2.5-flash-image-preview' returned 404 in
+// 2026: "is not found for API version v1beta"). We try the requested
+// model first, then a list of known-stable image-gen slugs. To pin a
+// working model permanently, set GEMINI_IMAGE_MODEL in Vercel env.
 
 const SUBJECT_DEFAULT =
   "the anarchist circle-A symbol overlaid on the silhouette of the African continent, with the horizontal crossbar of the A extending past the continent's outline on both sides — a single iconic mark";
@@ -57,20 +62,51 @@ export default async function handler (req, res) {
   if (!key) return res.status(500).json({ error: 'GEMINI_API_KEY missing — set it in Vercel project env vars' });
 
   const body  = req.body || {};
-  const model = body.model || 'gemini-2.5-flash-image-preview';
+  // Try in order: explicit body.model, env override, then a fallback list.
+  // First model that returns a non-404 is used for the rest of the batch.
+  const MODEL_CHAIN = [
+    body.model,
+    process.env.GEMINI_IMAGE_MODEL,
+    'gemini-2.5-flash-image-preview',
+    'gemini-2.5-flash-image',
+    'gemini-2.0-flash-preview-image-generation',
+    'gemini-2.0-flash-exp'
+  ].filter(Boolean);
   const count = Math.min(4, Math.max(1, parseInt(body.count, 10) || 1));
 
+  let workingModel = null;
+  let lastErr = null;
   try {
     const items = [];
     for (let i = 0; i < count; i++) {
       const style  = pickStyle(body.style);
       const prompt = composePrompt({ subject: body.subject, style, prompt: body.prompt });
-      const result = await callGemini(model, key, prompt);
-      items.push({ ...result, prompt, style });
+      // Use the first model that worked this run; otherwise probe the chain.
+      if (workingModel) {
+        items.push({ ...(await callGemini(workingModel, key, prompt)), prompt, style });
+        continue;
+      }
+      let success = false;
+      for (const m of MODEL_CHAIN) {
+        try {
+          const result = await callGemini(m, key, prompt);
+          workingModel = m;
+          items.push({ ...result, prompt, style });
+          success = true;
+          break;
+        } catch (e) {
+          lastErr = e;
+          // 404 means the slug is gone — try the next one. Other errors
+          // (auth, quota) surface to the user since they won't be fixed
+          // by a slug change.
+          if (!String(e.message || e).includes('404')) throw e;
+        }
+      }
+      if (!success) throw lastErr || new Error('No image-gen model in chain worked');
     }
-    return res.status(200).json({ items, model });
+    return res.status(200).json({ items, model: workingModel, tried: MODEL_CHAIN });
   } catch (e) {
-    return res.status(500).json({ error: String(e.message || e) });
+    return res.status(500).json({ error: String(e.message || e), tried: MODEL_CHAIN });
   }
 }
 

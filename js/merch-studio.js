@@ -223,6 +223,7 @@
       ctx.save();
       if (layer.type === 'image') await drawImageLayer(layer, area, w, h);
       if (layer.type === 'text')  drawTextLayer(layer, area, w, h);
+      if (layer.type === 'shape') drawShapeLayer(layer, area, w, h);
       ctx.restore();
     }
 
@@ -293,9 +294,6 @@
     const drawH = drawW * aspect;
     const cx = (layer.x ?? 0.5) * cw;
     const cy = (layer.y ?? 0.5) * ch;
-    // align: 'left' | 'center' (default) | 'right' — anchors the image's
-    // bounding box horizontally so left = X is the left edge, right = X
-    // is the right edge. vAlign does the same vertically.
     const offsetX = layer.align === 'left'  ? 0
                  : layer.align === 'right' ? -drawW
                  : -drawW / 2;
@@ -303,8 +301,64 @@
                  : layer.vAlign === 'bottom' ? -drawH
                  : -drawH / 2;
 
-    ctx.drawImage(img, cx + offsetX, cy + offsetY, drawW, drawH);
+    // Apply rotation + flip around the layer centre. ctx.save/restore wraps
+    // the whole stack so the post-restore canvas is untouched for the next
+    // layer. Translate to centre, rotate/scale, then draw with the box
+    // recentered around (0,0).
+    ctx.save();
+    ctx.translate(cx, cy);
+    if (layer.rotation) ctx.rotate((layer.rotation * Math.PI) / 180);
+    if (layer.flipH || layer.flipV) ctx.scale(layer.flipH ? -1 : 1, layer.flipV ? -1 : 1);
+    // Draw at offset so the chosen anchor (left/center/right + top/middle/bottom)
+    // is honoured relative to the layer's rotation origin.
+    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+    ctx.restore();
     ctx.globalCompositeOperation = 'source-over';
+  }
+
+  /* Shape primitive renderer — rect / circle / triangle / line. Width and
+     height are normalised 0-1 of the print-area, so shapes scale cleanly
+     across products. Stroke is optional (strokeWidth: 0 = no stroke). */
+  function drawShapeLayer (layer, area, cw, ch) {
+    const cx = (layer.x ?? 0.5) * cw;
+    const cy = (layer.y ?? 0.5) * ch;
+    const w  = (layer.w ?? 0.3) * cw;
+    const h  = (layer.h ?? 0.3) * ch;
+    ctx.save();
+    ctx.globalAlpha = layer.opacity ?? 1;
+    ctx.translate(cx, cy);
+    if (layer.rotation) ctx.rotate((layer.rotation * Math.PI) / 180);
+    if (layer.flipH || layer.flipV) ctx.scale(layer.flipH ? -1 : 1, layer.flipV ? -1 : 1);
+    ctx.fillStyle = layer.color || '#ffffff';
+    ctx.strokeStyle = layer.stroke || '#000000';
+    ctx.lineWidth = layer.strokeWidth || 0;
+    if (layer.shape === 'circle') {
+      ctx.beginPath();
+      // Ellipse — w/2 horizontal radius, h/2 vertical radius
+      ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      if (ctx.lineWidth) ctx.stroke();
+    } else if (layer.shape === 'triangle') {
+      ctx.beginPath();
+      ctx.moveTo(0, -h / 2);
+      ctx.lineTo(w / 2, h / 2);
+      ctx.lineTo(-w / 2, h / 2);
+      ctx.closePath();
+      ctx.fill();
+      if (ctx.lineWidth) ctx.stroke();
+    } else if (layer.shape === 'line') {
+      ctx.beginPath();
+      ctx.moveTo(-w / 2, 0);
+      ctx.lineTo(w / 2, 0);
+      ctx.lineWidth = (layer.strokeWidth || 8);
+      ctx.strokeStyle = layer.color || '#ffffff';
+      ctx.stroke();
+    } else {
+      // rect (default)
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+      if (ctx.lineWidth) ctx.strokeRect(-w / 2, -h / 2, w, h);
+    }
+    ctx.restore();
   }
 
   function drawSelectionHandle (layer, area, cw, ch) {
@@ -465,6 +519,16 @@
             + Upload image
             <input type="file" id="ms-upload-img" accept="image/*" style="display:none" />
           </label>
+          <div class="ms-divider"></div>
+          <span class="ms-label" style="margin-bottom:6px">Shape primitives</span>
+          <div class="ms-btn-row">
+            <button class="ms-btn" data-ms-add-shape="rect"     title="Add rectangle">▭ Rect</button>
+            <button class="ms-btn" data-ms-add-shape="circle"   title="Add circle">⬤ Circle</button>
+            <button class="ms-btn" data-ms-add-shape="triangle" title="Add triangle">▲ Tri</button>
+            <button class="ms-btn" data-ms-add-shape="line"     title="Add line">— Line</button>
+          </div>
+          <div class="ms-divider"></div>
+          <button class="ms-btn primary" id="ms-ai-generate" title="Generate a mark via Mark Lab and add as image layer">🪄 Generate via AI →</button>
         </div>
       </div>
 
@@ -649,7 +713,11 @@
             <span class="ms-label">Y position <span class="ms-slider-val" id="ms-ctrl-y-val">${layer.y.toFixed(2)}</span></span>
             <input type="range" class="ms-range" id="ms-ctrl-y" min="0" max="1" step="0.01" value="${layer.y}" />
           </div>
-          <div class="ms-divider"></div>
+          <div class="ms-control-row">
+            <span class="ms-label">Rotation° <span class="ms-slider-val" id="ms-ctrl-rot-val">${(layer.rotation || 0).toFixed(0)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-rot" min="-180" max="180" step="1" value="${layer.rotation || 0}" />
+          </div>
+          ${commonLayerToolbar(layer)}
           <button class="ms-btn danger" id="ms-del-layer">Delete layer</button>
         </div>`;
     } else if (layer.type === 'image') {
@@ -674,15 +742,100 @@
             <input type="range" class="ms-range" id="ms-ctrl-op" min="0" max="1" step="0.05" value="${layer.opacity}" />
           </div>
           <div class="ms-control-row">
+            <span class="ms-label">Rotation° <span class="ms-slider-val" id="ms-ctrl-rot-val">${(layer.rotation || 0).toFixed(0)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-rot" min="-180" max="180" step="1" value="${layer.rotation || 0}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Align</span>
+            <div class="ms-align-row">
+              <button class="ms-btn${layer.align === 'left'   ? ' active-toggle' : ''}" data-ms-align="left">Left</button>
+              <button class="ms-btn${(!layer.align || layer.align === 'center') ? ' active-toggle' : ''}" data-ms-align="center">Center</button>
+              <button class="ms-btn${layer.align === 'right'  ? ' active-toggle' : ''}" data-ms-align="right">Right</button>
+            </div>
+          </div>
+          <div class="ms-control-row">
             <span class="ms-label">Blend mode</span>
             <select class="ms-select" id="ms-ctrl-blend">${blendOpts}</select>
           </div>
-          <div class="ms-divider"></div>
+          ${commonLayerToolbar(layer)}
+          <button class="ms-btn danger" id="ms-del-layer">Delete layer</button>
+        </div>`;
+    } else if (layer.type === 'shape') {
+      const SHAPES = ['rect', 'circle', 'triangle', 'line'];
+      const shapeOpts = SHAPES.map(s => `<option value="${s}"${s === layer.shape ? ' selected' : ''}>${s}</option>`).join('');
+      host.innerHTML = `
+        <div class="ms-controls">
+          <div class="ms-control-row">
+            <span class="ms-label">Shape</span>
+            <select class="ms-select" id="ms-ctrl-shape">${shapeOpts}</select>
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Fill</span>
+            <input type="color" id="ms-ctrl-color" value="${layer.color || '#ffffff'}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Stroke</span>
+            <input type="color" id="ms-ctrl-stroke" value="${layer.stroke || '#000000'}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Stroke width <span class="ms-slider-val" id="ms-ctrl-sw-val">${layer.strokeWidth || 0}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-sw" min="0" max="80" value="${layer.strokeWidth || 0}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Width <span class="ms-slider-val" id="ms-ctrl-w-val">${(layer.w || 0.3).toFixed(2)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-w" min="0.02" max="1" step="0.01" value="${layer.w || 0.3}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Height <span class="ms-slider-val" id="ms-ctrl-h-val">${(layer.h || 0.3).toFixed(2)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-h" min="0.02" max="1" step="0.01" value="${layer.h || 0.3}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">X <span class="ms-slider-val" id="ms-ctrl-x-val">${(layer.x || 0.5).toFixed(2)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-x" min="0" max="1" step="0.01" value="${layer.x || 0.5}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Y <span class="ms-slider-val" id="ms-ctrl-y-val">${(layer.y || 0.5).toFixed(2)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-y" min="0" max="1" step="0.01" value="${layer.y || 0.5}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Rotation° <span class="ms-slider-val" id="ms-ctrl-rot-val">${(layer.rotation || 0).toFixed(0)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-rot" min="-180" max="180" step="1" value="${layer.rotation || 0}" />
+          </div>
+          <div class="ms-control-row">
+            <span class="ms-label">Opacity <span class="ms-slider-val" id="ms-ctrl-op-val">${(layer.opacity ?? 1).toFixed(2)}</span></span>
+            <input type="range" class="ms-range" id="ms-ctrl-op" min="0" max="1" step="0.05" value="${layer.opacity ?? 1}" />
+          </div>
+          ${commonLayerToolbar(layer)}
           <button class="ms-btn danger" id="ms-del-layer">Delete layer</button>
         </div>`;
     }
 
     wireLayerControls(layer);
+  }
+
+  /* Common transform toolbar — shared across text/image/shape layers.
+     Duplicate / Flip H / Flip V / Reorder (front, back, up, down). */
+  function commonLayerToolbar (layer) {
+    return `
+      <div class="ms-divider"></div>
+      <div class="ms-control-row">
+        <span class="ms-label">Transform</span>
+        <div class="ms-btn-row">
+          <button class="ms-btn" data-ms-action="duplicate" title="Duplicate this layer (Cmd+D)">⎘ Duplicate</button>
+          <button class="ms-btn${layer.flipH ? ' active-toggle' : ''}" data-ms-action="flipH" title="Flip horizontal">⇋ Flip H</button>
+          <button class="ms-btn${layer.flipV ? ' active-toggle' : ''}" data-ms-action="flipV" title="Flip vertical">⇵ Flip V</button>
+        </div>
+      </div>
+      <div class="ms-control-row">
+        <span class="ms-label">Order</span>
+        <div class="ms-btn-row">
+          <button class="ms-btn" data-ms-action="toFront" title="Bring to front">⤒ Front</button>
+          <button class="ms-btn" data-ms-action="up"      title="Move up">↑</button>
+          <button class="ms-btn" data-ms-action="down"    title="Move down">↓</button>
+          <button class="ms-btn" data-ms-action="toBack"  title="Send to back">⤓ Back</button>
+        </div>
+      </div>
+      <div class="ms-divider"></div>`;
   }
 
   function wireLayerControls (layer) {
@@ -716,12 +869,57 @@
     bind('ms-ctrl-blend',        'blend');
     bind('ms-ctrl-shadow-color', 'shadowColor');
     bind('ms-ctrl-sblur',        'shadowBlur',    Number);
+    bind('ms-ctrl-rot',          'rotation',      Number);
+    // shape-only bindings (selectors return null on non-shape layers; bind() is safe)
+    bind('ms-ctrl-shape',        'shape');
+    bind('ms-ctrl-stroke',       'stroke');
+    bind('ms-ctrl-sw',           'strokeWidth',   Number);
+    bind('ms-ctrl-w',            'w',             parseFloat);
+    bind('ms-ctrl-h',            'h',             parseFloat);
 
     // align buttons
     document.querySelectorAll('[data-ms-align]').forEach(btn => {
       btn.addEventListener('click', () => {
         upd('align', btn.dataset.msAlign);
         renderLayerControls();
+      });
+    });
+
+    // ── Transform + reorder actions (duplicate / flip / layer order) ──────
+    document.querySelectorAll('[data-ms-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.msAction;
+        const i = state.layers.findIndex(l => l.id === layer.id);
+        if (i === -1) return;
+        if (action === 'flipH')    upd('flipH', !layer.flipH);
+        if (action === 'flipV')    upd('flipV', !layer.flipV);
+        if (action === 'duplicate') {
+          // Deep-clone the layer, nudge it 4% down-right so the new copy
+          // is visible and distinct from the original.
+          const copy = JSON.parse(JSON.stringify(layer));
+          copy.id = uuid();
+          copy.x = Math.min(1, (copy.x || 0.5) + 0.04);
+          copy.y = Math.min(1, (copy.y || 0.5) + 0.04);
+          state.layers.splice(i + 1, 0, copy);
+          state.selected = copy.id;
+        }
+        if (action === 'toFront') {
+          const [l] = state.layers.splice(i, 1);
+          state.layers.push(l);
+        }
+        if (action === 'toBack') {
+          const [l] = state.layers.splice(i, 1);
+          state.layers.unshift(l);
+        }
+        if (action === 'up'   && i < state.layers.length - 1) {
+          [state.layers[i], state.layers[i+1]] = [state.layers[i+1], state.layers[i]];
+        }
+        if (action === 'down' && i > 0) {
+          [state.layers[i], state.layers[i-1]] = [state.layers[i-1], state.layers[i]];
+        }
+        renderLayerList();
+        renderLayerControls();
+        scheduleRender();
       });
     });
 
@@ -1142,6 +1340,32 @@
 
     // Add text
     document.getElementById('ms-add-text')?.addEventListener('click', () => addTextLayer('NO GODS\nNO MASTERS'));
+    // Shape primitives
+    document.querySelectorAll('[data-ms-add-shape]').forEach(b =>
+      b.addEventListener('click', () => addShapeLayer(b.dataset.msAddShape)));
+    // AI generate → image layer
+    document.getElementById('ms-ai-generate')?.addEventListener('click', generateAndAddMark);
+    // Keyboard shortcuts: Cmd/Ctrl+D = duplicate selected layer
+    document.addEventListener('keydown', (e) => {
+      // Only when the studio overlay is open + no input has focus
+      const ovOpen = document.getElementById('ms-overlay')?.classList.contains('open');
+      if (!ovOpen) return;
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (['input','textarea','select'].includes(tag)) return;
+      const meta = e.metaKey || e.ctrlKey;
+      if (meta && e.key.toLowerCase() === 'd' && state.selected) {
+        e.preventDefault();
+        const i = state.layers.findIndex(l => l.id === state.selected);
+        if (i === -1) return;
+        const copy = JSON.parse(JSON.stringify(state.layers[i]));
+        copy.id = uuid();
+        copy.x = Math.min(1, (copy.x || 0.5) + 0.04);
+        copy.y = Math.min(1, (copy.y || 0.5) + 0.04);
+        state.layers.splice(i + 1, 0, copy);
+        state.selected = copy.id;
+        renderLayerList(); renderLayerControls(); scheduleRender();
+      }
+    });
 
     // Add image from vault
     document.getElementById('ms-add-img-vault')?.addEventListener('click', () => {
@@ -1201,13 +1425,57 @@
     const layer = {
       id: uuid(), type: 'image',
       url, x: 0.5, y: 0.5, scale: 0.5, opacity: 1, blend: 'normal', fit: 'contain',
+      rotation: 0, flipH: false, flipV: false, align: 'center', vAlign: 'middle',
     };
     state.layers.push(layer);
     state.selected = layer.id;
-    // preload
     loadImage(url).then(() => scheduleRender());
     renderLayerList();
     renderLayerControls();
+  }
+
+  /* Shape primitive factory. Sensible defaults: 30% wide, centered, white
+     fill, no stroke. Click the shape after adding to tune dimensions, fill,
+     stroke, rotation in the controls panel. */
+  function addShapeLayer (shape) {
+    const layer = {
+      id: uuid(), type: 'shape',
+      shape: shape || 'rect',
+      x: 0.5, y: 0.5,
+      w: 0.3, h: 0.3,
+      color: '#ffffff', stroke: '#000000', strokeWidth: 0,
+      rotation: 0, flipH: false, flipV: false, opacity: 1,
+    };
+    state.layers.push(layer);
+    state.selected = layer.id;
+    renderLayerList();
+    renderLayerControls();
+    scheduleRender();
+  }
+
+  /* AI generate-into-studio. Fires /api/ai/generate-mark with a random
+     style, awaits the b64 image, drops it as a new image layer at default
+     scale. Reuses the same provider cascade as Mark Lab (Gemini → Pollinations). */
+  async function generateAndAddMark () {
+    const btn = document.getElementById('ms-ai-generate');
+    const orig = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = '🪄 Generating…'; }
+    setStatus('Generating mark via AI…');
+    try {
+      const r = await fetch('/api/ai/generate-mark', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ style: 'random', count: 1 })
+      });
+      const data = await r.json();
+      if (!r.ok || !data.items?.[0]?.b64) throw new Error(data.error || 'no image returned');
+      const dataUrl = 'data:' + (data.items[0].mimeType || 'image/png') + ';base64,' + data.items[0].b64;
+      addImageLayer(dataUrl);
+      setStatus(`Added AI mark (${data.provider || 'unknown'})`);
+    } catch (e) {
+      setStatus('AI generate failed: ' + e.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = orig; }
+    }
   }
 
   // ---- Close / open studio ---------------------------------------------

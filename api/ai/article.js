@@ -37,6 +37,11 @@
 
 import handler from './chat.js';
 
+// Vercel function config — compose-end-to-end needs longer than the default
+// 10/15s Hobby limit. Pro plans honour up to 300s. Hobby ignores values > 10s
+// (and silently caps), so this is safe to declare across tiers.
+export const config = { maxDuration: 300 };
+
 const SYSTEM = `You are an editorial assistant for ANARCHISM.AFRICA — a 360° afrofuturist platform on afro-anarchism across Africa and the diaspora. Collectively stewarded by the A.A. collective. Style: rigorous, plain-spoken, anti-jargon, anti-academic-bloat; respects the reader; refuses fabrication. When you don't know something, say so. Never invent quotes from real people. Never assign positions to named individuals you can't verify. Always flag what the human editor must verify before publishing.`;
 
 const VOICE = `voice: ANARCHISM.AFRICA magazine — long-form essayistic, plain-spoken, present tense, sparing on metaphor, generous on specifics. Cite names, places, dates, page numbers when you can. Write for an afro-anarchist reader who already knows the basics. Don't sermonise. Don't pad.`;
@@ -265,26 +270,36 @@ Return ONLY valid JSON.`;
 // End-to-end article composer. Runs every stage server-side and returns the
 // complete article record ready for the publisher to review and persist.
 async function stepCompose (p, provider, model) {
-  const { topic, angle = '', length = 1500, audience = 'general afro-anarchist reader', voice = VOICE, grounded = true } = p;
+  const { topic, angle = '', length = 1500, audience = 'general afro-anarchist reader', voice = VOICE, grounded = false } = p;
   const ts = Date.now();
 
   // 1. Outline
   const { outline } = await stepOutline({ topic, angle, length, audience }, provider, model);
   if (!outline) return { article: null, error: 'outline failed' };
 
-  // 2. Research per section (grounded if NOTEBOOKLM_API_KEY/GEMINI_API_KEY set)
+  // 2. Research — PARALLEL across sections, capped at 3 for the end-to-end
+  //    composer (was 6 sequential = ~60s of grounded-search calls, which is
+  //    exactly why the whole compose ran straight past the function timeout
+  //    and Vercel returned the 'A server error has occurred' page that the
+  //    client tried to JSON.parse). Grounded research is OFF by default in
+  //    compose — slower and we don't reuse the URLs much here. Run a separate
+  //    grounded research pass per-section AFTER the draft, in admin, when
+  //    the editor knows which claims need verifying.
+  const sections = (outline.sections || []).slice(0, 3);
+  const researchResults = await Promise.allSettled(
+    sections.map(sec => stepResearch(
+      { topic, sectionHeading: sec.heading, beats: sec.beats || [], grounded },
+      provider, model
+    ))
+  );
   const allNotes = [];
   const allSources = [];
-  for (const sec of (outline.sections || []).slice(0, 6)) {
-    try {
-      const { notes, sources = [] } = await stepResearch(
-        { topic, sectionHeading: sec.heading, beats: sec.beats || [], grounded },
-        provider, model
-      );
-      if (notes) allNotes.push(`## ${sec.heading}\n${notes}`);
-      for (const src of sources) if (src.uri && !allSources.find(x => x.uri === src.uri)) allSources.push(src);
-    } catch {}
-  }
+  researchResults.forEach((r, i) => {
+    if (r.status !== 'fulfilled') return;
+    const { notes, sources = [] } = r.value;
+    if (notes) allNotes.push(`## ${sections[i].heading}\n${notes}`);
+    for (const src of sources) if (src.uri && !allSources.find(x => x.uri === src.uri)) allSources.push(src);
+  });
   const notes = allNotes.join('\n\n');
 
   // 3. Draft
@@ -294,11 +309,13 @@ async function stepCompose (p, provider, model) {
   const { polished } = await stepPolish({ draft, voice }, provider, model);
   const body = polished || draft || '';
 
-  // 5. Headlines
-  const head = await stepHeadline({ draft: body }, provider, model);
-
-  // 6. Media suggestions
-  const media = await stepMedia({ topic, draft: body, sections: outline.sections }, provider, model);
+  // 5+6. Headlines and Media — PARALLEL (both depend on the polished body
+  //      but neither depends on the other).
+  const [head, media] = await Promise.all([
+    stepHeadline({ draft: body }, provider, model).catch(() => ({ titles: [], deck: '', blurb: '' })),
+    stepMedia({ topic, draft: body, sections: outline.sections }, provider, model)
+      .catch(() => ({ hero_image: null, gallery: [], embeds: [], pull_quotes: [], stats: [], related_topics: [] }))
+  ]);
 
   const id = (head?.titles?.[0] || outline.title || topic)
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) + '-' + ts;

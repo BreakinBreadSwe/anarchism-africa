@@ -30,8 +30,26 @@ function token () {
   return t;
 }
 
-function storeId () {
-  return String(process.env.PRINTFUL_STORE_ID || AA_STORE_ID);
+function configuredStore () {
+  return String(process.env.PRINTFUL_STORE_ID || AA_STORE_ID).trim();
+}
+
+// Resolve the configured store to a NUMERIC id. Tolerates PRINTFUL_STORE_ID
+// being set to a store NAME (e.g. "anarchism.africa") instead of the id —
+// a common mistake — by looking it up against /stores. Cached on the warm
+// lambda so it costs at most one extra call.
+let _resolvedId = null;
+async function resolveStoreId () {
+  if (_resolvedId) return _resolvedId;
+  const cfg = configuredStore();
+  if (/^\d+$/.test(cfg)) { _resolvedId = cfg; return _resolvedId; }
+  // Non-numeric → treat as a name and look it up.
+  const resp = await pf('/stores');
+  const stores = resp.result || resp.data || resp;
+  const list = Array.isArray(stores) ? stores : [];
+  const hit = list.find(s => String(s.name).toLowerCase() === cfg.toLowerCase());
+  _resolvedId = hit ? String(hit.id) : AA_STORE_ID; // fall back to AA
+  return _resolvedId;
 }
 
 // pf(path, init, scopeStoreId?) — when scopeStoreId is given (or true), send the
@@ -43,7 +61,7 @@ async function pf (path, init = {}, scope) {
     'User-Agent': 'ANARCHISM.AFRICA/1.0',
     ...(init.headers || {})
   };
-  const sid = scope === true ? storeId() : (scope ? String(scope) : null);
+  const sid = scope === true ? configuredStore() : (scope ? String(scope) : null);
   if (sid) headers['X-PF-Store-Id'] = sid;
 
   const r = await fetch(BASE + path, { ...init, headers });
@@ -66,7 +84,7 @@ export default async function handler (req, res) {
 
       if (op === 'status') {
         // Confirm the token works AND the AA store is present on it.
-        const sid = storeId();
+        const sid = await resolveStoreId();
         const resp = await pf('/stores');
         const stores = resp.result || resp.data || resp;
         const list = Array.isArray(stores) ? stores : [];
@@ -97,12 +115,13 @@ export default async function handler (req, res) {
         // List THIS store's synced (sellable) products. Account token → header.
         const limit = req.query.limit || 100;
         const offset = req.query.offset || 0;
+        const sid = await resolveStoreId();
         let resp;
         try {
-          resp = await pf(`/store/products?limit=${limit}&offset=${offset}`, {}, true);
+          resp = await pf(`/store/products?limit=${limit}&offset=${offset}`, {}, sid);
         } catch (e) {
           // Older stores expose the legacy /sync/products path instead.
-          resp = await pf(`/sync/products?limit=${limit}&offset=${offset}`, {}, true);
+          resp = await pf(`/sync/products?limit=${limit}&offset=${offset}`, {}, sid);
         }
         return res.status(200).json(resp);
       }
@@ -110,9 +129,10 @@ export default async function handler (req, res) {
       if (op === 'store_product') {
         const id = req.query.id;
         if (!id) return res.status(400).json({ error: 'id required' });
+        const sid = await resolveStoreId();
         let resp;
-        try { resp = await pf(`/store/products/${id}`, {}, true); }
-        catch { resp = await pf(`/sync/products/${id}`, {}, true); }
+        try { resp = await pf(`/store/products/${id}`, {}, sid); }
+        catch { resp = await pf(`/sync/products/${id}`, {}, sid); }
         return res.status(200).json(resp);
       }
 
@@ -162,7 +182,7 @@ export default async function handler (req, res) {
 
     if (op === 'product') {
       // Create a synced product in the AA store. Account token → X-PF-Store-Id.
-      const sid = body.storeId ? String(body.storeId) : storeId();
+      const sid = body.storeId ? String(body.storeId) : await resolveStoreId();
       const payload = {
         sync_product: body.syncProduct || { name: 'ANARCHISM.AFRICA — product', thumbnail: '' },
         sync_variants: body.syncVariants || []
@@ -190,7 +210,7 @@ export default async function handler (req, res) {
     }
 
     if (op === 'order') {
-      const sid = body.storeId ? String(body.storeId) : storeId();
+      const sid = body.storeId ? String(body.storeId) : await resolveStoreId();
       const payload = {
         recipient: body.recipient,
         items: body.items || [],

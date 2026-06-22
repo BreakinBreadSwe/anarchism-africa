@@ -33,6 +33,8 @@ const VARS = [
   // ----- Print on demand -----
   { key: 'PRINTIFY_API_TOKEN',  group: 'POD',           label: 'Printify token (merch fulfilment)', doc: 'https://printify.com/app/account/api',            signup: 'https://printify.com/app/register' },
   { key: 'PRINTIFY_SHOP_ID',    group: 'POD',           label: 'Printify shop ID',                  doc: 'https://printify.com/app/stores',                 signup: '' },
+  { key: 'PRINTFUL_API_KEY',    group: 'POD',           label: 'Printful token (account-level, shared luvlab key)', doc: 'https://developers.printful.com/docs/', signup: 'https://www.printful.com/dashboard/store' },
+  { key: 'PRINTFUL_STORE_ID',   group: 'POD',           label: 'Printful store ID (AA = 18296172; optional, defaulted in code)', doc: 'https://www.printful.com/dashboard/store', signup: '' },
 
   // ----- Storage / Database -----
   { key: 'BLOB_READ_WRITE_TOKEN', group: 'Storage',     label: 'Vercel Blob (live database)',       doc: 'https://vercel.com/docs/storage/vercel-blob',     signup: 'https://vercel.com/dashboard/stores' },

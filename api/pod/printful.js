@@ -1,36 +1,52 @@
-// Vercel serverless — Printful v2 API proxy
-// PRINTFUL_API_KEY required in Vercel env. PRINTFUL_STORE_ID optional.
+// Vercel serverless — Printful v1 API proxy (account-level token aware)
 //
-// GET  /api/pod/printful?op=catalog                    — GET /catalog/products
-// GET  /api/pod/printful?op=product&id=N               — GET /catalog/products/{id}/variants
-// GET  /api/pod/printful?op=stores                     — GET /stores
-// GET  /api/pod/printful?op=mockup_poll&key=TASK_KEY   — poll one mockup task (no blocking loop)
+// Auth: set PRINTFUL_API_KEY in Vercel env to the luvlab account-level token.
+// Store scoping: this account key spans MANY stores, so every store-scoped
+// request MUST send the `X-PF-Store-Id` header or Printful can't tell which
+// store you mean. We pin ANARCHISM.AFRICA's store (18296172) as the default;
+// override with PRINTFUL_STORE_ID env if needed.
+//
+// GET  /api/pod/printful?op=status                     — verify AA store reachable
+// GET  /api/pod/printful?op=stores                     — list all stores on the token
+// GET  /api/pod/printful?op=store_products             — list THIS store's synced products
+// GET  /api/pod/printful?op=store_product&id=N         — one synced product + variants
+// GET  /api/pod/printful?op=catalog                    — GET /catalog/products (Printful catalog)
+// GET  /api/pod/printful?op=product&id=N               — catalog product + variants
+// GET  /api/pod/printful?op=mockup_poll&key=TASK_KEY   — poll one mockup task
 // POST /api/pod/printful { op:'upload', imageUrl|imageB64, fileName }
-// POST /api/pod/printful { op:'product', storeId?, productId?, syncProduct, syncVariants }
-// POST /api/pod/printful { op:'mockup_start', productId, variantIds, format? }  → returns { task_key, status:'pending' }
+// POST /api/pod/printful { op:'product', storeId?, syncProduct, syncVariants }
+// POST /api/pod/printful { op:'mockup_start', productId, variantIds, format? }
 // POST /api/pod/printful { op:'order', storeId?, recipient, items }
-//
-// Mockup generation is async: call mockup_start, receive task_key, then
-// poll mockup_poll from the browser every 2–3 s until status === 'completed'.
 
 const BASE = 'https://api.printful.com';
 
+// ANARCHISM.AFRICA Printful store. Store IDs are not secret; this guarantees an
+// account-level token targets AA even if PRINTFUL_STORE_ID env is unset.
+const AA_STORE_ID = '18296172';
+
 function token () {
   const t = process.env.PRINTFUL_API_KEY;
-  if (!t) throw new Error('PRINTFUL_API_KEY missing — set in Vercel env');
+  if (!t) throw new Error('PRINTFUL_API_KEY missing — set the account-level token in Vercel env');
   return t;
 }
 
-async function pf (path, init = {}) {
-  const r = await fetch(BASE + path, {
-    ...init,
-    headers: {
-      Authorization: 'Bearer ' + token(),
-      'Content-Type': 'application/json',
-      'User-Agent': 'ANARCHISM.AFRICA/1.0',
-      ...(init.headers || {})
-    }
-  });
+function storeId () {
+  return String(process.env.PRINTFUL_STORE_ID || AA_STORE_ID);
+}
+
+// pf(path, init, scopeStoreId?) — when scopeStoreId is given (or true), send the
+// X-PF-Store-Id header so an account-level token targets that store.
+async function pf (path, init = {}, scope) {
+  const headers = {
+    Authorization: 'Bearer ' + token(),
+    'Content-Type': 'application/json',
+    'User-Agent': 'ANARCHISM.AFRICA/1.0',
+    ...(init.headers || {})
+  };
+  const sid = scope === true ? storeId() : (scope ? String(scope) : null);
+  if (sid) headers['X-PF-Store-Id'] = sid;
+
+  const r = await fetch(BASE + path, { ...init, headers });
   const text = await r.text();
   let body;
   try { body = text ? JSON.parse(text) : {}; } catch { body = { raw: text }; }
@@ -43,22 +59,62 @@ async function pf (path, init = {}) {
   return body;
 }
 
-async function defaultStoreId () {
-  if (process.env.PRINTFUL_STORE_ID) return process.env.PRINTFUL_STORE_ID;
-  const resp = await pf('/stores');
-  const stores = resp.result || resp.data || resp;
-  if (!Array.isArray(stores) || !stores.length) throw new Error('No Printful stores found');
-  return String(stores[0].id);
-}
-
-// No blocking poll loop — mockup generation uses two separate ops:
-//   mockup_start → POST to Printful, returns { task_key }
-//   mockup_poll  → single GET check, called repeatedly by the browser client
-
 export default async function handler (req, res) {
   try {
     if (req.method === 'GET') {
       const op = (req.query.op || '').toString();
+
+      if (op === 'status') {
+        // Confirm the token works AND the AA store is present on it.
+        const sid = storeId();
+        const resp = await pf('/stores');
+        const stores = resp.result || resp.data || resp;
+        const list = Array.isArray(stores) ? stores : [];
+        const mine = list.find(s => String(s.id) === sid) || null;
+        let productCount = null;
+        if (mine) {
+          try {
+            const p = await pf('/store/products?limit=1', {}, sid);
+            productCount = (p.paging && p.paging.total) ?? (Array.isArray(p.result) ? p.result.length : null);
+          } catch { /* count is best-effort */ }
+        }
+        return res.status(200).json({
+          connected: !!mine,
+          storeId: sid,
+          storeName: mine?.name || null,
+          storeType: mine?.type || null,
+          productCount,
+          storesOnToken: list.map(s => ({ id: String(s.id), name: s.name })),
+        });
+      }
+
+      if (op === 'stores') {
+        const resp = await pf('/stores');
+        return res.status(200).json(resp);
+      }
+
+      if (op === 'store_products') {
+        // List THIS store's synced (sellable) products. Account token → header.
+        const limit = req.query.limit || 100;
+        const offset = req.query.offset || 0;
+        let resp;
+        try {
+          resp = await pf(`/store/products?limit=${limit}&offset=${offset}`, {}, true);
+        } catch (e) {
+          // Older stores expose the legacy /sync/products path instead.
+          resp = await pf(`/sync/products?limit=${limit}&offset=${offset}`, {}, true);
+        }
+        return res.status(200).json(resp);
+      }
+
+      if (op === 'store_product') {
+        const id = req.query.id;
+        if (!id) return res.status(400).json({ error: 'id required' });
+        let resp;
+        try { resp = await pf(`/store/products/${id}`, {}, true); }
+        catch { resp = await pf(`/sync/products/${id}`, {}, true); }
+        return res.status(200).json(resp);
+      }
 
       if (op === 'catalog') {
         const resp = await pf('/catalog/products');
@@ -75,22 +131,14 @@ export default async function handler (req, res) {
         return res.status(200).json({ product: info.result || info, variants: variants.result || variants });
       }
 
-      if (op === 'stores') {
-        const resp = await pf('/stores');
-        return res.status(200).json(resp);
-      }
-
       if (op === 'mockup_poll') {
-        // Single status check — no loop, no sleep. Browser calls this repeatedly.
         const key = (req.query.key || '').toString();
         if (!key) return res.status(400).json({ error: 'key (task_key) required' });
         const resp = await pf(`/mockup-generator/task?task_key=${encodeURIComponent(key)}`);
-        const task = resp.result || resp;
-        // status is one of: pending | completed | failed
-        return res.status(200).json(task);
+        return res.status(200).json(resp.result || resp);
       }
 
-      return res.status(400).json({ error: 'unknown op (try catalog|product|stores|mockup_poll)' });
+      return res.status(400).json({ error: 'unknown op (try status|stores|store_products|store_product|catalog|product|mockup_poll)' });
     }
 
     if (req.method !== 'POST') return res.status(405).json({ error: 'GET or POST' });
@@ -99,13 +147,11 @@ export default async function handler (req, res) {
     const op = body.op;
 
     if (op === 'upload') {
-      // POST /files
       const fileName = body.fileName || ('aa-' + Date.now() + '.png');
       let payload;
       if (body.imageUrl) {
         payload = { type: 'default', url: body.imageUrl, filename: fileName, visible: true };
       } else if (body.imageB64) {
-        // Printful file upload expects a URL; for base64 we embed as data URI
         payload = { type: 'default', url: 'data:image/png;base64,' + body.imageB64, filename: fileName, visible: true };
       } else {
         return res.status(400).json({ error: 'imageUrl or imageB64 required' });
@@ -115,20 +161,17 @@ export default async function handler (req, res) {
     }
 
     if (op === 'product') {
-      // POST /stores/{id}/products
-      const storeId = body.storeId || await defaultStoreId();
+      // Create a synced product in the AA store. Account token → X-PF-Store-Id.
+      const sid = body.storeId ? String(body.storeId) : storeId();
       const payload = {
         sync_product: body.syncProduct || { name: 'ANARCHISM.AFRICA — product', thumbnail: '' },
         sync_variants: body.syncVariants || []
       };
-      const resp = await pf(`/stores/${storeId}/products`, { method: 'POST', body: JSON.stringify(payload) });
-      return res.status(200).json({ ...(resp.result || resp), store_id: storeId });
+      const resp = await pf('/store/products', { method: 'POST', body: JSON.stringify(payload) }, sid);
+      return res.status(200).json({ ...(resp.result || resp), store_id: sid });
     }
 
     if (op === 'mockup_start') {
-      // Fire the mockup task and return task_key immediately — no blocking poll.
-      // The browser polls GET ?op=mockup_poll&key=TASK_KEY every 2–3 s until
-      // status === 'completed' | 'failed'.
       const productId = body.productId;
       if (!productId) return res.status(400).json({ error: 'productId required' });
       const payload = {
@@ -147,16 +190,15 @@ export default async function handler (req, res) {
     }
 
     if (op === 'order') {
-      // POST /orders
-      const storeId = body.storeId || await defaultStoreId();
+      const sid = body.storeId ? String(body.storeId) : storeId();
       const payload = {
         recipient: body.recipient,
         items: body.items || [],
         retail_costs: body.retailCosts || null,
         gift: body.gift || null
       };
-      const resp = await pf('/orders', { method: 'POST', body: JSON.stringify(payload) });
-      return res.status(200).json({ ...(resp.result || resp), store_id: storeId });
+      const resp = await pf('/orders', { method: 'POST', body: JSON.stringify(payload) }, sid);
+      return res.status(200).json({ ...(resp.result || resp), store_id: sid });
     }
 
     return res.status(400).json({ error: 'unknown op (try upload|product|mockup_start|order)' });

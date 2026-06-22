@@ -72,18 +72,64 @@
   };
 
   // ---- Fonts -----------------------------------------------------------
+  // Font roster — mix of poster-display sans, slab/serif statement faces,
+  // hand-written/raw vibes, and monospace. All Google-Fonts-loadable so
+  // injectFonts() below can pull whatever the FONTS list grows to without
+  // a code change.
   const FONTS = [
-    { id: 'bebas',    label: 'Bebas Neue',       stack: "'Bebas Neue',sans-serif" },
-    { id: 'space',    label: 'Space Grotesk',    stack: "'Space Grotesk',sans-serif" },
-    { id: 'mono',     label: 'JetBrains Mono',   stack: "'JetBrains Mono',monospace" },
-    { id: 'oswald',   label: 'Oswald',           stack: "'Oswald',sans-serif" },
-    { id: 'teko',     label: 'Teko',             stack: "'Teko',sans-serif" },
-    { id: 'chakra',   label: 'Chakra Petch',     stack: "'Chakra Petch',sans-serif" },
-    { id: 'blackops', label: 'Black Ops One',    stack: "'Black Ops One',sans-serif" },
-    { id: 'marker',   label: 'Permanent Marker', stack: "'Permanent Marker',cursive" },
-    { id: 'impact',   label: 'Impact',           stack: "Impact,'Arial Black',sans-serif" },
-    { id: 'courier',  label: 'Courier',          stack: "'Courier New',monospace" },
+    // Display sans / condensed (posters, big-type tees)
+    { id: 'bebas',         label: 'Bebas Neue',         stack: "'Bebas Neue',sans-serif" },
+    { id: 'anton',         label: 'Anton',              stack: "'Anton',sans-serif" },
+    { id: 'oswald',        label: 'Oswald',             stack: "'Oswald',sans-serif" },
+    { id: 'teko',          label: 'Teko',               stack: "'Teko',sans-serif" },
+    { id: 'archivoblack',  label: 'Archivo Black',      stack: "'Archivo Black',sans-serif" },
+    { id: 'impact',        label: 'Impact',             stack: "Impact,'Arial Black',sans-serif" },
+    { id: 'staatliches',   label: 'Staatliches',        stack: "'Staatliches',sans-serif" },
+    // Grotesks (clean, modern, body + headline)
+    { id: 'space',         label: 'Space Grotesk',      stack: "'Space Grotesk',sans-serif" },
+    { id: 'inter',         label: 'Inter',              stack: "'Inter',sans-serif" },
+    { id: 'workdsans',     label: 'Work Sans',          stack: "'Work Sans',sans-serif" },
+    // Serif (statements, editorial)
+    { id: 'playfair',      label: 'Playfair Display',   stack: "'Playfair Display',serif" },
+    { id: 'abril',         label: 'Abril Fatface',      stack: "'Abril Fatface',serif" },
+    { id: 'dmserif',       label: 'DM Serif Display',   stack: "'DM Serif Display',serif" },
+    { id: 'libre',         label: 'Libre Caslon Text',  stack: "'Libre Caslon Text',serif" },
+    // Slab
+    { id: 'rozhaone',      label: 'Rozha One',          stack: "'Rozha One',serif" },
+    // Raw / hand / sticker
+    { id: 'marker',        label: 'Permanent Marker',   stack: "'Permanent Marker',cursive" },
+    { id: 'rubikgemstones',label: 'Rubik Iso',          stack: "'Rubik Iso',sans-serif" },
+    { id: 'bungee',        label: 'Bungee',             stack: "'Bungee',sans-serif" },
+    { id: 'bungeeshade',   label: 'Bungee Shade',       stack: "'Bungee Shade',sans-serif" },
+    { id: 'pressstart',    label: 'Press Start 2P',     stack: "'Press Start 2P',monospace" },
+    { id: 'audiowide',     label: 'Audiowide',          stack: "'Audiowide',sans-serif" },
+    { id: 'blackops',      label: 'Black Ops One',      stack: "'Black Ops One',sans-serif" },
+    { id: 'chakra',        label: 'Chakra Petch',       stack: "'Chakra Petch',sans-serif" },
+    { id: 'lobster',       label: 'Lobster',            stack: "'Lobster',cursive" },
+    { id: 'pacifico',      label: 'Pacifico',           stack: "'Pacifico',cursive" },
+    // Monospace
+    { id: 'mono',          label: 'JetBrains Mono',     stack: "'JetBrains Mono',monospace" },
+    { id: 'majormono',     label: 'Major Mono Display', stack: "'Major Mono Display',monospace" },
+    { id: 'courier',       label: 'Courier',            stack: "'Courier New',monospace" },
   ];
+
+  /* Lazy-inject a Google Fonts <link> for everything in FONTS the first time
+     the studio mounts. Bebas/Space/Mono are already loaded by the global
+     stylesheet — duplicate requests are deduped by the browser, so this is
+     safe to call every paint. We only inject once via document.fonts check. */
+  function injectFonts () {
+    if (document.getElementById('aa-studio-fonts')) return;
+    // Convert each label to a Google Fonts family parameter.
+    const families = FONTS
+      .filter(f => !['mono','impact','courier'].includes(f.id)) // already-installed locals / web-safe
+      .map(f => f.label.replace(/ /g, '+') + ':wght@400;700;900')
+      .join('&family=');
+    const link = document.createElement('link');
+    link.id   = 'aa-studio-fonts';
+    link.rel  = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=' + families + '&display=swap';
+    document.head.appendChild(link);
+  }
 
   // ---- State -----------------------------------------------------------
   const state = {
@@ -247,8 +293,17 @@
     const drawH = drawW * aspect;
     const cx = (layer.x ?? 0.5) * cw;
     const cy = (layer.y ?? 0.5) * ch;
+    // align: 'left' | 'center' (default) | 'right' — anchors the image's
+    // bounding box horizontally so left = X is the left edge, right = X
+    // is the right edge. vAlign does the same vertically.
+    const offsetX = layer.align === 'left'  ? 0
+                 : layer.align === 'right' ? -drawW
+                 : -drawW / 2;
+    const offsetY = layer.vAlign === 'top'    ? 0
+                 : layer.vAlign === 'bottom' ? -drawH
+                 : -drawH / 2;
 
-    ctx.drawImage(img, cx - drawW / 2, cy - drawH / 2, drawW, drawH);
+    ctx.drawImage(img, cx + offsetX, cy + offsetY, drawW, drawH);
     ctx.globalCompositeOperation = 'source-over';
   }
 
@@ -453,8 +508,10 @@
         <div class="ms-section-body">
           <div class="ms-push-section">
             <div class="ms-push-title">PRINTIFY</div>
-            <span class="ms-label">Admin token</span>
-            <input class="ms-input" id="ms-py-token" type="password" placeholder="Admin token" autocomplete="off" />
+            <!-- Admin token input removed 2026-06 — the server reads
+                 PRINTIFY_API_TOKEN from Vercel env and never trusts a
+                 client-supplied token. Keeping it in the UI was confusing
+                 ('why fill it in again?') AND leaky (browser-side storage). -->
             <span class="ms-label">Blueprint ID</span>
             <input class="ms-input" id="ms-py-blueprint" type="number" placeholder="5" />
             <span class="ms-label">Print provider ID</span>
@@ -463,6 +520,7 @@
             <input class="ms-input" id="ms-py-title" placeholder="ANARCHISM.AFRICA · T-Shirt" />
             <button class="ms-btn primary" id="ms-py-push">Upload + create product</button>
             <div id="ms-py-status" class="mono" style="font-size:.72rem;color:var(--muted);min-height:16px;margin-top:4px"></div>
+            <p class="mono" style="font-size:.66rem;color:var(--muted);margin-top:6px">Token comes from Vercel env (<code>PRINTIFY_API_TOKEN</code>).</p>
           </div>
         </div>
       </div>
@@ -474,8 +532,7 @@
         <div class="ms-section-body">
           <div class="ms-push-section">
             <div class="ms-push-title">PRINTFUL</div>
-            <span class="ms-label">Admin token</span>
-            <input class="ms-input" id="ms-pf-token" type="password" placeholder="Admin token" autocomplete="off" />
+            <!-- Admin token removed; server reads PRINTFUL_API_KEY from env. -->
             <span class="ms-label">Store ID (optional)</span>
             <input class="ms-input" id="ms-pf-store" placeholder="auto-detect" />
             <span class="ms-label">Catalog product ID</span>
@@ -484,6 +541,7 @@
             <input class="ms-input" id="ms-pf-title" placeholder="ANARCHISM.AFRICA · T-Shirt" />
             <button class="ms-btn primary" id="ms-pf-push">Upload + create product</button>
             <div id="ms-pf-status" class="mono" style="font-size:.72rem;color:var(--muted);min-height:16px;margin-top:4px"></div>
+            <p class="mono" style="font-size:.66rem;color:var(--muted);margin-top:6px">Token comes from Vercel env (<code>PRINTFUL_API_KEY</code>).</p>
           </div>
         </div>
       </div>
@@ -924,26 +982,31 @@
   }
 
   // ---- Download helpers ------------------------------------------------
+  // Both exports now render at the FULL print-area resolution (e.g.
+  // 2900×3600 for a T-shirt front). The previous 'web' export was 2× the
+  // on-screen canvas (~1200×1600) which printed muddy and didn't fill a
+  // full-screen background either. The only difference now is encoding:
+  //   - print: PNG at quality 1.0 (lossless, larger file)
+  //   - web:   JPEG at quality 0.92 (~70% smaller, fine for screens)
+  // If we ever ship per-product print-area scaling, the print export
+  // honours product.print_dpi when set.
   function downloadCanvas (hi) {
     const prod  = PRODUCTS[state.product];
     const area  = prod.areas[state.area];
     const dl    = document.createElement('canvas');
-    if (hi) {
-      dl.width  = area.w;
-      dl.height = area.h;
-    } else {
-      const { w, h } = getCanvasSize();
-      dl.width = w * 2; dl.height = h * 2;
-    }
+    dl.width  = area.w;
+    dl.height = area.h;
     const savedCanvas = canvas, savedCtx = ctx;
     canvas = dl; ctx = dl.getContext('2d');
     renderCanvas().then(() => {
       canvas = savedCanvas; ctx = savedCtx;
       const a = document.createElement('a');
-      a.download = `aa-${state.product}-${state.area}-${hi ? 'print' : 'web'}.png`;
-      a.href = dl.toDataURL('image/png');
+      const mime = hi ? 'image/png' : 'image/jpeg';
+      const ext  = hi ? 'png'       : 'jpg';
+      a.download = `aa-${state.product}-${state.area}-${hi ? 'print' : 'web'}.${ext}`;
+      a.href = hi ? dl.toDataURL(mime) : dl.toDataURL(mime, 0.92);
       a.click();
-      setStatus('Downloading…');
+      setStatus(`Downloading ${dl.width}×${dl.height}…`);
     });
   }
 
@@ -1161,6 +1224,7 @@
     if (prevTab) state._prevTab = prevTab;
     if (!state._mounted) {
       buildOverlay();
+      injectFonts();
       canvas = document.getElementById('ms-canvas');
       ctx    = canvas.getContext('2d');
       wireEvents();

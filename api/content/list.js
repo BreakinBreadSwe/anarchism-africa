@@ -15,7 +15,13 @@ module.exports = async function handler (req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'GET only' });
   const { kind, limit = '60', offset = '0', status = 'published', q = '', include_unplayable } = req.query || {};
   try {
-    const filter = { eq: {}, order: '-published_at', limit: Math.min(parseInt(limit, 10) || 60, 200), offset: parseInt(offset, 10) || 0 };
+    // Default sort: newest acquisition first. scraped_at wins so freshly
+    // scraped items always lead — regardless of what published_at says
+    // (some feeds publish archived items with old dates). published_at +
+    // created_at fall back when scraped_at is null (seed/manually-added
+    // rows). nullslast keeps NULL columns from poisoning the top.
+    const order = req.query.order || 'scraped_at.desc.nullslast,published_at.desc.nullslast,created_at.desc.nullslast';
+    const filter = { eq: {}, order, limit: Math.min(parseInt(limit, 10) || 60, 200), offset: parseInt(offset, 10) || 0 };
     if (kind)   filter.eq.kind = kind;
     if (status) filter.eq.status = status;
     if (q)      filter.like = { title: '%' + q + '%' };

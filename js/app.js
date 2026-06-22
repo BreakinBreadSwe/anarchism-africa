@@ -173,6 +173,28 @@
 
   $('#hero-prev')?.addEventListener('click',  () => { showHero(state.heroIndex - 1); startHero(); });
   $('#hero-next')?.addEventListener('click',  () => { showHero(state.heroIndex + 1); startHero(); });
+
+  // ── Hero mode toggle: random (default) ↔ newest first ─────────────────────
+  // Persists in localStorage so the user's choice survives reloads.
+  const SHUFFLE_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>';
+  const NEWEST_SVG  = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>';
+  function updateHeroModeBtn () {
+    const btn = $('#hero-mode'); if (!btn) return;
+    const isNewest = state.heroMode === 'newest';
+    btn.innerHTML = isNewest ? NEWEST_SVG : SHUFFLE_SVG;
+    btn.title = isNewest ? 'Newest first (click for random)' : 'Random across all (click for newest)';
+    btn.setAttribute('aria-label', btn.title);
+  }
+  $('#hero-mode')?.addEventListener('click', async () => {
+    state.heroMode = state.heroMode === 'newest' ? 'random' : 'newest';
+    try { localStorage.setItem('aa-hero-mode', state.heroMode); } catch {}
+    const hero = await AA.getHero(state.heroMode);
+    state.hero = hero;
+    buildHeroDom(hero);
+    showHero(0);
+    startHero();
+    updateHeroModeBtn();
+  });
   $('#hero-toggle')?.addEventListener('click', e => {
     state.heroPlaying = !state.heroPlaying;
     e.currentTarget.textContent = state.heroPlaying ? '⏸' : '▶';
@@ -401,27 +423,47 @@
   function resetGrid (el) { el.innerHTML = ''; el.classList.add('grid', 'anim-stagger'); el.classList.remove('skeleton-grid'); }
 
   async function renderHome () {
-    const hero = await AA.getHero();
+    const heroMode = (() => {
+      try { const v = localStorage.getItem('aa-hero-mode'); return v === 'newest' ? 'newest' : 'random'; }
+      catch { return 'random'; }
+    })();
+    state.heroMode = heroMode;
+    const hero = await AA.getHero(heroMode);
     state.hero = hero;
     buildHeroDom(hero);
     showHero(0);
     startHero();
+    updateHeroModeBtn();
 
     const featured = $('#featured-grid'); resetGrid(featured);
-    const films = await AA.getByType('film');
+    const films = sortNewestFirst(await AA.getByType('film'));
     films.forEach(f => { const c = card(f, 'film'); attachCardClick(c, openFilm, f); featured.appendChild(c); });
-    const events = await AA.getByType('event');
+    const events = sortNewestFirst(await AA.getByType('event'));
     events.slice(0, 3).forEach(e => { const c = card(e, 'event'); attachCardClick(c, openEvent, e); featured.appendChild(c); });
 
     const lib = $('#library-grid'); resetGrid(lib);
-    const articles = await AA.getByType('article');
+    const articles = sortNewestFirst(await AA.getByType('article'));
     articles.forEach(a => { const c = card(a, 'article'); attachCardClick(c, openArticle, a); lib.appendChild(c); });
+  }
+
+  /* Sort by acquisition recency. scraped_at wins so freshly scraped items
+     always lead grids; published_at + year fallback when scraped_at is missing
+     (e.g. seed items). Stable for items that share the same timestamp. */
+  function sortNewestFirst (arr) {
+    if (!Array.isArray(arr)) return [];
+    const ts = (x) => {
+      const s = Date.parse(x.scraped_at || x.published_at || x.created_at || '');
+      if (!isNaN(s)) return s;
+      if (x.year) { const y = Date.parse(String(x.year) + '-12-31'); return isNaN(y) ? 0 : y; }
+      return 0;
+    };
+    return arr.slice().sort((a, b) => ts(b) - ts(a));
   }
 
   async function renderTab (tab) {
     if (tab === 'films') {
       const g = $('#films-grid'); resetGrid(g);
-      (await AA.getByType('film')).forEach(f => { const c = card(f,'film'); attachCardClick(c, openFilm, f); g.appendChild(c); });
+      sortNewestFirst(await AA.getByType('film')).forEach(f => { const c = card(f,'film'); attachCardClick(c, openFilm, f); g.appendChild(c); });
     }
     if (tab === 'articles') {
       const g = $('#articles-grid'); resetGrid(g);
@@ -447,7 +489,7 @@
     }
     if (tab === 'events') {
       const g = $('#events-grid'); resetGrid(g);
-      (await AA.getByType('event')).forEach(e => { const c = card(e,'event'); attachCardClick(c, openEvent, e); g.appendChild(c); });
+      sortNewestFirst(await AA.getByType('event')).forEach(e => { const c = card(e,'event'); attachCardClick(c, openEvent, e); g.appendChild(c); });
     }
     if (tab === 'music') {
       // ── A.A. Radio: curated live streams ─────────────────────────────────
@@ -580,7 +622,7 @@
 
       // ── Uploaded / DB tracks (legacy Supabase songs) ──────────────────────
       const list = $('#music-list'); list.innerHTML = ''; list.classList.add('anim-stagger');
-      const all = await AA.getByType('song');
+      const all = sortNewestFirst(await AA.getByType('song'));
       const playable = all.filter(s => s.audio && /^https?:\/\//i.test(s.audio));
       if (playable.length) {
         const tracksHead = document.createElement('div');
@@ -593,11 +635,11 @@
     }
     if (tab === 'books') {
       const g = $('#books-grid'); resetGrid(g);
-      (await AA.getByType('book')).forEach(b => { const c = card(b,'book'); attachCardClick(c, openBook, b); g.appendChild(c); });
+      sortNewestFirst(await AA.getByType('book')).forEach(b => { const c = card(b,'book'); attachCardClick(c, openBook, b); g.appendChild(c); });
     }
     if (tab === 'merch') {
       const g = $('#merch-grid'); resetGrid(g);
-      (await AA.getByType('merch')).forEach(m => { const c = card(m,'merch'); attachCardClick(c, openMerch, m); g.appendChild(c); });
+      sortNewestFirst(await AA.getByType('merch')).forEach(m => { const c = card(m,'merch'); attachCardClick(c, openMerch, m); g.appendChild(c); });
     }
     if (tab === 'community')  renderCommunity();
     if (tab === 'ambassadors') renderAmb();

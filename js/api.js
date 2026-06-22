@@ -106,9 +106,16 @@
     async getSite ()   { return (await loadSeed()).site; },
     async getTheme ()  { return (await loadSeed()).theme; },
 
-    async getHero ()        {
-      // Always pull from live APIs first — gives fresh scraped content on every load.
-      // Mix articles + sounds (with images) + seed fallback, shuffle, weight recent.
+    async getHero (mode)    {
+      // Mode controls how the hero pool is ordered.
+      //   'random' (default) — Fisher-Yates shuffle across articles + sounds +
+      //     seed. Recent items get weighted copies so fresh content surfaces
+      //     more often without monopolising the slideshow.
+      //   'newest'           — pure chronological by acquisition timestamp
+      //     (scraped_at first, then published_at, then year). No shuffle. The
+      //     latest scraped item across all categories leads slide 1.
+      // The mode is persisted by app.js in localStorage('aa-hero-mode').
+      mode = mode === 'newest' ? 'newest' : 'random';
       const pool = [];
 
       // 1. Live articles from Vercel API (works even when Supabase key is broken)
@@ -154,21 +161,27 @@
 
       if (!pool.length) return [];
 
-      // Weight: items from last 30 days get 3 copies in the shuffle bag,
-      // last 7 days get 5 copies — makes recent scrapes dominate without
-      // fully excluding older classics.
-      const now = Date.now();
-      const bag = [];
-      pool.forEach(x => {
-        const age = now - (x.ts || 0);
-        const weight = age < 7 * 86400000 ? 5 : age < 30 * 86400000 ? 3 : 1;
-        for (let i = 0; i < weight; i++) bag.push(x);
-      });
-
-      // Fisher-Yates shuffle
-      for (let i = bag.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [bag[i], bag[j]] = [bag[j], bag[i]];
+      let bag;
+      if (mode === 'newest') {
+        // Sort by acquisition timestamp DESC and dedupe — no shuffle, no
+        // weighting. Latest scraped item across all categories takes slide 1.
+        bag = pool.slice().sort((a, b) => (b.ts || 0) - (a.ts || 0));
+      } else {
+        // Weight: items from last 30 days get 3 copies in the shuffle bag,
+        // last 7 days get 5 copies — makes recent scrapes dominate without
+        // fully excluding older classics.
+        const now = Date.now();
+        bag = [];
+        pool.forEach(x => {
+          const age = now - (x.ts || 0);
+          const weight = age < 7 * 86400000 ? 5 : age < 30 * 86400000 ? 3 : 1;
+          for (let i = 0; i < weight; i++) bag.push(x);
+        });
+        // Fisher-Yates shuffle
+        for (let i = bag.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [bag[i], bag[j]] = [bag[j], bag[i]];
+        }
       }
 
       // Deduplicate by id and return up to 14 slides

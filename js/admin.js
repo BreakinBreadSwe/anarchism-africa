@@ -8,9 +8,42 @@
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
   // ---- tabs --------------------------------------------------------------
+  // Persist last visited tab + scroll position per-tab in localStorage so a
+  // refresh / re-open lands the editor exactly where they left off. Scroll
+  // is stored before the next setTab fires so we capture the current page
+  // before navigating away.
+  const TAB_KEY    = 'aa.admin.tab';
+  const SCROLL_KEY = 'aa.admin.scroll';
   let _lastTab = 'dashboard';
+  let _currentTab = null;
+  function saveScroll () {
+    if (!_currentTab) return;
+    try {
+      const map = JSON.parse(localStorage.getItem(SCROLL_KEY) || '{}');
+      map[_currentTab] = window.scrollY || document.documentElement.scrollTop || 0;
+      localStorage.setItem(SCROLL_KEY, JSON.stringify(map));
+    } catch {}
+  }
+  function restoreScroll (name) {
+    try {
+      const map = JSON.parse(localStorage.getItem(SCROLL_KEY) || '{}');
+      const y = map[name] || 0;
+      // Defer so the view has actually rendered before we scroll. Two
+      // rAFs cover both DOM mutation and layout flush.
+      requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
+    } catch {}
+  }
+  // Throttled scroll persistence so we don't hammer localStorage on every pixel.
+  let _scrollTimer = null;
+  window.addEventListener('scroll', () => {
+    if (_scrollTimer) return;
+    _scrollTimer = setTimeout(() => { _scrollTimer = null; saveScroll(); }, 250);
+  }, { passive: true });
   function setTab (name) {
+    saveScroll();
     if (name !== 'studio') _lastTab = name;
+    _currentTab = name;
+    try { localStorage.setItem(TAB_KEY, name); } catch {}
     $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
     $$('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + name));
     if (name === 'content')      renderContent('film');
@@ -31,6 +64,7 @@
     if (name === 'articlelab')   window.ArticleLab?.render();
     if (name === 'studio') { window.MerchStudio?.render({ prevTab: _lastTab }); return; }
     if (name === 'pod')    { renderPOD(); return; }
+    restoreScroll(name);
   }
   $('#tabs').addEventListener('click', e => {
     const t = e.target.closest('.tab'); if (t) setTab(t.dataset.tab);
@@ -135,16 +169,56 @@
   });
 
   // ---- MERCH -------------------------------------------------------------
+  // Map curated config slugs → /api/pod/overview ids so we can show REAL
+  // connection status instead of the previous always-'connected' lie.
+  // Providers without a backing proxy (Ohh Deer, FairShare for now) get a
+  // 'needs proxy' state — the eco metadata still surfaces in the catalogue
+  // but no Sync button until we ship that proxy.
+  const POD_SLUG_TO_ID = {
+    stanley_stella: 'printful',  // Stanley/Stella organic cotton fulfilled via Printful API
+    teemill:        'teemill',
+    fairshare:      null,         // no proxy yet
+    ohh_deer:       null,         // no proxy yet
+    gelato:         'gelato'
+  };
   async function renderMerch () {
     const providers = (window.AA_CONFIG?.pod_providers) || [];
-    $('#pod-rows').innerHTML = providers.map(p => `
+    // Fetch real status — fall back to all-unknown if the endpoint errors.
+    let statusById = {};
+    try {
+      const r = await fetch('/api/pod/overview');
+      if (r.ok) {
+        const data = await r.json();
+        for (const s of (data.services || [])) statusById[s.id] = s;
+      }
+    } catch {}
+    $('#pod-rows').innerHTML = providers.map(p => {
+      const id = POD_SLUG_TO_ID[p.slug];
+      const live = id ? statusById[id] : null;
+      let pill, action;
+      if (!id) {
+        pill = '<span class="status-pill" style="opacity:.6">proxy pending</span>';
+        action = '<span class="mono" style="font-size:.7rem;color:var(--muted)">build queued</span>';
+      } else if (live?.connected) {
+        pill = '<span class="status-pill active">connected</span>';
+        action = `<button class="btn ghost" data-pod-sync="${id}">Sync SKUs</button>`;
+      } else if (live) {
+        pill = '<span class="status-pill" style="color:var(--amber)">not connected</span>';
+        const env = live.envVar ? ` (set ${live.envVar})` : '';
+        action = `<a class="btn ghost" href="https://vercel.com/breakinbreadswes-projects/anarchism-africa/settings/environment-variables" target="_blank" rel="noopener" title="Set ${live.envVar || 'API key'} in Vercel env">Set up ↗${env}</a>`;
+      } else {
+        pill = '<span class="status-pill" style="opacity:.6">status unknown</span>';
+        action = '';
+      }
+      return `
       <tr>
         <td><b>${p.name}</b></td>
         <td>${ecoBar(p.eco)}</td>
         <td>${p.cert.map(c => `<span class="eco-tag">${c}</span>`).join(' ')}</td>
-        <td><span class="status-pill active">connected</span></td>
-        <td><button class="btn ghost">Sync SKUs</button></td>
-      </tr>`).join('');
+        <td>${pill}</td>
+        <td>${action}</td>
+      </tr>`;
+    }).join('');
     const merch = await AA.getByType('merch');
     $('#merch-rows').innerHTML = merch.map(m => `
       <tr>
@@ -506,5 +580,14 @@
 
   // ---- boot --------------------------------------------------------------
   const roleTag = $('#role-tag'); if (roleTag) roleTag.textContent = 'role: ' + (AA.getRole() || 'admin');
-  renderDashboard();
+  // Restore the last visited tab from localStorage (set by setTab). Default
+  // to dashboard on first visit or if the saved tab no longer exists in the
+  // DOM. setTab() also restores scroll position via restoreScroll().
+  let _initialTab = 'dashboard';
+  try {
+    const saved = localStorage.getItem(TAB_KEY);
+    if (saved && document.getElementById('view-' + saved)) _initialTab = saved;
+  } catch {}
+  setTab(_initialTab);
+  if (_initialTab === 'dashboard') renderDashboard();
 })();

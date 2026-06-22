@@ -112,10 +112,36 @@
   }
 
   function buildSummaryPills (counts, overall) {
+    // Pills double as filters: click to show only items of that status,
+    // click again (or click the active one) to clear. State lives in
+    // .aa-checklist-summary[data-filter] + .aa-checklist-body[data-filter];
+    // CSS rules in styles.css hide non-matching .aa-checklist-item rows.
+    const onPillClick = (status, summary) => {
+      const body = document.querySelector('.aa-checklist-body');
+      const current = summary.dataset.filter || '';
+      const next = current === status ? '' : status;
+      if (next) {
+        summary.dataset.filter = next;
+        if (body) body.dataset.filter = next;
+      } else {
+        delete summary.dataset.filter;
+        if (body) delete body.dataset.filter;
+      }
+      summary.querySelectorAll('.aa-checklist-pill').forEach(p => {
+        p.classList.toggle('is-active', p.dataset.status === next);
+      });
+    };
+    const pill = (status, text) => el('button', {
+      type: 'button',
+      class: `aa-checklist-pill ${status}`,
+      dataset: { status },
+      title: `Show only ${status.toUpperCase()} (click again to clear)`,
+      onclick: (e) => onPillClick(status, e.currentTarget.parentElement)
+    }, text);
     return el('div', { class: 'aa-checklist-summary' },
-      el('span', { class: `aa-checklist-pill pass` }, ICON.pass + ' ' + (counts.pass || 0) + ' OK'),
-      el('span', { class: `aa-checklist-pill warn` }, ICON.warn + ' ' + (counts.warn || 0) + ' Warn'),
-      el('span', { class: `aa-checklist-pill fail` }, ICON.fail + ' ' + (counts.fail || 0) + ' Fail')
+      pill('pass', ICON.pass + ' ' + (counts.pass || 0) + ' OK'),
+      pill('warn', ICON.warn + ' ' + (counts.warn || 0) + ' Warn'),
+      pill('fail', ICON.fail + ' ' + (counts.fail || 0) + ' Fail')
     );
   }
 

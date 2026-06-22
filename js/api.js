@@ -47,10 +47,14 @@
     await Promise.all(Object.entries(KIND_TO_BUCKET).map(async ([kind, bucket]) => {
       try {
         const r = await fetch(`/api/content/list?kind=${kind}&status=published&limit=2000`, { cache: 'no-store' });
-        if (!r.ok) return;
+        if (!r.ok) return; // network/server error — keep seed fallback for THIS kind
         const j = await r.json();
-        if (Array.isArray(j.items) && j.items.length) data[bucket] = j.items;
-      } catch {}
+        // Authoritative replacement: if the API responds (even with []), trust it.
+        // Previous behaviour kept the seed bucket alive when the DB was empty —
+        // that's what made demo titles persist on the public site after the user
+        // emptied the DB. Now: empty DB → empty bucket → real state shown.
+        if (Array.isArray(j.items)) data[bucket] = j.items;
+      } catch {} // only network/JSON errors keep the seed fallback
     }));
 
     cache.seed = data;

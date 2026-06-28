@@ -192,32 +192,48 @@
     return { kind: '', title: h?.textContent?.trim() || '' };
   }
 
-  // OPT-IN duplicate substitution.
-  // Default (false): a duplicate scraped image stays as-is. Vector fallback
-  // ONLY fires when the element has no real image at all. Scraped thumbnails
-  // are never overridden — your actual editorial work shows through.
-  // Opt-in (true): aggressive de-duplication — every duplicate scraped image
-  // gets swapped for a unique procedural pattern (the previous behaviour).
-  // Flip from the console:  localStorage.setItem('aa-thumb-dedupe', '1')
+  // OPT-OUT duplicate substitution + "double main thumbnail" rule.
+  // Default (true): when the same scraped image (publisher default banner)
+  // appears on multiple cards, the FIRST card gets promoted to a 2-column
+  // "main thumbnail" treatment (.card-main + .thumb-main), and every
+  // subsequent duplicate gets a unique procedural pattern. Duplicate
+  // publisher banners stop carpet-bombing the grid.
+  // Set localStorage.aa-thumb-dedupe='0' to disable (keep real duplicates).
   const DEDUPE_DUPLICATES = (() => {
-    try { return localStorage.getItem('aa-thumb-dedupe') === '1'; } catch { return false; }
+    try { return localStorage.getItem('aa-thumb-dedupe') !== '0'; } catch { return true; }
   })();
 
-  function fixOne (el) {
+  function isEmptyUrl (url) {
+    return !url || url === 'undefined' || url === 'null' || url === '#' || url === 'about:blank';
+  }
+
+  function fixOne (el, urlCounts, mainAssigned) {
     if (el.dataset.thumbFixed === '1') return;
     const url = styleUrl(el);
     let needFallback = false;
-    if (!url || url === 'undefined' || url === 'null' || url === '#' || url === 'about:blank') {
-      // Truly empty — fall back to the procedural generator so the card
-      // isn't a blank rectangle. This is the only default-on path.
+
+    if (isEmptyUrl(url)) {
+      // Truly empty — fall back to the procedural generator.
       needFallback = true;
+    } else if (DEDUPE_DUPLICATES && urlCounts && urlCounts.get(url) >= 2) {
+      // Shared image (publisher default): first occurrence → main thumb, doubled.
+      // Subsequent → procedural fallback.
+      if (!mainAssigned.has(url)) {
+        mainAssigned.add(url);
+        el.classList.add('thumb-main');
+        const card = el.closest('.card');
+        if (card) card.classList.add('card-main');
+      } else {
+        needFallback = true;
+      }
     } else if (DEDUPE_DUPLICATES && usedUrls.has(url)) {
-      // Opt-in only: substitute when a duplicate scraped URL is detected.
+      // Cross-scan duplicate (e.g. card injected later after the batch counted) —
+      // safest is to fall back so the same image never appears side-by-side.
       needFallback = true;
     } else {
-      // Unique (or duplicate but dedupe is off) — leave the real image.
       usedUrls.add(url);
     }
+
     if (needFallback) {
       const seed = deriveSeed(el);
       const meta = deriveKindTitle(el);
@@ -226,8 +242,21 @@
     }
     el.dataset.thumbFixed = '1';
   }
+
   function scan (root) {
-    (root || document).querySelectorAll(FALLBACK_TARGETS).forEach(fixOne);
+    const targets = (root || document).querySelectorAll(FALLBACK_TARGETS);
+    // Pass 1: count URL occurrences across the targets we haven't fixed yet
+    // so we can spot "publisher default" banners that span many cards.
+    const urlCounts = new Map();
+    targets.forEach(el => {
+      if (el.dataset.thumbFixed === '1') return;
+      const url = styleUrl(el);
+      if (!isEmptyUrl(url)) urlCounts.set(url, (urlCounts.get(url) || 0) + 1);
+    });
+    // Pass 2: apply the rule. mainAssigned tracks which URLs already had
+    // their "promoted" card so we only double up the first one.
+    const mainAssigned = new Set();
+    targets.forEach(el => fixOne(el, urlCounts, mainAssigned));
   }
 
   function init () {

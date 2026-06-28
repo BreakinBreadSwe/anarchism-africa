@@ -332,7 +332,7 @@
       } catch {}
     }
     el.innerHTML = `
-      <div class="thumb" style="background-image:url(${it.image})"><span class="badge">${kind}</span></div>
+      <div class="thumb" style="background-image:url(&quot;${it.image || ''}&quot;)"><span class="badge">${kind}</span></div>
       <div class="body">
         <h3>${it.title}</h3>
         <div class="meta">${secondaryLine(it, kind)}</div>
@@ -1206,7 +1206,7 @@
       const el = document.createElement('div');
       el.className = 'cf-card';
       el.innerHTML = `
-        <div class="thumb" style="background-image:url(${c.image})"></div>
+        <div class="thumb" style="background-image:url(&quot;${c.image || ''}&quot;)"></div>
         <div style="flex:1;min-width:0">
           <h3 style="margin:0 0 4px;font-family:'Space Grotesk',sans-serif;text-transform:none;letter-spacing:0">${c.title}</h3>
           <div class="meta">€${c.raised_eur.toLocaleString()} of €${c.goal_eur.toLocaleString()} · ${pct}%</div>
@@ -1247,7 +1247,7 @@
     const el = document.createElement('div');
     el.className = 'card shop-card';
     el.innerHTML = `
-      <div class="thumb" style="background-image:url(${s.image})"><span class="badge">SHOP</span></div>
+      <div class="thumb" style="background-image:url(&quot;${s.image || ''}&quot;)"><span class="badge">SHOP</span></div>
       <div class="body">
         <span class="city">${s.city}, ${s.country}</span>
         <h3>${s.name}</h3>
@@ -1261,7 +1261,7 @@
     const el = document.createElement('div');
     el.className = 'card service-card';
     el.innerHTML = `
-      <div class="thumb" style="background-image:url(${s.image})"><span class="badge">SERVICE</span></div>
+      <div class="thumb" style="background-image:url(&quot;${s.image || ''}&quot;)"><span class="badge">SERVICE</span></div>
       <div class="body">
         <h3>${s.title}</h3>
         <div class="meta">${s.by} · ${s.city} · ${s.category}</div>
@@ -1276,7 +1276,7 @@
     el.className = 'card seminar-card';
     const dt = new Date(s.starts_at);
     el.innerHTML = `
-      <div class="thumb" style="background-image:url(${s.image})"><span class="badge">${s.format === 'online' ? 'ONLINE' : s.format.toUpperCase()}</span></div>
+      <div class="thumb" style="background-image:url(&quot;${s.image || ''}&quot;)"><span class="badge">${s.format === 'online' ? 'ONLINE' : s.format.toUpperCase()}</span></div>
       <div class="body">
         <span class="when">${dt.toLocaleDateString(undefined,{ month:'short', day:'numeric'})} · ${dt.toLocaleTimeString(undefined,{hour:'2-digit', minute:'2-digit'})}</span>
         <h3>${s.title}</h3>
@@ -1291,7 +1291,7 @@
     const el = document.createElement('div');
     el.className = 'card job-card';
     el.innerHTML = `
-      <div class="thumb" style="background-image:url(${j.image})"><span class="badge">JOB</span></div>
+      <div class="thumb" style="background-image:url(&quot;${j.image || ''}&quot;)"><span class="badge">JOB</span></div>
       <div class="body">
         <h3>${j.title}</h3>
         <div class="meta">${j.org} · ${j.city}</div>

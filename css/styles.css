@@ -530,6 +530,13 @@ section.view.active { display: block; animation: fadeIn .35s ease; }
 .card .thumb {
   aspect-ratio: 4 / 3; background: #1b1815 center/cover no-repeat; position: relative;
 }
+/* "Double main thumbnail" rule: when several cards share the same scraped image
+   (publisher default banner), js/thumb.js tags the FIRST card .card-main and its
+   .thumb .thumb-main. The card spans 2 grid columns and the thumb gets a wider
+   aspect so the artwork reads as a hero, not a tile in a wall of duplicates. */
+.card.card-main { grid-column: span 2; }
+.card.card-main .thumb.thumb-main { aspect-ratio: 16 / 9; }
+@media (max-width: 600px) { .card.card-main { grid-column: span 1; } }
 .card .badge {
   position: absolute; top: 10px; left: 10px;
   background: rgba(0,0,0,.6); color: var(--accent); font-size: .65rem; font-weight: 700;

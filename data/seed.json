@@ -978,7 +978,60 @@
       "external_url": "https://www.plutobooks.com/9780745345819/anarchism-and-the-black-revolution/"
     }
   ],
-  "merch": [],
+  "merch": [
+    {
+      "id": "m1",
+      "kind": "merch",
+      "title": "Modern Colosseum — organic tee",
+      "slogan_id": "s-colosseum",
+      "provider": "Gelato Eco",
+      "price_eur": 32,
+      "eco": ["organic cotton", "print-on-demand", "low-water dye"],
+      "carbon_g": 2400,
+      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=1200&q=80",
+      "summary": "Front print: WELCOME TO THE MODERN COLOSSEUM. The flagship line from our research on football as spectacle, money and power.",
+      "body": "Printed on demand on certified organic cotton through a Gelato Eco partner, so nothing is made until it's ordered — no warehouse, no overproduction. The carbon figure shown is the printed-garment footprint; how it reaches you is the bigger number, which is exactly the point the FairPlay Thermometer makes. Part of 'The Modern Colosseum' drop."
+    },
+    {
+      "id": "m2",
+      "kind": "merch",
+      "title": "The House Always Wins — heavy tee",
+      "slogan_id": "s-house-wins",
+      "provider": "Stanley/Stella",
+      "price_eur": 34,
+      "eco": ["organic cotton", "print-on-demand", "Fair Wear"],
+      "carbon_g": 2600,
+      "image": "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=1200&q=80",
+      "summary": "THE STADIUM ROARS. THE HOUSE ALWAYS WINS. On the saturation of gambling advertising in the modern game.",
+      "body": "A line about the betting industry that now wraps the pitch, the shirts and the broadcast. Printed on demand on Stanley/Stella organic blanks (Fair Wear Foundation members). See docs/RESEARCH-modern-colosseum.md §5 for the figures behind it."
+    },
+    {
+      "id": "m3",
+      "kind": "merch",
+      "title": "Win and I'm French — statement tee",
+      "slogan_id": "s-passport",
+      "provider": "Gelato Eco",
+      "price_eur": 33,
+      "eco": ["organic cotton", "print-on-demand", "low-water dye"],
+      "carbon_g": 2400,
+      "image": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&q=80",
+      "summary": "WIN AND I'M FRENCH. LOSE AND I'M AFRICAN. The colonial double-bind of the diaspora footballer.",
+      "body": "Echoing Patrice Evra — Dakar-born, France-capped — on how belonging is granted in victory and withdrawn in defeat. A pointed line; printed on demand on organic cotton. Context in the research dossier, §4."
+    },
+    {
+      "id": "m4",
+      "kind": "merch",
+      "title": "What's the temperature of your game? — FairPlay tee",
+      "slogan_id": "s-temperature",
+      "provider": "Gelato Eco",
+      "price_eur": 32,
+      "eco": ["organic cotton", "print-on-demand", "low-water dye"],
+      "carbon_g": 2400,
+      "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=1200&q=80",
+      "summary": "Front: WHAT'S THE TEMPERATURE OF YOUR GAME? Back: a QR to the FairPlay Thermometer. Wear the question.",
+      "body": "The merch arm of the FairPlay Thermometer — the tool that reads the planetary and social heat of any football event. Back-print carries a QR to /thermometer. Printed on demand on organic cotton."
+    }
+  ],
   "external_shops": [
     {
       "id": "x1",

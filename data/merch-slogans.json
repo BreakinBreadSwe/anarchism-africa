@@ -1,0 +1,31 @@
+{
+  "_meta": {
+    "purpose": "Original house slogans for ANARCHISM.AFRICA / FairPlay merch, themed on 'The Modern Colosseum' research. Feed the POD quote-tee generator (js/merch-lab.js) and seed.json merch[]. Distinct from data/afro-anarchist-quotes.json, which holds attributed historical quotes.",
+    "research": "docs/RESEARCH-modern-colosseum.md",
+    "edge_levels": {
+      "safe": "Provoking but trademark- and policy-clean. No brand names, no real logos.",
+      "sharp": "Names the system (money, spectacle, colony) in the abstract. Higher edge, still defensible.",
+      "spicy": "Direct, confrontational framing. Highest impact and highest brand/legal risk — review before printing."
+    },
+    "house_author": "ANARCHISM.AFRICA",
+    "generated": "2026-06-16"
+  },
+  "slogans": [
+    { "id": "s-colosseum", "text": "WELCOME TO THE MODERN COLOSSEUM", "edge": "safe", "theme": "spectacle", "note": "Flagship line. Works as front print." },
+    { "id": "s-watched", "text": "THEY SELL THE GAME. WE ARE THE PRODUCT.", "edge": "sharp", "theme": "spectacle" },
+    { "id": "s-90mins", "text": "90 MINUTES. A BILLION EYES. WHO COUNTS THE MONEY?", "edge": "safe", "theme": "money" },
+    { "id": "s-perimeter", "text": "EVERY SECOND ON SCREEN HAS A PRICE", "edge": "safe", "theme": "advertising" },
+    { "id": "s-jersey", "text": "MY HEROES WEAR A BETTING COMPANY'S NAME", "edge": "sharp", "theme": "gambling" },
+    { "id": "s-house-wins", "text": "THE STADIUM ROARS. THE HOUSE ALWAYS WINS.", "edge": "sharp", "theme": "gambling" },
+    { "id": "s-kids", "text": "5,262 GAMBLING ADS IN ONE MATCH. THE KIDS WERE WATCHING.", "edge": "spicy", "theme": "gambling", "note": "Cites dossier figure — keep the number, it's the punch." },
+    { "id": "s-wages", "text": "A GOAL FOR THE NATION. A WAGE FOR A CONTINENT.", "edge": "sharp", "theme": "colonial" },
+    { "id": "s-passport", "text": "WIN AND I'M FRENCH. LOSE AND I'M AFRICAN.", "edge": "spicy", "theme": "colonial", "note": "Echoes Evra. Powerful but pointed — review." },
+    { "id": "s-academy", "text": "THEY TOOK THE LAND. NOW THEY SCOUT THE CHILDREN.", "edge": "spicy", "theme": "colonial", "note": "Highest edge in the set." },
+    { "id": "s-pitch", "text": "THE PITCH IS FLOODING. THE SPONSORS ARE FINE.", "edge": "sharp", "theme": "climate" },
+    { "id": "s-87", "text": "87% OF THE DAMAGE IS HOW YOU GOT HERE", "edge": "safe", "theme": "climate", "note": "Pairs with the FairPlay Thermometer." },
+    { "id": "s-elephant", "text": "ONE TROPHY. A STADIUM OF DEBT.", "edge": "sharp", "theme": "hosting" },
+    { "id": "s-temperature", "text": "WHAT'S THE TEMPERATURE OF YOUR GAME?", "edge": "safe", "theme": "fairplay", "note": "FairPlay Thermometer tie-in / QR back-print." },
+    { "id": "s-fairplay", "text": "FAIR PLAY IS NOT A SLOGAN. IT'S A BALANCE SHEET.", "edge": "sharp", "theme": "fairplay" },
+    { "id": "s-ball", "text": "THE BALL IS FREE. EVERYTHING ELSE IS FOR SALE.", "edge": "safe", "theme": "money" }
+  ]
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>BREAKIN BREAD — Free Cinema</title>
+  <meta name="description" content="Breakin Bread — a free cinema of public-domain and free-to-watch films from around the world, in every language. No paywall, no login, no ads. Break bread, watch free." />
+  <meta name="theme-color" content="#0c0a08" />
+
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/favicon.svg" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <meta property="og:title" content="BREAKIN BREAD — Free Cinema" />
+  <meta property="og:description" content="A free cinema of public-domain films. No paywall, no login, no ads." />
+  <meta property="og:type" content="website" />
+
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="bb-header" id="bbHeader">
+    <a class="bb-brand" href="#/" aria-label="Breakin Bread home">
+      <svg class="bb-brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+        <use href="icons/favicon.svg#mark" />
+      </svg>
+      <span class="bb-brand-word">BREAKIN&nbsp;BREAD</span>
+    </a>
+
+    <nav class="bb-nav" id="bbNav" aria-label="Genres"></nav>
+
+    <div class="bb-header-tools">
+      <button class="bb-icon-btn" id="bbSearchBtn" aria-label="Search films" title="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      </button>
+      <button class="bb-icon-btn" id="bbListBtn" aria-label="My list" title="My list">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v18l7-5 7 5V3z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── SEARCH OVERLAY ─────────────────────────────────── -->
+  <div class="bb-search" id="bbSearch" hidden>
+    <div class="bb-search-bar">
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="bb-search-icon"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input type="search" id="bbSearchInput" placeholder="Search titles, directors, genres…" autocomplete="off" />
+      <button class="bb-icon-btn" id="bbSearchClose" aria-label="Close search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+      </button>
+    </div>
+    <div class="bb-search-results" id="bbSearchResults"></div>
+  </div>
+
+  <!-- ── MAIN ───────────────────────────────────────────── -->
+  <main id="bbMain"><!-- rendered by app.js --></main>
+
+  <!-- ── PLAYER MODAL ───────────────────────────────────── -->
+  <div class="bb-modal" id="bbModal" hidden>
+    <div class="bb-modal-scrim" data-close></div>
+    <div class="bb-modal-panel" role="dialog" aria-modal="true" aria-labelledby="bbModalTitle">
+      <button class="bb-modal-close" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+      </button>
+      <div class="bb-modal-body" id="bbModalBody"><!-- rendered by app.js --></div>
+    </div>
+  </div>
+
+  <footer class="bb-footer">
+    <p class="bb-footer-line">
+      <strong>BREAKIN&nbsp;BREAD</strong> — free cinema, public domain. No paywall. No login. No ads.
+    </p>
+    <p class="bb-footer-fine">
+      World cinema in every language — public-domain and free-to-watch films streamed from the
+      <a href="https://archive.org/details/feature_films" target="_blank" rel="noopener">Internet Archive</a>,
+      YouTube, and national film archives. Break bread, pass it on.
+    </p>
+  </footer>
+
+  <script src="js/catalog.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

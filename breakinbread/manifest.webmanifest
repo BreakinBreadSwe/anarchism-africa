@@ -1,0 +1,24 @@
+{
+  "name": "Breakin Bread — Free Cinema",
+  "short_name": "Breakin Bread",
+  "description": "A free cinema of public-domain films and movies. No paywall, no login, no ads.",
+  "id": "/breakinbread/",
+  "start_url": "/breakinbread/",
+  "scope": "/breakinbread/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#0c0a08",
+  "theme_color": "#0c0a08",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["entertainment", "video", "lifestyle"],
+  "icons": [
+    { "src": "icons/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "My List", "short_name": "List", "url": "/breakinbread/#/list" },
+    { "name": "Search",  "short_name": "Search", "url": "/breakinbread/#/" }
+  ]
+}

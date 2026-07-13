@@ -539,22 +539,21 @@
         return;
       }
 
-      // Per-month sub-grids — each one is its own .grid so auto-fit works.
-      let lastMonth = null, currentMonthGrid = null;
+      // ONE grid for all articles — no per-month sub-divisions. The old
+      // approach created a fresh .grid per month, so any month with a
+      // single article showed one card on the left with 4 empty cells
+      // to the right at 5-col widescreen. Now every article tiles into
+      // the same continuous grid, filling every row completely.
+      // Each card already shows its own date, so month grouping isn't
+      // information-lost — just visual density regained.
+      const bigGrid = document.createElement('div');
+      bigGrid.className = 'grid';
       arts.forEach(a => {
-        const mk = archiveMonthKey(a);
-        if (mk !== lastMonth) {
-          const h = document.createElement('div');
-          h.className = 'archive-month-head';
-          h.innerHTML = `<span class="kente-pip"></span><span>${archiveMonthLabel(mk)}</span>`;
-          g.appendChild(h);
-          currentMonthGrid = document.createElement('div');
-          currentMonthGrid.className = 'grid';
-          g.appendChild(currentMonthGrid);
-          lastMonth = mk;
-        }
-        const c = card(a, 'article'); attachCardClick(c, openArticle, a); currentMonthGrid.appendChild(c);
+        const c = card(a, 'article');
+        attachCardClick(c, openArticle, a);
+        bigGrid.appendChild(c);
       });
+      g.appendChild(bigGrid);
     }
     if (tab === 'events') {
       const g = $('#events-grid'); resetGrid(g);

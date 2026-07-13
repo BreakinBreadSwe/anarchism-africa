@@ -41,7 +41,7 @@ module.exports = async function handler (req, res) {
     // Oldest scraped_at first so the longest-stale rows get priority.
     const items = await sb.select('content', {
       eq: { status: 'published' },
-      order: 'scraped_at.asc.nullslast',
+      order: 'scraped_at',
       limit: 300
     });
 

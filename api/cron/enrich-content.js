@@ -40,7 +40,7 @@ module.exports = async function handler (req, res) {
     // sites (5s each × 60 = 300s worst case, but we cut at the deadline).
     const items = await sb.select('content', {
       eq: { status: 'published' },
-      order: 'enriched_at.asc.nullsfirst,scraped_at.asc.nullslast',
+      order: 'enriched_at,scraped_at',
       limit: 60
     });
 

@@ -145,11 +145,20 @@
         const r = await fetch('/api/sound/list?_=' + Math.floor(Date.now() / 3600000));
         if (r.ok) {
           const d = await r.json();
-          (d.tracks || []).filter(x => x.image).slice(0, 80).forEach(x => pool.push({
+          // Only PLAYABLE tracks belong in the hero pool — a direct-audio URL
+          // means the '▶ Play' hero CTA can actually fire MP.play(). Without
+          // the audio field the CTA silently falls back to 'Open Song' which
+          // just switches tabs (looks like 'player stopped working'). Filter
+          // out embed-only tracks (SoundCloud / Bandcamp iframes have no
+          // direct URL).
+          const audioSrc = (x) => x.audio || x.audioUrl || (x.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i) ? x.url : null);
+          (d.tracks || []).filter(x => x.image && audioSrc(x)).slice(0, 80).forEach(x => pool.push({
             id:      x.id,
             title:   x.title,
+            artist:  x.artist || '',
             summary: x.artist ? `${x.artist}${x.year ? ' · ' + x.year : ''}` : '',
             image:   x.image,
+            audio:   audioSrc(x),
             type:    'song',
             tab:     'music',
             ts:      x.year ? new Date(String(x.year) + '-01-01').getTime() : 0,

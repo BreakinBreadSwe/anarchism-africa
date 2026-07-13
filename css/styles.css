@@ -392,17 +392,23 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
   background: color-mix(in srgb, var(--bg) 96%, transparent);
   backdrop-filter: blur(14px);
   border-top: 1px solid var(--line);
-  /* Mobile bar was 60px, cropping labels on notch devices. 68px + safe-area
-     inset gives room for the label AND clears the iOS home indicator. */
+  /* 68px of interactive height + safe-area strip for the iOS home indicator.
+     The safe-area lives OUTSIDE the button vertical padding so icons stay
+     visually centered within the 68px zone. */
   height: calc(68px + env(safe-area-inset-bottom, 0px));
-  padding: 0 6px env(safe-area-inset-bottom, 0px);
+  padding: 0 6px;
 }
 .bottombar button {
   flex: 1 1 0; min-width: 0;
   background: transparent; border: 0; color: var(--fg-dim);
   cursor: pointer; font: inherit;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 3px; padding: 6px 4px;
+  gap: 4px;
+  /* Symmetric vertical padding around the icon+label block. Bottom picks up
+     the safe-area inset so the whole strip stays flush with the phone edge
+     while the icon itself remains centered within the visible 68px zone. */
+  padding: 10px 4px calc(10px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
   font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
   transition: color .15s;
 }

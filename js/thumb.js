@@ -169,7 +169,11 @@
   // replace with a procedural SVG keyed on the parent's data-wish-id (which
   // the card factory already stamps) or a hash of nearby text.
   const usedUrls = new Set();
+  // Background-image style targets (cards use .thumb, hero uses .hero-bg, etc.)
   const FALLBACK_TARGETS = '.thumb, .item-related-thumb, .ml-thumb, .wish-thumb, .hero-bg, .hero .slide';
+  // <img>-based targets — sound-library cards use raw <img>. Every card image
+  // gets the same duplicate-detection + procedural-fallback treatment.
+  const IMG_TARGETS = '.sl-card-thumb img, .card img.card-img, img.thumb-img';
 
   function styleUrl (el) {
     const m = (el.style.backgroundImage || '').match(/url\(["']?(.*?)["']?\)/);
@@ -178,29 +182,43 @@
   function setUrl (el, url) {
     el.style.backgroundImage = `url("${url}")`;
   }
+  // Look up the enclosing card and pull an id + heading text out of it.
+  // `sl-card` uses <p class="sl-card-title">, so we accept a wider set of
+  // "title-ish" selectors here — otherwise every song ends up seeded with
+  // the raw <img> outerHTML and the pattern picker becomes random-looking.
+  const TITLE_SEL = 'h1, h2, h3, h4, .title, .sl-card-title, .card-title, [data-title]';
+  const CARD_SEL  = '[data-wish-id], [data-id], .sl-card, .card, article';
+  function textOf (el) {
+    return (el?.getAttribute?.('data-title') || el?.textContent || '').trim();
+  }
   function deriveSeed (el) {
-    const card = el.closest('[data-wish-id]');
-    if (card) return (card.dataset.wishType || '') + ':' + card.dataset.wishId;
-    const h3 = el.parentElement?.querySelector('h1, h2, h3, h4, .title');
-    if (h3) return (el.parentElement.dataset?.kind || '') + ':' + h3.textContent.trim();
-    return el.outerHTML;
+    const wish = el.closest('[data-wish-id]');
+    if (wish) return (wish.dataset.wishType || '') + ':' + wish.dataset.wishId;
+    const card = el.closest(CARD_SEL);
+    if (card?.dataset?.id) return (card.dataset.kind || '') + ':' + card.dataset.id;
+    const h = (card || el.parentElement)?.querySelector(TITLE_SEL);
+    if (h) return (card?.dataset?.kind || '') + ':' + textOf(h);
+    return el.getAttribute?.('data-title') || el.outerHTML;
   }
   function deriveKindTitle (el) {
-    const card = el.closest('[data-wish-id]');
-    if (card) return { kind: card.dataset.wishType, title: card.querySelector('h3,h2,h4')?.textContent?.trim() || '' };
-    const h = el.parentElement?.querySelector('h1, h2, h3, h4, .title');
-    return { kind: '', title: h?.textContent?.trim() || '' };
+    const wish = el.closest('[data-wish-id]');
+    if (wish) return { kind: wish.dataset.wishType, title: textOf(wish.querySelector('h3,h2,h4,.sl-card-title,.card-title')) };
+    const card = el.closest(CARD_SEL);
+    const h = (card || el.parentElement)?.querySelector(TITLE_SEL);
+    const kind = card?.dataset?.kind || el.getAttribute?.('data-kind') || '';
+    return { kind, title: textOf(h) || el.getAttribute?.('data-title') || '' };
   }
 
-  // OPT-IN duplicate substitution.
-  // Default (false): a duplicate scraped image stays as-is. Vector fallback
-  // ONLY fires when the element has no real image at all. Scraped thumbnails
-  // are never overridden — your actual editorial work shows through.
-  // Opt-in (true): aggressive de-duplication — every duplicate scraped image
-  // gets swapped for a unique procedural pattern (the previous behaviour).
-  // Flip from the console:  localStorage.setItem('aa-thumb-dedupe', '1')
+  // Aggressive de-duplication (DEFAULT ON) — every repeat of a scraped image
+  // URL gets swapped for a unique procedural pattern seeded by the item's id
+  // + title. Rule of the platform: no two thumbnails may look identical.
+  // Escape hatch for editors who genuinely want a shared banner across a
+  // series: localStorage.setItem('aa-thumb-dedupe', '0').
   const DEDUPE_DUPLICATES = (() => {
-    try { return localStorage.getItem('aa-thumb-dedupe') === '1'; } catch { return false; }
+    try {
+      const v = localStorage.getItem('aa-thumb-dedupe');
+      return v === null ? true : v === '1';
+    } catch { return true; }
   })();
 
   function fixOne (el) {
@@ -226,8 +244,38 @@
     }
     el.dataset.thumbFixed = '1';
   }
+  function fixOneImg (img) {
+    if (img.dataset.thumbFixed === '1') return;
+    const src = (img.getAttribute('src') || '').trim();
+    let needFallback = false;
+    if (!src || src === '#' || src === 'about:blank' || src.startsWith('data:image/svg+xml')) {
+      needFallback = !src;  // Only NULL/empty — never re-swap an existing procedural.
+    } else if (DEDUPE_DUPLICATES && usedUrls.has(src)) {
+      needFallback = true;
+    } else {
+      usedUrls.add(src);
+    }
+    if (needFallback) {
+      const seed = deriveSeed(img);
+      const meta = deriveKindTitle(img);
+      img.src = generate(seed, meta.kind, meta.title);
+    }
+    // If the network image 404s, swap to procedural (song covers from IA
+    // often 404 on items with no cover — this catches those without
+    // needing a server-side rescrape).
+    img.addEventListener('error', () => {
+      if (img.dataset.thumbFallback === '1') return;
+      img.dataset.thumbFallback = '1';
+      const seed = deriveSeed(img);
+      const meta = deriveKindTitle(img);
+      img.src = generate(seed, meta.kind, meta.title);
+    }, { once: true });
+    img.dataset.thumbFixed = '1';
+  }
   function scan (root) {
-    (root || document).querySelectorAll(FALLBACK_TARGETS).forEach(fixOne);
+    const r = root || document;
+    r.querySelectorAll(FALLBACK_TARGETS).forEach(fixOne);
+    r.querySelectorAll(IMG_TARGETS).forEach(fixOneImg);
   }
 
   function init () {
@@ -237,7 +285,8 @@
       for (const m of muts) {
         for (const n of m.addedNodes) {
           if (n.nodeType !== 1) continue;
-          if (n.matches?.(FALLBACK_TARGETS) || n.querySelector?.(FALLBACK_TARGETS)) { touched = true; break; }
+          if (n.matches?.(FALLBACK_TARGETS) || n.querySelector?.(FALLBACK_TARGETS) ||
+              n.matches?.(IMG_TARGETS)      || n.querySelector?.(IMG_TARGETS)) { touched = true; break; }
         }
         if (touched) break;
       }

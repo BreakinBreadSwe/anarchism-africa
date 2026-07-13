@@ -41,33 +41,37 @@ module.exports = async function handler (req, res) {
     const items = await sb.select('content', {
       eq: { status: 'published' },
       order: 'enriched_at,scraped_at',
-      limit: 60
+      limit: 200
     });
 
-    for (const row of items) {
-      if (Date.now() > deadline) { summary.skipped_deadline++; continue; }
+    // Batched in parallel — same rationale as rescrape-images: sequential
+    // 6s-timeout fetches drain ~8 rows/run, batched drains ~48/run.
+    const BATCH = 6;
+    async function processOne (row) {
       const url = row.external_url || row.url || row.source_url;
-      if (!url || !isSafeToFetch(url)) continue;
-      // Skip rows that already have a body AND at least one gallery/embed.
+      if (!url || !isSafeToFetch(url)) return;
       const hasBody    = !!(row.body && String(row.body).trim().length > 200);
       const hasGallery = Array.isArray(row.gallery) && row.gallery.length;
       const hasEmbeds  = Array.isArray(row.embeds)  && row.embeds.length;
-      if (hasBody && (hasGallery || hasEmbeds)) continue;
-
+      if (hasBody && (hasGallery || hasEmbeds)) return;
       summary.checked++;
       try {
         const scraped = await deepScrape(url);
-        if (!scraped) { summary.no_content_found++; continue; }
+        if (!scraped) { summary.no_content_found++; return; }
         const patch = { enriched_at: new Date().toISOString() };
         if (!hasBody && scraped.body)             patch.body    = scraped.body;
         if (!hasGallery && scraped.gallery.length) patch.gallery = scraped.gallery;
         if (!hasEmbeds  && scraped.embeds.length)  patch.embeds  = scraped.embeds;
-        if (Object.keys(patch).length === 1) { summary.no_content_found++; continue; }
+        if (Object.keys(patch).length === 1) { summary.no_content_found++; return; }
         await sb.update('content', row.id, patch);
         summary.enriched++;
       } catch (e) {
         summary.errors.push({ id: row.id, error: String(e.message || e).slice(0, 200) });
       }
+    }
+    for (let i = 0; i < items.length; i += BATCH) {
+      if (Date.now() > deadline) { summary.skipped_deadline += (items.length - i); break; }
+      await Promise.all(items.slice(i, i + BATCH).map(processOne));
     }
   } catch (e) {
     return res.status(500).json({ error: String(e.message || e), partial: summary });

@@ -392,8 +392,10 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
   background: color-mix(in srgb, var(--bg) 96%, transparent);
   backdrop-filter: blur(14px);
   border-top: 1px solid var(--line);
-  height: 60px;
-  padding: 0 6px;
+  /* Mobile bar was 60px, cropping labels on notch devices. 68px + safe-area
+     inset gives room for the label AND clears the iOS home indicator. */
+  height: calc(68px + env(safe-area-inset-bottom, 0px));
+  padding: 0 6px env(safe-area-inset-bottom, 0px);
 }
 .bottombar button {
   flex: 1 1 0; min-width: 0;
@@ -413,9 +415,9 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
 
 @media (min-width: 769px) { .bottombar { padding: 0 calc(64px + 12px) 0 calc(64px + 12px); } body.rail-open .bottombar { padding-left: calc(220px + 12px); padding-right: calc(220px + 12px); } }
 
-/* Reserve space for the fixed bottom bar */
-body.has-rail { padding-bottom: 60px; }
-.role-strip { bottom: 60px; }
+/* Reserve space for the fixed bottom bar — matches .bottombar height incl. safe-area */
+body.has-rail { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
+.role-strip { bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
 
 /* Afro-futurist tab icons — adinkra-inspired glyphs, theme-aware */
 .tab .glyph {
@@ -751,7 +753,7 @@ body.mp-active .chat-panel { bottom: 116px; }
 .mini-player {
   position: fixed;
   left: 0; right: 0;
-  bottom: 60px;                         /* flush above the 60px bottombar */
+  bottom: calc(68px + env(safe-area-inset-bottom, 0px));  /* flush above the bottombar */
   z-index: 36;
   display: none; align-items: center; gap: 10px;
   padding: 8px 12px;
@@ -766,7 +768,7 @@ body.mp-active .chat-panel { bottom: 116px; }
 
 /* Reserve room at the bottom of the page when the player is on so the
    article body / grids never hide behind it. 56 (player) + 12 (VU) + 60 (bottombar). */
-body.mp-active { padding-bottom: calc(60px + 56px + 12px); }
+body.mp-active { padding-bottom: calc(68px + 56px + 12px + env(safe-area-inset-bottom, 0px)); }
 /* Mini-player is intentionally full-width (left:0) — it spans the rail like
    Spotify's player bar. z-index: 36 puts it on top of the rail (28). */
 
@@ -774,7 +776,7 @@ body.mp-active { padding-bottom: calc(60px + 56px + 12px); }
 .mp-vu {
   position: fixed;
   left: 0; right: 0;
-  bottom: calc(60px + 56px);   /* flush atop the player bar */
+  bottom: calc(68px + 56px + env(safe-area-inset-bottom, 0px));   /* flush atop the player bar */
   height: 12px;
   z-index: 35;
   background: color-mix(in srgb, var(--bg) 85%, transparent);
@@ -2954,3 +2956,62 @@ form[data-form] label {
   font-size: .78rem; line-height: 1.65; color: var(--fg-dim);
   white-space: pre-wrap; word-break: break-word;
 }
+
+/* ─── Segmented toggle (grid / list) ─────────────────────────────────── */
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg-btn {
+  background: transparent; color: var(--fg-dim); border: 0;
+  padding: 6px 12px; font: 500 1rem 'Space Grotesk', sans-serif;
+  cursor: pointer; transition: background .15s, color .15s;
+  min-width: 36px;
+}
+.seg-btn + .seg-btn { border-left: 1px solid var(--line); }
+.seg-btn:hover { color: var(--fg); }
+.seg-btn.active { background: var(--fg); color: var(--bg); }
+
+/* ─── Languages directory: grid (default) + list ─────────────────────── */
+.lang-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 900px)  { .lang-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } }
+@media (min-width: 1280px) { .lang-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
+@media (min-width: 1800px) { .lang-grid { grid-template-columns: repeat(5, 1fr); gap: 20px; } }
+.lang-grid.list { grid-template-columns: 1fr; gap: 6px; }
+
+.lang-card {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;
+  transition: border-color .15s, transform .15s;
+}
+.lang-card:hover { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); transform: translateY(-2px); }
+.lang-card-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.lang-card-head h3 { margin: 0; font: 700 1rem 'Space Grotesk', sans-serif; letter-spacing: 0; text-transform: none; }
+.lang-native { color: var(--fg-dim); font-size: .95rem; font-style: italic; }
+.lang-meta { color: var(--muted); font-size: .78rem; }
+.lang-note { margin: 6px 0 0; color: var(--fg-dim); font-size: .82rem; font-style: italic; }
+.lang-official { margin-top: 4px; font-size: .72rem; color: var(--accent); letter-spacing: .05em; }
+
+/* List mode: dense single-column rows, meta chips shrink into a horizontal strip. */
+.lang-grid.list .lang-card {
+  flex-direction: row; align-items: baseline; gap: 12px;
+  padding: 8px 14px;
+}
+.lang-grid.list .lang-card:hover { transform: none; }
+.lang-grid.list .lang-card-head { flex: 0 0 auto; }
+.lang-grid.list .lang-meta { font-size: .74rem; }
+.lang-grid.list .lang-meta:not(:last-of-type)::after { content: ' · '; color: var(--line); margin: 0 4px; }
+.lang-grid.list .lang-note { display: none; }
+.lang-grid.list .lang-official { margin-left: auto; margin-top: 0; }
+@media (max-width: 600px) {
+  .lang-grid.list .lang-card { flex-direction: column; gap: 4px; align-items: flex-start; }
+  .lang-grid.list .lang-official { margin-left: 0; }
+}
+
+.lang-chip {
+  background: transparent; color: var(--fg-dim); border: 1px solid var(--line);
+  border-radius: 99px; padding: 4px 10px; font: 500 .78rem 'Space Grotesk', sans-serif;
+  cursor: pointer; transition: color .15s, border-color .15s, background .15s;
+}
+.lang-chip:hover { color: var(--fg); border-color: color-mix(in srgb, var(--fg) 40%, var(--line)); }
+.lang-chip.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }

@@ -62,7 +62,13 @@
       const total    = langs.length;
       return `
         <div class="panel" style="margin-bottom:14px">
-          <h2 style="margin:0 0 6px">African languages — directory</h2>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px">
+            <h2 style="margin:0">African languages — directory</h2>
+            <div id="lang-view-toggle" class="seg" role="tablist" aria-label="View">
+              <button data-view="grid" class="seg-btn active" aria-pressed="true" title="Grid view">▦</button>
+              <button data-view="list" class="seg-btn"        aria-pressed="false" title="List view">☰</button>
+            </div>
+          </div>
           <p style="color:var(--fg-dim);max-width:65ch;margin:0 0 10px">
             ${total}+ languages across ${regions.length} regions and ${families.length} families,
             plus diaspora creoles. Search by name, native autonym, country, family or script.
@@ -169,6 +175,26 @@
       root.querySelectorAll('.lang-chip').forEach(x => x.classList.toggle('active', x === b));
       activeFilter = b.dataset.filter;
       paintGrid();
+    });
+    // Grid ↔ list toggle — persisted per-user so return visits remember the choice.
+    // Grid is the default (unless the user has explicitly picked list before).
+    const KEY = 'aa-lang-view';
+    let savedView = 'grid';
+    try { savedView = localStorage.getItem(KEY) || 'grid'; } catch {}
+    const grid = root.querySelector('#lang-grid');
+    const applyView = v => {
+      grid.classList.toggle('list', v === 'list');
+      root.querySelectorAll('#lang-view-toggle .seg-btn').forEach(b => {
+        const on = b.dataset.view === v;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      try { localStorage.setItem(KEY, v); } catch {}
+    };
+    applyView(savedView);
+    root.querySelector('#lang-view-toggle').addEventListener('click', e => {
+      const b = e.target.closest('.seg-btn'); if (!b) return;
+      applyView(b.dataset.view);
     });
     paintGrid();
   }

@@ -8,7 +8,7 @@
   "crons": [
     {
       "path": "/api/cron/scan-content",
-      "schedule": "0 */6 * * *"
+      "schedule": "15 */2 * * *"
     },
     {
       "path": "/api/cron/scrape-events",
@@ -40,11 +40,11 @@
     },
     {
       "path": "/api/cron/rescrape-images",
-      "schedule": "0 5 * * *"
+      "schedule": "0 */3 * * *"
     },
     {
       "path": "/api/cron/enrich-content",
-      "schedule": "30 5 * * *"
+      "schedule": "45 */3 * * *"
     }
   ],
   "headers": [

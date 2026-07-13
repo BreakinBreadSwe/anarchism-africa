@@ -37,12 +37,12 @@ module.exports = async function handler (req, res) {
   const deadline = Date.now() + 50_000;
 
   try {
-    // Pull up to 300 published items (limit keeps us under function memory).
+    // Pull up to 800 published items (limit keeps us under function memory).
     // Oldest scraped_at first so the longest-stale rows get priority.
     const items = await sb.select('content', {
       eq: { status: 'published' },
       order: 'scraped_at',
-      limit: 300
+      limit: 800
     });
 
     // Build a frequency map of image URLs so we can spot "publisher default"
@@ -65,13 +65,16 @@ module.exports = async function handler (req, res) {
       if (img && imageCount[img] >= DUP_THRESHOLD) targets.push({ row: it, reason: 'duplicate' });
     }
 
-    for (const { row, reason } of targets) {
-      if (Date.now() > deadline) { summary.skipped_deadline++; continue; }
+    // Process targets in parallel batches of 8. Each row is a 5s HTTP timeout;
+    // sequential drained ~10 rows per 50s run. Batched drains ~80/run — enough
+    // to clear an 800-row backlog in ~1 hour of cron cadence.
+    const BATCH = 8;
+    async function processOne ({ row, reason }) {
       summary.scanned++;
       const url = row.external_url || row.url || row.source_url;
       if (!url || !isSafeToFetch(url)) {
         summary.errors.push({ id: row.id, reason, error: 'url unsafe or missing' });
-        continue;
+        return;
       }
       try {
         // For duplicate rows, tell the scraper to AVOID returning the same
@@ -91,15 +94,19 @@ module.exports = async function handler (req, res) {
           } else {
             summary.no_image_found++;
           }
-          continue;
+          return;
         }
-        if (reason === 'duplicate' && fresh === row.image) continue;
+        if (reason === 'duplicate' && fresh === row.image) return;
         await sb.update('content', row.id, { image: fresh });
         if (reason === 'missing') summary.updated_missing++;
         else                       summary.updated_duplicate++;
       } catch (e) {
         summary.errors.push({ id: row.id, reason, error: String(e.message || e) });
       }
+    }
+    for (let i = 0; i < targets.length; i += BATCH) {
+      if (Date.now() > deadline) { summary.skipped_deadline += (targets.length - i); break; }
+      await Promise.all(targets.slice(i, i + BATCH).map(processOne));
     }
   } catch (e) {
     return res.status(500).json({ error: String(e.message || e), partial: summary });

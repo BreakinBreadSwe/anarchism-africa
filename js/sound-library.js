@@ -207,10 +207,14 @@
     card.className = 'sl-card' + (isExp ? ' expanded' : '');
     card.dataset.id = id;
 
-    // Thumb
+    // Thumb — thumb.js watches every <img> under .sl-card-thumb: it dedupes
+    // repeated URLs (IA returns the same generic cover for many items) and
+    // catches 404s, swapping in a unique procedural SVG seeded by the track
+    // title. So we do NOT need an emoji fallback here — every card ends up
+    // with a distinctive visual either way.
     const thumbHtml = track.coverImageUrl
-      ? `<img src="${esc(track.coverImageUrl)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'" /><div class="sl-card-thumb-emoji" style="display:none">${catInfo.emoji}</div>`
-      : `<div class="sl-card-thumb-emoji">${catInfo.emoji}</div>`;
+      ? `<img src="${esc(track.coverImageUrl)}" alt="" loading="lazy" />`
+      : `<img src="" alt="" data-title="${esc(track.title || '')}" data-kind="song" />`;
 
     // Embed type chips
     const embedTypes = [...new Set(embeds.map(e => e.type || 'other'))];

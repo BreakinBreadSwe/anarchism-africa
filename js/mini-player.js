@@ -144,14 +144,33 @@
       ui.like.setAttribute('aria-pressed', String(isOn));
     }
 
+    // Tearing down the previous Audio properly is the difference between
+    // playback that "just works" and the chaos users see when tapping tracks
+    // in quick succession:
+    //   - The old Audio's queued `error` fires AFTER we've already started
+    //     the new one, hitting a handler whose closure references the NEW
+    //     audio → shows a "can't be played" toast for the wrong track, then
+    //     calls next() which skips past the track the user actually tapped.
+    // Solution: use on* properties (they replace on assign, so the old
+    // handlers are unreachable the moment we set them on the new Audio), and
+    // null every one on the old object before dropping its src.
+    function destroyAudio (a) {
+      if (!a) return;
+      try { a.pause(); } catch {}
+      a.onplay = a.onpause = a.onended = a.onerror = null;
+      a.ontimeupdate = a.onloadedmetadata = a.onprogress = null;
+      try { a.removeAttribute('src'); a.load(); } catch {}
+    }
+
     function play (song) {
       if (!song?.audio) return;
       if (audio && current?.id === song.id) {
-        if (audio.paused) audio.play(); else audio.pause();
+        if (audio.paused) audio.play().catch(() => {}); else audio.pause();
         return;
       }
-      if (audio) { audio.pause(); audio.src = ''; }
-      audio = new Audio(song.audio);
+      destroyAudio(audio);
+      const a = new Audio();
+      audio = a;
       current = song;
       if (ui.title)  ui.title.textContent  = song.title || '—';
       if (ui.artist) ui.artist.textContent = song.artist || '';
@@ -163,30 +182,34 @@
       waveData = buildWaveData(song.id);
       drawWaveform(0);
       startVU();
-      audio.addEventListener('play',  () => setPlayingUI(true));
-      audio.addEventListener('pause', () => setPlayingUI(false));
-      audio.addEventListener('loadedmetadata', () => {
-        if (ui.dur) ui.dur.textContent = fmt(audio.duration);
-      });
-      audio.addEventListener('timeupdate', () => {
-        if (!audio.duration) return;
-        const pct = audio.currentTime / audio.duration * 100;
+      // Guard EVERY handler: if the user tapped a different track meanwhile
+      // (audio no longer === a) then this callback belongs to a dead Audio
+      // and must not touch the UI.
+      const alive = () => audio === a;
+      a.onplay  = () => { if (alive()) setPlayingUI(true); };
+      a.onpause = () => { if (alive()) setPlayingUI(false); };
+      a.onloadedmetadata = () => { if (alive() && ui.dur) ui.dur.textContent = fmt(a.duration); };
+      a.ontimeupdate = () => {
+        if (!alive() || !a.duration) return;
+        const pct = a.currentTime / a.duration * 100;
         if (ui.bar2) ui.bar2.style.width = pct + '%';
         if (ui.knob) ui.knob.style.left  = pct + '%';
-        if (ui.cur)  ui.cur.textContent  = fmt(audio.currentTime);
+        if (ui.cur)  ui.cur.textContent  = fmt(a.currentTime);
         if (ui.track) ui.track.setAttribute('aria-valuenow', String(Math.round(pct)));
         drawWaveform(pct / 100);
-      });
-      audio.addEventListener('progress', () => {
-        if (!audio.duration || !audio.buffered.length) return;
-        const end = audio.buffered.end(audio.buffered.length - 1);
-        if (ui.buffer) ui.buffer.style.width = (end / audio.duration * 100) + '%';
-      });
-      audio.addEventListener('ended', () => {
+      };
+      a.onprogress = () => {
+        if (!alive() || !a.duration || !a.buffered.length) return;
+        const end = a.buffered.end(a.buffered.length - 1);
+        if (ui.buffer) ui.buffer.style.width = (end / a.duration * 100) + '%';
+      };
+      a.onended = () => {
+        if (!alive()) return;
         if (queueIndex >= 0 && queueIndex < queue.length - 1) next();
         else setPlayingUI(false);
-      });
-      audio.addEventListener('error', () => {
+      };
+      a.onerror = () => {
+        if (!alive()) return;
         setPlayingUI(false);
         try {
           const t = document.createElement('div');
@@ -197,10 +220,11 @@
         } catch {}
         if (queueIndex >= 0 && queueIndex < queue.length - 1) next();
         else { hide(); current = null; }
-      });
+      };
       show();
       setPlayingUI(false);
-      audio.play().catch(() => setPlayingUI(false));
+      a.src = song.audio;
+      a.play().catch(() => { if (alive()) setPlayingUI(false); });
       syncLike();
     }
 
@@ -250,8 +274,7 @@
     ui.next?.addEventListener('click',  next);
     ui.prev?.addEventListener('click',  prev);
     ui.close?.addEventListener('click', () => {
-      audio?.pause();
-      if (audio) { try { audio.src = ''; } catch {} }
+      destroyAudio(audio);
       audio = null; current = null; queueIndex = -1; queue = [];
       waveData = null; stopVU(); hide(); setPlayingUI(false);
     });

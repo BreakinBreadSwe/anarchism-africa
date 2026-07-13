@@ -1431,9 +1431,20 @@ body.admin .kpi .stat span { font-size: .75rem; color: var(--muted); letter-spac
 .tabs { gap: 4px; padding: 8px 12px 10px; }
 section.view { padding: 16px; }
 
+/* Card grid — deliberate column steps rather than auto-fit so the layout
+   is predictable at every viewport width. Per user: 'min 2 posts on each
+   row full width and larger screen up to 5 posts in a row'.
+     mobile               → 2 cols
+     ≥ 600px  (large phones / small tablets)  → 2 cols (bigger cards)
+     ≥ 900px  (tablets / small laptops)       → 3 cols
+     ≥ 1280px (laptops)                       → 4 cols
+     ≥ 1800px (large monitors)                → 5 cols
+   Explicit repeat(N, 1fr) instead of auto-fit means a single card in
+   a row (e.g. one-per-month in the Library archive) stretches to 1/N
+   of the row rather than sitting narrow on the left. */
 @media (min-width: 600px) {
   body { font-size: 16.5px; }
-  .grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .topbar { padding: 14px var(--content-pad-x); }
   .hero { aspect-ratio: 16 / 9; max-height: 70vh; min-height: 480px; }
   .hero-overlay { padding: 36px; gap: 12px; }
@@ -1441,7 +1452,7 @@ section.view { padding: 16px; }
 
 @media (min-width: 900px) {
   body { font-size: 17px; }
-  .grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .tabs { padding: 10px var(--content-pad-x); }
   .hero { min-height: 540px; max-height: 80vh; }
   .hero-overlay { padding: 48px; max-width: 720px; }
@@ -1452,15 +1463,16 @@ section.view { padding: 16px; }
 
 @media (min-width: 1280px) {
   .hero-overlay { padding: 56px 64px; max-width: 820px; }
-  .grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+  .grid { grid-template-columns: repeat(4, 1fr); gap: 22px; }
 }
 
-/* On very wide screens (4K, ultra-wide) — keep cards filling the width but cap density so they don't get tiny */
+/* Very wide (4K / ultrawide) — cap at 5 columns so cards don't get tiny. */
 @media (min-width: 1800px) {
-  .grid { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 26px; }
+  .grid { grid-template-columns: repeat(5, 1fr); gap: 26px; }
 }
+/* 2400px+ stays at 5 columns — cards get slightly bigger via gap only. */
 @media (min-width: 2400px) {
-  .grid { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 28px; }
+  .grid { grid-template-columns: repeat(5, 1fr); gap: 28px; }
 }
 
 /* iPad landscape and larger — show sidenav + content side by side in admin */

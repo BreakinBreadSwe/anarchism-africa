@@ -52,7 +52,7 @@ module.exports = async function handler (req, res) {
       const img = (it.image || '').trim();
       if (img) imageCount[img] = (imageCount[img] || 0) + 1;
     }
-    const DUP_THRESHOLD = 3; // images that appear on 3+ rows are "publisher defaults"
+    const DUP_THRESHOLD = 2; // images that appear on 2+ rows are duplicates — tighten aggressively
 
     // Build target list: missing image first, then known duplicates.
     const targets = [];
@@ -74,10 +74,25 @@ module.exports = async function handler (req, res) {
         continue;
       }
       try {
-        const fresh = await scrapeOgImage(url);
-        if (!fresh) { summary.no_image_found++; continue; }
-        // For "duplicate" rows: only replace if the new image is different
-        // from the duplicated one (otherwise we'd just write the same value).
+        // For duplicate rows, tell the scraper to AVOID returning the same
+        // URL again — most publisher-default OG banners are also set as
+        // twitter:image and image_src, so blind re-scraping just fetches
+        // the same duplicate. avoidUrl forces the scraper to skip past it
+        // and reach for a body-inline image instead.
+        const fresh = await scrapeImage(url, { avoidUrl: reason === 'duplicate' ? row.image : null });
+        if (!fresh) {
+          // No unique image found. For missing rows this is a wash. For
+          // duplicate rows, explicitly NULL the field so js/thumb.js's
+          // procedural generator kicks in per-item (title-seeded, so every
+          // article gets a visually distinct pattern).
+          if (reason === 'duplicate' && row.image) {
+            await sb.update('content', row.id, { image: null });
+            summary.updated_duplicate++;
+          } else {
+            summary.no_image_found++;
+          }
+          continue;
+        }
         if (reason === 'duplicate' && fresh === row.image) continue;
         await sb.update('content', row.id, { image: fresh });
         if (reason === 'missing') summary.updated_missing++;
@@ -94,11 +109,21 @@ module.exports = async function handler (req, res) {
   return res.status(200).json({ ok: true, ts: Date.now(), ...summary });
 };
 
-/* Scrape og:image (then twitter:image) from a page. 5s hard timeout.
-   Looks at the first 64KB of the response — every well-formed page has
-   its <head> well within that. Returns absolute URL or null. */
-async function scrapeOgImage (url) {
+/* Scrape a page for a good thumbnail. Tries in order:
+     1. og:image
+     2. twitter:image
+     3. <link rel="image_src">
+     4. JSON-LD schema.org "image" property (article microdata)
+     5. First body <img> with dimensions ≥ 400px OR reasonably-named class
+   If avoidUrl is provided, any candidate matching it is skipped — used
+   when we already KNOW the site's default OG banner is the duplicate we
+   want to escape from. Fetches up to 250KB (was 64KB) so body-inline
+   images are reachable.
+   Returns absolute URL or null. 5s hard timeout. */
+async function scrapeImage (url, opts = {}) {
   if (!url || !/^https?:\/\//i.test(url)) return null;
+  const { avoidUrl } = opts;
+  const skip = (candidate) => !candidate || (avoidUrl && candidate === avoidUrl);
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 5000);
   try {
@@ -109,13 +134,68 @@ async function scrapeOgImage (url) {
     clearTimeout(t);
     if (!r.ok) return null;
     const buf = await r.arrayBuffer();
-    const text = new TextDecoder().decode(buf.slice(0, 65536));
-    const og = text.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i) ||
-               text.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["']/i);
-    if (og && og[1]) return toAbsolute(og[1].trim(), url);
-    const tw = text.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i) ||
-               text.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']twitter:image["']/i);
-    if (tw && tw[1]) return toAbsolute(tw[1].trim(), url);
+    const text = new TextDecoder().decode(buf.slice(0, 250 * 1024));
+
+    // 1. og:image
+    let m = text.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i) ||
+            text.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["']/i);
+    if (m && m[1]) {
+      const abs = toAbsolute(m[1].trim(), url);
+      if (!skip(abs)) return abs;
+    }
+
+    // 2. twitter:image
+    m = text.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i) ||
+        text.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']twitter:image["']/i);
+    if (m && m[1]) {
+      const abs = toAbsolute(m[1].trim(), url);
+      if (!skip(abs)) return abs;
+    }
+
+    // 3. <link rel="image_src">
+    m = text.match(/<link[^>]*rel=["']image_src["'][^>]*href=["']([^"']+)["']/i);
+    if (m && m[1]) {
+      const abs = toAbsolute(m[1].trim(), url);
+      if (!skip(abs)) return abs;
+    }
+
+    // 4. JSON-LD "image" — matches "image":"URL" and "image":["URL",...] and
+    //    "image":{"url":"URL"}. Regex is loose on purpose; malformed JSON-LD
+    //    is common in the wild.
+    m = text.match(/"image"\s*:\s*"([^"]+)"/i) ||
+        text.match(/"image"\s*:\s*\[\s*"([^"]+)"/i) ||
+        text.match(/"image"\s*:\s*\{[^}]*"url"\s*:\s*"([^"]+)"/i);
+    if (m && m[1]) {
+      const abs = toAbsolute(m[1].trim(), url);
+      if (!skip(abs)) return abs;
+    }
+
+    // 5. First body <img> with dimensions ≥ 400 OR feature/hero class.
+    //    A single regex sweep — we skip icons, avatars, spacers, and any
+    //    image we're avoiding.
+    const imgRe = /<img\b[^>]+>/gi;
+    let img;
+    while ((img = imgRe.exec(text)) !== null) {
+      const tag = img[0];
+      const srcMatch = tag.match(/\bsrc=["']([^"']+)["']/i) ||
+                       tag.match(/\bdata-src=["']([^"']+)["']/i);
+      if (!srcMatch) continue;
+      const abs = toAbsolute(srcMatch[1].trim(), url);
+      if (skip(abs)) continue;
+      // Skip obvious non-hero images by URL pattern.
+      if (/\/(icons?|avatars?|logos?|badges?|sprites?|spacer|1x1|tracking|pixel)\b/i.test(abs)) continue;
+      if (/\.(svg|gif)(\?|$)/i.test(abs)) continue;
+      // Prefer images that declare width/height ≥ 400 OR live in a "hero",
+      // "featured", "post-thumb" style container class.
+      const wm = tag.match(/\bwidth=["']?(\d+)/i);
+      const hm = tag.match(/\bheight=["']?(\d+)/i);
+      const w = wm ? parseInt(wm[1], 10) : 0;
+      const h = hm ? parseInt(hm[1], 10) : 0;
+      const cls = (tag.match(/\bclass=["']([^"']+)["']/i) || [, ''])[1];
+      const looksHero = /\b(hero|featured|post-thumb|entry-image|article-image|wp-post-image)\b/i.test(cls);
+      if (looksHero || (w >= 400 || h >= 400) || (!w && !h)) return abs;
+    }
+
     return null;
   } catch { clearTimeout(t); return null; }
 }

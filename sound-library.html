@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/responsive-fixes.css" />
   <link rel="stylesheet" href="css/auth-page.css" />
+  <link rel="stylesheet" href="css/menu-behavior.css" />
   <style>
     /* ── Sound Library page styles ────────────────────────────────────────── */
     #sl-root {
@@ -450,6 +451,13 @@
 <script src="js/logo-mark.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/mini-player.js"></script>
+<!-- menu-behavior.js implements the mobile full-screen menu overlay (rail
+     items as tiles + favourites mosaic). Without it, tapping the bottombar
+     'Menu' button on mobile only slides in the 220px off-canvas rail —
+     which is easy to miss on small screens and reads as 'button doesn't
+     work'. On desktop it's a no-op (isMobile() gate) so the inline rail
+     toggle above still handles that path. -->
+<script src="js/menu-behavior.js"></script>
 <script src="js/sound-library.js"></script>
 <script src="js/tooltips.js" defer></script>
 <script src="js/update-notifier.js" defer></script>

@@ -244,12 +244,28 @@
     }
     el.dataset.thumbFixed = '1';
   }
+  // Known-generic URL patterns — every URL in this list is technically
+  // unique per item ID but resolves to the SAME visual on the far end
+  // (Internet Archive's services/img endpoint serves an identical
+  // music-note SVG for every audio item that lacks a cover). Treat them
+  // as duplicates preemptively so the sound library isn't wall-to-wall
+  // identical placeholders.
+  const KNOWN_GENERIC = [
+    /^https?:\/\/archive\.org\/services\/img\//i
+  ];
+  function isKnownGeneric (url) {
+    return KNOWN_GENERIC.some(re => re.test(url));
+  }
   function fixOneImg (img) {
     if (img.dataset.thumbFixed === '1') return;
     const src = (img.getAttribute('src') || '').trim();
     let needFallback = false;
     if (!src || src === '#' || src === 'about:blank' || src.startsWith('data:image/svg+xml')) {
       needFallback = !src;  // Only NULL/empty — never re-swap an existing procedural.
+    } else if (isKnownGeneric(src)) {
+      // Route to procedural WITHOUT touching usedUrls — every item that
+      // would have hit the shared IA fallback now gets its own pattern.
+      needFallback = true;
     } else if (DEDUPE_DUPLICATES && usedUrls.has(src)) {
       needFallback = true;
     } else {

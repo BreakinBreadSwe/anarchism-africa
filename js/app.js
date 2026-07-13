@@ -59,6 +59,11 @@
     $$('#bottombar [data-bbar]').forEach(x => x.classList.toggle('active', x === b));
 
     if (k === 'home')     { setTab('home'); return; }
+    // Sound bottombar button was silent — no case for it. The button title
+    // reads 'Sound Library' so the mobile expectation is to open the full
+    // dedicated page (/sound-library.html), not the tiny music tab inside
+    // the home page.
+    if (k === 'music')    { location.href = 'sound-library.html'; return; }
     if (k === 'films')    { setTab('films'); renderTab('films'); return; }
     if (k === 'library')  { setTab('articles'); renderTab('articles'); return; }
     if (k === 'search')   { openSearch(); return; }

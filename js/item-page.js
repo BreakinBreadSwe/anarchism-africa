@@ -88,6 +88,7 @@
         <h1 class="item-title">${escapeHTML(it.title || '')}</h1>
         ${it.deck ? `<p class="item-lede">${escapeHTML(it.deck)}</p>` : ''}
         ${it.summary ? `<p class="item-lede">${escapeHTML(it.summary)}</p>` : ''}
+        ${renderSourceCTA(it)}
         ${details.length ? `
           <dl class="item-details">
             ${details.map(([k, v]) => `<div><dt>${escapeHTML(k)}</dt><dd>${escapeHTML(v)}</dd></div>`).join('')}
@@ -313,6 +314,25 @@
     const v = (it.verify || []).filter(Boolean);
     if (!v.length) return '';
     return `<aside class="item-verify"><h4>Editor: verify before publishing</h4><ul>${v.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></aside>`;
+  }
+
+  /* Prominent CTA button near the top of the page — reads the original
+     source URL and gives the reader a direct link. Sits under the deck
+     so it's the first action they see. Falls back silently on items
+     without a linkable source. */
+  function renderSourceCTA (it) {
+    const url = it.external_url || it.source_url || it.url || '';
+    if (!url || !/^https?:\/\//i.test(url)) return '';
+    let domain = '';
+    try { domain = new URL(url).hostname.replace(/^www\./, ''); } catch {}
+    const label = it.source || domain || 'source';
+    return `<div class="item-source-cta" style="margin:14px 0 6px">
+      <a class="btn primary" href="${escapeHTML(url)}" target="_blank" rel="noopener nofollow"
+         style="display:inline-flex;align-items:center;gap:8px;font-weight:600;letter-spacing:.04em">
+        READ SOURCE AT ${escapeHTML(label.toUpperCase())}
+        <span aria-hidden="true" style="font-weight:300;font-size:1.1em">↗</span>
+      </a>
+    </div>`;
   }
 
   /* Mirror credit — every scraped item carries the source it was mirrored

@@ -7,7 +7,7 @@
  *   - Static assets (CSS/JS/SVG/PNG/fonts): stale-while-revalidate.
  *   - /api/* + POSTs: never intercepted (live-only).
  */
-const CACHE = 'aa-shell-v26';   // bump on every shell change
+const CACHE = 'aa-shell-v27';   // bump on every shell change (v27: JS/CSS network-first)
 
 const SHELL = [
   '/',
@@ -133,8 +133,32 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Same-origin static: stale-while-revalidate
+  // Same-origin static — split by asset type:
+  //
+  // JS / CSS / JSON → NETWORK-FIRST. Every deploy of a code fix lands on the
+  //   next reload instead of two reloads later. Stale-while-revalidate is
+  //   why the thumb-dedupe / mini-player / list-endpoint fixes 'never seemed
+  //   to work' — the browser served an old bundle from cache and the newer
+  //   one silently updated in the background for the visit AFTER the one
+  //   the user was testing on. Fall back to cache only if the network fails
+  //   (offline / lie-flat mode).
+  //
+  // Images, fonts, SVG → stale-while-revalidate. These rarely change and
+  //   the first-paint speedup is worth an occasional one-cycle staleness.
   if (url.origin === location.origin) {
+    const isCode = /\.(js|css|mjs|json)(\?|$)/i.test(url.pathname);
+    if (isCode) {
+      e.respondWith(
+        fetch(e.request).then(resp => {
+          if (resp && resp.ok) {
+            const copy = resp.clone();
+            caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+          }
+          return resp;
+        }).catch(() => caches.match(e.request).then(c => c || caches.match(OFFLINE_NAV)))
+      );
+      return;
+    }
     e.respondWith(
       caches.match(e.request).then(cached => {
         const fresh = fetch(e.request).then(resp => {

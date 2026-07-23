@@ -1,0 +1,49 @@
+{
+  "stories": [
+    {
+      "id": "story-bissap-granny",
+      "title": "My grandmother's bissap pot",
+      "body": "Every Sunday in Dakar my grandmother kept a huge pot of bissap cooling in the shade. Whenever anyone complained of the heat or a headache from the sun, she poured a glass before saying a word. I still make it the same way — heavy on the ginger — and the smell alone brings my blood pressure down, I swear. My doctor knows I drink it and just asks me to keep an eye on my readings.",
+      "ailment": "heat and headaches",
+      "outcome": "A calming family ritual I've kept for twenty years.",
+      "author": "Aminata, 54",
+      "region": "West Africa"
+    },
+    {
+      "id": "story-honey-lemon-choir",
+      "title": "Choir season saver",
+      "body": "I sing in a community choir and every winter my throat used to give out before the December concerts. An older member told me to stop sipping cold water between rehearsals and bring a flask of honey-lemon instead. It doesn't cure anything — when I had actual laryngitis I went to the doctor — but for everyday scratchiness it has kept me singing through three winters now.",
+      "ailment": "sore throat",
+      "outcome": "Everyday throat comfort through rehearsal season.",
+      "author": "Marcus, 41",
+      "region": "North America"
+    },
+    {
+      "id": "story-ginger-commute",
+      "title": "The ferry finally stopped beating me",
+      "body": "My commute includes a 40-minute ferry and I spent years feeling green by the time we docked. My mother-in-law laughed and handed me a little tin of candied ginger to chew as we board. I was skeptical — it felt too simple. It's been eight months and I haven't had a bad crossing since. Rough-weather days I still take the proper medicine, but the ginger handles the ordinary chop.",
+      "ailment": "motion sickness",
+      "outcome": "Calm crossings on all but the roughest days.",
+      "author": "Ingrid, 37",
+      "region": "Northern Europe"
+    },
+    {
+      "id": "story-oatmeal-eczema",
+      "title": "Bath time truce with my son's itchy skin",
+      "body": "Our four-year-old scratched his legs raw every winter. Alongside the cream our paediatrician prescribed, she actually suggested oatmeal baths — which made my own grandmother triumphant, because she'd been saying it for a year. Twice a week, ground oats in lukewarm water, and bath time went from tears to him not wanting to get out. The cream does the heavy lifting; the oats keep him comfortable between flare-ups.",
+      "ailment": "itchy skin",
+      "outcome": "Comfortable skin between treatments, calmer bath times.",
+      "author": "Priya, 33",
+      "region": "South Asia"
+    },
+    {
+      "id": "story-mint-tea-meals",
+      "title": "What the tea taught me about eating",
+      "body": "Visiting my husband's family in Marrakech, I noticed nobody rushed from the table. Meals ended with mint tea poured high into small glasses, and twenty minutes of talk. My constant after-lunch bloating disappeared that whole trip. Back home I kept the ritual — mint tea, no phone, sit a while. I honestly can't say if it's the mint or the sitting, but my stomach doesn't care about the difference.",
+      "ailment": "bloating",
+      "outcome": "Comfortable digestion and a slower end to meals.",
+      "author": "Claire, 45",
+      "region": "North Africa"
+    }
+  ]
+}

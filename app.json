@@ -14,6 +14,10 @@
     "android": {
       "package": "io.luvlab.grandma",
       "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
     }
   }
 }

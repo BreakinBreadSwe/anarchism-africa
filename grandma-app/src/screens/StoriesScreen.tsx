@@ -30,6 +30,7 @@ export function StoriesScreen() {
       <Text style={styles.heading}>{t('stories.title')}</Text>
       <Text style={styles.subtitle}>{t('stories.subtitle')}</Text>
       <FlatList
+        style={styles.list}
         data={stories}
         keyExtractor={(story) => story.id}
         contentContainerStyle={styles.listContent}
@@ -78,6 +79,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     paddingHorizontal: spacing.lg,
+  },
+  list: {
+    flex: 1,
   },
   listContent: {
     paddingBottom: spacing.xl,

@@ -40,6 +40,7 @@ export function BookmarksScreen() {
     <View style={styles.container}>
       <Text style={styles.heading}>{t('saved.title')}</Text>
       <FlatList
+        style={styles.list}
         data={saved}
         keyExtractor={(remedy) => remedy.id}
         contentContainerStyle={styles.listContent}
@@ -69,6 +70,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     paddingHorizontal: spacing.lg,
+  },
+  list: {
+    flex: 1,
   },
   listContent: {
     paddingBottom: spacing.xl,

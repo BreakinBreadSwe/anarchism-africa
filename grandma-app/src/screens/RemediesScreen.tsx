@@ -95,6 +95,7 @@ export function RemediesScreen() {
         {t('remedies.resultsCount', { count: filtered.length })}
       </Text>
       <FlatList
+        style={styles.list}
         data={filtered}
         keyExtractor={(remedy) => remedy.id}
         renderItem={({ item }) => (
@@ -132,6 +133,9 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 12,
     paddingHorizontal: spacing.lg,
+  },
+  list: {
+    flex: 1,
   },
   listContent: {
     paddingBottom: spacing.xl,

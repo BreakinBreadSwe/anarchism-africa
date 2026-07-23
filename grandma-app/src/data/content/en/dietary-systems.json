@@ -1,0 +1,79 @@
+{
+  "category": "dietarySystems",
+  "remedies": [
+    {
+      "id": "mediterranean-pattern",
+      "title": "Mediterranean Table Tradition",
+      "ailments": ["heart health support", "general wellness", "longevity"],
+      "ingredients": [
+        { "name": "olive oil", "quantity": "as the main fat" },
+        { "name": "vegetables and legumes", "quantity": "at most meals" },
+        { "name": "whole grains" },
+        { "name": "fish", "quantity": "2+ times a week" },
+        { "name": "fruit and nuts", "quantity": "as everyday snacks" }
+      ],
+      "instructions": [
+        "Cook with olive oil instead of butter or hard fats.",
+        "Build meals around vegetables, beans, and whole grains, with meat as a side rather than the centre.",
+        "Eat fish a couple of times a week; keep red meat occasional.",
+        "Finish meals with fruit rather than sweets.",
+        "Eat with others when you can — the shared table is part of the tradition."
+      ],
+      "region": "Mediterranean",
+      "origin": "The everyday eating pattern of Crete, southern Italy, and coastal Spain as documented in the mid-20th century.",
+      "disclaimer": "A dietary pattern, not a treatment. Adapt with a doctor or dietitian if you have a medical condition."
+    },
+    {
+      "id": "fermented-foods",
+      "title": "Daily Fermented Foods",
+      "ailments": ["digestive comfort", "gut health support"],
+      "ingredients": [
+        { "name": "live-culture yogurt, kefir, or laban" },
+        { "name": "fermented vegetables (sauerkraut, kimchi, torshi)" },
+        { "name": "fermented grains (ogi, injera, sourdough)" }
+      ],
+      "instructions": [
+        "Add one small serving of a fermented food to a meal each day.",
+        "Rotate between dairy, vegetable, and grain ferments through the week.",
+        "Choose raw, unpasteurised ferments where safe and available — heat kills the live cultures.",
+        "Introduce slowly if you are not used to them."
+      ],
+      "region": "Global",
+      "origin": "Nearly every food culture keeps a ferment: kimchi in Korea, sauerkraut in Central Europe, ogi in Nigeria, laban across the Levant.",
+      "disclaimer": "People with weakened immune systems should ask a doctor before eating unpasteurised ferments."
+    },
+    {
+      "id": "bitter-greens",
+      "title": "Bitter Greens Before Meals",
+      "ailments": ["sluggish digestion", "poor appetite"],
+      "ingredients": [
+        { "name": "bitter leaves (arugula, dandelion, endive, or African bitterleaf, well prepared)", "quantity": "a small handful" },
+        { "name": "olive oil and lemon", "quantity": "a drizzle" }
+      ],
+      "instructions": [
+        "Start the main meal with a small salad of bitter greens dressed simply with oil and lemon.",
+        "Chew slowly — the bitter taste itself triggers digestive juices.",
+        "Make it a habit at your largest meal of the day."
+      ],
+      "region": "West Africa",
+      "origin": "From Italian 'amaro' aperitifs to Nigerian bitterleaf soup, traditions worldwide open digestion with bitterness.",
+      "disclaimer": "Wild-foraged greens must be identified with certainty; when in doubt, use market greens."
+    },
+    {
+      "id": "eat-the-rainbow",
+      "title": "Eat-the-Rainbow Plate",
+      "ailments": ["low energy", "general wellness", "immune support"],
+      "ingredients": [
+        { "name": "vegetables and fruits of at least 4 different colours", "quantity": "daily" }
+      ],
+      "instructions": [
+        "At each main meal, glance at your plate and count the natural colours.",
+        "Aim for four or more colours across the day: leafy green, red/orange, purple/blue, white/yellow.",
+        "Shop seasonally — colour variety follows the seasons in traditional markets."
+      ],
+      "region": "Global",
+      "origin": "A modern phrasing of an old market-day instinct: a colourful basket is a nourishing basket.",
+      "disclaimer": "General guidance, not a treatment plan."
+    }
+  ]
+}

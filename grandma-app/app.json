@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Grandma",
+    "slug": "grandma",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "io.luvlab.grandma"
+    },
+    "android": {
+      "package": "io.luvlab.grandma",
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "category": "homeRemedies",
+  "remedies": [
+    {
+      "id": "honey-lemon-tea",
+      "title": "Honey & Lemon Tea",
+      "ailments": ["sore throat", "cough", "cold"],
+      "ingredients": [
+        { "name": "honey", "quantity": "1 tbsp" },
+        { "name": "lemon", "quantity": "1/2, juiced" },
+        { "name": "hot water", "quantity": "1 cup" }
+      ],
+      "instructions": [
+        "Boil water and let it cool slightly (very hot water destroys honey's enzymes).",
+        "Stir in the honey until dissolved.",
+        "Add the lemon juice and stir.",
+        "Sip slowly while warm, up to three times a day."
+      ],
+      "region": "Global",
+      "origin": "Found in folk traditions on every continent; honey has been used to soothe throats since ancient Egypt.",
+      "preparationTime": "5 min",
+      "disclaimer": "Never give honey to infants under one year old (risk of infant botulism)."
+    },
+    {
+      "id": "ginger-tea-nausea",
+      "title": "Fresh Ginger Tea",
+      "ailments": ["nausea", "motion sickness", "indigestion"],
+      "ingredients": [
+        { "name": "fresh ginger root", "quantity": "3–4 thin slices" },
+        { "name": "water", "quantity": "2 cups" },
+        { "name": "honey (optional)", "quantity": "to taste" }
+      ],
+      "instructions": [
+        "Peel and thinly slice the ginger.",
+        "Simmer the slices in water for 10 minutes.",
+        "Strain into a cup and sweeten with honey if you like.",
+        "Drink warm in small sips."
+      ],
+      "region": "South Asia",
+      "origin": "A staple of Ayurvedic and East Asian home care for settling the stomach.",
+      "preparationTime": "15 min",
+      "disclaimer": "If you are pregnant or on blood thinners, check with your doctor before using ginger regularly."
+    },
+    {
+      "id": "saltwater-gargle",
+      "title": "Warm Saltwater Gargle",
+      "ailments": ["sore throat", "mouth irritation"],
+      "ingredients": [
+        { "name": "salt", "quantity": "1/2 tsp" },
+        { "name": "warm water", "quantity": "1 cup" }
+      ],
+      "instructions": [
+        "Dissolve the salt fully in warm (not hot) water.",
+        "Gargle a mouthful for 15–30 seconds, then spit it out. Do not swallow.",
+        "Repeat until the cup is finished, up to three times a day."
+      ],
+      "region": "Global",
+      "origin": "One of the oldest recorded home treatments, appearing in traditions from China to the Mediterranean.",
+      "preparationTime": "2 min"
+    },
+    {
+      "id": "chamomile-sleep",
+      "title": "Chamomile Bedtime Tea",
+      "ailments": ["sleeplessness", "restlessness", "mild anxiety"],
+      "ingredients": [
+        { "name": "dried chamomile flowers", "quantity": "1 tbsp (or 1 tea bag)" },
+        { "name": "hot water", "quantity": "1 cup" }
+      ],
+      "instructions": [
+        "Pour hot water over the chamomile.",
+        "Cover and steep for 5 minutes, then strain.",
+        "Drink about 30 minutes before bed."
+      ],
+      "region": "Mediterranean",
+      "origin": "Used as a calming evening drink in Europe and North Africa for centuries.",
+      "preparationTime": "7 min",
+      "disclaimer": "Avoid if you are allergic to plants in the daisy family (ragweed, marigold)."
+    },
+    {
+      "id": "steam-inhalation",
+      "title": "Steam Inhalation",
+      "ailments": ["congestion", "blocked nose", "sinus pressure"],
+      "ingredients": [
+        { "name": "hot water", "quantity": "1 large bowl" },
+        { "name": "eucalyptus leaves or a drop of eucalyptus oil (optional)" }
+      ],
+      "instructions": [
+        "Fill a bowl with steaming (not boiling) water and place it on a stable table.",
+        "Add eucalyptus if using.",
+        "Drape a towel over your head, lean over the bowl at a safe distance, close your eyes, and breathe slowly through your nose for 5–10 minutes."
+      ],
+      "region": "Global",
+      "origin": "Common cold-season practice across Europe, Africa and the Americas.",
+      "preparationTime": "10 min",
+      "disclaimer": "Keep a safe distance from the water to avoid scalding. Not recommended for young children."
+    },
+    {
+      "id": "oatmeal-bath",
+      "title": "Colloidal Oatmeal Bath",
+      "ailments": ["itchy skin", "dry skin", "mild rash"],
+      "ingredients": [
+        { "name": "plain rolled oats", "quantity": "1 cup, finely ground" },
+        { "name": "lukewarm bath water" }
+      ],
+      "instructions": [
+        "Grind the oats into a fine powder with a blender.",
+        "Sprinkle the powder into a lukewarm bath and stir until the water looks milky.",
+        "Soak for 15–20 minutes, then pat the skin dry gently."
+      ],
+      "region": "North America",
+      "origin": "A settler and farmhouse tradition later validated as a skin-soothing ingredient in modern dermatology.",
+      "preparationTime": "25 min"
+    },
+    {
+      "id": "cold-compress-headache",
+      "title": "Cold Compress for Headache",
+      "ailments": ["headache", "tension"],
+      "ingredients": [
+        { "name": "clean cloth" },
+        { "name": "cold water or wrapped ice pack" }
+      ],
+      "instructions": [
+        "Soak the cloth in cold water and wring it out, or wrap an ice pack in the cloth.",
+        "Lie down in a quiet, dim room.",
+        "Place the compress on your forehead or the back of your neck for 15 minutes."
+      ],
+      "region": "Global",
+      "origin": "A near-universal first response to headaches in household traditions worldwide.",
+      "preparationTime": "5 min",
+      "disclaimer": "Never place ice directly on skin. See a doctor for sudden, severe, or unusual headaches."
+    },
+    {
+      "id": "peppermint-indigestion",
+      "title": "Peppermint Tea After Meals",
+      "ailments": ["indigestion", "bloating", "stomach ache"],
+      "ingredients": [
+        { "name": "fresh or dried peppermint leaves", "quantity": "1 tbsp" },
+        { "name": "hot water", "quantity": "1 cup" }
+      ],
+      "instructions": [
+        "Steep the peppermint in hot water for 5–7 minutes.",
+        "Strain and drink warm after a heavy meal."
+      ],
+      "region": "North Africa",
+      "origin": "Mint tea is the everyday digestive of the Maghreb, poured after almost every meal.",
+      "preparationTime": "8 min",
+      "disclaimer": "Peppermint can worsen acid reflux in some people."
+    },
+    {
+      "id": "clove-toothache",
+      "title": "Clove for Toothache",
+      "ailments": ["toothache", "gum soreness"],
+      "ingredients": [
+        { "name": "whole clove", "quantity": "1" }
+      ],
+      "instructions": [
+        "Place a whole clove next to the sore tooth.",
+        "Let it soften and release its oils; keep it there for up to 20 minutes.",
+        "Repeat as needed while you arrange to see a dentist."
+      ],
+      "region": "South Asia",
+      "origin": "Clove's numbing oil (eugenol) has been used for dental pain in Indian and Indonesian tradition for centuries.",
+      "preparationTime": "1 min",
+      "disclaimer": "This eases pain only — a persistent toothache needs a dentist."
+    },
+    {
+      "id": "rice-water",
+      "title": "Rice Water for Upset Stomach",
+      "ailments": ["upset stomach", "mild diarrhea", "dehydration"],
+      "ingredients": [
+        { "name": "white rice", "quantity": "1/2 cup" },
+        { "name": "water", "quantity": "4 cups" },
+        { "name": "pinch of salt" }
+      ],
+      "instructions": [
+        "Boil the rice in the water for 15–20 minutes.",
+        "Strain off the cloudy liquid and let it cool to warm.",
+        "Add a small pinch of salt and sip throughout the day.",
+        "Eat the rice separately if you feel up to it."
+      ],
+      "region": "East Asia",
+      "origin": "A gentle rehydration drink used across Asia and Latin America for stomach upsets.",
+      "preparationTime": "25 min",
+      "disclaimer": "Diarrhea lasting more than two days, or any diarrhea in infants, needs medical attention."
+    }
+  ]
+}

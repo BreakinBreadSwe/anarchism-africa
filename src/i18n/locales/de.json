@@ -1,0 +1,79 @@
+{
+  "app": {
+    "name": "Grandma"
+  },
+  "disclaimer": {
+    "banner": "Traditionelle Praktiken, kein medizinischer Rat. Bei ernsten Beschwerden einen Arzt aufsuchen."
+  },
+  "tabs": {
+    "remedies": "Hausmittel",
+    "stories": "Geschichten",
+    "saved": "Gemerkt",
+    "settings": "Einstellungen"
+  },
+  "categories": {
+    "all": "Alle",
+    "homeRemedies": "Hausmittel",
+    "herbsRoots": "Kräuter & Wurzeln",
+    "dietarySystems": "Ernährungssysteme",
+    "fasting": "Fasten"
+  },
+  "remedies": {
+    "title": "Hausmittel",
+    "searchPlaceholder": "Symptom, Zutat oder Hausmittel suchen…",
+    "regionAll": "Alle Regionen",
+    "empty": "Keine Hausmittel entsprechen deiner Suche.",
+    "premiumBadge": "Premium",
+    "resultsCount_one": "{{count}} Eintrag",
+    "resultsCount_other": "{{count}} Einträge"
+  },
+  "detail": {
+    "ailments": "Traditionell verwendet bei",
+    "ingredients": "Zutaten",
+    "instructions": "Anleitung",
+    "region": "Region",
+    "origin": "Herkunft",
+    "preparationTime": "Zubereitungszeit",
+    "safetyNote": "Sicherheitshinweis",
+    "save": "Merken",
+    "saved": "Gemerkt"
+  },
+  "stories": {
+    "title": "Geschichten",
+    "subtitle": "Echte Erfahrungen aus unserer Community. Ergebnisse variieren — dies sind persönliche Geschichten, keine Belege.",
+    "ailment": "Beschwerde",
+    "outcome": "Ergebnis",
+    "empty": "Noch keine Geschichten."
+  },
+  "saved": {
+    "title": "Gemerkt",
+    "empty": "Noch nichts gemerkt. Tippe auf das Lesezeichen eines Hausmittels, um es hier zu behalten."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "premium": "Premium",
+    "unlock": "Ernährungssysteme & Fasten freischalten",
+    "unlocked": "Premium freigeschaltet — danke!",
+    "restore": "Käufe wiederherstellen",
+    "restoreNone": "Kein früherer Kauf gefunden.",
+    "about": "Über",
+    "aboutText": "Grandma ist ein Offline-Nachschlagewerk traditioneller Hausmittel und Wellness-Praktiken aus aller Welt, über Generationen weitergegeben. Es soll Kultur und Trost bewahren — nicht Krankheiten diagnostizieren oder behandeln."
+  },
+  "paywall": {
+    "title": "Premium freischalten",
+    "body": "Erhalte mit einem einmaligen Kauf lebenslangen Zugriff auf die Sammlungen Ernährungssysteme und Fasten. Kein Abo, kein Konto.",
+    "features": "• Alle Einträge zu Ernährungssystemen\n• Alle Fasten-Protokolle\n• Jede künftige Ergänzung beider Sammlungen",
+    "cta": "Einmal freischalten — für immer deins",
+    "restore": "Kauf wiederherstellen",
+    "success": "Premium freigeschaltet. Viel Freude!",
+    "failure": "Der Kauf konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
+    "locked": "Dieser Eintrag gehört zur Premium-Sammlung."
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  }
+}

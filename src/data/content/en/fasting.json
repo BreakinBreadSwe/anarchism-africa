@@ -1,0 +1,59 @@
+{
+  "category": "fasting",
+  "remedies": [
+    {
+      "id": "overnight-fast-12h",
+      "title": "Gentle 12-Hour Overnight Fast",
+      "ailments": ["poor sleep", "sluggish digestion", "late-night snacking"],
+      "ingredients": [
+        { "name": "water or herbal tea", "quantity": "freely during the fast" }
+      ],
+      "instructions": [
+        "Finish dinner at a regular time, e.g. 7 pm.",
+        "Take only water or plain herbal tea until breakfast 12 hours later, e.g. 7 am.",
+        "Keep the window consistent for a few weeks before judging the effect.",
+        "Break the fast with a normal, unhurried breakfast."
+      ],
+      "region": "Global",
+      "origin": "The traditional rhythm of 'break-fast' itself — most pre-industrial households simply did not eat after dark.",
+      "disclaimer": "Do not fast if you are pregnant, breastfeeding, diabetic, underweight, have a history of disordered eating, or take medication with food — consult your doctor first."
+    },
+    {
+      "id": "time-restricted-16-8",
+      "title": "16:8 Time-Restricted Eating",
+      "ailments": ["weight management support", "energy dips", "digestive rest"],
+      "ingredients": [
+        { "name": "water, unsweetened tea, or black coffee", "quantity": "during the fasting window" }
+      ],
+      "instructions": [
+        "Choose an 8-hour eating window that fits your life, e.g. 11 am to 7 pm.",
+        "Eat normal, nourishing meals inside the window — this is not a licence to overeat or a reason to undereat.",
+        "Outside the window take only water, unsweetened tea, or black coffee.",
+        "Start with 12 hours and lengthen gradually over a couple of weeks.",
+        "Stop if you feel dizzy, weak, or unwell, and eat."
+      ],
+      "region": "Global",
+      "origin": "A modern framing of eating rhythms found in monastic and agrarian traditions worldwide.",
+      "disclaimer": "Not suitable for pregnant or breastfeeding women, children, diabetics on medication, or anyone with a history of disordered eating. Medical guidance is essential if you take regular medication."
+    },
+    {
+      "id": "ramadan-style-rhythm",
+      "title": "Dawn-to-Dusk Fasting Rhythm (Ramadan-style)",
+      "ailments": ["mindful eating", "spiritual practice", "community rhythm"],
+      "ingredients": [
+        { "name": "pre-dawn meal (suhoor): slow-release foods like oats, dates, eggs" },
+        { "name": "sunset meal (iftar): water and dates first, then a balanced meal" }
+      ],
+      "instructions": [
+        "Eat a substantial, slow-release meal before dawn.",
+        "Take no food or drink during daylight hours.",
+        "Break the fast at sunset gently — traditionally with water and dates — before the main meal.",
+        "Prioritise hydration and unprocessed food between sunset and dawn.",
+        "Practise for a defined period, ideally alongside family or community."
+      ],
+      "region": "North Africa",
+      "origin": "The daylight fast of Ramadan, practised for over 1,400 years across the Muslim world.",
+      "disclaimer": "Dry fasting (no water) is demanding: the sick, pregnant, travelling, elderly and children are traditionally exempt. Anyone with a medical condition should consult a doctor — religious authorities themselves mandate these exemptions."
+    }
+  ]
+}

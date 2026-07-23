@@ -1,0 +1,79 @@
+{
+  "app": {
+    "name": "Grandma"
+  },
+  "disclaimer": {
+    "banner": "Pratiques traditionnelles, pas un avis médical. Consultez un médecin pour toute affection grave."
+  },
+  "tabs": {
+    "remedies": "Remèdes",
+    "stories": "Histoires",
+    "saved": "Favoris",
+    "settings": "Réglages"
+  },
+  "categories": {
+    "all": "Tous",
+    "homeRemedies": "Remèdes maison",
+    "herbsRoots": "Herbes et racines",
+    "dietarySystems": "Systèmes alimentaires",
+    "fasting": "Jeûne"
+  },
+  "remedies": {
+    "title": "Remèdes",
+    "searchPlaceholder": "Symptôme, ingrédient ou remède…",
+    "regionAll": "Toutes les régions",
+    "empty": "Aucun remède ne correspond à votre recherche.",
+    "premiumBadge": "Premium",
+    "resultsCount_one": "{{count}} remède",
+    "resultsCount_other": "{{count}} remèdes"
+  },
+  "detail": {
+    "ailments": "Usage traditionnel pour",
+    "ingredients": "Ingrédients",
+    "instructions": "Instructions",
+    "region": "Région",
+    "origin": "Origine",
+    "preparationTime": "Temps de préparation",
+    "safetyNote": "Note de sécurité",
+    "save": "Enregistrer",
+    "saved": "Enregistré"
+  },
+  "stories": {
+    "title": "Histoires",
+    "subtitle": "Des expériences réelles de notre communauté. Les résultats varient : ce sont des récits personnels, pas des preuves.",
+    "ailment": "Affection",
+    "outcome": "Résultat",
+    "empty": "Pas encore d'histoires."
+  },
+  "saved": {
+    "title": "Favoris",
+    "empty": "Rien d'enregistré pour l'instant. Touchez le marque-page d'un remède pour le garder ici."
+  },
+  "settings": {
+    "title": "Réglages",
+    "language": "Langue",
+    "premium": "Premium",
+    "unlock": "Débloquer Systèmes alimentaires et Jeûne",
+    "unlocked": "Premium débloqué — merci !",
+    "restore": "Restaurer les achats",
+    "restoreNone": "Aucun achat antérieur trouvé.",
+    "about": "À propos",
+    "aboutText": "Grandma est une référence hors ligne de remèdes maison traditionnels et de pratiques de bien-être du monde entier, transmis de génération en génération. Son but est de préserver culture et réconfort — pas de diagnostiquer ni de soigner des maladies."
+  },
+  "paywall": {
+    "title": "Débloquer Premium",
+    "body": "Accédez à vie aux collections Systèmes alimentaires et Jeûne avec un seul achat unique. Sans abonnement, sans compte.",
+    "features": "• Toutes les entrées Systèmes alimentaires\n• Tous les protocoles de Jeûne\n• Chaque ajout futur aux deux collections",
+    "cta": "Débloquez une fois — à vous pour toujours",
+    "restore": "Restaurer l'achat",
+    "success": "Premium débloqué. Profitez-en !",
+    "failure": "L'achat n'a pas pu être finalisé. Veuillez réessayer.",
+    "locked": "Cette entrée fait partie de la collection Premium."
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "app": {
+    "name": "Grandma"
+  },
+  "disclaimer": {
+    "banner": "Traditional practices, not medical advice. Consult a doctor for serious conditions."
+  },
+  "tabs": {
+    "remedies": "Remedies",
+    "stories": "Stories",
+    "saved": "Saved",
+    "settings": "Settings"
+  },
+  "categories": {
+    "all": "All",
+    "homeRemedies": "Home Remedies",
+    "herbsRoots": "Herbs & Roots",
+    "dietarySystems": "Dietary Systems",
+    "fasting": "Fasting"
+  },
+  "remedies": {
+    "title": "Remedies",
+    "searchPlaceholder": "Search symptom, ingredient, or remedy…",
+    "regionAll": "All regions",
+    "empty": "No remedies match your search.",
+    "premiumBadge": "Premium",
+    "resultsCount_one": "{{count}} remedy",
+    "resultsCount_other": "{{count}} remedies"
+  },
+  "detail": {
+    "ailments": "Traditionally used for",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "region": "Region",
+    "origin": "Origin",
+    "preparationTime": "Preparation time",
+    "safetyNote": "Safety note",
+    "save": "Save",
+    "saved": "Saved"
+  },
+  "stories": {
+    "title": "Stories",
+    "subtitle": "Real experiences from our community. Individual results vary — these are personal stories, not evidence.",
+    "ailment": "Ailment",
+    "outcome": "Outcome",
+    "empty": "No stories yet."
+  },
+  "saved": {
+    "title": "Saved",
+    "empty": "Nothing saved yet. Tap the bookmark on any remedy to keep it here."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "premium": "Premium",
+    "unlock": "Unlock Dietary Systems & Fasting",
+    "unlocked": "Premium unlocked — thank you!",
+    "restore": "Restore purchases",
+    "restoreNone": "No previous purchase found.",
+    "about": "About",
+    "aboutText": "Grandma is an offline reference of traditional home remedies and wellness practices from around the world, passed down through generations. It is meant to preserve culture and comfort — not to diagnose or treat illness."
+  },
+  "paywall": {
+    "title": "Unlock Premium",
+    "body": "Get lifetime access to the Dietary Systems and Fasting collections with a single one-time purchase. No subscription, no account.",
+    "features": "• All Dietary Systems entries\n• All Fasting protocols\n• Every future addition to both collections",
+    "cta": "Unlock once — yours forever",
+    "restore": "Restore purchase",
+    "success": "Premium unlocked. Enjoy!",
+    "failure": "Purchase could not be completed. Please try again.",
+    "locked": "This entry is part of the Premium collection."
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  }
+}

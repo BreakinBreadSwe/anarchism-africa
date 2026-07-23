@@ -1,0 +1,79 @@
+{
+  "app": {
+    "name": "Grandma"
+  },
+  "disclaimer": {
+    "banner": "Prácticas tradicionales, no consejo médico. Consulta a un médico para afecciones graves."
+  },
+  "tabs": {
+    "remedies": "Remedios",
+    "stories": "Historias",
+    "saved": "Guardados",
+    "settings": "Ajustes"
+  },
+  "categories": {
+    "all": "Todos",
+    "homeRemedies": "Remedios caseros",
+    "herbsRoots": "Hierbas y raíces",
+    "dietarySystems": "Sistemas dietéticos",
+    "fasting": "Ayuno"
+  },
+  "remedies": {
+    "title": "Remedios",
+    "searchPlaceholder": "Busca síntoma, ingrediente o remedio…",
+    "regionAll": "Todas las regiones",
+    "empty": "Ningún remedio coincide con tu búsqueda.",
+    "premiumBadge": "Premium",
+    "resultsCount_one": "{{count}} remedio",
+    "resultsCount_other": "{{count}} remedios"
+  },
+  "detail": {
+    "ailments": "Uso tradicional para",
+    "ingredients": "Ingredientes",
+    "instructions": "Instrucciones",
+    "region": "Región",
+    "origin": "Origen",
+    "preparationTime": "Tiempo de preparación",
+    "safetyNote": "Nota de seguridad",
+    "save": "Guardar",
+    "saved": "Guardado"
+  },
+  "stories": {
+    "title": "Historias",
+    "subtitle": "Experiencias reales de nuestra comunidad. Los resultados varían: son historias personales, no evidencia.",
+    "ailment": "Dolencia",
+    "outcome": "Resultado",
+    "empty": "Aún no hay historias."
+  },
+  "saved": {
+    "title": "Guardados",
+    "empty": "Nada guardado todavía. Toca el marcador en cualquier remedio para conservarlo aquí."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": "Idioma",
+    "premium": "Premium",
+    "unlock": "Desbloquear Sistemas dietéticos y Ayuno",
+    "unlocked": "Premium desbloqueado. ¡Gracias!",
+    "restore": "Restaurar compras",
+    "restoreNone": "No se encontró ninguna compra anterior.",
+    "about": "Acerca de",
+    "aboutText": "Grandma es una referencia sin conexión de remedios caseros tradicionales y prácticas de bienestar de todo el mundo, transmitidos de generación en generación. Su propósito es preservar cultura y consuelo, no diagnosticar ni tratar enfermedades."
+  },
+  "paywall": {
+    "title": "Desbloquear Premium",
+    "body": "Obtén acceso de por vida a las colecciones de Sistemas dietéticos y Ayuno con una única compra. Sin suscripción, sin cuenta.",
+    "features": "• Todas las entradas de Sistemas dietéticos\n• Todos los protocolos de Ayuno\n• Cada futura incorporación a ambas colecciones",
+    "cta": "Desbloquea una vez: tuyo para siempre",
+    "restore": "Restaurar compra",
+    "success": "Premium desbloqueado. ¡Disfrútalo!",
+    "failure": "No se pudo completar la compra. Inténtalo de nuevo.",
+    "locked": "Esta entrada forma parte de la colección Premium."
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
+  }
+}

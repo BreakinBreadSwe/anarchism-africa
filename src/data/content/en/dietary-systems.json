@@ -74,6 +74,80 @@
       "region": "Global",
       "origin": "A modern phrasing of an old market-day instinct: a colourful basket is a nourishing basket.",
       "disclaimer": "General guidance, not a treatment plan."
+    },
+    {
+      "id": "okinawan-hara-hachi-bu",
+      "title": "Hara Hachi Bu — Eating to Eight Parts Full",
+      "ailments": ["overeating", "weight management support", "digestive comfort"],
+      "ingredients": [
+        { "name": "smaller bowls and plates" },
+        { "name": "vegetables, sweet potato, tofu and soup", "quantity": "the bulk of the meal" }
+      ],
+      "instructions": [
+        "Serve into small bowls rather than one large plate, and don't refill automatically.",
+        "Eat slowly and put the utensils down between bites.",
+        "Stop when you feel about eighty percent full — comfortable, not stuffed.",
+        "Wait twenty minutes before deciding you want more; fullness catches up late."
+      ],
+      "region": "East Asia",
+      "origin": "A Confucian-rooted phrase spoken before meals in Okinawa, where it is credited as part of an unusually long-lived food culture.",
+      "disclaimer": "Not appropriate for children, pregnant women, anyone underweight, or anyone with a history of disordered eating."
+    },
+    {
+      "id": "ayurvedic-six-tastes",
+      "title": "The Six Tastes at Every Meal",
+      "ailments": ["cravings", "poor appetite", "digestive balance"],
+      "ingredients": [
+        { "name": "sweet (grains, root vegetables, milk)" },
+        { "name": "sour (lemon, yogurt, tamarind)" },
+        { "name": "salty (salt, seaweed)" },
+        { "name": "pungent (ginger, chilli, pepper)" },
+        { "name": "bitter (leafy greens, turmeric, fenugreek)" },
+        { "name": "astringent (lentils, beans, pomegranate)" }
+      ],
+      "instructions": [
+        "Aim to include something from each of the six tastes in a main meal — a squeeze of lemon, a pinch of salt, a bitter green, a spiced dal.",
+        "Traditionally the meal opens with sweet and finishes with the lighter, astringent tastes.",
+        "Notice which tastes you habitually skip; those are usually the ones the cravings point at."
+      ],
+      "region": "South Asia",
+      "origin": "The shadrasa of classical Ayurveda, still the organising idea behind a traditional Indian thali.",
+      "disclaimer": "A framework for composing meals, not a treatment for any condition."
+    },
+    {
+      "id": "hydration-with-food",
+      "title": "Drinking Around the Meal, Not During It",
+      "ailments": ["bloating", "indigestion", "reflux"],
+      "ingredients": [
+        { "name": "water", "quantity": "a glass 30 min before eating" },
+        { "name": "warm herbal tea", "quantity": "after the meal" }
+      ],
+      "instructions": [
+        "Drink a full glass of water about half an hour before the meal.",
+        "Sip only small amounts with the food itself.",
+        "Wait until the meal has settled, then finish with a warm herbal tea rather than a cold drink.",
+        "Keep cold water for between meals, not with them."
+      ],
+      "region": "South Asia",
+      "origin": "Common practice across Ayurvedic and Mediterranean households alike, where cold drinks at the table are thought to dampen digestion.",
+      "disclaimer": "If you take medication with meals, keep taking it as your doctor directed."
+    },
+    {
+      "id": "seasonal-eating",
+      "title": "Eating with the Season",
+      "ailments": ["general wellness", "low energy", "seasonal transitions"],
+      "ingredients": [
+        { "name": "whatever the local market has most of, cheapest, that week" }
+      ],
+      "instructions": [
+        "Shop the produce that is piled highest and priced lowest — that is what is in season locally.",
+        "Lean on cooling, watery foods in the hot months and slow-cooked, warming ones in the cold.",
+        "Preserve a little of a glut — dry, ferment, or freeze it — the way a household with no supermarket would.",
+        "Let the plate change four times a year rather than staying identical."
+      ],
+      "region": "Global",
+      "origin": "Not a diet so much as the default condition of eating before year-round shipping — still the backbone of Japanese shun and Mediterranean market cooking.",
+      "disclaimer": "General guidance. Nutritional needs in pregnancy or illness may not follow the season."
     }
   ]
 }

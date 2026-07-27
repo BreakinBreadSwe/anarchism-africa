@@ -1,0 +1,185 @@
+{
+  "category": "homeRemedies",
+  "remedies": [
+    {
+      "id": "honey-lemon-tea",
+      "title": "Té de miel y limón",
+      "ailments": ["dolor de garganta", "tos", "resfriado"],
+      "ingredients": [
+        { "name": "miel", "quantity": "1 cda" },
+        { "name": "limón", "quantity": "1/2, exprimido" },
+        { "name": "agua caliente", "quantity": "1 taza" }
+      ],
+      "instructions": [
+        "Hierve el agua y déjala enfriar un poco (el agua muy caliente destruye las enzimas de la miel).",
+        "Añade la miel y remueve hasta disolverla.",
+        "Agrega el zumo de limón y remueve.",
+        "Bébelo despacio mientras esté tibio, hasta tres veces al día."
+      ],
+      "region": "Global",
+      "origin": "Presente en tradiciones populares de todos los continentes; la miel se usa para calmar la garganta desde el antiguo Egipto.",
+      "preparationTime": "5 min",
+      "disclaimer": "Nunca des miel a bebés menores de un año (riesgo de botulismo infantil)."
+    },
+    {
+      "id": "ginger-tea-nausea",
+      "title": "Té de jengibre fresco",
+      "ailments": ["náuseas", "mareo por movimiento", "indigestión"],
+      "ingredients": [
+        { "name": "raíz de jengibre fresco", "quantity": "3–4 rodajas finas" },
+        { "name": "agua", "quantity": "2 tazas" },
+        { "name": "miel (opcional)", "quantity": "al gusto" }
+      ],
+      "instructions": [
+        "Pela el jengibre y córtalo en rodajas finas.",
+        "Hierve las rodajas a fuego suave en el agua durante 10 minutos.",
+        "Cuela en una taza y endulza con miel si lo deseas.",
+        "Bébelo tibio a pequeños sorbos."
+      ],
+      "region": "South Asia",
+      "origin": "Un básico del cuidado doméstico ayurvédico y de Asia Oriental para asentar el estómago.",
+      "preparationTime": "15 min",
+      "disclaimer": "Si estás embarazada o tomas anticoagulantes, consulta a tu médico antes de usar jengibre con regularidad."
+    },
+    {
+      "id": "saltwater-gargle",
+      "title": "Gárgaras de agua salada tibia",
+      "ailments": ["dolor de garganta", "irritación bucal"],
+      "ingredients": [
+        { "name": "sal", "quantity": "1/2 cdta" },
+        { "name": "agua tibia", "quantity": "1 taza" }
+      ],
+      "instructions": [
+        "Disuelve bien la sal en agua tibia (no caliente).",
+        "Haz gárgaras con un buche durante 15–30 segundos y escúpelo. No lo tragues.",
+        "Repite hasta terminar la taza, hasta tres veces al día."
+      ],
+      "region": "Global",
+      "origin": "Uno de los remedios caseros más antiguos registrados, presente desde China hasta el Mediterráneo.",
+      "preparationTime": "2 min"
+    },
+    {
+      "id": "chamomile-sleep",
+      "title": "Infusión de manzanilla para la noche",
+      "ailments": ["insomnio", "inquietud", "ansiedad leve"],
+      "ingredients": [
+        { "name": "flores secas de manzanilla", "quantity": "1 cda (o 1 bolsita)" },
+        { "name": "agua caliente", "quantity": "1 taza" }
+      ],
+      "instructions": [
+        "Vierte el agua caliente sobre la manzanilla.",
+        "Tapa y deja reposar 5 minutos; después cuela.",
+        "Bébela unos 30 minutos antes de acostarte."
+      ],
+      "region": "Mediterranean",
+      "origin": "Bebida calmante de la tarde en Europa y el norte de África desde hace siglos.",
+      "preparationTime": "7 min",
+      "disclaimer": "Evítala si eres alérgico a las plantas de la familia de las margaritas (ambrosía, caléndula)."
+    },
+    {
+      "id": "steam-inhalation",
+      "title": "Inhalación de vapor",
+      "ailments": ["congestión", "nariz tapada", "presión sinusal"],
+      "ingredients": [
+        { "name": "agua caliente", "quantity": "1 recipiente grande" },
+        { "name": "hojas de eucalipto o una gota de aceite de eucalipto (opcional)" }
+      ],
+      "instructions": [
+        "Llena un recipiente con agua humeante (no hirviendo) y colócalo sobre una mesa estable.",
+        "Añade el eucalipto si lo usas.",
+        "Cúbrete la cabeza con una toalla, inclínate sobre el recipiente a una distancia segura, cierra los ojos y respira despacio por la nariz durante 5–10 minutos."
+      ],
+      "region": "Global",
+      "origin": "Práctica habitual en la temporada de resfriados en Europa, África y América.",
+      "preparationTime": "10 min",
+      "disclaimer": "Mantén una distancia prudente del agua para evitar quemaduras. No recomendado para niños pequeños."
+    },
+    {
+      "id": "oatmeal-bath",
+      "title": "Baño de avena coloidal",
+      "ailments": ["picor en la piel", "piel seca", "sarpullido leve"],
+      "ingredients": [
+        { "name": "copos de avena naturales", "quantity": "1 taza, molidos finos" },
+        { "name": "agua templada para el baño" }
+      ],
+      "instructions": [
+        "Muele la avena hasta obtener un polvo fino con una batidora.",
+        "Espolvorea el polvo en un baño templado y remueve hasta que el agua se vea lechosa.",
+        "Sumérgete 15–20 minutos y sécate la piel con suaves toques."
+      ],
+      "region": "North America",
+      "origin": "Tradición de granjas y colonos, validada más tarde por la dermatología moderna como ingrediente calmante.",
+      "preparationTime": "25 min"
+    },
+    {
+      "id": "cold-compress-headache",
+      "title": "Compresa fría para el dolor de cabeza",
+      "ailments": ["dolor de cabeza", "tensión"],
+      "ingredients": [
+        { "name": "paño limpio" },
+        { "name": "agua fría o bolsa de hielo envuelta" }
+      ],
+      "instructions": [
+        "Empapa el paño en agua fría y escúrrelo, o envuelve una bolsa de hielo en el paño.",
+        "Túmbate en una habitación tranquila y con poca luz.",
+        "Coloca la compresa sobre la frente o la nuca durante 15 minutos."
+      ],
+      "region": "Global",
+      "origin": "Respuesta casi universal al dolor de cabeza en las tradiciones domésticas de todo el mundo.",
+      "preparationTime": "5 min",
+      "disclaimer": "Nunca pongas hielo directamente sobre la piel. Consulta a un médico ante dolores de cabeza súbitos, intensos o inusuales."
+    },
+    {
+      "id": "peppermint-indigestion",
+      "title": "Té de menta después de las comidas",
+      "ailments": ["indigestión", "hinchazón", "dolor de estómago"],
+      "ingredients": [
+        { "name": "hojas de menta frescas o secas", "quantity": "1 cda" },
+        { "name": "agua caliente", "quantity": "1 taza" }
+      ],
+      "instructions": [
+        "Deja reposar la menta en agua caliente durante 5–7 minutos.",
+        "Cuela y bébela tibia después de una comida copiosa."
+      ],
+      "region": "North Africa",
+      "origin": "El té de menta es el digestivo cotidiano del Magreb, servido tras casi cada comida.",
+      "preparationTime": "8 min",
+      "disclaimer": "La menta puede empeorar el reflujo en algunas personas."
+    },
+    {
+      "id": "clove-toothache",
+      "title": "Clavo para el dolor de muelas",
+      "ailments": ["dolor de muelas", "encías doloridas"],
+      "ingredients": [{ "name": "clavo entero", "quantity": "1" }],
+      "instructions": [
+        "Coloca un clavo entero junto a la muela dolorida.",
+        "Deja que se ablande y libere sus aceites; mantenlo hasta 20 minutos.",
+        "Repite según lo necesites mientras pides cita con el dentista."
+      ],
+      "region": "South Asia",
+      "origin": "El aceite adormecedor del clavo (eugenol) se usa contra el dolor dental en la tradición india e indonesia desde hace siglos.",
+      "preparationTime": "1 min",
+      "disclaimer": "Esto solo alivia el dolor: un dolor de muelas persistente necesita un dentista."
+    },
+    {
+      "id": "rice-water",
+      "title": "Agua de arroz para el malestar estomacal",
+      "ailments": ["malestar estomacal", "diarrea leve", "deshidratación"],
+      "ingredients": [
+        { "name": "arroz blanco", "quantity": "1/2 taza" },
+        { "name": "agua", "quantity": "4 tazas" },
+        { "name": "una pizca de sal" }
+      ],
+      "instructions": [
+        "Hierve el arroz en el agua durante 15–20 minutos.",
+        "Cuela el líquido turbio y deja que se temple.",
+        "Añade una pizca de sal y bébelo a sorbos a lo largo del día.",
+        "Come el arroz aparte si te sientes con ánimo."
+      ],
+      "region": "East Asia",
+      "origin": "Bebida suave de rehidratación usada en toda Asia y América Latina para los trastornos estomacales.",
+      "preparationTime": "25 min",
+      "disclaimer": "Una diarrea que dure más de dos días, o cualquier diarrea en bebés, requiere atención médica."
+    }
+  ]
+}

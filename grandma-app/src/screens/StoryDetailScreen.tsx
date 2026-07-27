@@ -25,7 +25,9 @@ export function StoryDetailScreen({
       <Text style={styles.title}>{story.title}</Text>
       <Text style={styles.metaText}>
         {story.author ? `${story.author} · ` : ''}
-        {story.region ?? ''}
+        {story.region
+          ? t(`regions.${story.region}`, { defaultValue: story.region })
+          : ''}
       </Text>
       <Text style={styles.body}>{story.body}</Text>
       <View style={styles.infoBox}>

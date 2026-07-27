@@ -1,0 +1,49 @@
+{
+  "stories": [
+    {
+      "id": "story-bissap-granny",
+      "title": "Der Bissap-Topf meiner Großmutter",
+      "body": "Jeden Sonntag in Dakar hatte meine Großmutter einen riesigen Topf Bissap im Schatten stehen. Sobald sich jemand über die Hitze oder Kopfschmerzen von der Sonne beklagte, schenkte sie ein Glas ein, bevor sie ein Wort sagte. Ich koche ihn immer noch genauso, mit viel Ingwer, und ich schwöre, allein der Geruch senkt meinen Blutdruck. Meine Ärztin weiß, dass ich ihn trinke, und bittet mich nur, meine Werte im Blick zu behalten.",
+      "ailment": "Hitze und Kopfschmerzen",
+      "outcome": "Ein beruhigendes Familienritual, das ich seit zwanzig Jahren beibehalte.",
+      "author": "Aminata, 54",
+      "region": "West Africa"
+    },
+    {
+      "id": "story-honey-lemon-choir",
+      "title": "Die Rettung der Chorsaison",
+      "body": "Ich singe in einem Nachbarschaftschor, und jeden Winter versagte meine Stimme vor den Dezemberkonzerten. Ein älteres Mitglied riet mir, zwischen den Proben kein kaltes Wasser mehr zu trinken, sondern eine Thermoskanne mit Honig und Zitrone mitzubringen. Es heilt nichts — als ich eine echte Kehlkopfentzündung hatte, ging ich zum Arzt —, aber gegen das alltägliche Kratzen hat es mich drei Winter lang singen lassen.",
+      "ailment": "Halsschmerzen",
+      "outcome": "Ein angenehmer Hals durch die ganze Probensaison.",
+      "author": "Marcus, 41",
+      "region": "North America"
+    },
+    {
+      "id": "story-ginger-commute",
+      "title": "Die Fähre hat mich endlich in Ruhe gelassen",
+      "body": "Mein Arbeitsweg umfasst 40 Minuten Fähre, und ich kam jahrelang mit flauem Magen am Hafen an. Meine Schwiegermutter lachte und drückte mir eine kleine Dose kandierten Ingwer in die Hand, den ich beim Einsteigen kauen sollte. Ich war skeptisch, es kam mir zu einfach vor. Seit acht Monaten hatte ich keine schlechte Überfahrt mehr. Bei rauem Wetter nehme ich weiterhin das richtige Medikament, aber den gewöhnlichen Seegang übernimmt der Ingwer.",
+      "ailment": "Reisekrankheit",
+      "outcome": "Ruhige Überfahrten außer bei sehr rauer See.",
+      "author": "Ingrid, 37",
+      "region": "Northern Europe"
+    },
+    {
+      "id": "story-oatmeal-eczema",
+      "title": "Waffenstillstand in der Badewanne mit der juckenden Haut meines Sohnes",
+      "body": "Unser Vierjähriger kratzte sich jeden Winter die Beine blutig. Zusätzlich zu der Creme, die unsere Kinderärztin verschrieb, schlug sie selbst Haferbäder vor — worüber meine eigene Großmutter triumphierte, denn sie sagte das seit einem Jahr. Zweimal die Woche gemahlener Hafer in lauwarmem Wasser, und aus Tränen beim Baden wurde ein Kind, das nicht mehr heraus wollte. Die Creme leistet die eigentliche Arbeit; der Hafer hält ihn zwischen den Schüben bequem.",
+      "ailment": "juckende Haut",
+      "outcome": "Angenehme Haut zwischen den Behandlungen und ruhigere Badezeiten.",
+      "author": "Priya, 33",
+      "region": "South Asia"
+    },
+    {
+      "id": "story-mint-tea-meals",
+      "title": "Was der Tee mich übers Essen gelehrt hat",
+      "body": "Bei einem Besuch bei der Familie meines Mannes in Marrakesch fiel mir auf, dass niemand vom Tisch aufsprang. Die Mahlzeiten endeten mit Minztee, aus großer Höhe in kleine Gläser gegossen, und zwanzig Minuten Gespräch. Mein ständiges Völlegefühl nach dem Mittagessen war die ganze Reise über verschwunden. Zu Hause habe ich das Ritual beibehalten: Minztee, kein Handy, einfach sitzen bleiben. Ich kann ehrlich nicht sagen, ob es die Minze ist oder das Sitzenbleiben, aber meinem Magen ist dieser Unterschied egal.",
+      "ailment": "Blähungen",
+      "outcome": "Angenehme Verdauung und ein langsameres Ende der Mahlzeit.",
+      "author": "Claire, 45",
+      "region": "North Africa"
+    }
+  ]
+}

@@ -50,7 +50,8 @@ export function RemedyCard({ remedy, locked, onPress }: RemedyCardProps) {
       </View>
       <View style={styles.footer}>
         <Text style={styles.meta}>
-          {t(`categories.${remedy.category}`)} · {remedy.region}
+          {t(`categories.${remedy.category}`)} ·{' '}
+          {t(`regions.${remedy.region}`, { defaultValue: remedy.region })}
         </Text>
         {locked && (
           <View style={styles.premiumBadge}>

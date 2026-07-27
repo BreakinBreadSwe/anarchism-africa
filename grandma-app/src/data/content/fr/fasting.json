@@ -1,0 +1,116 @@
+{
+  "category": "fasting",
+  "remedies": [
+    {
+      "id": "overnight-fast-12h",
+      "title": "Jeûne nocturne doux de 12 heures",
+      "ailments": ["sommeil perturbé", "digestion paresseuse", "grignotage nocturne"],
+      "ingredients": [
+        { "name": "eau ou tisane", "quantity": "à volonté pendant le jeûne" }
+      ],
+      "instructions": [
+        "Terminez le dîner à une heure régulière, par exemple 19 h.",
+        "Ne prenez que de l'eau ou une tisane nature jusqu'au petit-déjeuner 12 heures plus tard, par exemple 7 h.",
+        "Gardez la même fenêtre pendant quelques semaines avant d'en juger l'effet.",
+        "Rompez le jeûne par un petit-déjeuner normal, pris sans hâte."
+      ],
+      "region": "Global",
+      "origin": "Le rythme traditionnel du « déjeuner » lui-même : la plupart des foyers préindustriels ne mangeaient tout simplement plus après la tombée de la nuit.",
+      "disclaimer": "Ne jeûnez pas si vous êtes enceinte ou allaitante, diabétique, en insuffisance pondérale, si vous avez des antécédents de troubles alimentaires ou si vous prenez un traitement avec les repas — consultez d'abord votre médecin."
+    },
+    {
+      "id": "time-restricted-16-8",
+      "title": "Alimentation en fenêtre 16:8",
+      "ailments": ["soutien à la gestion du poids", "coups de fatigue", "repos digestif"],
+      "ingredients": [
+        { "name": "eau, tisane non sucrée ou café noir", "quantity": "pendant la fenêtre de jeûne" }
+      ],
+      "instructions": [
+        "Choisissez une fenêtre de 8 heures qui s'accorde à votre vie, par exemple de 11 h à 19 h.",
+        "Prenez des repas normaux et nourrissants dans la fenêtre : ce n'est ni un permis de trop manger, ni une raison de manger trop peu.",
+        "Hors de la fenêtre, ne prenez que de l'eau, une tisane non sucrée ou un café noir.",
+        "Commencez par 12 heures et allongez progressivement sur deux semaines.",
+        "Arrêtez et mangez si vous vous sentez étourdi, faible ou mal."
+      ],
+      "region": "Global",
+      "origin": "Une formulation moderne de rythmes alimentaires présents dans les traditions monastiques et agraires du monde entier.",
+      "disclaimer": "Déconseillé aux femmes enceintes ou allaitantes, aux enfants, aux diabétiques sous traitement et à toute personne ayant des antécédents de troubles alimentaires. Un suivi médical est indispensable si vous prenez un traitement régulier."
+    },
+    {
+      "id": "ramadan-style-rhythm",
+      "title": "Jeûne de l'aube au crépuscule (à la manière du Ramadan)",
+      "ailments": ["alimentation consciente", "pratique spirituelle", "rythme communautaire"],
+      "ingredients": [
+        { "name": "repas d'avant l'aube (souhour) : aliments à libération lente comme l'avoine, les dattes, les œufs" },
+        { "name": "repas du coucher du soleil (iftar) : d'abord de l'eau et des dattes, puis un repas équilibré" }
+      ],
+      "instructions": [
+        "Prenez un repas consistant et à libération lente avant l'aube.",
+        "Ne prenez ni nourriture ni boisson pendant les heures de jour.",
+        "Rompez le jeûne au coucher du soleil en douceur — traditionnellement avec de l'eau et des dattes — avant le repas principal.",
+        "Privilégiez l'hydratation et les aliments non transformés entre le coucher du soleil et l'aube.",
+        "Pratiquez sur une période définie, idéalement en famille ou en communauté."
+      ],
+      "region": "North Africa",
+      "origin": "Le jeûne diurne du Ramadan, pratiqué depuis plus de 1 400 ans dans le monde musulman.",
+      "disclaimer": "Le jeûne sec (sans eau) est exigeant : les malades, les femmes enceintes, les voyageurs, les personnes âgées et les enfants en sont traditionnellement dispensés. Toute personne ayant une pathologie doit consulter un médecin — les autorités religieuses elles-mêmes prescrivent ces dispenses."
+    },
+    {
+      "id": "one-day-broth-rest",
+      "title": "Une seule journée de bouillon et de repos",
+      "ailments": ["après un excès", "repos digestif", "convalescence"],
+      "ingredients": [
+        { "name": "bouillon clair de légumes ou d'os", "quantity": "3–4 tasses dans la journée" },
+        { "name": "eau et tisanes", "quantity": "à volonté" },
+        { "name": "un peu de sel dans le bouillon" }
+      ],
+      "instructions": [
+        "Choisissez une journée calme, sans travail physique prévu.",
+        "Prenez un bouillon clair et chaud à vos heures de repas habituelles à la place des repas, plus de l'eau et des tisanes tout au long de la journée.",
+        "Reposez-vous plus que d'ordinaire : ce n'est pas un jour pour faire du sport.",
+        "Reprenez une alimentation normale le lendemain matin avec quelque chose de doux — bouillie, soupe, fruits cuits.",
+        "N'y recourez qu'occasionnellement, jamais comme habitude hebdomadaire."
+      ],
+      "region": "Mediterranean",
+      "origin": "La journée de bouillon de convalescence des foyers européens et levantins, prescrite après les fêtes et pendant la guérison.",
+      "disclaimer": "Une seule journée, réservée aux adultes en bonne santé. Déconseillée aux femmes enceintes, aux diabétiques, aux personnes en insuffisance pondérale, aux personnes âgées fragiles, à celles sous traitement régulier ou ayant des antécédents de troubles alimentaires. Arrêtez et mangez si vous vous sentez défaillir."
+    },
+    {
+      "id": "ekadashi-grain-free-day",
+      "title": "Journée d'observance sans céréales (à la manière de l'ekadashi)",
+      "ailments": ["alimentation consciente", "repos digestif", "pratique spirituelle"],
+      "ingredients": [
+        { "name": "fruits, lait ou yaourt" },
+        { "name": "fruits à coque et graines" },
+        { "name": "pomme de terre ou autres racines autorisées" },
+        { "name": "eau", "quantity": "à volonté" }
+      ],
+      "instructions": [
+        "Choisissez un jour fixe — traditionnellement le onzième jour de la quinzaine lunaire, deux fois par mois.",
+        "Mettez de côté céréales et légumineuses pour la journée ; mangez plutôt fruits, laitages, fruits à coque et racines.",
+        "Gardez des portions modestes et une journée simple.",
+        "Reprenez vos repas habituels le lendemain matin."
+      ],
+      "region": "South Asia",
+      "origin": "L'ekadashi, observé deux fois par mois lunaire dans les foyers hindous et jaïns — un jeûne partiel plutôt que total.",
+      "disclaimer": "Un jeûne partiel reste une restriction : consultez votre médecin si vous êtes enceinte, diabétique ou sous traitement régulier."
+    },
+    {
+      "id": "monastic-lighter-evening",
+      "title": "Le repas du soir plus léger",
+      "ailments": ["sommeil perturbé", "reflux", "lourdeur nocturne"],
+      "ingredients": [
+        { "name": "soupe, légumes ou un petit plat de céréales", "quantity": "pour le repas du soir" }
+      ],
+      "instructions": [
+        "Faites du midi le repas le plus copieux de la journée, et du soir le plus léger.",
+        "Terminez de manger au moins trois heures avant le coucher.",
+        "Limitez le repas du soir à une soupe, des légumes ou un petit plat de céréales — rien de riche ni de frit.",
+        "Tenez le rythme une quinzaine de jours avant d'en juger l'effet sur votre sommeil."
+      ],
+      "region": "Mediterranean",
+      "origin": "L'habitude monastique et sud-européenne du repas lourd à midi et du souper symbolique — « déjeuner en roi, souper en pauvre ».",
+      "disclaimer": "Modifier l'horaire des repas peut influer sur la glycémie et sur la prise de médicaments. Parlez-en à votre médecin si l'un ou l'autre vous concerne."
+    }
+  ]
+}

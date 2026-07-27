@@ -6,12 +6,15 @@
  *
  * React Native's bundler requires static `require` calls, so each
  * language's files are listed here explicitly. To add a translated
- * content pack (e.g. Spanish):
+ * content pack (e.g. Italian):
  *
- *   1. Copy src/data/content/en/ to src/data/content/es/ and translate
+ *   1. Copy src/data/content/en/ to src/data/content/it/ and translate
  *      the text values. Keep every `id`, `category` and `region` value
- *      unchanged (ids key bookmarks; regions key the filter).
- *   2. Add an `es` entry to `contentByLanguage` below.
+ *      unchanged — ids key bookmarks across languages, and `region` is a
+ *      stable key whose display label is translated in src/i18n
+ *      (a translated key would empty the list on a language switch).
+ *   2. Add an `it` entry to `contentByLanguage` below.
+ *   3. Run `npm run check:content` to confirm the pack matches English.
  *
  * Languages without a content pack fall back to English automatically,
  * so UI translation (src/i18n) and content translation can ship
@@ -39,6 +42,33 @@ const contentByLanguage: Record<string, ContentPack> = {
       require('./content/en/fasting.json'),
     ],
     stories: require('./content/en/stories.json'),
+  },
+  es: {
+    categories: [
+      require('./content/es/home-remedies.json'),
+      require('./content/es/herbs-roots.json'),
+      require('./content/es/dietary-systems.json'),
+      require('./content/es/fasting.json'),
+    ],
+    stories: require('./content/es/stories.json'),
+  },
+  fr: {
+    categories: [
+      require('./content/fr/home-remedies.json'),
+      require('./content/fr/herbs-roots.json'),
+      require('./content/fr/dietary-systems.json'),
+      require('./content/fr/fasting.json'),
+    ],
+    stories: require('./content/fr/stories.json'),
+  },
+  de: {
+    categories: [
+      require('./content/de/home-remedies.json'),
+      require('./content/de/herbs-roots.json'),
+      require('./content/de/dietary-systems.json'),
+      require('./content/de/fasting.json'),
+    ],
+    stories: require('./content/de/stories.json'),
   },
 };
 

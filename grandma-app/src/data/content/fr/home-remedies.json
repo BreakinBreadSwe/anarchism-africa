@@ -1,0 +1,185 @@
+{
+  "category": "homeRemedies",
+  "remedies": [
+    {
+      "id": "honey-lemon-tea",
+      "title": "Infusion miel et citron",
+      "ailments": ["mal de gorge", "toux", "rhume"],
+      "ingredients": [
+        { "name": "miel", "quantity": "1 c. à soupe" },
+        { "name": "citron", "quantity": "1/2, pressé" },
+        { "name": "eau chaude", "quantity": "1 tasse" }
+      ],
+      "instructions": [
+        "Faites bouillir l'eau et laissez-la tiédir un peu (une eau brûlante détruit les enzymes du miel).",
+        "Incorporez le miel et remuez jusqu'à dissolution.",
+        "Ajoutez le jus de citron et mélangez.",
+        "Buvez lentement tant que c'est chaud, jusqu'à trois fois par jour."
+      ],
+      "region": "Global",
+      "origin": "Présent dans les traditions populaires de tous les continents ; le miel apaise les gorges depuis l'Égypte ancienne.",
+      "preparationTime": "5 min",
+      "disclaimer": "Ne donnez jamais de miel à un nourrisson de moins d'un an (risque de botulisme infantile)."
+    },
+    {
+      "id": "ginger-tea-nausea",
+      "title": "Infusion de gingembre frais",
+      "ailments": ["nausée", "mal des transports", "indigestion"],
+      "ingredients": [
+        { "name": "racine de gingembre frais", "quantity": "3–4 fines rondelles" },
+        { "name": "eau", "quantity": "2 tasses" },
+        { "name": "miel (facultatif)", "quantity": "selon le goût" }
+      ],
+      "instructions": [
+        "Épluchez le gingembre et coupez-le en fines rondelles.",
+        "Faites frémir les rondelles dans l'eau pendant 10 minutes.",
+        "Filtrez dans une tasse et sucrez au miel si vous le souhaitez.",
+        "Buvez chaud, à petites gorgées."
+      ],
+      "region": "South Asia",
+      "origin": "Un pilier des soins domestiques ayurvédiques et est-asiatiques pour apaiser l'estomac.",
+      "preparationTime": "15 min",
+      "disclaimer": "Si vous êtes enceinte ou sous anticoagulants, demandez l'avis de votre médecin avant un usage régulier du gingembre."
+    },
+    {
+      "id": "saltwater-gargle",
+      "title": "Gargarisme à l'eau salée tiède",
+      "ailments": ["mal de gorge", "irritation buccale"],
+      "ingredients": [
+        { "name": "sel", "quantity": "1/2 c. à café" },
+        { "name": "eau tiède", "quantity": "1 tasse" }
+      ],
+      "instructions": [
+        "Dissolvez complètement le sel dans l'eau tiède (pas chaude).",
+        "Gargarisez-vous une gorgée pendant 15 à 30 secondes, puis recrachez. N'avalez pas.",
+        "Répétez jusqu'à finir la tasse, jusqu'à trois fois par jour."
+      ],
+      "region": "Global",
+      "origin": "L'un des plus anciens traitements domestiques documentés, de la Chine à la Méditerranée.",
+      "preparationTime": "2 min"
+    },
+    {
+      "id": "chamomile-sleep",
+      "title": "Infusion de camomille du soir",
+      "ailments": ["insomnie", "agitation", "anxiété légère"],
+      "ingredients": [
+        { "name": "fleurs de camomille séchées", "quantity": "1 c. à soupe (ou 1 sachet)" },
+        { "name": "eau chaude", "quantity": "1 tasse" }
+      ],
+      "instructions": [
+        "Versez l'eau chaude sur la camomille.",
+        "Couvrez et laissez infuser 5 minutes, puis filtrez.",
+        "Buvez environ 30 minutes avant le coucher."
+      ],
+      "region": "Mediterranean",
+      "origin": "Boisson apaisante du soir en Europe et en Afrique du Nord depuis des siècles.",
+      "preparationTime": "7 min",
+      "disclaimer": "À éviter en cas d'allergie aux plantes de la famille des astéracées (ambroisie, souci)."
+    },
+    {
+      "id": "steam-inhalation",
+      "title": "Inhalation de vapeur",
+      "ailments": ["congestion", "nez bouché", "pression sinusale"],
+      "ingredients": [
+        { "name": "eau chaude", "quantity": "1 grand bol" },
+        { "name": "feuilles d'eucalyptus ou une goutte d'huile d'eucalyptus (facultatif)" }
+      ],
+      "instructions": [
+        "Remplissez un bol d'eau fumante (non bouillante) et posez-le sur une table stable.",
+        "Ajoutez l'eucalyptus le cas échéant.",
+        "Couvrez-vous la tête d'une serviette, penchez-vous au-dessus du bol à distance raisonnable, fermez les yeux et respirez lentement par le nez pendant 5 à 10 minutes."
+      ],
+      "region": "Global",
+      "origin": "Pratique courante de la saison froide en Europe, en Afrique et dans les Amériques.",
+      "preparationTime": "10 min",
+      "disclaimer": "Gardez une distance sûre avec l'eau pour éviter les brûlures. Déconseillé aux jeunes enfants."
+    },
+    {
+      "id": "oatmeal-bath",
+      "title": "Bain à l'avoine colloïdale",
+      "ailments": ["démangeaisons", "peau sèche", "rougeurs légères"],
+      "ingredients": [
+        { "name": "flocons d'avoine nature", "quantity": "1 tasse, finement moulus" },
+        { "name": "eau de bain tiède" }
+      ],
+      "instructions": [
+        "Réduisez l'avoine en poudre fine au mixeur.",
+        "Saupoudrez la poudre dans un bain tiède et mélangez jusqu'à ce que l'eau devienne laiteuse.",
+        "Restez 15 à 20 minutes, puis séchez la peau en tamponnant doucement."
+      ],
+      "region": "North America",
+      "origin": "Une tradition de ferme et de colons, plus tard confirmée par la dermatologie moderne comme ingrédient apaisant.",
+      "preparationTime": "25 min"
+    },
+    {
+      "id": "cold-compress-headache",
+      "title": "Compresse froide contre le mal de tête",
+      "ailments": ["mal de tête", "tension"],
+      "ingredients": [
+        { "name": "linge propre" },
+        { "name": "eau froide ou poche de glace enveloppée" }
+      ],
+      "instructions": [
+        "Trempez le linge dans l'eau froide et essorez-le, ou enveloppez une poche de glace dedans.",
+        "Allongez-vous dans une pièce calme et peu éclairée.",
+        "Posez la compresse sur le front ou la nuque pendant 15 minutes."
+      ],
+      "region": "Global",
+      "origin": "Une réponse quasi universelle au mal de tête dans les traditions domestiques du monde entier.",
+      "preparationTime": "5 min",
+      "disclaimer": "Ne posez jamais de glace directement sur la peau. Consultez un médecin en cas de maux de tête soudains, violents ou inhabituels."
+    },
+    {
+      "id": "peppermint-indigestion",
+      "title": "Thé à la menthe après les repas",
+      "ailments": ["indigestion", "ballonnements", "maux d'estomac"],
+      "ingredients": [
+        { "name": "feuilles de menthe fraîches ou séchées", "quantity": "1 c. à soupe" },
+        { "name": "eau chaude", "quantity": "1 tasse" }
+      ],
+      "instructions": [
+        "Laissez infuser la menthe dans l'eau chaude pendant 5 à 7 minutes.",
+        "Filtrez et buvez chaud après un repas copieux."
+      ],
+      "region": "North Africa",
+      "origin": "Le thé à la menthe est le digestif quotidien du Maghreb, servi après presque chaque repas.",
+      "preparationTime": "8 min",
+      "disclaimer": "La menthe peut aggraver le reflux chez certaines personnes."
+    },
+    {
+      "id": "clove-toothache",
+      "title": "Clou de girofle contre la rage de dents",
+      "ailments": ["rage de dents", "gencives douloureuses"],
+      "ingredients": [{ "name": "clou de girofle entier", "quantity": "1" }],
+      "instructions": [
+        "Placez un clou de girofle entier contre la dent douloureuse.",
+        "Laissez-le ramollir et libérer ses huiles ; gardez-le jusqu'à 20 minutes.",
+        "Répétez au besoin en attendant votre rendez-vous chez le dentiste."
+      ],
+      "region": "South Asia",
+      "origin": "L'huile anesthésiante du girofle (eugénol) soulage les douleurs dentaires dans les traditions indienne et indonésienne depuis des siècles.",
+      "preparationTime": "1 min",
+      "disclaimer": "Cela ne fait que soulager la douleur : une rage de dents persistante exige un dentiste."
+    },
+    {
+      "id": "rice-water",
+      "title": "Eau de riz pour l'estomac dérangé",
+      "ailments": ["estomac dérangé", "diarrhée légère", "déshydratation"],
+      "ingredients": [
+        { "name": "riz blanc", "quantity": "1/2 tasse" },
+        { "name": "eau", "quantity": "4 tasses" },
+        { "name": "une pincée de sel" }
+      ],
+      "instructions": [
+        "Faites bouillir le riz dans l'eau pendant 15 à 20 minutes.",
+        "Filtrez le liquide trouble et laissez-le tiédir.",
+        "Ajoutez une petite pincée de sel et buvez par gorgées tout au long de la journée.",
+        "Mangez le riz à part si vous vous en sentez capable."
+      ],
+      "region": "East Asia",
+      "origin": "Boisson de réhydratation douce utilisée dans toute l'Asie et l'Amérique latine contre les troubles digestifs.",
+      "preparationTime": "25 min",
+      "disclaimer": "Une diarrhée de plus de deux jours, ou toute diarrhée chez un nourrisson, nécessite un avis médical."
+    }
+  ]
+}

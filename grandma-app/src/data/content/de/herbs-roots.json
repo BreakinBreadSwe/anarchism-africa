@@ -1,0 +1,127 @@
+{
+  "category": "herbsRoots",
+  "remedies": [
+    {
+      "id": "hibiscus-bissap",
+      "title": "Hibiskustee (Bissap / Sobolo)",
+      "ailments": ["Unterstützung des Blutdrucks", "Durst", "allgemeines Wohlbefinden"],
+      "ingredients": [
+        { "name": "getrocknete Hibiskuskelche", "quantity": "1 Tasse" },
+        { "name": "Wasser", "quantity": "6 Tassen" },
+        { "name": "frischer Ingwer (optional)", "quantity": "einige Scheiben" },
+        { "name": "Honig oder Zucker (optional)", "quantity": "nach Geschmack" }
+      ],
+      "instructions": [
+        "Den getrockneten Hibiskus abspülen.",
+        "Mit dem Ingwer 15 Minuten im Wasser köcheln lassen.",
+        "Abseihen, nach Wunsch leicht süßen und heiß oder gekühlt servieren."
+      ],
+      "region": "West Africa",
+      "origin": "Im Senegal Bissap, in Ghana Sobolo genannt; das tiefrote Getränk der Zusammenkünfte in der gesamten Sahelzone.",
+      "preparationTime": "20 Min.",
+      "disclaimer": "Hibiskus kann den Blutdruck senken — sprechen Sie mit Ihrem Arzt, wenn Sie Blutdruckmedikamente einnehmen."
+    },
+    {
+      "id": "rooibos",
+      "title": "Rooibos-Tee (Rotbusch)",
+      "ailments": ["Unruhe", "Verdauungskomfort", "koffeinfreies Ritual"],
+      "ingredients": [
+        { "name": "Rooibosblätter", "quantity": "1 TL (oder 1 Teebeutel)" },
+        { "name": "heißes Wasser", "quantity": "1 Tasse" }
+      ],
+      "instructions": [
+        "Rooibos 5–7 Minuten in frisch aufgekochtem Wasser ziehen lassen.",
+        "Pur trinken oder, wie am Kap üblich, mit etwas Milch und Honig."
+      ],
+      "region": "Southern Africa",
+      "origin": "Geerntet in den Cederberg-Bergen; von Khoisan-Gemeinschaften genutzt, lange bevor er ein Welttee wurde.",
+      "preparationTime": "8 Min."
+    },
+    {
+      "id": "moringa",
+      "title": "Moringa-Blattpulver",
+      "ailments": ["Energiemangel", "Nährstoffunterstützung"],
+      "ingredients": [
+        { "name": "getrocknetes Moringa-Blattpulver", "quantity": "1 TL" },
+        { "name": "Brei, Suppe oder Smoothie", "quantity": "1 Portion" }
+      ],
+      "instructions": [
+        "Das Moringapulver in warmen (nicht kochenden) Brei, Suppe oder einen Smoothie einrühren.",
+        "Mit einer kleinen Menge beginnen — der Geschmack ist kräftig und grasig.",
+        "Ein paar Mal pro Woche als Nährstoffergänzung verwenden."
+      ],
+      "region": "East Africa",
+      "origin": "Der „Wunderbaum“ am Horn von Afrika und in Indien; die Blätter werden getrocknet und für die tägliche Kost gestampft.",
+      "preparationTime": "2 Min.",
+      "disclaimer": "Schwangere sollten Moringawurzel und -rinde meiden; bleiben Sie bei den Blättern und fragen Sie Ihren Arzt."
+    },
+    {
+      "id": "baobab-fruit",
+      "title": "Getränk aus Baobab-Fruchtpulver",
+      "ailments": ["Energiemangel", "Verdauungskomfort", "Vitamin-C-Schub"],
+      "ingredients": [
+        { "name": "Baobab-Fruchtpulver", "quantity": "1–2 TL" },
+        { "name": "Wasser oder Milch", "quantity": "1 Tasse" },
+        { "name": "Honig (optional)", "quantity": "nach Geschmack" }
+      ],
+      "instructions": [
+        "Das Baobabpulver glatt in die Flüssigkeit einrühren.",
+        "Nach Wunsch leicht süßen und gekühlt trinken."
+      ],
+      "region": "West Africa",
+      "origin": "Das säuerliche Fruchtfleisch des Baobab („Baum des Lebens“) ist von Senegal bis Sudan eine traditionelle Erfrischung.",
+      "preparationTime": "3 Min."
+    },
+    {
+      "id": "turmeric-golden-milk",
+      "title": "Goldene Milch mit Kurkuma",
+      "ailments": ["Gelenksteifheit", "Entzündung", "Wohlbefinden im Winter"],
+      "ingredients": [
+        { "name": "gemahlene Kurkuma", "quantity": "1/2 TL" },
+        { "name": "Milch (tierisch oder pflanzlich)", "quantity": "1 Tasse" },
+        { "name": "schwarzer Pfeffer", "quantity": "eine Prise" },
+        { "name": "Honig", "quantity": "1 TL" }
+      ],
+      "instructions": [
+        "Die Milch in einem kleinen Topf sanft erwärmen.",
+        "Kurkuma und schwarzen Pfeffer einrühren (der Pfeffer hilft dem Körper, die Kurkuma aufzunehmen).",
+        "Mit Honig süßen und am Abend warm trinken."
+      ],
+      "region": "South Asia",
+      "origin": "Haldi Doodh, das klassische indische Hausgetränk bei Schmerzen und in der kalten Jahreszeit.",
+      "preparationTime": "10 Min.",
+      "disclaimer": "Kurkuma in hoher Dosis kann mit Blutverdünnern wechselwirken; küchenübliche Mengen sind in der Regel unbedenklich."
+    },
+    {
+      "id": "garlic-daily",
+      "title": "Roher Knoblauch im täglichen Essen",
+      "ailments": ["Erkältungsvorbeugung", "Unterstützung der Herzgesundheit"],
+      "ingredients": [{ "name": "frische Knoblauchzehen", "quantity": "1–2 pro Tag" }],
+      "instructions": [
+        "Den Knoblauch zerdrücken oder hacken und vor der Verwendung 10 Minuten ruhen lassen (das aktiviert das Allicin).",
+        "In Dressings, Dips oder erst gegen Ende des Kochens ins Essen geben, damit er nahezu roh bleibt.",
+        "Machen Sie ihn zum festen Bestandteil der Mahlzeiten statt zur einmaligen Kur."
+      ],
+      "region": "Mediterranean",
+      "origin": "Vom alten Ägypten bis zu griechischen Athleten gerühmt; ein Eckpfeiler mediterraner Volksvorsorge.",
+      "preparationTime": "12 Min.",
+      "disclaimer": "Große Mengen rohen Knoblauchs können den Magen reizen und mit Blutverdünnern wechselwirken."
+    },
+    {
+      "id": "aloe-vera-topical",
+      "title": "Aloe-vera-Gel bei leichten Verbrennungen",
+      "ailments": ["leichte Verbrennungen", "Sonnenbrand", "trockene Haut"],
+      "ingredients": [{ "name": "frisches Aloe-vera-Blatt", "quantity": "1" }],
+      "instructions": [
+        "Die Verbrennung zuerst 10 Minuten unter kühlem fließendem Wasser kühlen.",
+        "Ein Aloeblatt aufschneiden und das klare Gel aus dem Inneren herauslösen.",
+        "Eine dünne Schicht Gel auf die unverletzte Haut auftragen.",
+        "Zwei- bis dreimal täglich erneut auftragen."
+      ],
+      "region": "North Africa",
+      "origin": "Aloe ist seit dem alten Ägypten ein Hautmittel, wo sie „Pflanze der Unsterblichkeit“ genannt wurde.",
+      "preparationTime": "5 Min.",
+      "disclaimer": "Nur zur äußerlichen Anwendung auf leichten Verbrennungen mit unverletzter Haut. Schwere Verbrennungen oder Blasenbildung gehören in ärztliche Behandlung. Rohen Aloe-Latex nicht einnehmen."
+    }
+  ]
+}

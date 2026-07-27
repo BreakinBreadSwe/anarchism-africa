@@ -68,7 +68,8 @@ export function RemedyDetailScreen({
       </View>
 
       <Text style={styles.meta}>
-        {t(`categories.${remedy.category}`)} · {remedy.region}
+        {t(`categories.${remedy.category}`)} ·{' '}
+        {t(`regions.${remedy.region}`, { defaultValue: remedy.region })}
         {remedy.preparationTime
           ? ` · ${t('detail.preparationTime')}: ${remedy.preparationTime}`
           : ''}

@@ -1,0 +1,127 @@
+{
+  "category": "herbsRoots",
+  "remedies": [
+    {
+      "id": "hibiscus-bissap",
+      "title": "Té de hibisco (bissap / sobolo)",
+      "ailments": ["apoyo a la tensión arterial", "sed", "bienestar general"],
+      "ingredients": [
+        { "name": "cálices secos de hibisco", "quantity": "1 taza" },
+        { "name": "agua", "quantity": "6 tazas" },
+        { "name": "jengibre fresco (opcional)", "quantity": "unas rodajas" },
+        { "name": "miel o azúcar (opcional)", "quantity": "al gusto" }
+      ],
+      "instructions": [
+        "Enjuaga el hibisco seco.",
+        "Cuécelo a fuego suave con el jengibre durante 15 minutos.",
+        "Cuela, endulza ligeramente si quieres y sírvelo caliente o frío."
+      ],
+      "region": "West Africa",
+      "origin": "Conocido como bissap en Senegal y sobolo en Ghana; la bebida roja de las reuniones en todo el Sahel.",
+      "preparationTime": "20 min",
+      "disclaimer": "El hibisco puede bajar la tensión arterial: consulta a tu médico si tomas medicación para la tensión."
+    },
+    {
+      "id": "rooibos",
+      "title": "Té rooibos (arbusto rojo)",
+      "ailments": ["inquietud", "confort digestivo", "ritual sin cafeína"],
+      "ingredients": [
+        { "name": "hojas de rooibos", "quantity": "1 cdta (o 1 bolsita)" },
+        { "name": "agua caliente", "quantity": "1 taza" }
+      ],
+      "instructions": [
+        "Deja reposar el rooibos en agua recién hervida durante 5–7 minutos.",
+        "Bébelo solo, o con un poco de leche y miel como se hace en El Cabo."
+      ],
+      "region": "Southern Africa",
+      "origin": "Cosechado en las montañas de Cederberg; usado por las comunidades khoisan mucho antes de convertirse en un té mundial.",
+      "preparationTime": "8 min"
+    },
+    {
+      "id": "moringa",
+      "title": "Polvo de hoja de moringa",
+      "ailments": ["falta de energía", "apoyo nutricional"],
+      "ingredients": [
+        { "name": "polvo de hoja de moringa seca", "quantity": "1 cdta" },
+        { "name": "gachas, sopa o batido", "quantity": "1 ración" }
+      ],
+      "instructions": [
+        "Mezcla el polvo de moringa en gachas templadas (no hirviendo), sopa o un batido.",
+        "Empieza con poca cantidad: el sabor es intenso y herbáceo.",
+        "Úsalo unas veces por semana como refuerzo nutricional."
+      ],
+      "region": "East Africa",
+      "origin": "El 'árbol milagroso' del Cuerno de África y la India; las hojas se secan y se muelen para la comida diaria.",
+      "preparationTime": "2 min",
+      "disclaimer": "Las embarazadas deben evitar la raíz y la corteza de moringa; limítate a las hojas y consulta a tu médico."
+    },
+    {
+      "id": "baobab-fruit",
+      "title": "Bebida de polvo de fruto de baobab",
+      "ailments": ["falta de energía", "confort digestivo", "aporte de vitamina C"],
+      "ingredients": [
+        { "name": "polvo de fruto de baobab", "quantity": "1–2 cdtas" },
+        { "name": "agua o leche", "quantity": "1 taza" },
+        { "name": "miel (opcional)", "quantity": "al gusto" }
+      ],
+      "instructions": [
+        "Bate el polvo de baobab con el líquido hasta que quede sin grumos.",
+        "Endulza ligeramente si lo deseas y bébelo frío."
+      ],
+      "region": "West Africa",
+      "origin": "La pulpa ácida del baobab (el 'árbol de la vida') es un refresco tradicional desde Senegal hasta Sudán.",
+      "preparationTime": "3 min"
+    },
+    {
+      "id": "turmeric-golden-milk",
+      "title": "Leche dorada de cúrcuma",
+      "ailments": ["rigidez articular", "inflamación", "bienestar invernal"],
+      "ingredients": [
+        { "name": "cúrcuma molida", "quantity": "1/2 cdta" },
+        { "name": "leche (de vaca o vegetal)", "quantity": "1 taza" },
+        { "name": "pimienta negra", "quantity": "una pizca" },
+        { "name": "miel", "quantity": "1 cdta" }
+      ],
+      "instructions": [
+        "Calienta la leche suavemente en un cazo pequeño.",
+        "Bate con la cúrcuma y la pimienta negra (la pimienta ayuda al cuerpo a absorber la cúrcuma).",
+        "Endulza con miel y bébela caliente por la tarde."
+      ],
+      "region": "South Asia",
+      "origin": "El haldi doodh, la bebida clásica de los hogares indios para los dolores y la temporada de frío.",
+      "preparationTime": "10 min",
+      "disclaimer": "La cúrcuma en dosis altas puede interactuar con los anticoagulantes; las cantidades culinarias suelen ser seguras."
+    },
+    {
+      "id": "garlic-daily",
+      "title": "Ajo crudo en la comida diaria",
+      "ailments": ["prevención de resfriados", "apoyo cardiovascular"],
+      "ingredients": [{ "name": "dientes de ajo fresco", "quantity": "1–2 al día" }],
+      "instructions": [
+        "Machaca o pica el ajo y déjalo reposar 10 minutos antes de usarlo (esto activa la alicina).",
+        "Añádelo a aliños, salsas o a la comida al final de la cocción para mantenerlo casi crudo.",
+        "Conviértelo en parte habitual de las comidas, no en algo puntual."
+      ],
+      "region": "Mediterranean",
+      "origin": "Alabado desde el antiguo Egipto hasta los atletas griegos; piedra angular de la prevención popular mediterránea.",
+      "preparationTime": "12 min",
+      "disclaimer": "Grandes cantidades de ajo crudo pueden irritar el estómago e interactuar con los anticoagulantes."
+    },
+    {
+      "id": "aloe-vera-topical",
+      "title": "Gel de aloe vera para quemaduras leves",
+      "ailments": ["quemaduras leves", "quemadura solar", "piel seca"],
+      "ingredients": [{ "name": "hoja fresca de aloe vera", "quantity": "1" }],
+      "instructions": [
+        "Primero enfría la quemadura bajo agua fría corriente durante 10 minutos.",
+        "Abre una hoja de aloe y extrae el gel transparente del interior.",
+        "Aplica una capa fina de gel sobre la piel intacta.",
+        "Repite dos o tres veces al día."
+      ],
+      "region": "North Africa",
+      "origin": "El aloe es un remedio para la piel desde el antiguo Egipto, donde se le llamaba 'planta de la inmortalidad'.",
+      "preparationTime": "5 min",
+      "disclaimer": "Solo para uso externo sobre quemaduras leves con la piel intacta. Las quemaduras graves o con ampollas requieren atención médica. No ingieras el látex crudo de aloe."
+    }
+  ]
+}

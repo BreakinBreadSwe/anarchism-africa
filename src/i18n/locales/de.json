@@ -75,5 +75,17 @@
     "es": "Español",
     "fr": "Français",
     "de": "Deutsch"
+  },
+  "regions": {
+    "Global": "Weltweit",
+    "West Africa": "Westafrika",
+    "East Africa": "Ostafrika",
+    "Southern Africa": "Südliches Afrika",
+    "North Africa": "Nordafrika",
+    "South Asia": "Südasien",
+    "East Asia": "Ostasien",
+    "Mediterranean": "Mittelmeerraum",
+    "North America": "Nordamerika",
+    "Northern Europe": "Nordeuropa"
   }
 }

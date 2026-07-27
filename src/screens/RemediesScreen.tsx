@@ -66,7 +66,12 @@ export function RemediesScreen() {
 
   const regionOptions: ChipOption<string>[] = [
     { value: null, label: t('remedies.regionAll') },
-    ...regions.map((r) => ({ value: r, label: r })),
+    // `region` stays an English key in the content files so the active filter
+    // survives a language switch; only the label is localised.
+    ...regions.map((r) => ({
+      value: r,
+      label: t(`regions.${r}`, { defaultValue: r }),
+    })),
   ];
 
   const openRemedy = (remedy: Remedy) => {

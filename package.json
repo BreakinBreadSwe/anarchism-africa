@@ -8,7 +8,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:content": "node scripts/check-content.js",
+    "gen:assets": "node scripts/generate-assets.js",
+    "verify": "npm run typecheck && npm run check:content"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",

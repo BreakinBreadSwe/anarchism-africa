@@ -1,0 +1,49 @@
+{
+  "stories": [
+    {
+      "id": "story-bissap-granny",
+      "title": "La olla de bissap de mi abuela",
+      "body": "Cada domingo en Dakar mi abuela tenía una olla enorme de bissap enfriándose a la sombra. Cuando alguien se quejaba del calor o de un dolor de cabeza por el sol, ella servía un vaso antes de decir palabra. Yo lo sigo preparando igual, con mucho jengibre, y juro que solo el olor me baja la tensión. Mi médico sabe que lo tomo y solo me pide que vigile mis cifras.",
+      "ailment": "calor y dolores de cabeza",
+      "outcome": "Un ritual familiar que me calma y que conservo desde hace veinte años.",
+      "author": "Aminata, 54",
+      "region": "West Africa"
+    },
+    {
+      "id": "story-honey-lemon-choir",
+      "title": "La salvación de la temporada de coro",
+      "body": "Canto en un coro vecinal y cada invierno mi garganta se rendía antes de los conciertos de diciembre. Una compañera mayor me dijo que dejara de beber agua fría entre ensayos y llevara un termo de miel con limón. No cura nada —cuando tuve laringitis de verdad fui al médico— pero para el carraspeo de cada día me ha mantenido cantando tres inviernos seguidos.",
+      "ailment": "dolor de garganta",
+      "outcome": "Alivio diario en la garganta durante toda la temporada de ensayos.",
+      "author": "Marcus, 41",
+      "region": "North America"
+    },
+    {
+      "id": "story-ginger-commute",
+      "title": "El ferry por fin dejó de vencerme",
+      "body": "Mi trayecto al trabajo incluye 40 minutos de ferry y pasé años llegando al puerto con el estómago revuelto. Mi suegra se rió y me dio una latita de jengibre confitado para masticar al embarcar. Yo era escéptica: parecía demasiado simple. Han pasado ocho meses y no he vuelto a tener una travesía mala. Los días de mar agitado sigo tomando la medicación de siempre, pero el jengibre se ocupa del oleaje corriente.",
+      "ailment": "mareo por movimiento",
+      "outcome": "Travesías tranquilas salvo en los días de peor mar.",
+      "author": "Ingrid, 37",
+      "region": "Northern Europe"
+    },
+    {
+      "id": "story-oatmeal-eczema",
+      "title": "Una tregua en la bañera con la piel de mi hijo",
+      "body": "Nuestro hijo de cuatro años se rascaba las piernas hasta hacerse heridas cada invierno. Además de la crema que le recetó la pediatra, ella misma sugirió baños de avena, lo que dejó triunfante a mi propia abuela, que llevaba un año diciéndolo. Dos veces por semana, avena molida en agua templada, y la hora del baño pasó de las lágrimas a que no quisiera salir. La crema hace el trabajo de fondo; la avena lo mantiene cómodo entre brotes.",
+      "ailment": "picor en la piel",
+      "outcome": "Piel cómoda entre tratamientos y baños más tranquilos.",
+      "author": "Priya, 33",
+      "region": "South Asia"
+    },
+    {
+      "id": "story-mint-tea-meals",
+      "title": "Lo que el té me enseñó sobre comer",
+      "body": "De visita con la familia de mi marido en Marrakech, noté que nadie se levantaba deprisa de la mesa. Las comidas terminaban con té de menta servido en alto en vasitos y veinte minutos de conversación. Mi hinchazón habitual de después de comer desapareció durante todo el viaje. De vuelta en casa mantuve el ritual: té de menta, sin móvil, quedarse un rato. Sinceramente no sé si es la menta o el sentarse, pero a mi estómago esa diferencia no le importa.",
+      "ailment": "hinchazón",
+      "outcome": "Digestiones cómodas y un final de comida más pausado.",
+      "author": "Claire, 45",
+      "region": "North Africa"
+    }
+  ]
+}

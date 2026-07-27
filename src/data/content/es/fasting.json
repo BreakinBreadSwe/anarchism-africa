@@ -1,0 +1,116 @@
+{
+  "category": "fasting",
+  "remedies": [
+    {
+      "id": "overnight-fast-12h",
+      "title": "Ayuno nocturno suave de 12 horas",
+      "ailments": ["mal descanso", "digestión lenta", "picoteo nocturno"],
+      "ingredients": [
+        { "name": "agua o infusión", "quantity": "libremente durante el ayuno" }
+      ],
+      "instructions": [
+        "Termina la cena a una hora fija, por ejemplo a las 19:00.",
+        "Toma solo agua o infusiones sin azúcar hasta el desayuno 12 horas después, por ejemplo a las 7:00.",
+        "Mantén la misma ventana unas semanas antes de juzgar el efecto.",
+        "Rompe el ayuno con un desayuno normal y sin prisa."
+      ],
+      "region": "Global",
+      "origin": "El ritmo tradicional del propio 'des-ayuno': la mayoría de los hogares preindustriales sencillamente no comían después del anochecer.",
+      "disclaimer": "No ayunes si estás embarazada o dando el pecho, si eres diabética, si tienes bajo peso, si tienes antecedentes de trastornos alimentarios o si tomas medicación con comida: consulta antes a tu médico."
+    },
+    {
+      "id": "time-restricted-16-8",
+      "title": "Alimentación con horario restringido 16:8",
+      "ailments": ["apoyo al control del peso", "bajones de energía", "descanso digestivo"],
+      "ingredients": [
+        { "name": "agua, infusión sin azúcar o café solo", "quantity": "durante la ventana de ayuno" }
+      ],
+      "instructions": [
+        "Elige una ventana de 8 horas para comer que encaje con tu vida, por ejemplo de 11:00 a 19:00.",
+        "Come comidas normales y nutritivas dentro de la ventana: no es una licencia para excederse ni una razón para comer de menos.",
+        "Fuera de la ventana toma solo agua, infusiones sin azúcar o café solo.",
+        "Empieza con 12 horas y alárgala poco a poco durante un par de semanas.",
+        "Para y come si te sientes mareado, débil o mal."
+      ],
+      "region": "Global",
+      "origin": "Una formulación moderna de ritmos alimentarios presentes en tradiciones monásticas y agrarias de todo el mundo.",
+      "disclaimer": "No es adecuado para embarazadas o lactantes, niños, diabéticos en tratamiento ni personas con antecedentes de trastornos alimentarios. La supervisión médica es imprescindible si tomas medicación habitual."
+    },
+    {
+      "id": "ramadan-style-rhythm",
+      "title": "Ritmo de ayuno del alba al ocaso (estilo Ramadán)",
+      "ailments": ["comer con atención", "práctica espiritual", "ritmo comunitario"],
+      "ingredients": [
+        { "name": "comida antes del alba (suhoor): alimentos de liberación lenta como avena, dátiles y huevos" },
+        { "name": "comida al ocaso (iftar): primero agua y dátiles, después una comida equilibrada" }
+      ],
+      "instructions": [
+        "Toma una comida sustanciosa y de liberación lenta antes del alba.",
+        "No tomes comida ni bebida durante las horas de luz.",
+        "Rompe el ayuno al atardecer con suavidad —tradicionalmente con agua y dátiles— antes de la comida principal.",
+        "Prioriza la hidratación y la comida sin procesar entre el ocaso y el alba.",
+        "Practícalo durante un periodo definido, idealmente junto a la familia o la comunidad."
+      ],
+      "region": "North Africa",
+      "origin": "El ayuno diurno del Ramadán, practicado desde hace más de 1.400 años en todo el mundo musulmán.",
+      "disclaimer": "El ayuno seco (sin agua) es exigente: los enfermos, embarazadas, viajeros, ancianos y niños están tradicionalmente exentos. Cualquier persona con una afección médica debe consultar a su médico; las propias autoridades religiosas establecen estas exenciones."
+    },
+    {
+      "id": "one-day-broth-rest",
+      "title": "Un solo día de caldo y descanso",
+      "ailments": ["después de un exceso", "descanso digestivo", "convalecencia"],
+      "ingredients": [
+        { "name": "caldo claro de verduras o de hueso", "quantity": "3–4 tazas a lo largo del día" },
+        { "name": "agua e infusiones", "quantity": "libremente" },
+        { "name": "un poco de sal en el caldo" }
+      ],
+      "instructions": [
+        "Elige un día tranquilo, sin trabajo físico exigente previsto.",
+        "Toma caldo claro y caliente a tus horas habituales de comida en lugar de las comidas, más agua e infusiones durante el día.",
+        "Descansa más de lo normal: no es un día para hacer ejercicio.",
+        "Vuelve a comer con normalidad a la mañana siguiente con algo suave: gachas, sopa o fruta cocida.",
+        "Hazlo de forma ocasional como mucho, no como hábito semanal."
+      ],
+      "region": "Mediterranean",
+      "origin": "El día de caldo de convalecencia de los hogares europeos y levantinos, usado tras las fiestas y durante la recuperación de una enfermedad.",
+      "disclaimer": "Un solo día y solo para adultos sanos. No apto para embarazadas, diabéticos, personas con bajo peso, ancianos frágiles, quienes tomen medicación habitual o tengan antecedentes de trastornos alimentarios. Para y come si te sientes desfallecer."
+    },
+    {
+      "id": "ekadashi-grain-free-day",
+      "title": "Día de observancia sin cereales (estilo ekadashi)",
+      "ailments": ["comer con atención", "descanso digestivo", "práctica espiritual"],
+      "ingredients": [
+        { "name": "fruta, leche o yogur" },
+        { "name": "frutos secos y semillas" },
+        { "name": "patata u otros tubérculos permitidos" },
+        { "name": "agua", "quantity": "libremente" }
+      ],
+      "instructions": [
+        "Elige un día fijo: tradicionalmente el undécimo día de la quincena lunar, dos veces al mes.",
+        "Deja a un lado cereales y legumbres ese día; come fruta, lácteos, frutos secos y tubérculos.",
+        "Mantén las raciones moderadas y el día sencillo.",
+        "Vuelve a tus comidas habituales a la mañana siguiente."
+      ],
+      "region": "South Asia",
+      "origin": "El ekadashi, observado dos veces por mes lunar en hogares hindúes y jainistas: un ayuno parcial más que total.",
+      "disclaimer": "Aunque sea un ayuno parcial, sigue siendo una restricción: consulta a tu médico si estás embarazada, eres diabética o tomas medicación habitual."
+    },
+    {
+      "id": "monastic-lighter-evening",
+      "title": "La cena más ligera",
+      "ailments": ["mal descanso", "reflujo", "pesadez nocturna"],
+      "ingredients": [
+        { "name": "sopa, verduras o un plato pequeño de cereal", "quantity": "para la cena" }
+      ],
+      "instructions": [
+        "Haz del mediodía la comida más abundante del día y de la noche la más ligera.",
+        "Termina de cenar al menos tres horas antes de acostarte.",
+        "Limita la cena a sopa, verduras o un plato pequeño de cereal: nada graso ni frito.",
+        "Mantén el patrón dos semanas antes de juzgar su efecto sobre tu sueño."
+      ],
+      "region": "Mediterranean",
+      "origin": "La costumbre monástica y del sur de Europa de la comida fuerte al mediodía y la cena simbólica: 'desayuna como un rey, cena como un mendigo'.",
+      "disclaimer": "Cambiar los horarios de las comidas puede afectar a la glucemia y a las pautas de medicación. Consulta a tu médico si te afecta alguna de las dos cosas."
+    }
+  ]
+}

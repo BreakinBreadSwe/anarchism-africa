@@ -1,0 +1,116 @@
+{
+  "category": "fasting",
+  "remedies": [
+    {
+      "id": "overnight-fast-12h",
+      "title": "Sanftes 12-Stunden-Nachtfasten",
+      "ailments": ["schlechter Schlaf", "träge Verdauung", "nächtliches Naschen"],
+      "ingredients": [
+        { "name": "Wasser oder Kräutertee", "quantity": "beliebig während des Fastens" }
+      ],
+      "instructions": [
+        "Beenden Sie das Abendessen zu einer festen Zeit, z. B. um 19 Uhr.",
+        "Nehmen Sie bis zum Frühstück 12 Stunden später, z. B. um 7 Uhr, nur Wasser oder ungesüßten Kräutertee zu sich.",
+        "Halten Sie das Zeitfenster einige Wochen konstant, bevor Sie die Wirkung beurteilen.",
+        "Brechen Sie das Fasten mit einem normalen, in Ruhe eingenommenen Frühstück."
+      ],
+      "region": "Global",
+      "origin": "Der traditionelle Rhythmus des Fastenbrechens selbst — die meisten vorindustriellen Haushalte aßen nach Einbruch der Dunkelheit schlicht nichts mehr.",
+      "disclaimer": "Fasten Sie nicht, wenn Sie schwanger sind oder stillen, Diabetes haben, untergewichtig sind, Essstörungen in der Vorgeschichte haben oder Medikamente zum Essen einnehmen — sprechen Sie zuerst mit Ihrem Arzt."
+    },
+    {
+      "id": "time-restricted-16-8",
+      "title": "16:8 — Essen im Zeitfenster",
+      "ailments": ["Unterstützung beim Gewicht", "Energietiefs", "Verdauungspause"],
+      "ingredients": [
+        { "name": "Wasser, ungesüßter Tee oder schwarzer Kaffee", "quantity": "während der Fastenphase" }
+      ],
+      "instructions": [
+        "Wählen Sie ein 8-Stunden-Fenster, das zu Ihrem Alltag passt, z. B. von 11 bis 19 Uhr.",
+        "Essen Sie im Fenster normale, nährstoffreiche Mahlzeiten — das ist weder ein Freibrief zum Überessen noch ein Grund, zu wenig zu essen.",
+        "Nehmen Sie außerhalb des Fensters nur Wasser, ungesüßten Tee oder schwarzen Kaffee zu sich.",
+        "Beginnen Sie mit 12 Stunden und verlängern Sie über ein bis zwei Wochen schrittweise.",
+        "Hören Sie auf und essen Sie etwas, wenn Ihnen schwindelig, schwach oder unwohl wird."
+      ],
+      "region": "Global",
+      "origin": "Eine moderne Fassung von Essrhythmen, wie sie in klösterlichen und bäuerlichen Traditionen weltweit vorkommen.",
+      "disclaimer": "Nicht geeignet für Schwangere und Stillende, Kinder, Diabetiker unter Medikation oder Menschen mit Essstörungen in der Vorgeschichte. Bei regelmäßiger Medikamenteneinnahme ist ärztliche Begleitung unerlässlich."
+    },
+    {
+      "id": "ramadan-style-rhythm",
+      "title": "Fasten von der Morgendämmerung bis zum Sonnenuntergang (nach Ramadan-Art)",
+      "ailments": ["bewusstes Essen", "spirituelle Praxis", "gemeinschaftlicher Rhythmus"],
+      "ingredients": [
+        { "name": "Mahlzeit vor der Morgendämmerung (Suhur): langsam verwertbare Kost wie Hafer, Datteln, Eier" },
+        { "name": "Mahlzeit bei Sonnenuntergang (Iftar): zuerst Wasser und Datteln, dann eine ausgewogene Mahlzeit" }
+      ],
+      "instructions": [
+        "Nehmen Sie vor der Morgendämmerung eine sättigende, langsam verwertbare Mahlzeit zu sich.",
+        "Verzichten Sie während der Tageslichtstunden auf Speisen und Getränke.",
+        "Brechen Sie das Fasten bei Sonnenuntergang behutsam — traditionell mit Wasser und Datteln — vor der Hauptmahlzeit.",
+        "Achten Sie zwischen Sonnenuntergang und Morgendämmerung auf Flüssigkeit und unverarbeitete Kost.",
+        "Praktizieren Sie es über einen festgelegten Zeitraum, idealerweise gemeinsam mit Familie oder Gemeinde."
+      ],
+      "region": "North Africa",
+      "origin": "Das Tagesfasten des Ramadan, seit über 1.400 Jahren in der gesamten muslimischen Welt praktiziert.",
+      "disclaimer": "Trockenfasten (ohne Wasser) ist fordernd: Kranke, Schwangere, Reisende, ältere Menschen und Kinder sind traditionell ausgenommen. Wer eine Erkrankung hat, sollte ärztlichen Rat einholen — die Religionsgelehrten selbst schreiben diese Ausnahmen vor."
+    },
+    {
+      "id": "one-day-broth-rest",
+      "title": "Ein einzelner Tag mit Brühe und Ruhe",
+      "ailments": ["nach dem Übermaß", "Verdauungspause", "Genesung"],
+      "ingredients": [
+        { "name": "klare Gemüse- oder Knochenbrühe", "quantity": "3–4 Tassen über den Tag" },
+        { "name": "Wasser und Kräutertee", "quantity": "beliebig" },
+        { "name": "etwas Salz in der Brühe" }
+      ],
+      "instructions": [
+        "Wählen Sie einen ruhigen Tag ohne geplante schwere körperliche Arbeit.",
+        "Nehmen Sie zu Ihren gewohnten Essenszeiten warme klare Brühe statt Mahlzeiten zu sich, dazu über den Tag Wasser und Kräutertee.",
+        "Ruhen Sie mehr als sonst; das ist kein Tag für Sport.",
+        "Kehren Sie am nächsten Morgen mit etwas Mildem zur normalen Kost zurück — Brei, Suppe, gedünstetes Obst.",
+        "Machen Sie das höchstens gelegentlich, nicht als wöchentliche Gewohnheit."
+      ],
+      "region": "Mediterranean",
+      "origin": "Der Genesungs-Brühetag europäischer und levantinischer Haushalte, verordnet nach Festessen und während der Erholung von Krankheit.",
+      "disclaimer": "Nur ein Tag und nur für gesunde Erwachsene. Nicht für Schwangere, Diabetiker, untergewichtige Personen, gebrechliche ältere Menschen, Personen unter Dauermedikation oder mit Essstörungen in der Vorgeschichte. Hören Sie auf und essen Sie, wenn Ihnen schwach wird."
+    },
+    {
+      "id": "ekadashi-grain-free-day",
+      "title": "Getreidefreier Besinnungstag (nach Ekadashi-Art)",
+      "ailments": ["bewusstes Essen", "Verdauungspause", "spirituelle Praxis"],
+      "ingredients": [
+        { "name": "Obst, Milch oder Joghurt" },
+        { "name": "Nüsse und Samen" },
+        { "name": "Kartoffel oder andere erlaubte Wurzeln" },
+        { "name": "Wasser", "quantity": "beliebig" }
+      ],
+      "instructions": [
+        "Wählen Sie einen festen Tag — traditionell der elfte Tag der Mondhälfte, zweimal im Monat.",
+        "Lassen Sie an diesem Tag Getreide und Hülsenfrüchte weg; essen Sie stattdessen Obst, Milchprodukte, Nüsse und Wurzeln.",
+        "Halten Sie die Portionen maßvoll und den Tag einfach.",
+        "Kehren Sie am nächsten Morgen zu Ihren gewohnten Mahlzeiten zurück."
+      ],
+      "region": "South Asia",
+      "origin": "Ekadashi, in hinduistischen und jainistischen Haushalten zweimal pro Mondmonat begangen — ein Teilfasten statt eines vollständigen.",
+      "disclaimer": "Auch ein Teilfasten bleibt eine Einschränkung: Sprechen Sie mit Ihrem Arzt, wenn Sie schwanger sind, Diabetes haben oder dauerhaft Medikamente einnehmen."
+    },
+    {
+      "id": "monastic-lighter-evening",
+      "title": "Das leichtere Abendessen",
+      "ailments": ["schlechter Schlaf", "Sodbrennen", "nächtliche Schwere"],
+      "ingredients": [
+        { "name": "Suppe, Gemüse oder ein kleines Getreidegericht", "quantity": "für das Abendessen" }
+      ],
+      "instructions": [
+        "Machen Sie den Mittag zur größten und den Abend zur leichtesten Mahlzeit des Tages.",
+        "Beenden Sie das Essen mindestens drei Stunden vor dem Schlafengehen.",
+        "Beschränken Sie das Abendessen auf Suppe, Gemüse oder ein kleines Getreidegericht — nichts Schweres oder Frittiertes.",
+        "Halten Sie das Muster zwei Wochen durch, bevor Sie die Wirkung auf Ihren Schlaf beurteilen."
+      ],
+      "region": "Mediterranean",
+      "origin": "Die klösterliche und südeuropäische Gewohnheit der schweren Mittagsmahlzeit und des symbolischen Abendbrots — „frühstücke wie ein Kaiser, iss zu Abend wie ein Bettler“.",
+      "disclaimer": "Verschobene Essenszeiten können Blutzucker und Medikamentenpläne beeinflussen. Sprechen Sie mit Ihrem Arzt, wenn eines davon auf Sie zutrifft."
+    }
+  ]
+}

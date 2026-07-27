@@ -1,0 +1,127 @@
+{
+  "category": "herbsRoots",
+  "remedies": [
+    {
+      "id": "hibiscus-bissap",
+      "title": "Bissap (thé d'hibiscus)",
+      "ailments": ["soutien de la tension artérielle", "soif", "bien-être général"],
+      "ingredients": [
+        { "name": "calices d'hibiscus séchés", "quantity": "1 tasse" },
+        { "name": "eau", "quantity": "6 tasses" },
+        { "name": "gingembre frais (facultatif)", "quantity": "quelques rondelles" },
+        { "name": "miel ou sucre (facultatif)", "quantity": "selon le goût" }
+      ],
+      "instructions": [
+        "Rincez l'hibiscus séché.",
+        "Faites frémir avec le gingembre pendant 15 minutes.",
+        "Filtrez, sucrez légèrement si vous le souhaitez, et servez chaud ou glacé."
+      ],
+      "region": "West Africa",
+      "origin": "Appelé bissap au Sénégal et sobolo au Ghana ; la boisson rouge profond des rassemblements dans tout le Sahel.",
+      "preparationTime": "20 min",
+      "disclaimer": "L'hibiscus peut faire baisser la tension : parlez-en à votre médecin si vous prenez un traitement pour l'hypertension."
+    },
+    {
+      "id": "rooibos",
+      "title": "Rooibos (thé rouge)",
+      "ailments": ["agitation", "confort digestif", "rituel sans caféine"],
+      "ingredients": [
+        { "name": "feuilles de rooibos", "quantity": "1 c. à café (ou 1 sachet)" },
+        { "name": "eau chaude", "quantity": "1 tasse" }
+      ],
+      "instructions": [
+        "Laissez infuser le rooibos dans une eau fraîchement bouillie pendant 5 à 7 minutes.",
+        "Buvez nature, ou avec un peu de lait et de miel comme on le fait au Cap."
+      ],
+      "region": "Southern Africa",
+      "origin": "Récolté dans les montagnes du Cederberg ; utilisé par les communautés khoïsan bien avant de devenir un thé mondial.",
+      "preparationTime": "8 min"
+    },
+    {
+      "id": "moringa",
+      "title": "Poudre de feuilles de moringa",
+      "ailments": ["baisse d'énergie", "soutien nutritionnel"],
+      "ingredients": [
+        { "name": "poudre de feuilles de moringa séchées", "quantity": "1 c. à café" },
+        { "name": "bouillie, soupe ou smoothie", "quantity": "1 portion" }
+      ],
+      "instructions": [
+        "Incorporez la poudre de moringa à une bouillie tiède (non bouillante), une soupe ou un smoothie.",
+        "Commencez par une petite quantité : le goût est puissant et herbacé.",
+        "Utilisez-en quelques fois par semaine comme apport nutritionnel."
+      ],
+      "region": "East Africa",
+      "origin": "L'« arbre miracle » de la Corne de l'Afrique et de l'Inde ; les feuilles sont séchées et pilées pour l'alimentation quotidienne.",
+      "preparationTime": "2 min",
+      "disclaimer": "Les femmes enceintes doivent éviter la racine et l'écorce de moringa ; tenez-vous-en aux feuilles et consultez un médecin."
+    },
+    {
+      "id": "baobab-fruit",
+      "title": "Boisson à la poudre de fruit de baobab",
+      "ailments": ["baisse d'énergie", "confort digestif", "apport en vitamine C"],
+      "ingredients": [
+        { "name": "poudre de fruit de baobab", "quantity": "1–2 c. à café" },
+        { "name": "eau ou lait", "quantity": "1 tasse" },
+        { "name": "miel (facultatif)", "quantity": "selon le goût" }
+      ],
+      "instructions": [
+        "Fouettez la poudre de baobab dans le liquide jusqu'à obtenir un mélange lisse.",
+        "Sucrez légèrement si vous le souhaitez et buvez frais."
+      ],
+      "region": "West Africa",
+      "origin": "La pulpe acidulée du baobab (« l'arbre de vie ») est un rafraîchissement traditionnel du Sénégal au Soudan.",
+      "preparationTime": "3 min"
+    },
+    {
+      "id": "turmeric-golden-milk",
+      "title": "Lait doré au curcuma",
+      "ailments": ["raideur articulaire", "inflammation", "bien-être hivernal"],
+      "ingredients": [
+        { "name": "curcuma moulu", "quantity": "1/2 c. à café" },
+        { "name": "lait (animal ou végétal)", "quantity": "1 tasse" },
+        { "name": "poivre noir", "quantity": "une pincée" },
+        { "name": "miel", "quantity": "1 c. à café" }
+      ],
+      "instructions": [
+        "Faites chauffer doucement le lait dans une petite casserole.",
+        "Fouettez avec le curcuma et le poivre noir (le poivre aide le corps à absorber le curcuma).",
+        "Sucrez au miel et buvez chaud le soir."
+      ],
+      "region": "South Asia",
+      "origin": "Le haldi doodh, boisson classique des foyers indiens contre les douleurs et pendant la saison froide.",
+      "preparationTime": "10 min",
+      "disclaimer": "Le curcuma à forte dose peut interagir avec les anticoagulants ; les quantités culinaires sont généralement sans risque."
+    },
+    {
+      "id": "garlic-daily",
+      "title": "Ail cru dans l'alimentation quotidienne",
+      "ailments": ["prévention des rhumes", "soutien cardiovasculaire"],
+      "ingredients": [{ "name": "gousses d'ail frais", "quantity": "1–2 par jour" }],
+      "instructions": [
+        "Écrasez ou hachez l'ail et laissez-le reposer 10 minutes avant usage (cela active l'allicine).",
+        "Ajoutez-le aux vinaigrettes, aux sauces, ou aux plats en fin de cuisson pour le garder presque cru.",
+        "Faites-en un élément régulier des repas plutôt qu'un geste ponctuel."
+      ],
+      "region": "Mediterranean",
+      "origin": "Vanté de l'Égypte ancienne aux athlètes grecs ; une pierre angulaire de la prévention populaire méditerranéenne.",
+      "preparationTime": "12 min",
+      "disclaimer": "De grandes quantités d'ail cru peuvent irriter l'estomac et interagir avec les anticoagulants."
+    },
+    {
+      "id": "aloe-vera-topical",
+      "title": "Gel d'aloe vera pour les brûlures légères",
+      "ailments": ["brûlures légères", "coup de soleil", "peau sèche"],
+      "ingredients": [{ "name": "feuille d'aloe vera fraîche", "quantity": "1" }],
+      "instructions": [
+        "Refroidissez d'abord la brûlure sous l'eau froide courante pendant 10 minutes.",
+        "Ouvrez une feuille d'aloe et prélevez le gel transparent à l'intérieur.",
+        "Appliquez une fine couche de gel sur la peau intacte.",
+        "Renouvelez deux à trois fois par jour."
+      ],
+      "region": "North Africa",
+      "origin": "L'aloe soigne la peau depuis l'Égypte ancienne, où on l'appelait « la plante de l'immortalité ».",
+      "preparationTime": "5 min",
+      "disclaimer": "Usage externe uniquement, sur des brûlures légères et une peau non lésée. Les brûlures graves ou avec cloques nécessitent des soins médicaux. N'ingérez pas le latex d'aloe cru."
+    }
+  ]
+}

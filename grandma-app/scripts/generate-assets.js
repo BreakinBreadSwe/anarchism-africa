@@ -184,4 +184,4 @@ write(render(1024, 0.62, false), 'icon.png');
 // Adaptive icon: Android masks the outer ~28%, so the mark sits smaller.
 write(render(1024, 0.44, true), 'adaptive-icon.png');
 write(renderSplash(1284, 2778), 'splash.png');
-write(render(48, 0.72, false), 'favicon.png');
+write(render(96, 0.72, false), 'favicon.png');

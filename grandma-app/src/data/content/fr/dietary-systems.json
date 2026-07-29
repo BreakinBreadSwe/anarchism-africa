@@ -1,0 +1,153 @@
+{
+  "category": "dietarySystems",
+  "remedies": [
+    {
+      "id": "mediterranean-pattern",
+      "title": "La tradition de la table méditerranéenne",
+      "ailments": ["soutien cardiovasculaire", "bien-être général", "longévité"],
+      "ingredients": [
+        { "name": "huile d'olive", "quantity": "comme matière grasse principale" },
+        { "name": "légumes et légumineuses", "quantity": "à presque tous les repas" },
+        { "name": "céréales complètes" },
+        { "name": "poisson", "quantity": "2 fois par semaine ou plus" },
+        { "name": "fruits et fruits à coque", "quantity": "en en-cas quotidien" }
+      ],
+      "instructions": [
+        "Cuisinez à l'huile d'olive plutôt qu'au beurre ou aux graisses dures.",
+        "Construisez les repas autour des légumes, des légumineuses et des céréales complètes, la viande en accompagnement plutôt qu'au centre.",
+        "Mangez du poisson deux fois par semaine ; gardez la viande rouge pour les occasions.",
+        "Terminez les repas par un fruit plutôt qu'un dessert sucré.",
+        "Mangez accompagné quand vous le pouvez : la table partagée fait partie de la tradition."
+      ],
+      "region": "Mediterranean",
+      "origin": "Le régime quotidien de la Crète, de l'Italie du Sud et de l'Espagne côtière tel que documenté au milieu du XXe siècle.",
+      "disclaimer": "Un mode d'alimentation, pas un traitement. Adaptez-le avec un médecin ou un diététicien si vous avez une pathologie."
+    },
+    {
+      "id": "fermented-foods",
+      "title": "Des aliments fermentés chaque jour",
+      "ailments": ["confort digestif", "soutien du microbiote"],
+      "ingredients": [
+        { "name": "yaourt, kéfir ou laban à ferments vivants" },
+        { "name": "légumes fermentés (choucroute, kimchi, torshi)" },
+        { "name": "céréales fermentées (ogi, injera, levain)" }
+      ],
+      "instructions": [
+        "Ajoutez une petite portion d'un aliment fermenté à un repas chaque jour.",
+        "Alternez entre ferments laitiers, végétaux et céréaliers au fil de la semaine.",
+        "Choisissez des ferments crus et non pasteurisés lorsque c'est sûr et possible : la chaleur tue les cultures vivantes.",
+        "Introduisez-les progressivement si vous n'y êtes pas habitué."
+      ],
+      "region": "Global",
+      "origin": "Presque chaque culture alimentaire garde un ferment : kimchi en Corée, choucroute en Europe centrale, ogi au Nigeria, laban au Levant.",
+      "disclaimer": "Les personnes immunodéprimées doivent demander un avis médical avant de consommer des ferments non pasteurisés."
+    },
+    {
+      "id": "bitter-greens",
+      "title": "Des amers avant le repas",
+      "ailments": ["digestion paresseuse", "manque d'appétit"],
+      "ingredients": [
+        { "name": "feuilles amères (roquette, pissenlit, endive ou bitterleaf africain bien préparé)", "quantity": "une petite poignée" },
+        { "name": "huile d'olive et citron", "quantity": "un filet" }
+      ],
+      "instructions": [
+        "Commencez le repas principal par une petite salade de feuilles amères, simplement assaisonnée d'huile et de citron.",
+        "Mâchez lentement : l'amertume elle-même déclenche les sucs digestifs.",
+        "Prenez-en l'habitude à votre repas le plus copieux de la journée."
+      ],
+      "region": "West Africa",
+      "origin": "De l'amaro italien à la soupe de bitterleaf nigériane, bien des traditions ouvrent la digestion par l'amertume.",
+      "disclaimer": "Les plantes de cueillette doivent être identifiées avec certitude ; dans le doute, utilisez des légumes du marché."
+    },
+    {
+      "id": "eat-the-rainbow",
+      "title": "L'assiette arc-en-ciel",
+      "ailments": ["baisse d'énergie", "bien-être général", "soutien immunitaire"],
+      "ingredients": [
+        { "name": "légumes et fruits d'au moins 4 couleurs différentes", "quantity": "chaque jour" }
+      ],
+      "instructions": [
+        "À chaque repas principal, regardez votre assiette et comptez les couleurs naturelles.",
+        "Visez quatre couleurs ou plus sur la journée : vert feuille, rouge/orange, violet/bleu, blanc/jaune.",
+        "Achetez de saison : la variété des couleurs suit les saisons sur les marchés traditionnels."
+      ],
+      "region": "Global",
+      "origin": "Une formulation moderne d'un vieux réflexe de jour de marché : un panier coloré est un panier nourrissant.",
+      "disclaimer": "Conseil général, pas un plan de traitement."
+    },
+    {
+      "id": "okinawan-hara-hachi-bu",
+      "title": "Hara hachi bu : manger à huit dixièmes",
+      "ailments": ["excès de table", "soutien à la gestion du poids", "confort digestif"],
+      "ingredients": [
+        { "name": "bols et assiettes plus petits" },
+        { "name": "légumes, patate douce, tofu et soupe", "quantity": "l'essentiel du repas" }
+      ],
+      "instructions": [
+        "Servez dans de petits bols plutôt que dans une grande assiette, et ne vous resservez pas machinalement.",
+        "Mangez lentement et reposez vos couverts entre deux bouchées.",
+        "Arrêtez-vous lorsque vous vous sentez rassasié à environ quatre-vingts pour cent : à l'aise, pas gavé.",
+        "Attendez vingt minutes avant de décider que vous en voulez encore ; la satiété arrive en retard."
+      ],
+      "region": "East Asia",
+      "origin": "Une formule d'origine confucéenne prononcée avant les repas à Okinawa, créditée comme un élément d'une culture alimentaire d'une longévité exceptionnelle.",
+      "disclaimer": "Déconseillé aux enfants, aux femmes enceintes, aux personnes en insuffisance pondérale et à toute personne ayant des antécédents de troubles alimentaires."
+    },
+    {
+      "id": "ayurvedic-six-tastes",
+      "title": "Les six saveurs à chaque repas",
+      "ailments": ["fringales", "manque d'appétit", "équilibre digestif"],
+      "ingredients": [
+        { "name": "sucré (céréales, légumes racines, lait)" },
+        { "name": "acide (citron, yaourt, tamarin)" },
+        { "name": "salé (sel, algues)" },
+        { "name": "piquant (gingembre, piment, poivre)" },
+        { "name": "amer (légumes-feuilles, curcuma, fenugrec)" },
+        { "name": "astringent (lentilles, haricots, grenade)" }
+      ],
+      "instructions": [
+        "Essayez d'inclure un élément de chacune des six saveurs dans un repas principal : un trait de citron, une pincée de sel, une feuille amère, un dal épicé.",
+        "Traditionnellement, le repas s'ouvre sur le sucré et se termine par les saveurs plus légères et astringentes.",
+        "Repérez les saveurs que vous sautez systématiquement : ce sont souvent celles que vos fringales désignent."
+      ],
+      "region": "South Asia",
+      "origin": "Les shadrasa de l'ayurveda classique, encore l'idée directrice d'un thali indien traditionnel.",
+      "disclaimer": "Un cadre pour composer les repas, pas un traitement d'une quelconque affection."
+    },
+    {
+      "id": "hydration-with-food",
+      "title": "Boire autour du repas, pas pendant",
+      "ailments": ["ballonnements", "indigestion", "reflux"],
+      "ingredients": [
+        { "name": "eau", "quantity": "un verre 30 min avant de manger" },
+        { "name": "tisane chaude", "quantity": "après le repas" }
+      ],
+      "instructions": [
+        "Buvez un grand verre d'eau environ une demi-heure avant le repas.",
+        "Ne buvez que de petites quantités pendant le repas lui-même.",
+        "Attendez que le repas se soit installé, puis terminez par une tisane chaude plutôt qu'une boisson froide.",
+        "Gardez l'eau froide pour l'entre-repas, pas pour la table."
+      ],
+      "region": "South Asia",
+      "origin": "Pratique courante aussi bien dans les foyers ayurvédiques que méditerranéens, où l'on estime que le froid éteint la digestion.",
+      "disclaimer": "Si vous prenez un médicament au cours des repas, continuez à le prendre comme votre médecin l'a prescrit."
+    },
+    {
+      "id": "seasonal-eating",
+      "title": "Manger avec la saison",
+      "ailments": ["bien-être général", "baisse d'énergie", "changements de saison"],
+      "ingredients": [
+        { "name": "ce que le marché local a en plus grande quantité et au meilleur prix cette semaine" }
+      ],
+      "instructions": [
+        "Achetez le produit dont les piles sont les plus hautes et le prix le plus bas : c'est ce qui est de saison localement.",
+        "Appuyez-vous sur des aliments frais et gorgés d'eau aux mois chauds, et sur des plats mijotés et réchauffants aux mois froids.",
+        "Conservez une partie d'une abondance — séchée, fermentée ou congelée — comme le ferait un foyer sans supermarché.",
+        "Laissez l'assiette changer quatre fois par an au lieu de rester identique."
+      ],
+      "region": "Global",
+      "origin": "Moins un régime que la condition par défaut de l'alimentation avant le transport toute l'année ; encore la colonne vertébrale du shun japonais et de la cuisine de marché méditerranéenne.",
+      "disclaimer": "Conseil général. Les besoins nutritionnels pendant la grossesse ou la maladie ne suivent pas forcément la saison."
+    }
+  ]
+}

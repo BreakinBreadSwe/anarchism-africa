@@ -1,0 +1,116 @@
+{
+  "category": "fasting",
+  "remedies": [
+    {
+      "id": "overnight-fast-12h",
+      "title": "Gentle 12-Hour Overnight Fast",
+      "ailments": ["poor sleep", "sluggish digestion", "late-night snacking"],
+      "ingredients": [
+        { "name": "water or herbal tea", "quantity": "freely during the fast" }
+      ],
+      "instructions": [
+        "Finish dinner at a regular time, e.g. 7 pm.",
+        "Take only water or plain herbal tea until breakfast 12 hours later, e.g. 7 am.",
+        "Keep the window consistent for a few weeks before judging the effect.",
+        "Break the fast with a normal, unhurried breakfast."
+      ],
+      "region": "Global",
+      "origin": "The traditional rhythm of 'break-fast' itself — most pre-industrial households simply did not eat after dark.",
+      "disclaimer": "Do not fast if you are pregnant, breastfeeding, diabetic, underweight, have a history of disordered eating, or take medication with food — consult your doctor first."
+    },
+    {
+      "id": "time-restricted-16-8",
+      "title": "16:8 Time-Restricted Eating",
+      "ailments": ["weight management support", "energy dips", "digestive rest"],
+      "ingredients": [
+        { "name": "water, unsweetened tea, or black coffee", "quantity": "during the fasting window" }
+      ],
+      "instructions": [
+        "Choose an 8-hour eating window that fits your life, e.g. 11 am to 7 pm.",
+        "Eat normal, nourishing meals inside the window — this is not a licence to overeat or a reason to undereat.",
+        "Outside the window take only water, unsweetened tea, or black coffee.",
+        "Start with 12 hours and lengthen gradually over a couple of weeks.",
+        "Stop if you feel dizzy, weak, or unwell, and eat."
+      ],
+      "region": "Global",
+      "origin": "A modern framing of eating rhythms found in monastic and agrarian traditions worldwide.",
+      "disclaimer": "Not suitable for pregnant or breastfeeding women, children, diabetics on medication, or anyone with a history of disordered eating. Medical guidance is essential if you take regular medication."
+    },
+    {
+      "id": "ramadan-style-rhythm",
+      "title": "Dawn-to-Dusk Fasting Rhythm (Ramadan-style)",
+      "ailments": ["mindful eating", "spiritual practice", "community rhythm"],
+      "ingredients": [
+        { "name": "pre-dawn meal (suhoor): slow-release foods like oats, dates, eggs" },
+        { "name": "sunset meal (iftar): water and dates first, then a balanced meal" }
+      ],
+      "instructions": [
+        "Eat a substantial, slow-release meal before dawn.",
+        "Take no food or drink during daylight hours.",
+        "Break the fast at sunset gently — traditionally with water and dates — before the main meal.",
+        "Prioritise hydration and unprocessed food between sunset and dawn.",
+        "Practise for a defined period, ideally alongside family or community."
+      ],
+      "region": "North Africa",
+      "origin": "The daylight fast of Ramadan, practised for over 1,400 years across the Muslim world.",
+      "disclaimer": "Dry fasting (no water) is demanding: the sick, pregnant, travelling, elderly and children are traditionally exempt. Anyone with a medical condition should consult a doctor — religious authorities themselves mandate these exemptions."
+    },
+    {
+      "id": "one-day-broth-rest",
+      "title": "A Single Day of Broth and Rest",
+      "ailments": ["after overindulgence", "digestive rest", "convalescence"],
+      "ingredients": [
+        { "name": "clear vegetable or bone broth", "quantity": "3–4 cups across the day" },
+        { "name": "water and herbal tea", "quantity": "freely" },
+        { "name": "a little salt in the broth" }
+      ],
+      "instructions": [
+        "Choose a quiet day with no hard physical work planned.",
+        "Take warm clear broth at your usual mealtimes instead of meals, plus water and herbal tea throughout.",
+        "Rest more than usual; this is not a day for exercise.",
+        "Return to normal eating the next morning with something gentle — porridge, soup, cooked fruit.",
+        "Do this occasionally at most, not as a weekly habit."
+      ],
+      "region": "Mediterranean",
+      "origin": "The convalescent broth day of European and Levantine households, given after feasts and during recovery from illness.",
+      "disclaimer": "One day only, for healthy adults. Not for anyone pregnant, diabetic, underweight, elderly and frail, taking regular medication, or with a history of disordered eating. Stop and eat if you feel faint."
+    },
+    {
+      "id": "ekadashi-grain-free-day",
+      "title": "Grain-Free Observance Day (Ekadashi-style)",
+      "ailments": ["mindful eating", "digestive rest", "spiritual practice"],
+      "ingredients": [
+        { "name": "fruit, milk or yogurt" },
+        { "name": "nuts and seeds" },
+        { "name": "potato or other permitted roots" },
+        { "name": "water", "quantity": "freely" }
+      ],
+      "instructions": [
+        "Pick a fixed day — traditionally the eleventh day of the lunar fortnight, twice a month.",
+        "Set aside grains and beans for the day; eat fruit, dairy, nuts and roots instead.",
+        "Keep the portions modest and the day simple.",
+        "Return to your usual meals the following morning."
+      ],
+      "region": "South Asia",
+      "origin": "Ekadashi, observed twice a lunar month across Hindu and Jain households — a partial fast rather than an outright one.",
+      "disclaimer": "A partial fast, but still a restriction: consult a doctor if you are pregnant, diabetic, or on regular medication."
+    },
+    {
+      "id": "monastic-lighter-evening",
+      "title": "The Lighter Evening Meal",
+      "ailments": ["poor sleep", "reflux", "heaviness at night"],
+      "ingredients": [
+        { "name": "soup, vegetables, or a small grain dish", "quantity": "for the evening meal" }
+      ],
+      "instructions": [
+        "Make midday the largest meal of the day and the evening one the lightest.",
+        "Finish eating at least three hours before bed.",
+        "Keep the evening meal to soup, vegetables, or a small grain dish — nothing rich or fried.",
+        "Hold the pattern for a fortnight before judging the effect on your sleep."
+      ],
+      "region": "Mediterranean",
+      "origin": "The monastic and southern-European habit of the heavy midday meal and the token supper — 'breakfast like a king, sup like a pauper'.",
+      "disclaimer": "Shifting meal timing can affect blood sugar and medication schedules. Check with your doctor if either applies to you."
+    }
+  ]
+}

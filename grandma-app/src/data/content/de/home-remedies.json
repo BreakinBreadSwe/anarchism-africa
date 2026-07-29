@@ -1,0 +1,185 @@
+{
+  "category": "homeRemedies",
+  "remedies": [
+    {
+      "id": "honey-lemon-tea",
+      "title": "Honig-Zitronen-Tee",
+      "ailments": ["Halsschmerzen", "Husten", "Erkältung"],
+      "ingredients": [
+        { "name": "Honig", "quantity": "1 EL" },
+        { "name": "Zitrone", "quantity": "1/2, ausgepresst" },
+        { "name": "heißes Wasser", "quantity": "1 Tasse" }
+      ],
+      "instructions": [
+        "Wasser aufkochen und kurz abkühlen lassen (kochend heißes Wasser zerstört die Enzyme im Honig).",
+        "Den Honig einrühren, bis er sich aufgelöst hat.",
+        "Den Zitronensaft dazugeben und umrühren.",
+        "Warm in kleinen Schlucken trinken, bis zu dreimal täglich."
+      ],
+      "region": "Global",
+      "origin": "In der Volksmedizin aller Kontinente zu finden; Honig lindert Halsbeschwerden seit dem alten Ägypten.",
+      "preparationTime": "5 Min.",
+      "disclaimer": "Kindern unter einem Jahr niemals Honig geben (Gefahr von Säuglingsbotulismus)."
+    },
+    {
+      "id": "ginger-tea-nausea",
+      "title": "Frischer Ingwertee",
+      "ailments": ["Übelkeit", "Reisekrankheit", "Verdauungsbeschwerden"],
+      "ingredients": [
+        { "name": "frische Ingwerwurzel", "quantity": "3–4 dünne Scheiben" },
+        { "name": "Wasser", "quantity": "2 Tassen" },
+        { "name": "Honig (optional)", "quantity": "nach Geschmack" }
+      ],
+      "instructions": [
+        "Den Ingwer schälen und in dünne Scheiben schneiden.",
+        "Die Scheiben 10 Minuten im Wasser leise köcheln lassen.",
+        "In eine Tasse abseihen und nach Wunsch mit Honig süßen.",
+        "Warm in kleinen Schlucken trinken."
+      ],
+      "region": "South Asia",
+      "origin": "Ein Grundpfeiler ayurvedischer und ostasiatischer Hausapotheken zur Beruhigung des Magens.",
+      "preparationTime": "15 Min.",
+      "disclaimer": "Bei Schwangerschaft oder Einnahme von Blutverdünnern vor regelmäßigem Ingwerkonsum ärztlichen Rat einholen."
+    },
+    {
+      "id": "saltwater-gargle",
+      "title": "Gurgeln mit warmem Salzwasser",
+      "ailments": ["Halsschmerzen", "Reizungen im Mund"],
+      "ingredients": [
+        { "name": "Salz", "quantity": "1/2 TL" },
+        { "name": "warmes Wasser", "quantity": "1 Tasse" }
+      ],
+      "instructions": [
+        "Das Salz vollständig in warmem (nicht heißem) Wasser auflösen.",
+        "Einen Schluck 15–30 Sekunden gurgeln, dann ausspucken. Nicht schlucken.",
+        "Wiederholen, bis die Tasse leer ist, bis zu dreimal täglich."
+      ],
+      "region": "Global",
+      "origin": "Eines der ältesten überlieferten Hausmittel, von China bis zum Mittelmeerraum.",
+      "preparationTime": "2 Min."
+    },
+    {
+      "id": "chamomile-sleep",
+      "title": "Kamillentee für die Nacht",
+      "ailments": ["Schlaflosigkeit", "Unruhe", "leichte Anspannung"],
+      "ingredients": [
+        { "name": "getrocknete Kamillenblüten", "quantity": "1 EL (oder 1 Teebeutel)" },
+        { "name": "heißes Wasser", "quantity": "1 Tasse" }
+      ],
+      "instructions": [
+        "Heißes Wasser über die Kamille gießen.",
+        "Zugedeckt 5 Minuten ziehen lassen, dann abseihen.",
+        "Etwa 30 Minuten vor dem Schlafengehen trinken."
+      ],
+      "region": "Mediterranean",
+      "origin": "Seit Jahrhunderten das beruhigende Abendgetränk in Europa und Nordafrika.",
+      "preparationTime": "7 Min.",
+      "disclaimer": "Nicht anwenden bei Allergie gegen Korbblütler (Beifuß, Ringelblume)."
+    },
+    {
+      "id": "steam-inhalation",
+      "title": "Dampfinhalation",
+      "ailments": ["Verstopfte Atemwege", "verstopfte Nase", "Druck in den Nebenhöhlen"],
+      "ingredients": [
+        { "name": "heißes Wasser", "quantity": "1 große Schüssel" },
+        { "name": "Eukalyptusblätter oder ein Tropfen Eukalyptusöl (optional)" }
+      ],
+      "instructions": [
+        "Eine Schüssel mit dampfendem (nicht kochendem) Wasser füllen und auf einen stabilen Tisch stellen.",
+        "Bei Bedarf Eukalyptus hinzufügen.",
+        "Ein Handtuch über den Kopf legen, sich in sicherem Abstand über die Schüssel beugen, die Augen schließen und 5–10 Minuten ruhig durch die Nase atmen."
+      ],
+      "region": "Global",
+      "origin": "Verbreitete Praxis in der Erkältungszeit in Europa, Afrika und Amerika.",
+      "preparationTime": "10 Min.",
+      "disclaimer": "Sicheren Abstand zum Wasser halten, um Verbrühungen zu vermeiden. Für kleine Kinder nicht empfohlen."
+    },
+    {
+      "id": "oatmeal-bath",
+      "title": "Bad mit kolloidalen Haferflocken",
+      "ailments": ["juckende Haut", "trockene Haut", "leichter Hautausschlag"],
+      "ingredients": [
+        { "name": "reine Haferflocken", "quantity": "1 Tasse, fein gemahlen" },
+        { "name": "lauwarmes Badewasser" }
+      ],
+      "instructions": [
+        "Die Haferflocken im Mixer zu feinem Pulver mahlen.",
+        "Das Pulver in ein lauwarmes Bad streuen und umrühren, bis das Wasser milchig aussieht.",
+        "15–20 Minuten baden, dann die Haut sanft trocken tupfen."
+      ],
+      "region": "North America",
+      "origin": "Eine Tradition von Siedler- und Bauernhaushalten, später von der modernen Dermatologie als hautberuhigend bestätigt.",
+      "preparationTime": "25 Min."
+    },
+    {
+      "id": "cold-compress-headache",
+      "title": "Kalter Umschlag bei Kopfschmerzen",
+      "ailments": ["Kopfschmerzen", "Anspannung"],
+      "ingredients": [
+        { "name": "sauberes Tuch" },
+        { "name": "kaltes Wasser oder eingewickelter Kühlbeutel" }
+      ],
+      "instructions": [
+        "Das Tuch in kaltes Wasser tauchen und auswringen, oder einen Kühlbeutel darin einwickeln.",
+        "Sich in einem ruhigen, abgedunkelten Raum hinlegen.",
+        "Den Umschlag 15 Minuten auf Stirn oder Nacken legen."
+      ],
+      "region": "Global",
+      "origin": "Eine nahezu universelle erste Reaktion auf Kopfschmerzen in Haushalten weltweit.",
+      "preparationTime": "5 Min.",
+      "disclaimer": "Eis niemals direkt auf die Haut legen. Bei plötzlichen, starken oder ungewöhnlichen Kopfschmerzen zum Arzt gehen."
+    },
+    {
+      "id": "peppermint-indigestion",
+      "title": "Pfefferminztee nach dem Essen",
+      "ailments": ["Verdauungsbeschwerden", "Blähungen", "Magenschmerzen"],
+      "ingredients": [
+        { "name": "frische oder getrocknete Pfefferminzblätter", "quantity": "1 EL" },
+        { "name": "heißes Wasser", "quantity": "1 Tasse" }
+      ],
+      "instructions": [
+        "Die Pfefferminze 5–7 Minuten in heißem Wasser ziehen lassen.",
+        "Abseihen und nach einer schweren Mahlzeit warm trinken."
+      ],
+      "region": "North Africa",
+      "origin": "Minztee ist der alltägliche Verdauungstrunk des Maghreb, serviert nach fast jeder Mahlzeit.",
+      "preparationTime": "8 Min.",
+      "disclaimer": "Pfefferminze kann Sodbrennen bei manchen Menschen verstärken."
+    },
+    {
+      "id": "clove-toothache",
+      "title": "Gewürznelke bei Zahnschmerzen",
+      "ailments": ["Zahnschmerzen", "wundes Zahnfleisch"],
+      "ingredients": [{ "name": "ganze Gewürznelke", "quantity": "1" }],
+      "instructions": [
+        "Eine ganze Nelke neben den schmerzenden Zahn legen.",
+        "Sie weich werden und ihre Öle abgeben lassen; bis zu 20 Minuten dort belassen.",
+        "Nach Bedarf wiederholen, während Sie einen Zahnarzttermin vereinbaren."
+      ],
+      "region": "South Asia",
+      "origin": "Das betäubende Nelkenöl (Eugenol) wird in indischer und indonesischer Tradition seit Jahrhunderten gegen Zahnschmerzen eingesetzt.",
+      "preparationTime": "1 Min.",
+      "disclaimer": "Das lindert nur den Schmerz — anhaltende Zahnschmerzen gehören zum Zahnarzt."
+    },
+    {
+      "id": "rice-water",
+      "title": "Reiswasser bei Magenverstimmung",
+      "ailments": ["Magenverstimmung", "leichter Durchfall", "Flüssigkeitsmangel"],
+      "ingredients": [
+        { "name": "weißer Reis", "quantity": "1/2 Tasse" },
+        { "name": "Wasser", "quantity": "4 Tassen" },
+        { "name": "eine Prise Salz" }
+      ],
+      "instructions": [
+        "Den Reis 15–20 Minuten im Wasser kochen.",
+        "Die trübe Flüssigkeit abgießen und handwarm abkühlen lassen.",
+        "Eine kleine Prise Salz zugeben und über den Tag verteilt schluckweise trinken.",
+        "Den Reis separat essen, wenn Sie sich danach fühlen."
+      ],
+      "region": "East Asia",
+      "origin": "Ein mildes Getränk zum Flüssigkeitsausgleich, in ganz Asien und Lateinamerika bei Magenbeschwerden verwendet.",
+      "preparationTime": "25 Min.",
+      "disclaimer": "Durchfall, der länger als zwei Tage anhält, sowie jeder Durchfall bei Säuglingen erfordert ärztliche Behandlung."
+    }
+  ]
+}

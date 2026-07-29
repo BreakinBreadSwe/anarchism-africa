@@ -1,0 +1,49 @@
+{
+  "stories": [
+    {
+      "id": "story-bissap-granny",
+      "title": "La marmite de bissap de ma grand-mère",
+      "body": "Chaque dimanche à Dakar, ma grand-mère gardait une énorme marmite de bissap au frais, à l'ombre. Dès que quelqu'un se plaignait de la chaleur ou d'un mal de tête dû au soleil, elle servait un verre avant même de dire un mot. Je le prépare toujours de la même façon, très chargé en gingembre, et je jure que l'odeur seule fait baisser ma tension. Mon médecin sait que j'en bois et me demande simplement de surveiller mes chiffres.",
+      "ailment": "chaleur et maux de tête",
+      "outcome": "Un rituel familial apaisant que je garde depuis vingt ans.",
+      "author": "Aminata, 54 ans",
+      "region": "West Africa"
+    },
+    {
+      "id": "story-honey-lemon-choir",
+      "title": "Ce qui a sauvé ma saison de chorale",
+      "body": "Je chante dans une chorale de quartier et chaque hiver ma voix lâchait avant les concerts de décembre. Une choriste plus âgée m'a dit d'arrêter de boire de l'eau froide entre les répétitions et d'apporter plutôt une gourde de miel-citron. Ça ne guérit rien — quand j'ai eu une vraie laryngite, je suis allé chez le médecin — mais pour les irritations ordinaires, ça m'a permis de chanter trois hivers de suite.",
+      "ailment": "mal de gorge",
+      "outcome": "Une gorge confortable tout au long de la saison de répétitions.",
+      "author": "Marcus, 41 ans",
+      "region": "North America"
+    },
+    {
+      "id": "story-ginger-commute",
+      "title": "Le ferry a enfin cessé de m'avoir",
+      "body": "Mon trajet quotidien comprend 40 minutes de ferry et j'ai passé des années à arriver au port l'estomac retourné. Ma belle-mère a ri et m'a tendu une petite boîte de gingembre confit à mâcher à l'embarquement. J'étais sceptique : cela semblait trop simple. Huit mois plus tard, je n'ai plus eu une seule mauvaise traversée. Les jours de gros temps, je prends encore le vrai médicament, mais le gingembre suffit pour le clapot ordinaire.",
+      "ailment": "mal des transports",
+      "outcome": "Des traversées calmes, sauf par très mauvaise mer.",
+      "author": "Ingrid, 37 ans",
+      "region": "Northern Europe"
+    },
+    {
+      "id": "story-oatmeal-eczema",
+      "title": "Une trêve dans le bain avec la peau de mon fils",
+      "body": "Notre garçon de quatre ans se grattait les jambes jusqu'au sang chaque hiver. En plus de la crème prescrite par notre pédiatre, c'est elle qui a suggéré les bains d'avoine — ce qui a rendu ma propre grand-mère triomphante, elle qui le répétait depuis un an. Deux fois par semaine, de l'avoine moulue dans une eau tiède, et l'heure du bain est passée des larmes au refus d'en sortir. La crème fait le gros du travail ; l'avoine le garde confortable entre les poussées.",
+      "ailment": "démangeaisons",
+      "outcome": "Une peau confortable entre les traitements et des bains plus calmes.",
+      "author": "Priya, 33 ans",
+      "region": "South Asia"
+    },
+    {
+      "id": "story-mint-tea-meals",
+      "title": "Ce que le thé m'a appris sur le fait de manger",
+      "body": "En visite dans la famille de mon mari à Marrakech, j'ai remarqué que personne ne quittait la table en vitesse. Les repas se terminaient par un thé à la menthe versé de haut dans de petits verres, et vingt minutes de conversation. Mes ballonnements habituels d'après-déjeuner ont disparu pendant tout le séjour. De retour chez moi, j'ai gardé le rituel : thé à la menthe, pas de téléphone, rester assise un moment. Honnêtement, je ne saurais dire si c'est la menthe ou le fait de rester assise, mais mon estomac se moque de la différence.",
+      "ailment": "ballonnements",
+      "outcome": "Une digestion confortable et une fin de repas plus lente.",
+      "author": "Claire, 45 ans",
+      "region": "North Africa"
+    }
+  ]
+}

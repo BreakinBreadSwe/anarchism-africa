@@ -1,0 +1,131 @@
+{
+  "category": "herbsRoots",
+  "remedies": [
+    {
+      "id": "hibiscus-bissap",
+      "title": "Hibiscus (Bissap / Sobolo) Tea",
+      "ailments": ["high blood pressure support", "thirst", "general wellness"],
+      "ingredients": [
+        { "name": "dried hibiscus calyces", "quantity": "1 cup" },
+        { "name": "water", "quantity": "6 cups" },
+        { "name": "fresh ginger (optional)", "quantity": "a few slices" },
+        { "name": "honey or sugar (optional)", "quantity": "to taste" }
+      ],
+      "instructions": [
+        "Rinse the dried hibiscus.",
+        "Simmer in water with ginger for 15 minutes.",
+        "Strain, sweeten lightly if desired, and serve hot or chilled."
+      ],
+      "region": "West Africa",
+      "origin": "Known as bissap in Senegal and sobolo in Ghana; the deep-red drink of gatherings across the Sahel.",
+      "preparationTime": "20 min",
+      "disclaimer": "Hibiscus can lower blood pressure — talk to your doctor if you take blood-pressure medication."
+    },
+    {
+      "id": "rooibos",
+      "title": "Rooibos (Red Bush) Tea",
+      "ailments": ["restlessness", "digestive comfort", "caffeine-free energy ritual"],
+      "ingredients": [
+        { "name": "rooibos leaves", "quantity": "1 tsp (or 1 tea bag)" },
+        { "name": "hot water", "quantity": "1 cup" }
+      ],
+      "instructions": [
+        "Steep rooibos in freshly boiled water for 5–7 minutes.",
+        "Drink plain, or with a little milk and honey as done in the Cape."
+      ],
+      "region": "Southern Africa",
+      "origin": "Harvested from the Cederberg mountains; used by Khoisan communities long before it became a worldwide tea.",
+      "preparationTime": "8 min"
+    },
+    {
+      "id": "moringa",
+      "title": "Moringa Leaf Powder",
+      "ailments": ["low energy", "nutritional support"],
+      "ingredients": [
+        { "name": "dried moringa leaf powder", "quantity": "1 tsp" },
+        { "name": "porridge, soup, or smoothie", "quantity": "1 serving" }
+      ],
+      "instructions": [
+        "Stir the moringa powder into warm (not boiling) porridge, soup, or a smoothie.",
+        "Start with a small amount — the flavour is strong and grassy.",
+        "Use a few times a week as a nutrient boost."
+      ],
+      "region": "East Africa",
+      "origin": "The 'miracle tree' of the Horn of Africa and India; leaves are dried and pounded into everyday food.",
+      "preparationTime": "2 min",
+      "disclaimer": "Pregnant women should avoid moringa root and bark; stick to the leaves and consult a doctor."
+    },
+    {
+      "id": "baobab-fruit",
+      "title": "Baobab Fruit Powder Drink",
+      "ailments": ["low energy", "digestive comfort", "vitamin C boost"],
+      "ingredients": [
+        { "name": "baobab fruit powder", "quantity": "1–2 tsp" },
+        { "name": "water or milk", "quantity": "1 cup" },
+        { "name": "honey (optional)", "quantity": "to taste" }
+      ],
+      "instructions": [
+        "Whisk the baobab powder into the liquid until smooth.",
+        "Sweeten lightly if desired and drink chilled."
+      ],
+      "region": "West Africa",
+      "origin": "The tangy pulp of the baobab ('tree of life') is a traditional refresher from Senegal to Sudan.",
+      "preparationTime": "3 min"
+    },
+    {
+      "id": "turmeric-golden-milk",
+      "title": "Turmeric Golden Milk",
+      "ailments": ["joint stiffness", "inflammation", "winter wellness"],
+      "ingredients": [
+        { "name": "ground turmeric", "quantity": "1/2 tsp" },
+        { "name": "milk (dairy or plant)", "quantity": "1 cup" },
+        { "name": "black pepper", "quantity": "a pinch" },
+        { "name": "honey", "quantity": "1 tsp" }
+      ],
+      "instructions": [
+        "Warm the milk gently in a small pot.",
+        "Whisk in turmeric and black pepper (pepper helps the body absorb turmeric).",
+        "Sweeten with honey and drink warm in the evening."
+      ],
+      "region": "South Asia",
+      "origin": "Haldi doodh, the classic Indian household drink for aches and cold season.",
+      "preparationTime": "10 min",
+      "disclaimer": "High-dose turmeric can interact with blood thinners; food amounts are generally fine."
+    },
+    {
+      "id": "garlic-daily",
+      "title": "Raw Garlic in Daily Food",
+      "ailments": ["cold prevention", "heart health support"],
+      "ingredients": [
+        { "name": "fresh garlic cloves", "quantity": "1–2 per day" }
+      ],
+      "instructions": [
+        "Crush or chop the garlic and let it rest for 10 minutes before use (this activates allicin).",
+        "Stir into dressings, dips, or food at the end of cooking to keep it close to raw.",
+        "Make it a regular part of meals rather than a one-off."
+      ],
+      "region": "Mediterranean",
+      "origin": "Praised from ancient Egypt to Greek athletes; a cornerstone of Mediterranean folk prevention.",
+      "preparationTime": "12 min",
+      "disclaimer": "Large amounts of raw garlic can upset the stomach and interact with blood thinners."
+    },
+    {
+      "id": "aloe-vera-topical",
+      "title": "Aloe Vera Gel for Minor Burns",
+      "ailments": ["minor burns", "sunburn", "dry skin"],
+      "ingredients": [
+        { "name": "fresh aloe vera leaf", "quantity": "1" }
+      ],
+      "instructions": [
+        "First cool the burn under cool running water for 10 minutes.",
+        "Slice open an aloe leaf and scoop out the clear inner gel.",
+        "Apply a thin layer of gel to the unbroken skin.",
+        "Reapply two to three times a day."
+      ],
+      "region": "North Africa",
+      "origin": "Aloe has been a skin remedy since ancient Egypt, where it was called the 'plant of immortality'.",
+      "preparationTime": "5 min",
+      "disclaimer": "For external use on minor, unbroken burns only. Serious or blistering burns need medical care. Do not ingest raw aloe latex."
+    }
+  ]
+}

@@ -1,9 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="192" height="192"
-     role="img" aria-label="ANARCHISM.AFRICA">
-  <rect width="512" height="512" fill="#000"/>
-  <g fill="none" stroke="#fff" stroke-linecap="butt" stroke-linejoin="miter">
-    <circle cx="256" cy="256" r="212" stroke-width="28"/>
-    <path d="M 150 392 L 256 100 L 362 392" stroke-width="42"/>
-    <line x1="82" y1="296" x2="430" y2="296" stroke-width="34"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="ANARCHISM.AFRICA — A inside the African continent">
+  <!-- Vectorised from the reference image: africa continent outline in
+       thin white stroke, bold block A overlaid in solid white. No
+       AI-tool watermark. Pure geometry — three white shapes over a
+       black square, scales cleanly to any size. -->
+  <rect width="1024" height="1024" fill="#000"/>
+
+  <!-- Africa continent — hand-authored single-stroke outline. Mediterranean
+       coast, Sinai notch, Horn of Africa, Gulf of Guinea concavity, Cape,
+       Senegal bulge — hits the recognisable landmarks without over-detail. -->
+  <path fill="none" stroke="#fff" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"
+    d="M 290 138 L 350 132 L 410 130 L 472 134 L 525 138 L 580 144 L 632 156 L 668 178 L 685 200 L 700 226 L 712 254 L 720 282 L 725 314 L 718 340 L 705 358 L 712 380 L 728 405 L 738 428 L 738 460 L 725 488 L 715 514 L 715 540 L 705 568 L 695 596 L 690 626 L 685 658 L 680 690 L 678 720 L 670 750 L 658 778 L 642 802 L 622 822 L 600 838 L 575 845 L 552 838 L 535 822 L 520 800 L 510 776 L 498 752 L 482 728 L 462 705 L 440 682 L 420 658 L 398 632 L 380 605 L 365 578 L 352 550 L 340 522 L 325 492 L 308 460 L 292 428 L 278 396 L 262 360 L 248 322 L 238 285 L 232 252 L 232 220 L 240 192 L 254 170 L 270 152 L 290 138 Z"/>
+
+  <!-- Madagascar — teardrop, off the southeast coast -->
+  <path fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"
+    d="M 808 660 Q 814 685 814 720 Q 812 760 800 790 Q 790 800 784 790 Q 780 770 786 740 Q 790 705 798 680 Q 802 666 808 660 Z"/>
+
+  <!-- Bold block A — two solid triangular legs meeting at apex, plus a
+       horizontal crossbar. Overlays the continent (not clipped to it)
+       so it dominates the composition the way the reference image does.
+       Inner and lower triangles are negative space (background black
+       shows through) — the defining shape of the letter A. -->
+  <polygon points="512,90 200,930 400,930" fill="#fff"/>
+  <polygon points="512,90 624,930 824,930" fill="#fff"/>
+  <rect x="310" y="560" width="404" height="60" fill="#fff"/>
 </svg>

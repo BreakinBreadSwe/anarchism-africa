@@ -12,6 +12,7 @@
 
   const ENDPOINT = '/api/africa-slides';
   let cachedSlides = null;
+  let cachedBackground = null;
 
   function esc (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
@@ -20,17 +21,18 @@
       const r = await fetch(ENDPOINT, { cache: 'no-store' });
       if (r.ok) {
         const d = await r.json();
+        cachedBackground = d.background || null;
         if (Array.isArray(d.slides)) return d.slides;
       }
     } catch {}
     return [];
   }
 
-  async function save (slides) {
+  async function save (slides, background) {
     const r = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slides })
+      body: JSON.stringify({ slides, background })
     });
     return r.ok ? { ok: true } : { ok: false, error: (await r.text()).slice(0, 200) };
   }
@@ -51,6 +53,31 @@
           <button class="btn" data-hero-preview>Preview fullscreen</button>
           <button class="btn ghost" data-hero-reload>Reload from server</button>
         </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <h3 style="margin:0 0 10px">Outside-africa background</h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
+          Renders in the space AROUND the continent silhouette. Solid colour,
+          image, gif, mp4 loop, or iframe URL (YouTube/Vimeo embed).
+        </p>
+        <form class="aa-slide-form" data-hero-bg>
+          <label>Type
+            <select name="type">
+              <option value="color">colour</option>
+              <option value="image">image</option>
+              <option value="gif">gif</option>
+              <option value="video">video / mp4</option>
+              <option value="iframe">iframe</option>
+            </select>
+          </label>
+          <label class="wide">Value
+            <input name="value" placeholder="#000000, https://…/img.jpg, https://youtube.com/embed/…" />
+          </label>
+          <label>&nbsp;<button type="button" data-hero-bg-clear style="background:transparent;color:var(--fg-dim);border:1px solid var(--line)">Clear</button></label>
+          <button type="submit">Save background</button>
+        </form>
+        <div data-hero-bg-current style="margin-top:8px;font-size:.75rem;color:var(--fg-dim)"></div>
       </div>
 
       <div class="panel" style="margin-top:14px">
@@ -87,12 +114,43 @@
     async function paint () {
       cachedSlides = await load();
       count.textContent = '(' + cachedSlides.length + ')';
+      const bgCurrent = container.querySelector('[data-hero-bg-current]');
+      if (bgCurrent) {
+        bgCurrent.textContent = cachedBackground?.value
+          ? `Current: ${cachedBackground.type} — ${cachedBackground.value}`
+          : 'Current: solid black (default)';
+      }
+      // Pre-fill the bg form with the current values
+      const bgForm = container.querySelector('[data-hero-bg]');
+      if (bgForm && cachedBackground) {
+        bgForm.type.value  = cachedBackground.type  || 'color';
+        bgForm.value.value = cachedBackground.value || '';
+      }
       if (!cachedSlides.length) {
         list.innerHTML = '<div style="color:var(--muted)">No slides yet — add one above.</div>';
         return;
       }
       list.innerHTML = cachedSlides.map((s, i) => cardHtml(s, i)).join('');
     }
+
+    // Background config handlers
+    container.querySelector('[data-hero-bg]').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const f = e.currentTarget;
+      const bg = { type: f.type.value, value: f.value.value.trim() };
+      cachedSlides = cachedSlides || await load();
+      cachedBackground = bg.value ? bg : null;
+      const r = await save(cachedSlides, cachedBackground);
+      if (!r.ok) { alert('Save failed: ' + r.error); return; }
+      await paint();
+    });
+    container.querySelector('[data-hero-bg-clear]').addEventListener('click', async () => {
+      cachedSlides = cachedSlides || await load();
+      cachedBackground = null;
+      const r = await save(cachedSlides, null);
+      if (!r.ok) { alert('Save failed: ' + r.error); return; }
+      await paint();
+    });
 
     function cardHtml (s, i) {
       const preview = s.type === 'text'
@@ -126,7 +184,7 @@
         [cachedSlides[i], cachedSlides[i+1]] = [cachedSlides[i+1], cachedSlides[i]]; changed = true;
       }
       if (changed) {
-        const r = await save(cachedSlides);
+        const r = await save(cachedSlides, cachedBackground);
         if (!r.ok) alert('Save failed: ' + r.error);
         await paint();
       }
@@ -144,7 +202,7 @@
       else                 slide.src  = value;
       cachedSlides = cachedSlides || await load();
       cachedSlides.push(slide);
-      const r = await save(cachedSlides);
+      const r = await save(cachedSlides, cachedBackground);
       if (!r.ok) { alert('Save failed: ' + r.error); return; }
       f.reset();
       f.duration.value = 3500;

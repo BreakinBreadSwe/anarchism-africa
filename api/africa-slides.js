@@ -13,8 +13,8 @@ module.exports = async function handler (req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'GET') {
-    const slides = await readSlides();
-    return res.status(200).json({ ok: true, slides });
+    const doc = await readDoc();
+    return res.status(200).json({ ok: true, slides: doc.slides, background: doc.background || null });
   }
 
   if (req.method === 'POST') {
@@ -36,7 +36,16 @@ module.exports = async function handler (req, res) {
       duration:  Math.max(500, Math.min(60000, Number(s.duration) || 3500))
     }));
 
-    const wrote = await writeSlides(clean);
+    // Optional background config for the OUTSIDE-africa layer.
+    let background = null;
+    if (body?.background && body.background.value) {
+      background = {
+        type:  String(body.background.type  || 'color').toLowerCase(),
+        value: String(body.background.value || '').slice(0, 2000)
+      };
+    }
+
+    const wrote = await writeDoc({ slides: clean, background });
     if (!wrote.ok) return res.status(500).json({ error: wrote.error });
     return res.status(200).json({ ok: true, count: clean.length });
   }
@@ -47,7 +56,7 @@ module.exports = async function handler (req, res) {
 
 /* ------- storage ------- */
 
-async function readSlides () {
+async function readDoc () {
   try {
     const { list } = require('@vercel/blob');
     const { blobs } = await list({ prefix: 'africa-slides/manifest' });
@@ -56,27 +65,26 @@ async function readSlides () {
       const r = await fetch(f.url);
       if (r.ok) {
         const d = await r.json();
-        if (Array.isArray(d.slides) && d.slides.length) return d.slides;
+        if (Array.isArray(d.slides) && d.slides.length) return { slides: d.slides, background: d.background || null };
       }
     }
   } catch {}
-  // Fallback to repo-committed seed
   try {
     const fs = require('fs');
     const path = require('path');
     const seed = path.join(process.cwd(), 'data', 'africa-slides.json');
     if (fs.existsSync(seed)) {
       const d = JSON.parse(fs.readFileSync(seed, 'utf8'));
-      if (Array.isArray(d.slides)) return d.slides;
+      if (Array.isArray(d.slides)) return { slides: d.slides, background: d.background || null };
     }
   } catch {}
-  return [];
+  return { slides: [], background: null };
 }
 
-async function writeSlides (slides) {
+async function writeDoc (doc) {
   try {
     const { put } = require('@vercel/blob');
-    const body = JSON.stringify({ updated_at: new Date().toISOString(), slides }, null, 2);
+    const body = JSON.stringify({ updated_at: new Date().toISOString(), ...doc }, null, 2);
     await put(BLOB_KEY, body, {
       access: 'public',
       contentType: 'application/json',

@@ -27,6 +27,7 @@
 
   const state = {
     slides: [],
+    background: null,             // {type: 'color'|'image'|'video', value}
     idx: 0,
     timer: null,
     startTs: 0,
@@ -48,6 +49,7 @@
       const r = await fetch(SLIDES_ENDPOINT, { cache: 'no-store' });
       if (r.ok) {
         const d = await r.json();
+        if (d.background) state.background = d.background;
         if (Array.isArray(d.slides) && d.slides.length) return d.slides;
       }
     } catch {}
@@ -55,6 +57,7 @@
       const r = await fetch(SLIDES_SEED, { cache: 'no-store' });
       if (r.ok) {
         const d = await r.json();
+        if (d.background && !state.background) state.background = d.background;
         if (Array.isArray(d.slides) && d.slides.length) return d.slides;
       }
     } catch {}
@@ -68,6 +71,7 @@
     const hero = document.createElement('div');
     hero.className = 'aa-hero';
     hero.innerHTML = `
+      <div class="aa-hero-bg" id="aa-hero-bg" aria-hidden="true"></div>
       <div class="aa-hero-stage" id="aa-hero-stage"></div>
       <div class="aa-hero-mask" aria-hidden="true"></div>
       <div class="aa-hero-progress" id="aa-hero-progress"></div>
@@ -92,6 +96,37 @@
     if (!state.stage) return;
     state.stage.innerHTML = state.slides.map((s, i) => renderSlide(s, i)).join('');
     state.progress.innerHTML = state.slides.map(() => '<span></span>').join('');
+    paintBackground();
+  }
+
+  // Outside-africa background layer. Independent of the slide stage.
+  // Accepts { type: 'color'|'image'|'gif'|'video'|'iframe', value: <string> }.
+  function paintBackground () {
+    const bg = state.hero?.querySelector('#aa-hero-bg');
+    if (!bg) return;
+    const b = state.background;
+    bg.innerHTML = '';
+    bg.style.background = '#000';
+    if (!b || !b.value) return;
+    if (b.type === 'color') {
+      bg.style.background = b.value;
+    } else if (b.type === 'image' || b.type === 'gif') {
+      bg.style.background = `#000 url("${b.value}") center/cover no-repeat`;
+    } else if (b.type === 'video' || b.type === 'mp4') {
+      const v = document.createElement('video');
+      v.src = b.value; v.muted = true; v.loop = true;
+      v.playsInline = true; v.autoplay = true;
+      v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
+      bg.appendChild(v);
+      try { v.play().catch(() => {}); } catch {}
+      attachAudioElement(v);
+    } else if (b.type === 'iframe') {
+      const f = document.createElement('iframe');
+      f.src = b.value; f.frameBorder = '0';
+      f.allow = 'autoplay; fullscreen';
+      f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0';
+      bg.appendChild(f);
+    }
   }
 
   function renderSlide (s, i) {

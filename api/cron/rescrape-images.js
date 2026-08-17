@@ -116,6 +116,17 @@ module.exports = async function handler (req, res) {
   return res.status(200).json({ ok: true, ts: Date.now(), ...summary });
 };
 
+// Social-media / platform-chrome hostnames whose "images" are almost
+// always the site's own branding (profile card, avatar, generic OG
+// placeholder) — NOT the article's own artwork. We link to those
+// platforms; we do not want to clone their chrome as our post
+// thumbnails. Any candidate matching these gets skipped and the
+// scraper falls through to the next source (body <img>).
+const SOCIAL_CHROME_HOSTS = /(^|\.)(twitter|x|facebook|fbcdn|instagram|cdninstagram|tiktok|tiktokcdn|linkedin|licdn|pinterest|pinimg|threads|snapchat|reddit|redditstatic|youtube-nocookie|ytimg|discord|discordapp|substackcdn)\.(com|net|org|co|tv)$/i;
+function isSocialChrome (url) {
+  try { return SOCIAL_CHROME_HOSTS.test(new URL(url).hostname); } catch { return false; }
+}
+
 /* Scrape a page for a good thumbnail. Tries in order:
      1. og:image
      2. twitter:image
@@ -130,7 +141,9 @@ module.exports = async function handler (req, res) {
 async function scrapeImage (url, opts = {}) {
   if (!url || !/^https?:\/\//i.test(url)) return null;
   const { avoidUrl } = opts;
-  const skip = (candidate) => !candidate || (avoidUrl && candidate === avoidUrl);
+  const skip = (candidate) => !candidate
+    || (avoidUrl && candidate === avoidUrl)
+    || isSocialChrome(candidate);   // reject platform chrome — we LINK to them
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 5000);
   try {

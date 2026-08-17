@@ -1,0 +1,11 @@
+{
+  "$comment": "Slides for the Africa-shaped loading screen. Type + src; text-type uses `text` as the display string. Duration in ms. Loop wraps around.",
+  "updated_at": "2026-07-14",
+  "slides": [
+    { "type": "text",  "text": "ANARCHISM.AFRICA",          "duration": 3500, "className": "aa-huge" },
+    { "type": "text",  "text": "afrofuturist · anti-state · pan-african", "duration": 3500 },
+    { "type": "text",  "text": "no gods · no masters · no borders",      "duration": 3500 },
+    { "type": "text",  "text": "a living archive",           "duration": 3000 },
+    { "type": "text",  "text": "films · articles · sound · events · books · community", "duration": 4000 }
+  ]
+}

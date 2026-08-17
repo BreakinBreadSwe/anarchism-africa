@@ -60,6 +60,7 @@
     if (name === 'articlelab')   window.ArticleLab?.render();
     if (name === 'merchlab')     window.MerchLab?.render();
     if (name === 'marklab')      window.MarkLab?.render();
+    if (name === 'hero')         window.AfricaHeroCMS?.render(document.getElementById('view-hero'));
     if (name === 'marklab')      window.MarkLab?.render();
     if (name === 'articlelab')   window.ArticleLab?.render();
     if (name === 'studio') { window.MerchStudio?.render({ prevTab: _lastTab }); return; }

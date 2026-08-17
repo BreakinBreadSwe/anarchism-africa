@@ -1,0 +1,207 @@
+/* ANARCHISM.AFRICA — fullscreen Africa-shaped hero / loading screen
+ *
+ * Layout: fixed overlay covering the viewport. A single sub-element
+ * carries the SVG africa map as a CSS mask; anything painted on that
+ * sub-element is visible ONLY through the continent silhouette.
+ * Everything outside the silhouette shows the .aa-hero background
+ * (default: solid black).
+ *
+ * Slideshow: `.aa-hero-stage > .aa-slide` layers are absolutely
+ * positioned; JS toggles .is-active on one at a time and fades between.
+ *
+ * Audio reactivity: `--aa-hero-level` is set by js/africa-hero.js from
+ * a Web Audio AnalyserNode wired to the mini-player. Everything that
+ * should "pump like a woofer" reads this custom property — a single
+ * source of truth means all reactive layers stay in phase.
+ */
+
+.aa-hero {
+  position: fixed; inset: 0;
+  z-index: 4000;                  /* above everything except the auth modal */
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  --aa-hero-level: 0;             /* 0..1 audio energy, driven by JS */
+  --aa-hero-accent: #ffd700;
+  transition: opacity .5s ease, visibility 0s linear .5s;
+}
+.aa-hero.is-hidden {
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+
+/* The mask container. Height/width fill the viewport; the SVG mask
+   automatically scales to preserve the africa silhouette aspect ratio. */
+.aa-hero-mask {
+  position: absolute; inset: 0;
+  background: #000;
+  /* SVG-as-mask. luminance mode: white = opaque, black = transparent. */
+  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+  -webkit-mask-mode: luminance;
+          mask-mode: luminance;
+  /* Woofer pulse — scale up subtly on audio energy */
+  transform: scale(calc(1 + var(--aa-hero-level) * 0.06));
+  transition: transform 80ms linear;
+  will-change: transform;
+}
+
+/* Slideshow stage — sits under the mask so only africa-shaped area shows. */
+.aa-hero-stage {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+.aa-slide {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 600ms ease;
+  color: #fff;
+  text-align: center;
+  padding: 8vw;
+  box-sizing: border-box;
+  /* Brightness pulse — react to audio */
+  filter: brightness(calc(1 + var(--aa-hero-level) * 0.4));
+}
+.aa-slide.is-active { opacity: 1; }
+.aa-slide img,
+.aa-slide video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.aa-slide.type-text {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(2rem, 7vw, 6rem);
+  letter-spacing: .04em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(0,0,0,.85);
+}
+.aa-slide.type-text.aa-huge {
+  font-size: clamp(3rem, 12vw, 10rem);
+  letter-spacing: .02em;
+}
+
+/* Progress bar at the very bottom — one bar per slide, current fills */
+.aa-hero-progress {
+  position: absolute; left: 6vw; right: 6vw; bottom: 5vh;
+  display: flex; gap: 6px;
+  z-index: 2;
+}
+.aa-hero-progress span {
+  flex: 1 1 0; height: 2px;
+  background: rgba(255,255,255,.18);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.aa-hero-progress span::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--aa-hero-accent, #fff);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 80ms linear;
+}
+.aa-hero-progress span.is-done::after   { transform: scaleX(1); transition: none; }
+.aa-hero-progress span.is-active::after { transform: scaleX(var(--aa-slide-progress, 0)); }
+
+/* Skip / enter buttons — bottom right */
+.aa-hero-actions {
+  position: absolute; right: 6vw; bottom: 8vh;
+  z-index: 3;
+  display: flex; gap: 10px;
+}
+.aa-hero-actions button {
+  background: transparent; color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 99px; padding: 10px 18px;
+  font: 700 .78rem 'Space Grotesk', sans-serif;
+  letter-spacing: .18em; text-transform: uppercase;
+  cursor: pointer; backdrop-filter: blur(6px);
+  transition: background .15s, border-color .15s, color .15s;
+}
+.aa-hero-actions button:hover {
+  background: #fff; color: #000; border-color: #fff;
+}
+
+/* Fallback for browsers with no CSS mask (very rare — old Firefox).
+   Show the SVG as an <img> centered over the stage. */
+@supports not (mask-image: url('/icons/africa-mask.svg')) {
+  .aa-hero-mask { display: none; }
+  .aa-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url('/icons/africa-mask.svg') center / contain no-repeat;
+    filter: invert(1);
+    pointer-events: none;
+  }
+}
+
+/* CMS panel in admin — grid of slide cards + add form */
+.aa-slides-cms {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.aa-slides-cms .slide-card {
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.aa-slides-cms .slide-preview {
+  aspect-ratio: 16/10;
+  background: #000 center / cover no-repeat;
+  border: 1px solid var(--line); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; text-align: center; padding: 8px;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1rem; letter-spacing: .04em; text-transform: uppercase;
+  overflow: hidden;
+}
+.aa-slides-cms .slide-preview img,
+.aa-slides-cms .slide-preview video {
+  max-width: 100%; max-height: 100%; object-fit: cover;
+}
+.aa-slides-cms .slide-meta {
+  color: var(--fg-dim); font-size: .72rem;
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.aa-slides-cms .slide-actions {
+  display: flex; gap: 6px;
+}
+.aa-slides-cms .slide-actions button {
+  flex: 1 1 0;
+  background: transparent; color: var(--fg-dim);
+  border: 1px solid var(--line); border-radius: 6px;
+  padding: 6px 8px; font: 500 .72rem 'Space Grotesk', sans-serif;
+  cursor: pointer;
+}
+.aa-slides-cms .slide-actions button:hover {
+  color: var(--fg); border-color: var(--fg);
+}
+.aa-slides-cms .slide-actions button.danger { color: #ff6b6b; }
+
+.aa-slide-form {
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: 10px; padding: 16px;
+  display: grid; gap: 10px;
+  grid-template-columns: 130px 1fr 90px auto;
+  align-items: end;
+}
+.aa-slide-form label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: .72rem; color: var(--fg-dim);
+}
+.aa-slide-form label.wide { grid-column: 1 / 4; }
+.aa-slide-form input,
+.aa-slide-form select {
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line); border-radius: 6px;
+  padding: 8px 10px; font: inherit;
+}
+.aa-slide-form button {
+  background: var(--fg); color: var(--bg);
+  border: 0; border-radius: 6px; padding: 10px 16px;
+  font: 700 .78rem 'Space Grotesk', sans-serif;
+  letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+}

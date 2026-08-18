@@ -225,3 +225,128 @@
   font: 700 .78rem 'Space Grotesk', sans-serif;
   letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
 }
+
+/* ============================================================
+ * HOME PAGE — AA-masked mini hero (js/aa-home-mask.js)
+ * Sits at the top of #view-home. Africa continent is a WINDOW;
+ * everything visible through it is the slideshow beneath.
+ * ============================================================ */
+.aa-home-mask {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 62vh;
+  min-height: 260px;
+  margin: 0 0 32px;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+}
+.aa-hm-stage {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+.aa-hm-stage .aa-hm-slide {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity 700ms ease;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; text-align: center;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.4rem, 3.5vw, 3rem);
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 6vw; box-sizing: border-box;
+}
+.aa-hm-stage .aa-hm-slide.is-active { opacity: 1; }
+.aa-hm-stage .aa-hm-slide.aa-hm-huge { font-size: clamp(2.2rem, 6vw, 5rem); }
+.aa-hm-stage img,
+.aa-hm-stage video,
+.aa-hm-stage iframe {
+  width: 100%; height: 100%; object-fit: cover; display: block; border: 0;
+}
+/* The africa-shaped SHUTTER on top: black EVERYWHERE except through the
+   continent silhouette. Use the mask svg as an inverse — the ocean gets
+   the shutter, africa is see-through. Achieved by masking a full-canvas
+   black rect with the INVERSE of africa-mask.svg (transparent inside
+   africa). We fake the inverse in CSS by using mask-composite: exclude
+   on the whole hero — where the mask is opaque (africa), the shutter
+   is HIDDEN; elsewhere the shutter is visible. */
+.aa-hm-shape {
+  position: absolute; inset: 0;
+  background: #000;                    /* the shutter colour */
+  pointer-events: none;
+  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+  -webkit-mask-mode: luminance;
+          mask-mode: luminance;
+  /* Invert: where luminance is HIGH (africa=white in the mask) → visible
+     region of THIS shutter should be TRANSPARENT. mask-composite:exclude
+     flips it. Then a normal black bg would show through africa — we
+     don't want that. Simpler approach below: paint the shutter as a
+     radial ring using a filter. Kept as-is; the desired 'window' effect
+     is instead produced by the stage BEING sized to africa via the
+     ::before / ::after wrappers on modern browsers. */
+  display: none;   /* Deprecated in favor of the ::before frame below */
+}
+/* Africa-shaped WINDOW: an SVG overlaid over the stage that is BLACK
+   everywhere except inside africa (where it's transparent). Built as
+   a data URL with the africa silhouette punched OUT of a large black
+   rect via fill-rule=evenodd. Sits above the stage and below the UI. */
+.aa-home-mask::after {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: url('/icons/africa-hero-cutout.svg') center / cover no-repeat;
+}
+.aa-hm-progress {
+  position: absolute; left: 4%; right: 4%; bottom: 14px;
+  display: flex; gap: 4px; z-index: 3;
+}
+.aa-hm-progress span {
+  flex: 1 1 0; height: 2px;
+  background: rgba(255,255,255,.2);
+  border-radius: 2px; overflow: hidden;
+  position: relative;
+}
+.aa-hm-progress span.is-done    { background: #fff; }
+.aa-hm-progress span.is-active  { background: color-mix(in srgb, #fff 60%, transparent); }
+
+/* ============================================================
+ * FOOTER — RANDOM RADIO button (js/random-radio.js)
+ * Bottom-left floating pill, above the bottombar on mobile.
+ * ============================================================ */
+.aa-random-radio {
+  position: fixed;
+  left: 12px;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));  /* above the mobile bottombar */
+  z-index: 34;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 10px;
+  background: #000; color: #fff;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 99px;
+  font: 700 .68rem 'JetBrains Mono', monospace;
+  letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: background .15s, color .15s, border-color .15s, transform .15s;
+  box-shadow: 0 4px 14px rgba(0,0,0,.4);
+}
+.aa-random-radio:hover {
+  background: var(--accent, #ffd700); color: #000; border-color: var(--accent, #ffd700);
+  transform: translateY(-1px);
+}
+.aa-random-radio .glyph { display: inline-flex; width: 18px; height: 18px; }
+.aa-random-radio .lbl { display: inline-block; }
+/* On desktop the mobile bottombar is hidden — anchor to bottom edge instead. */
+@media (min-width: 769px) {
+  .aa-random-radio { bottom: 16px; }
+  body.mp-active .aa-random-radio { bottom: 84px; }  /* lift above mini-player */
+}
+/* When the mini-player is docked above the bottombar on mobile, lift the
+   radio button above the player too. */
+@media (max-width: 768px) {
+  body.mp-active .aa-random-radio { bottom: calc(140px + env(safe-area-inset-bottom, 0px)); }
+}

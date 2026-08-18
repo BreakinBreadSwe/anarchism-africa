@@ -7,7 +7,7 @@
  *   - Static assets (CSS/JS/SVG/PNG/fonts): stale-while-revalidate.
  *   - /api/* + POSTs: never intercepted (live-only).
  */
-const CACHE = 'aa-shell-v30';   // bump on every shell change (v28: africa-hero fullscreen loading)
+const CACHE = 'aa-shell-v31';   // bump on every shell change (v31: home-mask + random-radio)
 
 const SHELL = [
   '/',

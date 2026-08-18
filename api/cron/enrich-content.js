@@ -147,8 +147,15 @@ function extractBody (html) {
   return text.length > 200 ? text.slice(0, 20_000) : null;
 }
 
+// Platform-chrome hosts whose images are branding not editorial art.
+// Same list as api/cron/rescrape-images.js — keep in sync.
+const SOCIAL_CHROME_HOSTS = /(^|\.)(twitter|x|facebook|fbcdn|instagram|cdninstagram|tiktok|tiktokcdn|linkedin|licdn|pinterest|pinimg|threads|snapchat|reddit|redditstatic|youtube-nocookie|ytimg|discord|discordapp|substackcdn)\.(com|net|org|co|tv)$/i;
+function isSocialChromeHost (url) {
+  try { return SOCIAL_CHROME_HOSTS.test(new URL(url).hostname); } catch { return false; }
+}
+
 /* All <img> tags with declared dimensions ≥400px or a hero-class hint.
-   Dedupes by URL, skips icons/avatars/spacers/SVG/GIF. */
+   Dedupes by URL, skips icons/avatars/spacers/SVG/GIF/social-chrome hosts. */
 function extractGallery (html, base) {
   const gallery = [];
   const seen = new Set();
@@ -161,6 +168,10 @@ function extractGallery (html, base) {
     if (!src) continue;
     const abs = toAbsolute(src.trim(), base);
     if (!abs || seen.has(abs)) continue;
+    // Skip platform chrome — instagram profile pics, twitter cards, etc.
+    // We're linking OUT to those platforms; don't clone their branding into
+    // the AA article gallery.
+    if (isSocialChromeHost(abs)) continue;
     if (/\/(icons?|avatars?|logos?|badges?|sprites?|spacer|1x1|tracking|pixel)\b/i.test(abs)) continue;
     if (/\.(svg|gif)(\?|$)/i.test(abs)) continue;
     const w = parseInt((tag.match(/\bwidth=["']?(\d+)/i) || [, '0'])[1], 10);
@@ -175,29 +186,74 @@ function extractGallery (html, base) {
   return gallery;
 }
 
-/* All embedded videos (YouTube + Vimeo). Returns [{ platform, id, url }]. */
+/* Embedded media (video + audio). Returns [{ platform, id, url, kind }].
+ * kind is 'video' or 'audio' so item-page.js can render the appropriate
+ * <iframe>. Covers YouTube, Vimeo, Dailymotion, PeerTube, SoundCloud,
+ * Bandcamp, Spotify — the main platforms afro-anarchist writers embed. */
 function extractEmbeds (html) {
   const embeds = [];
   const seen = new Set();
-  // YouTube — iframe embed URLs + inline youtu.be links.
+  const add = (key, payload) => { if (!seen.has(key)) { embeds.push(payload); seen.add(key); } };
+  let m;
+
+  // ---- VIDEO --------------------------------------------------------------
+  // YouTube: iframe embeds + shortened + watch links
   const ytIframe = /<iframe[^>]+src=["'](?:https?:)?\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/embed\/([a-zA-Z0-9_-]{6,20})/gi;
   const ytLink   = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{6,20})/gi;
-  let m;
-  while ((m = ytIframe.exec(html)) !== null) {
-    if (!seen.has(m[1])) { embeds.push({ platform: 'youtube', id: m[1], url: `https://youtu.be/${m[1]}` }); seen.add(m[1]); }
-  }
-  while ((m = ytLink.exec(html)) !== null) {
-    if (!seen.has(m[1])) { embeds.push({ platform: 'youtube', id: m[1], url: `https://youtu.be/${m[1]}` }); seen.add(m[1]); }
-  }
+  while ((m = ytIframe.exec(html)) !== null) add('yt:' + m[1], { platform: 'youtube', kind: 'video', id: m[1], url: `https://youtu.be/${m[1]}` });
+  while ((m = ytLink.exec(html))   !== null) add('yt:' + m[1], { platform: 'youtube', kind: 'video', id: m[1], url: `https://youtu.be/${m[1]}` });
+
   // Vimeo
   const vimeoIframe = /<iframe[^>]+src=["'](?:https?:)?\/\/player\.vimeo\.com\/video\/(\d+)/gi;
   const vimeoLink   = /https?:\/\/(?:www\.)?vimeo\.com\/(\d+)/gi;
-  while ((m = vimeoIframe.exec(html)) !== null) {
-    if (!seen.has('v' + m[1])) { embeds.push({ platform: 'vimeo', id: m[1], url: `https://vimeo.com/${m[1]}` }); seen.add('v' + m[1]); }
+  while ((m = vimeoIframe.exec(html)) !== null) add('v:' + m[1], { platform: 'vimeo', kind: 'video', id: m[1], url: `https://vimeo.com/${m[1]}` });
+  while ((m = vimeoLink.exec(html))   !== null) add('v:' + m[1], { platform: 'vimeo', kind: 'video', id: m[1], url: `https://vimeo.com/${m[1]}` });
+
+  // Dailymotion
+  const dmIframe = /<iframe[^>]+src=["'](?:https?:)?\/\/(?:www\.)?dailymotion\.com\/embed\/video\/([a-zA-Z0-9]+)/gi;
+  const dmLink   = /https?:\/\/(?:www\.)?dailymotion\.com\/video\/([a-zA-Z0-9]+)/gi;
+  while ((m = dmIframe.exec(html)) !== null) add('dm:' + m[1], { platform: 'dailymotion', kind: 'video', id: m[1], url: `https://www.dailymotion.com/video/${m[1]}` });
+  while ((m = dmLink.exec(html))   !== null) add('dm:' + m[1], { platform: 'dailymotion', kind: 'video', id: m[1], url: `https://www.dailymotion.com/video/${m[1]}` });
+
+  // PeerTube (federated — iframes point to arbitrary hosts, capture full URL)
+  const ptIframe = /<iframe[^>]+src=["']((?:https?:)?\/\/[^"'\/]+\/videos\/embed\/[a-zA-Z0-9-]+)["']/gi;
+  while ((m = ptIframe.exec(html)) !== null) {
+    const url = m[1].startsWith('//') ? 'https:' + m[1] : m[1];
+    add('pt:' + url, { platform: 'peertube', kind: 'video', url });
   }
-  while ((m = vimeoLink.exec(html)) !== null) {
-    if (!seen.has('v' + m[1])) { embeds.push({ platform: 'vimeo', id: m[1], url: `https://vimeo.com/${m[1]}` }); seen.add('v' + m[1]); }
+
+  // ---- AUDIO --------------------------------------------------------------
+  // SoundCloud: player iframes + track/set page links
+  const scIframe = /<iframe[^>]+src=["'](?:https?:)?\/\/w\.soundcloud\.com\/player\/\?url=([^"'&]+)/gi;
+  const scLink   = /https?:\/\/(?:www\.)?soundcloud\.com\/([a-zA-Z0-9_\-\/]+)/gi;
+  while ((m = scIframe.exec(html)) !== null) {
+    const url = decodeURIComponent(m[1]);
+    add('sc:' + url, { platform: 'soundcloud', kind: 'audio', url });
   }
+  while ((m = scLink.exec(html)) !== null) {
+    const url = `https://soundcloud.com/${m[1]}`;
+    add('sc:' + url, { platform: 'soundcloud', kind: 'audio', url });
+  }
+
+  // Bandcamp: EmbeddedPlayer iframes + album/track page links
+  const bcIframe = /<iframe[^>]+src=["'](?:https?:)?\/\/bandcamp\.com\/EmbeddedPlayer\/[^"']+["']/gi;
+  const bcLink   = /https?:\/\/[a-zA-Z0-9-]+\.bandcamp\.com\/(?:album|track)\/[a-zA-Z0-9_-]+/gi;
+  while ((m = bcIframe.exec(html)) !== null) {
+    const src = m[0].match(/src=["']([^"']+)/)[1];
+    const url = src.startsWith('//') ? 'https:' + src : src;
+    add('bc:' + url, { platform: 'bandcamp', kind: 'audio', url });
+  }
+  while ((m = bcLink.exec(html)) !== null) add('bc:' + m[0], { platform: 'bandcamp', kind: 'audio', url: m[0] });
+
+  // Spotify: iframe embeds + open.spotify.com links (track / episode / album / playlist)
+  const spIframe = /<iframe[^>]+src=["']((?:https?:)?\/\/open\.spotify\.com\/embed\/[a-z]+\/[a-zA-Z0-9]+)/gi;
+  const spLink   = /https?:\/\/open\.spotify\.com\/(?:track|episode|album|playlist|show)\/([a-zA-Z0-9]+)/gi;
+  while ((m = spIframe.exec(html)) !== null) {
+    const url = m[1].startsWith('//') ? 'https:' + m[1] : m[1];
+    add('sp:' + url, { platform: 'spotify', kind: 'audio', url });
+  }
+  while ((m = spLink.exec(html)) !== null) add('sp:' + m[1], { platform: 'spotify', kind: 'audio', url: m[0] });
+
   return embeds;
 }
 

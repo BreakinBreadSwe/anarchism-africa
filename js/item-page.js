@@ -273,16 +273,45 @@
     return `<section class="item-embeds">
       <h3 class="item-section-h">Watch &amp; listen</h3>
       ${embeds.map(e => {
-        if (e.url && /youtube\.com|youtu\.be/.test(e.url)) {
-          const id = (e.url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/) || [])[1];
+        const u = e.url || '';
+        // ---- VIDEO ----
+        if (/youtube\.com|youtu\.be/.test(u)) {
+          const id = (u.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/) || [])[1];
           if (id) return `<div class="item-embed video"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
         }
-        if (e.url && /vimeo\.com/.test(e.url)) {
-          const id = (e.url.match(/vimeo\.com\/(\d+)/) || [])[1];
+        if (/vimeo\.com/.test(u)) {
+          const id = (u.match(/vimeo\.com\/(\d+)/) || [])[1];
           if (id) return `<div class="item-embed video"><iframe src="https://player.vimeo.com/video/${id}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
         }
-        if (e.url) return `<div class="item-embed"><a href="${escapeHTML(e.url)}" target="_blank" rel="noopener" class="btn ghost">Open ${escapeHTML(e.platform || 'link')} ↗</a><span class="mono">${escapeHTML(e.why || '')}</span></div>`;
-        // suggestion-only (no URL yet)
+        if (/dailymotion\.com/.test(u)) {
+          const id = (u.match(/dailymotion\.com\/(?:video|embed\/video)\/([a-zA-Z0-9]+)/) || [])[1];
+          if (id) return `<div class="item-embed video"><iframe src="https://www.dailymotion.com/embed/video/${id}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
+        }
+        if (e.platform === 'peertube' || /\/videos\/(embed|watch)\//.test(u)) {
+          const embed = u.replace('/videos/watch/', '/videos/embed/');
+          return `<div class="item-embed video"><iframe src="${escapeHTML(embed)}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups"></iframe></div>`;
+        }
+        // ---- AUDIO ----
+        if (/soundcloud\.com/.test(u)) {
+          const src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(u) + '&color=%23ffd700&auto_play=false&hide_related=true&show_comments=false';
+          return `<div class="item-embed audio"><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="${escapeHTML(src)}"></iframe></div>`;
+        }
+        if (/bandcamp\.com\/EmbeddedPlayer/.test(u)) {
+          return `<div class="item-embed audio"><iframe src="${escapeHTML(u)}" width="100%" height="120" seamless></iframe></div>`;
+        }
+        if (/bandcamp\.com\/(album|track)\//.test(u)) {
+          return `<div class="item-embed audio"><a href="${escapeHTML(u)}" target="_blank" rel="noopener" class="btn ghost">Open on Bandcamp ↗</a></div>`;
+        }
+        if (/open\.spotify\.com\/embed/.test(u)) {
+          return `<div class="item-embed audio"><iframe src="${escapeHTML(u)}" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>`;
+        }
+        if (/open\.spotify\.com\/(track|episode|album|playlist|show)\//.test(u)) {
+          const m = u.match(/open\.spotify\.com\/(track|episode|album|playlist|show)\/([a-zA-Z0-9]+)/);
+          if (m) return `<div class="item-embed audio"><iframe src="https://open.spotify.com/embed/${m[1]}/${m[2]}" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>`;
+        }
+        // Generic linkout
+        if (u) return `<div class="item-embed"><a href="${escapeHTML(u)}" target="_blank" rel="noopener" class="btn ghost">Open ${escapeHTML(e.platform || 'link')} ↗</a><span class="mono">${escapeHTML(e.why || '')}</span></div>`;
+        // Placeholder — AI drafts sometimes queue an embed suggestion without a URL yet
         return `<div class="item-embed placeholder mono"><b>${escapeHTML((e.kind || 'video').toUpperCase())}</b> · ${escapeHTML(e.platform || '')} · "${escapeHTML(e.search_query || '')}"<small>${escapeHTML(e.why || '')}</small></div>`;
       }).join('')}
     </section>`;

@@ -233,15 +233,25 @@
  * ============================================================ */
 .aa-home-mask {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  max-height: 62vh;
-  min-height: 260px;
-  margin: 0 0 32px;
+  /* Fill the viewport width AND height (minus topbar + bottom chrome).
+     Bleed outside the padded main so the mask lives edge-to-edge like a
+     traditional hero, not a rounded card. */
+  width: 100vw;
+  height: 100vh;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: 0;
+  margin-bottom: 32px;
   background: #000;
-  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  border-radius: 0;
+  --aa-hm-level: 0;              /* 0..1 audio energy, driven by JS */
+}
+/* When the mini-player is docked, subtract its height so the hero
+   doesn't hide behind it. */
+body.mp-active .aa-home-mask { height: calc(100vh - 116px); }
+@media (min-width: 769px) {
+  body.mp-active .aa-home-mask { height: calc(100vh - 68px); }
 }
 .aa-hm-stage {
   position: absolute; inset: 0;
@@ -298,11 +308,23 @@
   content: '';
   position: absolute; inset: 0;
   pointer-events: none;
-  /* contain (not cover) — preserves the entire africa silhouette without
-     cropping. The cutout SVG's africa is tight to its viewBox after the
-     polarity/crop rebuild, so 'contain' fits africa to the panel
-     edge-to-edge in whichever axis is limiting. */
+  /* contain preserves the entire africa silhouette without cropping.
+     The cutout SVG has africa tight to its viewBox, so 'contain'
+     fits africa to the viewport edge-to-edge in whichever axis limits. */
   background: url('/icons/africa-hero-cutout.svg') center / contain no-repeat;
+  /* Woofer pulse — subtle scale on audio energy, keeps the shutter locked
+     to the same rhythm as the slide stage brightness pulse below. */
+  transform: scale(calc(1 + var(--aa-hm-level) * 0.05));
+  transform-origin: center center;
+  transition: transform 80ms linear;
+  will-change: transform;
+}
+/* Slides brighten in sync with audio energy — mirrors the fullscreen
+   loading hero's woofer effect. Both use --aa-hm-level (local scope
+   on .aa-home-mask) driven by the same Web Audio analyser as the
+   loading hero via window.AA.hero.attachAudio(). */
+.aa-home-mask .aa-hm-slide {
+  filter: brightness(calc(1 + var(--aa-hm-level) * 0.35));
 }
 .aa-hm-progress {
   position: absolute; left: 4%; right: 4%; bottom: 14px;

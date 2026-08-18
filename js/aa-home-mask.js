@@ -194,6 +194,42 @@
         last = performance.now();
       }
     }, 200);
+    startWooferLoop();
+  }
+
+  // Audio reactivity — piggyback on window.AA.hero's Web Audio analyser
+  // (created by the loading hero) so we don't spin up a second AudioContext.
+  // Every 2s attach any newly-created <audio>/<video> so mini-player track
+  // changes and video slides feed the woofer too.
+  function startWooferLoop () {
+    // Prime: publish the loading hero's --aa-hero-level onto our local var.
+    // The loading hero already runs a rAF loop that reads the analyser and
+    // sets that variable on the .aa-hero element; we mirror it here.
+    const el = document.getElementById('aa-home-mask');
+    if (!el) return;
+    const heroRoot = () => document.querySelector('.aa-hero');
+    function tick () {
+      // Prefer the loading hero's live level; fall back to 0.
+      const src = heroRoot();
+      let level = 0;
+      if (src) {
+        const v = getComputedStyle(src).getPropertyValue('--aa-hero-level');
+        const n = parseFloat(v);
+        if (!Number.isNaN(n)) level = n;
+      }
+      el.style.setProperty('--aa-hm-level', level.toFixed(3));
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    // Also ask the loading hero to attach any <audio>/<video> on the page,
+    // in case it hasn't booted yet (order-of-load is non-deterministic).
+    setInterval(() => {
+      if (window.AA?.hero?.attachAudio) {
+        document.querySelectorAll('audio, video').forEach(a => {
+          try { window.AA.hero.attachAudio(a); } catch {}
+        });
+      }
+    }, 2000);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);

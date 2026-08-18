@@ -298,7 +298,11 @@
   content: '';
   position: absolute; inset: 0;
   pointer-events: none;
-  background: url('/icons/africa-hero-cutout.svg') center / cover no-repeat;
+  /* contain (not cover) — preserves the entire africa silhouette without
+     cropping. The cutout SVG's africa is tight to its viewBox after the
+     polarity/crop rebuild, so 'contain' fits africa to the panel
+     edge-to-edge in whichever axis is limiting. */
+  background: url('/icons/africa-hero-cutout.svg') center / contain no-repeat;
 }
 .aa-hm-progress {
   position: absolute; left: 4%; right: 4%; bottom: 14px;

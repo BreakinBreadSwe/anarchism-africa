@@ -173,6 +173,38 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
+  // Rail tooltips: hide native browser tooltips when the rail is EXPANDED
+  // (labels are already visible next to each icon, so the title=... tooltip
+  // is redundant + covers the label). Restore when the rail collapses back
+  // to the icon-only strip — that's when the tooltip is actually useful.
+  // We stash the original title on data-aa-title and swap it in/out so the
+  // source of truth stays intact.
+  (function () {
+    const rail = document.getElementById('rail') || document.querySelector('.rail');
+    if (!rail) return;
+    const items = () => rail.querySelectorAll('[title], [data-aa-title]');
+    function stash () {
+      items().forEach(el => {
+        const t = el.getAttribute('title');
+        if (t) { el.setAttribute('data-aa-title', t); el.removeAttribute('title'); }
+      });
+    }
+    function restore () {
+      items().forEach(el => {
+        const t = el.getAttribute('data-aa-title');
+        if (t && !el.hasAttribute('title')) el.setAttribute('title', t);
+      });
+    }
+    function sync () {
+      if (rail.classList.contains('expanded')) stash();
+      else restore();
+    }
+    // Watch class-attribute changes on the rail. Cheap — only fires when the
+    // 'expanded' class is added/removed.
+    new MutationObserver(sync).observe(rail, { attributes: true, attributeFilter: ['class'] });
+    sync();
+  })();
+
   // Re-render favorites whenever the wishlist changes
   document.addEventListener('aa:wishlist:change', () => {
     if (document.getElementById('aa-mobile-menu')?.classList.contains('open')) renderFavs();

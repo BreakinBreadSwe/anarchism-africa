@@ -2377,8 +2377,11 @@ section.view { padding: 16px; }
   text-transform: uppercase;
   color: var(--fg-dim);
 }
-/* When the rail is expanded the label appears next to the logo */
-.rail.expanded .rail-menu-toggle { justify-content: flex-start; padding: 0 12px; }
+/* When the rail is expanded the label appears next to the logo.
+   !important needed because the base .rail .rail-menu-toggle rule uses
+   !important on justify-content — without matching specificity here the
+   logo stays centered when the drawer opens. */
+.rail.expanded .rail-menu-toggle { justify-content: flex-start !important; padding: 0 12px !important; }
 .rail:not(.expanded) .rail-menu-toggle .label { display: none; }
 
 /* Rail starts AT THE TOP of the viewport (was top:56px to clear the old

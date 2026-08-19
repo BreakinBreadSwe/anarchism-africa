@@ -232,16 +232,19 @@
  * everything visible through it is the slideshow beneath.
  * ============================================================ */
 .aa-home-mask {
+  /* Full-bleed hero: escape section.view's 16px top-padding AND its
+     var(--content-pad-x) horizontal padding, so the mask genuinely
+     reaches the edges of the main content area. */
   position: relative;
-  /* Fill the viewport width AND height (minus topbar + bottom chrome).
-     Bleed outside the padded main so the mask lives edge-to-edge like a
-     traditional hero, not a rounded card. */
-  width: 100vw;
-  height: 100vh;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  margin-top: 0;
+  margin-top: -16px;
+  margin-left:  calc(-1 * var(--content-pad-x));
+  margin-right: calc(-1 * var(--content-pad-x));
   margin-bottom: 32px;
+  /* Height = full viewport minus the sticky topbar (~56px) so africa fits
+     entirely in the visible zone without being cropped below the fold.
+     100dvh handles iOS Safari's dynamic URL-bar retraction. */
+  height: calc(100dvh - var(--topbar-h, 56px));
+  width: auto;
   background: #000;
   overflow: hidden;
   border-radius: 0;
@@ -249,9 +252,13 @@
 }
 /* When the mini-player is docked, subtract its height so the hero
    doesn't hide behind it. */
-body.mp-active .aa-home-mask { height: calc(100vh - 116px); }
+body.mp-active .aa-home-mask {
+  height: calc(100dvh - var(--topbar-h, 56px) - 116px);
+}
 @media (min-width: 769px) {
-  body.mp-active .aa-home-mask { height: calc(100vh - 68px); }
+  body.mp-active .aa-home-mask {
+    height: calc(100dvh - var(--topbar-h, 56px) - 68px);
+  }
 }
 .aa-hm-stage {
   position: absolute; inset: 0;

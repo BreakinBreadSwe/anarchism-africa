@@ -438,6 +438,56 @@
   ],
   "articles": [
     {
+      "id": "dakar-asymmetrical-parallelism-wainwright",
+      "title": "Oliver Wainwright obsesses over the distinctive architecture of Dakar",
+      "author": "Josh Niland",
+      "year": 2022,
+      "category": "architecture-design",
+      "reading_time": 5,
+      "image": null,
+      "summary": "Léopold Sédar Senghor's call for a national style of 'asymmetrical parallelism' shaped a distinctive post-independence Senegalese modernism. Oliver Wainwright traces Dakar's 1970s–80s architecture — from the 1974 International Fair to the African Renaissance Monument — through the work of Cheikh Ngom, Pierre Goudiaby Atepa, and Henri Chomette.",
+      "external_url": "https://archinect.com/news/article/150294444/oliver-wainwright-obsesses-over-the-distinctive-architecture-of-dakar",
+      "source_url": "https://archinect.com/news/article/150294444/oliver-wainwright-obsesses-over-the-distinctive-architecture-of-dakar",
+      "source": "Archinect",
+      "source_name": "Archinect",
+      "source_author": "Josh Niland",
+      "published_at": "2022-01-14T14:40:00-05:00",
+      "language": "en",
+      "tags": [
+        "architecture",
+        "design",
+        "senegal",
+        "dakar",
+        "modernism",
+        "postcolonial",
+        "senghor",
+        "asymmetrical-parallelism"
+      ],
+      "body": "Their obsessive geometrical composition was an attempt to answer the call of Senegal's first president, the poet Léopold Sédar Senghor, for a national style that he curiously termed \"asymmetrical parallelism\".\n\nSenghor never quite defined what this brave new style should look like, but he spoke vaguely of \"a diversified repetition of rhythm in time and space\". Forceful, faceted forms and strong, rhythmic geometries became the vogue. — The Guardian\n\nDakar is known as a regional hub of modernism, which is equally the product of Senghor's arts-centered vision and of its past colonial linkage. Wainwright traced the history of post-independence architecture in Senegal from the 1974 International Fair to Abdoulaye Wade's controversial outsized African Renaissance Monument in Ouakam.\n\nThe Guardian critic appeared to be impressed by the city's variety of styles and influences, offering Philipp Meuser and Adil Dalbai's guide to the region as his bible and saying that it \"offers a glimmer of hope from a new generation of young architects and engineers rediscovering vernacular techniques.\"\n\n\"It is the postcolonial architecture of the 1970s and 80s that really stands out for its originality, much of it by Senegalese architects Cheikh Ngom and Pierre Goudiaby Atepa, as well as France's Henri Chomette. They all developed a distinctive form of modernism in tune with President Senghor's ideas of asymmetrical parallelism. Monolithic tapering pillars, often in rough-textured concrete, support powerful chiselled volumes, with an inventive use of pebbles, rocks and shells to add a tactile, rugged texture to the almost primitivist forms.\"",
+      "sources": [
+        {
+          "uri": "https://www.theguardian.com/artanddesign/2022/jan/13/tented-love-senegal-spectacular-new-african-architecture-dakar-tent",
+          "title": "The Guardian — Oliver Wainwright's original piece"
+        },
+        {
+          "uri": "https://www.daniels.utoronto.ca/international-trade-fair-dakar-adaptive-reuse-west-african-modernist-icon",
+          "title": "University of Toronto — 1974 International Trade Fair adaptive-reuse study"
+        },
+        {
+          "uri": "https://hyperallergic.com/4924/african-renaissance-statue-senegal/",
+          "title": "Hyperallergic — African Renaissance Monument (Ouakam)"
+        },
+        {
+          "uri": "https://hyperallergic.com/189211/africas-overlooked-modernist-architecture-from-an-era-of-independence/",
+          "title": "Hyperallergic — Africa's overlooked modernist architecture"
+        },
+        {
+          "uri": "https://www.dukeupress.edu/in-senghors-shadow",
+          "title": "Duke UP — In Senghor's Shadow"
+        }
+      ]
+    },
+    {
       "id": "a1",
       "title": "How Europe Underdeveloped Africa",
       "author": "Walter Rodney",

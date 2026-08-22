@@ -487,8 +487,11 @@
       // Categories visible in the UI: Essays / Interviews / Library notes /
       // Book reviews / Portraits / News. Falls back to 'note' (Library notes).
       const categoryOf = (a) => {
-        const tags = (a.tags || []).map(t => String(t).toLowerCase());
+        const tags  = (a.tags || []).map(t => String(t).toLowerCase());
+        const cat   = String(a.category || '').toLowerCase();
         const title = String(a.title || '').toLowerCase();
+        // Explicit row-level category takes precedence.
+        if (cat === 'architecture-design' || tags.includes('architecture') || tags.includes('design') || /\b(architect|design|urbanism|building)/.test(title)) return 'architecture';
         if (tags.includes('interview') || /^(an? )?interview /i.test(a.title || '')) return 'interview';
         if (tags.includes('essay'))                                                    return 'essay';
         if (tags.includes('review') || tags.includes('book-review'))                   return 'review';
@@ -497,13 +500,14 @@
         return 'note';
       };
       const CAT_META = [
-        { key: 'all',       label: 'All' },
-        { key: 'essay',     label: 'Essays' },
-        { key: 'interview', label: 'Interviews' },
-        { key: 'note',      label: 'Library notes' },
-        { key: 'review',    label: 'Book reviews' },
-        { key: 'portrait',  label: 'Portraits' },
-        { key: 'news',      label: 'News' }
+        { key: 'all',          label: 'All' },
+        { key: 'essay',        label: 'Essays' },
+        { key: 'interview',    label: 'Interviews' },
+        { key: 'note',         label: 'Library notes' },
+        { key: 'review',       label: 'Book reviews' },
+        { key: 'portrait',     label: 'Portraits' },
+        { key: 'news',         label: 'News' },
+        { key: 'architecture', label: 'Architecture & design' }
       ];
       // Counts per category (driven by the actual data, drop empties).
       const counts = {};

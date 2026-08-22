@@ -68,6 +68,73 @@
     paintBg(container);
     paintCss(container);
     paintPreview(container);
+    paintMediaLibrary(container);
+  }
+
+  // ---- Media library ---------------------------------------------------
+  async function loadMediaLibrary () {
+    try {
+      const r = await fetch('/api/africa-slides/media', { cache: 'no-store' });
+      if (!r.ok) return [];
+      const d = await r.json();
+      return Array.isArray(d.items) ? d.items : [];
+    } catch { return []; }
+  }
+  async function deleteBlobUrl (url) {
+    const r = await fetch('/api/africa-slides/media?url=' + encodeURIComponent(url), { method: 'DELETE' });
+    if (!r.ok) throw new Error((await r.text()).slice(0, 200));
+  }
+  async function paintMediaLibrary (root) {
+    const grid  = root.querySelector('[data-hero-media-grid]');
+    const count = root.querySelector('[data-hero-media-count]');
+    if (!grid) return;
+    const items = await loadMediaLibrary();
+    count.textContent = '(' + items.length + ')';
+    if (!items.length) { grid.innerHTML = '<div style="color:var(--muted)">No media yet — upload above.</div>'; return; }
+    grid.innerHTML = items.map((m, i) => `
+      <div class="slide-card" data-media-idx="${i}" data-media-url="${esc(m.url)}" data-media-source="${esc(m.source)}">
+        <div class="slide-preview">${
+          m.type === 'video'
+            ? `<video src="${esc(m.url)}" muted loop autoplay playsinline></video>`
+            : `<img src="${esc(m.url)}" alt="">`
+        }</div>
+        <div class="slide-meta">
+          <span title="${esc(m.name)}">${esc(m.name.length > 22 ? m.name.slice(0,20)+'…' : m.name)}</span>
+          <span>${m.source}${m.size ? ' · ' + fmtSize(m.size) : ''}</span>
+        </div>
+        <div class="slide-actions">
+          <button data-media-add>+ Slide</button>
+          ${m.source === 'blob'
+            ? '<button class="danger" data-media-del>Delete</button>'
+            : '<button disabled title="Delete /media/ files via git commit" style="opacity:.4">Delete</button>'}
+        </div>
+      </div>`).join('');
+    // Bind row actions
+    grid.querySelectorAll('.slide-card').forEach(card => {
+      card.querySelector('[data-media-add]')?.addEventListener('click', async () => {
+        const url = card.dataset.mediaUrl;
+        const src = card.dataset.mediaSource;
+        const item = items.find(x => x.url === url); if (!item) return;
+        slides.push({ type: item.type, src: url, duration: css.advanceMs || 2000 });
+        const r = await save();
+        if (!r.ok) { alert('Save failed: ' + r.error); return; }
+        paintSlides(root);
+        paintPreview(root);
+      });
+      card.querySelector('[data-media-del]')?.addEventListener('click', async () => {
+        const url = card.dataset.mediaUrl;
+        if (!confirm('Delete this media from Blob storage? (Irreversible)')) return;
+        try {
+          await deleteBlobUrl(url);
+          await paintMediaLibrary(root);
+        } catch (e) { alert('Delete failed: ' + e.message); }
+      });
+    });
+  }
+  function fmtSize (bytes) {
+    if (bytes < 1024) return bytes + 'B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + 'MB';
   }
 
   // ---- template ---------------------------------------------------------
@@ -172,6 +239,16 @@
       <div class="panel" style="margin-top:14px">
         <h3 style="margin:0 0 10px">Current slides <span style="color:var(--fg-dim);font-weight:400" data-hero-count></span></h3>
         <div class="aa-slides-cms" data-hero-list><div style="color:var(--muted)">Loading…</div></div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <h3 style="margin:0 0 10px">Media library <span style="color:var(--fg-dim);font-weight:400" data-hero-media-count></span></h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
+          Every image / gif / video managed for the hero. Blob uploads
+          can be deleted here; <b>repo</b> files (committed under /media/)
+          are read-only and need a git commit to remove.
+        </p>
+        <div class="aa-slides-cms" data-hero-media-grid><div style="color:var(--muted)">Loading…</div></div>
       </div>
 
       <div class="panel" style="margin-top:14px">

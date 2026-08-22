@@ -438,6 +438,77 @@
   ],
   "articles": [
     {
+      "id": "african-design-stars-elle-decoration-2024",
+      "title": "The rising stars of African design are championing heritage and craft",
+      "author": "Roddy Clarke",
+      "year": 2024,
+      "category": "architecture-design",
+      "reading_time": 8,
+      "image": null,
+      "summary": "African design has long been overlooked internationally, but emerging designers are now gaining recognition for championing the continent's rich heritage of craft.",
+      "external_url": "https://www.elledecoration.co.uk/design/a61073958/african-design-stars/",
+      "source_url": "https://www.elledecoration.co.uk/design/a61073958/african-design-stars/",
+      "source": "Elle Decoration UK",
+      "source_name": "Elle Decoration UK",
+      "source_author": "Roddy Clarke",
+      "published_at": "2024-06-16",
+      "language": "en",
+      "tags": [
+        "architecture",
+        "design",
+        "craft",
+        "africa",
+        "ghana",
+        "tunisia",
+        "nigeria",
+        "south-africa",
+        "zimbabwe",
+        "egypt",
+        "ceramics",
+        "furniture",
+        "lighting"
+      ],
+      "body": "African design has long been overlooked on the international stage, but recent years have seen the likes of Yinka Ilori, Amechi Mandi and Ozwald Boateng do much to champion the continent's rich heritage of craft — a mantle that's being picked up by these rising stars.\n\n**Amwa Designs (Chrissa Amuah).** Founded by British-Ghanaian multi-disciplinary designer and curator Chrissa Amuah, Amwa Designs is a London-based studio where textiles, furniture and art draw inspiration from and pay homage to African design sensibilities. Her 'Asanka' table places a jesmonite interpretation of a shallow West African clay bowl beneath a glass top, on a wooden base inspired by the Ghanaian Adinkra symbol Adinkrahene — concentric circles associated with authority and leadership. The off-centre silhouette alludes to strength and vulnerability, available in multiple vibrant colour combinations.\n\n**Altin Studio (Mehdi Kebaier & Yasmine Sfar).** This Tunisian studio celebrates local design through sea rush, clay and palm wood — bringing together interior design and civil engineering backgrounds to reinterpret age-old techniques through contemporary design. The 'Ganymede' cabinet contrasts woven sea-rush panels with earth-red metal in a chequer-board top referencing satellite solar panels. 'Petite Ourse', hand-carved from palm wood, alludes to the Little Bear constellation.\n\n**Nmbello Studio (Nifemi Marcus-Bello).** The Lagos-based designer's ethos is rooted in empathy — respect for people and places. His humility runs through work that has taken the 2022 Hublot Design Prize and 2023 Design Miami Curator's Choice: Design for Good. 'Oríkì · Act 1: Friction Ridge' (2023) is a collection of bronze sculptural benches launched as an immersive installation with a soundscape of his mother reciting his personalised oríkì — praise poetry among the Yoruba people of West Africa.\n\n**Mash.T Studio (Thabisa Mjo).** Johannesburg-based, producing furniture, lighting and homeware that celebrates the cultural tapestry of South Africa. Beadwork on the 'Bright Light' pendant, repurposed Zulu-watchman telecommunication wire on 'Sprinkled Light' and '4Kona Light'. Recent lighting collections pay homage to Xhosa customs and the circular architectural forms of rural South Africa — vibrant palettes reference summer, which in Xhosa culture signifies abundance and festivity.\n\n**Rich Mnisi.** Johannesburg-born, LISOF class of 2014 turned collectible-furniture designer bridging function and art. Draws from the women in his life, queerness, and heritage — a striking fluidity and organic elegance. The 'Nwa-Mulamula' chaise, referencing his great-grandmother's reclining body, showed at Southern Guild's 'Mother Tongues' in Los Angeles marking the Cape Town gallery's new permanent space. New work 'Vutlhari (Wisdom)' is a bronze-and-resin light with the same sweeping silhouettes.\n\n**Xanthe Somers.** Zimbabwean artist whose hand-built ceramic sculptures — often functional as lighting and vases ('In Bad Taste') — challenge how colonialism has manipulated design in Zimbabwe. \"I like to draw attention to Western overconsumption, cheap labour and the impact of eco-racist practices on the global south,\" she says. Vivacious colour, exaggerated silhouettes; work displayed at London's V&A Museum and Somerset House's Collect.\n\n**Don Tanani × Lina Alorabi.** An Egyptian brand redefining the essence of Egyptian design. Alorabi returned to Egypt in 2009 after UK studies and German experience, then spent a decade in Cairo working alongside craft experts. Her second collection, 'Moruna', includes a conversation chair, curvaceous sun lounger, and tile-pattern coffee tables inset with glass. \"The aim is to reclaim our identity, which is often translated to us from outside,\" says Alorabi.\n\n**Chuma Maweni.** South African ceramicist working the pit-firing technique intrinsic to Nguni artistic communities — dark porous surfaces, hand-formed sculptural outlines, decorative surface patterns. Opened his own Cape Town studio in 2016, exhibited at Design Miami and The Salon Art + Design in New York; work acquired by the Metropolitan Museum of Art. Recent 'Imbizo' dining table and stools showing with Cape Town's Southern Guild.",
+      "sources": [
+        {
+          "uri": "https://www.elledecoration.co.uk/design/a61073958/african-design-stars/",
+          "title": "Elle Decoration UK — original coverage"
+        },
+        {
+          "uri": "https://www.amwadesigns.com/",
+          "title": "Amwa Designs — Chrissa Amuah"
+        },
+        {
+          "uri": "https://www.altinstudio.tn/",
+          "title": "Altin Studio (Tunisia)"
+        },
+        {
+          "uri": "https://www.nmbello-studio.com/",
+          "title": "Nmbello Studio — Nifemi Marcus-Bello"
+        },
+        {
+          "uri": "https://mash-t.co.za/",
+          "title": "Mash.T Studio — Thabisa Mjo"
+        },
+        {
+          "uri": "https://richmnisi.com/",
+          "title": "Rich Mnisi"
+        },
+        {
+          "uri": "https://xanthesomers.com/",
+          "title": "Xanthe Somers"
+        },
+        {
+          "uri": "https://www.dontanani.com/",
+          "title": "Don Tanani"
+        },
+        {
+          "uri": "https://www.southernguild.com/artists/chuma-maweni",
+          "title": "Chuma Maweni — Southern Guild"
+        }
+      ]
+    },
+    {
       "id": "dakar-asymmetrical-parallelism-wainwright",
       "title": "Oliver Wainwright obsesses over the distinctive architecture of Dakar",
       "author": "Josh Niland",

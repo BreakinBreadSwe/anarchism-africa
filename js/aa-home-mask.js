@@ -128,37 +128,20 @@
   let idx = 0, timer = null;
 
   async function boot () {
-    // Parallel: fetch CMS slides + /media/ folder listing. Auto-picks up
-    // any gif/image/video the user drops into media/ in the repo.
-    let cmsVisual = [], mediaSlides = [];
+    // Single source of truth: cms.slides. What the admin sees in the
+    // 'Current slides' panel IS what plays inside the hero. No hidden
+    // interleave with /media/, no built-in patterns injected.
+    // Fallback to BIG_A_SLIDE only if the CMS is empty (fresh install).
     let cmsCss = null;
     try {
-      const [cms, media] = await Promise.all([
-        fetch('/api/africa-slides', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/media/list',    { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
-      ]);
+      const cms = await fetch('/api/africa-slides', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : null).catch(() => null);
       if (cms?.css) cmsCss = cms.css;
-      if (cms && Array.isArray(cms.slides)) {
-        cmsVisual = cms.slides.filter(s => s && s.type !== 'text');
-      }
-      if (media && Array.isArray(media.files)) {
-        mediaSlides = media.files.map(f => ({
-          type: f.type,          // image | gif | video
-          src:  f.url,
-          duration: SLIDE_MS
-        }));
-      }
-    } catch {}
-    // Media files from the /media/ folder come FIRST (user-curated
-    // wins over generative patterns), then the built-in vector patterns,
-    // then any CMS slides. Big-A stays as the anchor between blocks.
-    const merged = interleaveMulti(
-      [BIG_A_SLIDE],
-      mediaSlides,
-      BUILT_IN_SLIDES,
-      cmsVisual
-    );
-    slides = merged.length ? merged : [BIG_A_SLIDE];
+      const cmsSlides = Array.isArray(cms?.slides) ? cms.slides : [];
+      slides = cmsSlides.length ? cmsSlides : [BIG_A_SLIDE];
+    } catch {
+      slides = [BIG_A_SLIDE];
+    }
     if (cmsCss) applyCss(cmsCss);
     repaint();
   }

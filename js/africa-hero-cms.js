@@ -20,7 +20,7 @@
   let appLogo = defaultAppLogo();
 
   function defaultCss ()      { return { heroSize: 72, outlineWidth: 35, crossfadeMs: 4000, advanceMs: 2000 }; }
-  function defaultAppLogo ()  { return { showOutline: true, rotateMs: 4500 }; }
+  function defaultAppLogo ()  { return { showOutline: true, rotateMs: 4500, slides: [] }; }
   function esc (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   async function load () {
@@ -69,6 +69,48 @@
     paintCss(container);
     paintPreview(container);
     paintMediaLibrary(container);
+    paintAppLogoSlides(container);
+  }
+
+  // ---- App logo slides (independent list) -----------------------------
+  function paintAppLogoSlides (root) {
+    const list  = root.querySelector('[data-hero-al-list]');
+    const count = root.querySelector('[data-hero-al-count]');
+    if (!list) return;
+    const items = Array.isArray(appLogo.slides) ? appLogo.slides : [];
+    count.textContent = '(' + items.length + (items.length ? ')' : ' — falling back to hero slides)');
+    if (!items.length) {
+      list.innerHTML = '<div style="color:var(--muted)">No app-logo slides yet — the header will use the hero list.</div>';
+      return;
+    }
+    list.innerHTML = items.map((s, i) => `
+      <div class="slide-card" data-al-idx="${i}">
+        <div class="slide-preview"><img src="${esc(s.src)}" alt=""></div>
+        <div class="slide-meta"><span>${esc(s.type)}</span><span>${s.duration}ms</span></div>
+        <div class="slide-actions">
+          <button data-hero-al-up>↑</button>
+          <button data-hero-al-down>↓</button>
+          <button class="danger" data-hero-al-del>Delete</button>
+        </div>
+      </div>`).join('');
+    list.querySelectorAll('.slide-card').forEach(card => {
+      const i = Number(card.dataset.alIdx);
+      card.querySelector('[data-hero-al-del]')?.addEventListener('click', async () => {
+        if (!confirm('Remove this slide from the app logo?')) return;
+        appLogo.slides.splice(i, 1);
+        await save(); paintAppLogoSlides(root);
+      });
+      card.querySelector('[data-hero-al-up]')?.addEventListener('click', async () => {
+        if (i <= 0) return;
+        [appLogo.slides[i-1], appLogo.slides[i]] = [appLogo.slides[i], appLogo.slides[i-1]];
+        await save(); paintAppLogoSlides(root);
+      });
+      card.querySelector('[data-hero-al-down]')?.addEventListener('click', async () => {
+        if (i >= appLogo.slides.length - 1) return;
+        [appLogo.slides[i], appLogo.slides[i+1]] = [appLogo.slides[i+1], appLogo.slides[i]];
+        await save(); paintAppLogoSlides(root);
+      });
+    });
   }
 
   // ---- Media library ---------------------------------------------------
@@ -271,9 +313,10 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">App logo</h3>
+        <h3 style="margin:0 0 10px">App logo — outline &amp; timing</h3>
         <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
-          Header (top-left) mini hero. Uses the same media pool, just smaller.
+          Header (top-left) mini hero. Curate the mini-slideshow separately below.
+          If the app-logo list is empty, it falls back to the hero's current slides.
         </p>
         <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
           <label class="cms-slider">Slideshow rotation (ms) <span data-hero-al-rotateMs-val>4500</span>
@@ -285,6 +328,28 @@
           </label>
         </div>
         <div style="margin-top:10px"><button class="btn" data-hero-al-save>Save app logo</button></div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <h3 style="margin:0 0 10px">App logo · Current slides <span style="color:var(--fg-dim);font-weight:400" data-hero-al-count></span></h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
+          Independent slide list for the header mini-hero (image / gif only —
+          video can't render as a background-image at 40px).
+        </p>
+        <form class="aa-slide-form" data-hero-al-add>
+          <label>Type
+            <select name="type">
+              <option value="image">image</option>
+              <option value="gif">gif</option>
+            </select>
+          </label>
+          <label class="wide">URL
+            <input name="value" placeholder="https://…/img.jpg or upload →" />
+          </label>
+          <label>Upload<input type="file" data-hero-al-file accept="image/*" /></label>
+          <button type="submit">Add</button>
+        </form>
+        <div class="aa-slides-cms" data-hero-al-list style="margin-top:10px"><div style="color:var(--muted)">Loading…</div></div>
       </div>
 
       <div class="panel" style="margin-top:14px">
@@ -394,6 +459,28 @@
       const r = await save();
       if (!r.ok) alert('Save failed: ' + r.error);
       paintPreview(root);
+    });
+    // ---- App-logo add-slide form + upload ----
+    const alAdd = root.querySelector('[data-hero-al-add]');
+    const alFileInput = root.querySelector('[data-hero-al-file]');
+    alFileInput?.addEventListener('change', async () => {
+      const f = alFileInput.files?.[0]; if (!f) return;
+      const up = await uploadFile(f);
+      if (!up.ok) { alert('Upload failed: ' + up.error); return; }
+      alAdd.value.value = up.url;
+      alAdd.type.value  = f.type === 'image/gif' ? 'gif' : 'image';
+    });
+    alAdd?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const type = alAdd.type.value;
+      const value = alAdd.value.value.trim();
+      if (!value) return;
+      appLogo.slides = Array.isArray(appLogo.slides) ? appLogo.slides : [];
+      appLogo.slides.push({ type, src: value, duration: appLogo.rotateMs || 4500 });
+      const r = await save();
+      if (!r.ok) { alert('Save failed: ' + r.error); return; }
+      alAdd.reset();
+      paintAppLogoSlides(root);
     });
 
     // ---- Add slide ----

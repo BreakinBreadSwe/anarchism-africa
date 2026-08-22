@@ -76,7 +76,19 @@ module.exports = async function handler (req, res) {
     if (body?.appLogo && typeof body.appLogo === 'object') {
       appLogo = {
         showOutline:  body.appLogo.showOutline !== false,
-        rotateMs:     clampNum(body.appLogo.rotateMs, 1000, 60000, 4500)
+        rotateMs:     clampNum(body.appLogo.rotateMs, 1000, 60000, 4500),
+        // Independent slide list for the header app-logo mini-hero.
+        // Same slide schema as the hero — { type, src|text, duration }
+        // — but stored separately so admin can curate the tiny 40x40
+        // rotation without touching the fullscreen hero.
+        slides:       Array.isArray(body.appLogo.slides)
+          ? body.appLogo.slides.map(s => ({
+              type:     String(s.type || 'image').toLowerCase(),
+              src:      s.src ? String(s.src).slice(0, 2000) : undefined,
+              text:     s.text ? String(s.text).slice(0, 200) : undefined,
+              duration: clampNum(s.duration, 500, 60000, 4500)
+            })).slice(0, 200)
+          : undefined
       };
     }
 

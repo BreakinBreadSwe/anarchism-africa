@@ -322,11 +322,23 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   content: '';
   position: absolute; inset: 0;
   pointer-events: none;
-  /* Layer 2 (::after): the black-ocean SHUTTER with africa punched out.
-     Layer 3 (::before, below): the thin white AFRICA OUTLINE stroke —
-     draws a coast bezel around africa so the shape reads even when the
-     inside-slide is a dark image. */
-  background: url('/icons/africa-hero-cutout.svg') center / contain no-repeat;
+  /* Solid black shutter that ACTUALLY covers the whole container. The
+     old approach used a cutout SVG at background-size:contain — but
+     'contain' leaves transparent margins around the SVG (whichever axis
+     is not limiting), and the slideshow leaked through those margins
+     as visible stripes/patterns outside africa.
+
+     Fix: paint solid black across inset:0, then MASK it with africa-
+     mask.svg (white africa on transparent) using mask-composite: exclude.
+     'exclude' inverts the mask: the black shows wherever the mask is
+     TRANSPARENT (ocean + contain-margins), and is hidden where the mask
+     is opaque (africa). Africa stays transparent = slideshow visible only
+     inside africa. Margins/ocean are guaranteed solid black. */
+  background: #000;
+  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+  -webkit-mask-composite: source-out;   /* Safari legacy → same effect as exclude here */
+          mask-composite: exclude;
   transform: scale(calc(1 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
   transition: transform 80ms linear;

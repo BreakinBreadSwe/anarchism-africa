@@ -139,16 +139,48 @@ h3 { font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: .1em; font-size: clamp(1rem, 1.6vw, 1.6rem); color: var(--fg); text-decoration: none; }
 .brand .logoword .word { white-space: nowrap; }
 
+/* Mini hero: africa OUTLINE on top, a background slideshow behind that
+   plays through /media/ files. The outline SVG has transparent fill on
+   both sides of the stroke, so anything behind it shows through — but
+   we mask the background with africa-mask.svg so media only shows
+   INSIDE africa (same architecture as the fullscreen home hero, just
+   40x40). No white fill inside africa — the space is filled by the
+   slideshow. */
 .brand .logo {
   width: 40px; height: 40px; border-radius: 8px;
   position: relative;
   flex: 0 0 auto;
   --custom-logo: none;
-  /* --logo-bg is set by the admin theme panel (defaults to a subtle warm lift) */
-  background: url('/icons/AAlogo1.svg') center/contain no-repeat,
-              var(--logo-bg, rgba(255,255,255,0.13));
+  background: var(--logo-bg, rgba(255,255,255,0.06));
   overflow: hidden;
   isolation: isolate;
+}
+/* Layer 1 — background slideshow, africa-shaped mask */
+.brand .logo::before {
+  content: '' !important;   /* override the older 'content:none' below */
+  position: absolute; inset: 0;
+  background: var(--brand-logo-media, none) center/cover no-repeat, #000;
+  -webkit-mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
+          mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
+  z-index: 0;
+  transition: background-image 500ms ease;
+}
+/* Layer 2 — thin outline coast stroke on top */
+.brand .logo::after {
+  content: '' !important;
+  position: absolute; inset: 0;
+  background: url('/icons/africa-outline.svg') center / 100% 100% no-repeat;
+  z-index: 1;
+  pointer-events: none;
+  /* Kill the leftover pulse animation defaults from the old spec below */
+  animation: none;
+  color: transparent;
+  text-shadow: none;
+  border-radius: 0;
+  display: block;
+  font-size: 0;
 }
 @media (min-width: 600px) { .brand .logo { width: 44px; height: 44px; } }
 .brand .logo::before {

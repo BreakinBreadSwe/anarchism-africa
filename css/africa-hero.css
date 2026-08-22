@@ -258,19 +258,35 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 @media (min-width: 769px) {
   body.mp-active .aa-home-mask { height: calc(100dvh - 68px); }
 }
+/* Stage is sized to africa's aspect ratio (from the mask viewBox
+   1019.99 x 1017.83 ≈ 1:1) and centered in the container. Mask fills
+   it EXACTLY (100% 100%, no 'contain' margins to leak through). The
+   container's black background paints the space around the stage.
+   Because the stage has zero transparent margin, the slideshow can
+   only ever render inside africa's silhouette. */
 .aa-hm-stage {
-  position: absolute; inset: 0;
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  aspect-ratio: 1020 / 1018;
+  max-width: 100%;
   overflow: hidden;
   background: #000;
-  /* THIS is what constrains the slideshow to africa. The stage layer
-     itself is masked — any image/gif/video/A INSIDE it can only render
-     where the mask is opaque. Everything OUTSIDE africa can never draw
-     over the container's black background. Simpler + more reliable than
-     stacking a shutter overlay on top with mask-composite tricks. */
-  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
-          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
-  -webkit-mask-mode: luminance;
-          mask-mode: luminance;
+  -webkit-mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
+          mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
+}
+/* If viewport is wider than tall, stage is limited by height (natural).
+   If viewport is TALLER than wide (portrait), the stage's max-width
+   caps it at container width, height then follows aspect. */
+@media (max-aspect-ratio: 1020/1018) {
+  .aa-hm-stage {
+    top: 50%; height: auto;
+    transform: translate(-50%, -50%);
+    width: 100%; height: auto;
+  }
 }
 .aa-hm-stage .aa-hm-slide {
   position: absolute; inset: 0;
@@ -333,16 +349,29 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
    rect via fill-rule=evenodd. Sits above the stage and below the UI. */
 /* Old ::after shutter is gone — the stage itself is masked now, so no
    separate cutout overlay is needed. Keep ::before (outline stroke). */
+/* Outline overlay — positioned identically to the stage so the stroke
+   traces the same africa the mask uses. */
 .aa-home-mask::before {
   content: '';
-  position: absolute; inset: 0;
-  pointer-events: none;
-  z-index: 2;                      /* above ::after (default 1) */
-  background: url('/icons/africa-outline.svg') center / contain no-repeat;
-  transform: scale(calc(1 + var(--aa-hm-level) * 0.05));
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
+  height: 100%;
+  aspect-ratio: 1020 / 1018;
+  max-width: 100%;
+  pointer-events: none;
+  z-index: 2;
+  background: url('/icons/africa-outline.svg') center / 100% 100% no-repeat;
   transition: transform 80ms linear;
   will-change: transform;
+}
+@media (max-aspect-ratio: 1020/1018) {
+  .aa-home-mask::before {
+    top: 50%; height: auto;
+    transform: translate(-50%, -50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
+    width: 100%;
+  }
 }
 /* Slides brighten in sync with audio energy — mirrors the fullscreen
    loading hero's woofer effect. Both use --aa-hm-level (local scope

@@ -39,9 +39,13 @@
   function slAudioSrc(t) {
     return t?.audio || t?.audioUrl || (t?.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i) ? t.url : null);
   }
-  // Map a track → the song shape the mini-player expects.
+  // Map a track → the song shape the mini-player expects. We SPREAD the
+  // whole track first so the now-playing page can read description /
+  // year / category / duration / source / url / tags without a second
+  // API call; then explicitly set the fields MP itself reads.
   function slToSong(t) {
     return {
+      ...t,
       id:     t.id || t.slug || (t.title || 'track'),
       title:  t.title || 'Untitled',
       artist: t.author || t.artist || '',

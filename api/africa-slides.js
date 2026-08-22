@@ -66,10 +66,12 @@ module.exports = async function handler (req, res) {
     let css = null;
     if (body?.css && typeof body.css === 'object') {
       css = {
-        heroSize:      clampNum(body.css.heroSize,      40, 100, 72),
+        heroSize:      clampNum(body.css.heroSize,      40, 100, 88),
         outlineWidth:  clampNum(body.css.outlineWidth,   1,  80, 35),
         crossfadeMs:   clampNum(body.css.crossfadeMs, 200, 10000, 4000),
-        advanceMs:     clampNum(body.css.advanceMs,   500,  30000, 2000)
+        advanceMs:     clampNum(body.css.advanceMs,   500,  30000, 2000),
+        // Big-A slide gets injected every N slides (1..50; 6 = default).
+        aFrequency:    clampNum(body.css.aFrequency,    1,    50,    6)
       };
     }
     let appLogo = null;

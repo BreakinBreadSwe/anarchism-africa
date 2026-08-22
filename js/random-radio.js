@@ -78,8 +78,9 @@
 
   // Fetch the sound-library manifest and reduce to tracks with a
   // directly-playable audio URL — the same predicate the sound-library
-  // page uses so what the button picks is guaranteed to be something
-  // MP can actually play. Cached in-module so repeat clicks are cheap.
+  // page uses. We SPREAD the raw track so the now-playing page can read
+  // description / year / category / duration / source / url / tags
+  // without a second API call. Cached in-module so repeat clicks are cheap.
   let libraryPool = null;
   async function loadLibrary () {
     if (libraryPool) return libraryPool;
@@ -89,6 +90,7 @@
       const d = await r.json();
       libraryPool = (d.tracks || [])
         .map(t => ({
+          ...t,
           id:     t.id || t.slug || t.title || Math.random().toString(36).slice(2),
           title:  t.title || 'Untitled',
           artist: t.author || t.artist || '',
@@ -112,7 +114,7 @@
     // Failed tracks join the session-dead set — you won't get the same
     // broken pick twice in one visit.
     const library = await loadLibrary();
-    const libraryShuffled = library
+    var libraryShuffled = library
       .filter(t => !dead.has(t.id))
       .map(t => [Math.random(), t])
       .sort((a, b) => a[0] - b[0])
@@ -147,8 +149,17 @@
       if (btn) btn.style.display = 'none';
       return;
     }
-    if (window.MP?.play) {
-      window.MP.play({ ...picked, image: picked.image || '' });
+    // Load the whole shuffled library as an MP queue so the mini-player's
+    // NEXT button has something to advance to. picked's index in the
+    // shuffled pool becomes queueIndex; MP.play alone left queueIndex=-1
+    // and made next() a no-op — that's what user reported ('next audio
+    // button in the player doesn't work').
+    if (window.MP?.queue) {
+      const pool = libraryShuffled.length ? libraryShuffled : [picked];
+      const startIdx = Math.max(0, pool.findIndex(t => t.id === picked.id));
+      window.MP.queue(pool, startIdx);
+    } else if (window.MP?.play) {
+      window.MP.play(picked);
     } else {
       location.href = 'sound-library.html?play=' + encodeURIComponent(picked.id);
     }

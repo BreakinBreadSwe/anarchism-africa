@@ -19,7 +19,7 @@
   let css = defaultCss();
   let appLogo = defaultAppLogo();
 
-  function defaultCss ()      { return { heroSize: 88, outlineWidth: 35, crossfadeMs: 4000, advanceMs: 2000 }; }
+  function defaultCss ()      { return { heroSize: 88, outlineWidth: 35, crossfadeMs: 4000, advanceMs: 2000, aFrequency: 6 }; }
   function defaultAppLogo ()  { return { showOutline: true, rotateMs: 4500, slides: [] }; }
   function esc (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
@@ -301,6 +301,9 @@
           </label>
           <label class="cms-slider">Crossfade (ms) <span data-hero-css-crossfadeMs-val>4000</span>
             <input type="range" min="200" max="10000" step="100" data-hero-css="crossfadeMs" />
+          </label>
+          <label class="cms-slider">Big-A every N slides <span data-hero-css-aFrequency-val>6</span>
+            <input type="range" min="1" max="50" step="1" data-hero-css="aFrequency" />
           </label>
           <label class="cms-slider">Advance (ms) <span data-hero-css-advanceMs-val>2000</span>
             <input type="range" min="500" max="30000" step="100" data-hero-css="advanceMs" />

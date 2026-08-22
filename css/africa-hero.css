@@ -609,13 +609,14 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
    rect via fill-rule=evenodd. Sits above the stage and below the UI. */
 /* Old ::after shutter is gone — the stage itself is masked now, so no
    separate cutout overlay is needed. Keep ::before (outline stroke). */
-/* Outline stroke overlay — identical sizing to the stage so the coast
-   traces the same africa. */
+/* Outline stroke overlay — sized 2% LARGER than the stage so the coast
+   traces a hair OUTSIDE the mask edge (visible ring around the image),
+   not inside it. Base scale 1.02, plus the audio-reactive woofer nudge. */
 .aa-home-mask::before {
   content: '';
   position: absolute;
   top: 50%; left: 50%;
-  transform: translate(-50%, -50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
+  transform: translate(-50%, -50%) scale(calc(1.02 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
   width: min(var(--aa-hm-size, 88vmin), calc(100vw - 24px), calc(100dvh - 100px));
   aspect-ratio: 1020 / 1018;

@@ -129,21 +129,39 @@
 
   async function boot () {
     // Single source of truth: cms.slides. What the admin sees in the
-    // 'Current slides' panel IS what plays inside the hero. No hidden
-    // interleave with /media/, no built-in patterns injected.
-    // Fallback to BIG_A_SLIDE only if the CMS is empty (fresh install).
+    // 'Current slides' panel IS what plays inside the hero. Big-A slide
+    // gets sprinkled in every N slides (cms.css.aFrequency, default 6)
+    // so the wordmark punctuates the rotation.
     let cmsCss = null;
+    let aFreq = 6;
     try {
       const cms = await fetch('/api/africa-slides', { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null).catch(() => null);
-      if (cms?.css) cmsCss = cms.css;
+      if (cms?.css) {
+        cmsCss = cms.css;
+        if (Number.isFinite(cms.css.aFrequency) && cms.css.aFrequency > 0) {
+          aFreq = Math.max(1, Math.min(50, Number(cms.css.aFrequency)));
+        }
+      }
       const cmsSlides = Array.isArray(cms?.slides) ? cms.slides : [];
-      slides = cmsSlides.length ? cmsSlides : [BIG_A_SLIDE];
+      slides = cmsSlides.length ? interleaveA(cmsSlides, aFreq) : [BIG_A_SLIDE];
     } catch {
       slides = [BIG_A_SLIDE];
     }
     if (cmsCss) applyCss(cmsCss);
     repaint();
+  }
+
+  // Inject BIG_A_SLIDE every `n` slides. n=6 → A, X, X, X, X, X, A, X, X ...
+  // Set n=0 or 1 to always/never; the CMS clamps to 1..50.
+  function interleaveA (list, n) {
+    if (!list.length || n <= 0) return list.slice();
+    const out = [];
+    for (let i = 0; i < list.length; i++) {
+      if (i % n === 0) out.push(BIG_A_SLIDE);
+      out.push(list[i]);
+    }
+    return out;
   }
 
   // Apply CSS-knob overrides from the CMS as custom properties on the

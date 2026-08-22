@@ -321,8 +321,13 @@ body.has-rail .tabs { display: none; }
 .rail .rail-menu-toggle:hover { background: var(--bg-2); color: var(--fg); }
 .rail .rail-menu-toggle .logo {
   width: 28px; height: 28px; border-radius: 6px; flex: 0 0 auto;
-  background: url('/icons/AAlogo1.svg') center/contain no-repeat,
-              var(--logo-bg, rgba(255,255,255,0.13));
+  /* Africa OUTLINE (same silhouette as the hero + bottombar + brand
+     logo), tinted with currentColor via mask. Was a filled AAlogo1.svg. */
+  background: currentColor;
+  -webkit-mask: url('/icons/africa-outline.svg') center / contain no-repeat;
+          mask: url('/icons/africa-outline.svg') center / contain no-repeat;
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
 }
 .rail:not(.expanded) .rail-menu-toggle { justify-content: center; padding: 12px 0; }
 .rail:not(.expanded) .rail-menu-toggle .label { display: none; }
@@ -410,11 +415,13 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
 .menu-toggle:not(.rail-menu-toggle) .logo {
   width: 100%; height: 100%;
   pointer-events: none;
-  background: url('/icons/AAlogo1.svg') center / contain no-repeat,
-              var(--logo-bg, rgba(255,255,255,0.13));
+  background: currentColor;
+  -webkit-mask: url('/icons/africa-outline.svg') center / contain no-repeat;
+          mask: url('/icons/africa-outline.svg') center / contain no-repeat;
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
   border-radius: 8px;
   display: block;
-  filter: drop-shadow(0 0 1px var(--fg)) drop-shadow(0 0 0.5px var(--fg));
 }
 
 /* FIXED BOTTOM BAR -------------------------------------------------------- */
@@ -791,9 +798,8 @@ body.mp-active .chat-panel { bottom: 116px; }
 .mini-player {
   position: fixed;
   left: 0; right: 0;
-  /* Flush against the bottombar top edge — no gap, no visual seam.
-     Bottombar height is 68px + safe-area, so the player sits at exactly
-     that offset from the viewport bottom. */
+  /* Flush against the bottombar top edge (68px + safe-area on desktop).
+     Mobile override below because the mobile bottombar is only 56px. */
   bottom: calc(68px + env(safe-area-inset-bottom, 0px));
   z-index: 36;
   display: none; align-items: center; gap: 10px;
@@ -855,6 +861,9 @@ body.mp-active .mp-vu { display: block; }
   .mini-player {
     gap: 8px;
     padding: 8px 10px;
+    /* Mobile bottombar is 56px tall (not 68px). Match it exactly so
+       the player sits flush on top of the footer menu — no gap. */
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
   }
   .mini-player .mp-info    { flex: 1 1 auto; min-width: 0; }
   .mini-player .mp-info b  { font-size: .82rem; }
@@ -867,11 +876,8 @@ body.mp-active .mp-vu { display: block; }
   .mini-player .mp-next    { width: 32px; height: 32px; }
   .mini-player .mp-play    { width: 36px; height: 36px; }
   .mini-player .mp-close   { width: 30px; height: 30px; margin-left: auto; }
-  /* No VU on mobile — the fixed-height 12px LED strip stacked above the
-     player pushed the total footer height past ~140px and the top edge of
-     it was already inside the scrollable content area on short viewports. */
   .mp-vu { display: none !important; }
-  body.mp-active { padding-bottom: calc(56px + 68px + env(safe-area-inset-bottom, 0px)); }
+  body.mp-active { padding-bottom: calc(56px + 56px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* artwork thumbnail */
@@ -2405,11 +2411,16 @@ section.view { padding: 16px; }
 .rail .rail-menu-toggle .logo {
   width: 40px !important;
   height: 40px !important;
-  background: url('/icons/AAlogo1.svg') center / contain no-repeat !important;
+  background: currentColor !important;
+  -webkit-mask: url('/icons/africa-outline.svg') center / contain no-repeat !important;
+          mask: url('/icons/africa-outline.svg') center / contain no-repeat !important;
+  -webkit-mask-mode: alpha !important;
+          mask-mode: alpha !important;
   border-radius: 0 !important;
   display: block !important;
   flex: 0 0 auto;
-  filter: none !important;               /* drop the legacy drop-shadow   */
+  filter: none !important;
+  color: var(--fg);
 }
 .rail .rail-menu-toggle:hover { background: color-mix(in srgb, var(--bg-2) 60%, var(--accent) 18%) !important; }
 .rail .rail-menu-toggle .label {

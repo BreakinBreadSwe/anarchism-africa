@@ -306,26 +306,28 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 .aa-hm-stage .aa-hm-slide.is-active { opacity: 1; }
 .aa-hm-stage .aa-hm-slide.aa-hm-huge { font-size: clamp(2.2rem, 6vw, 5rem); }
-/* Bold sans-serif A sized to actually FILL africa's usable interior.
-   Africa is roughly 1:1 but the interior height is dominated by the
-   vertical Nile→Cape run — an A rendered at 88% of stage barely
-   reached the crossbar's shoulder. Bumped to 128cqh so the glyph
-   overflows the stage box vertically; overflow:hidden + the mask
-   clip it back to africa's silhouette so nothing pokes past the
-   coast. Result: the A visually fills africa from apex to Cape. */
+/* Bold sans-serif A sized so the glyph's PAINTED pixels (not its
+   em-box) fill africa's vertical extent apex-to-Cape. Font metrics
+   render the actual A glyph at roughly 72-75% of the em-box height
+   (ascent + descent padding on top and bottom), so 140cqh font-size
+   yields a glyph ≈ 100cqh of actual paint. line-height:1 and
+   padding:0 kill leading + padding leftovers. Mask + overflow:hidden
+   clip anything that overshoots into the ocean. */
 .aa-hm-stage .aa-hm-slide.aa-hm-a {
   font-family: 'Arial Black', 'Helvetica Neue', Impact, Inter, system-ui, sans-serif;
   font-weight: 900;
-  font-size: 82vh;                  /* fallback (older Safari) */
-  font-size: 128cqh;                /* 128% of stage height — clipped by mask */
-  line-height: 0.85;
+  font-size: 100vh;                 /* fallback (older Safari) */
+  font-size: 140cqh;                /* glyph paints ≈ africa height */
+  line-height: 1;
   padding: 0;
   color: #fff;
   background: #000;
   letter-spacing: -0.05em;
-  /* Nudge the glyph baseline so the crossbar lands mid-continent
-     rather than over the Sahara. */
-  padding-top: 8cqh;
+  /* Center the glyph vertically inside the flex-centered slide. The
+     slide is already display:flex align-items:center — no extra
+     padding needed for the enlarged font-size to sit properly. */
+  align-items: center;
+  justify-content: center;
 }
 .aa-hm-stage img,
 .aa-hm-stage video,

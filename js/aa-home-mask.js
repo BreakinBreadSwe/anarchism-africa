@@ -125,24 +125,47 @@
   let idx = 0, timer = null;
 
   async function boot () {
+    // Parallel: fetch CMS slides + /media/ folder listing. Auto-picks up
+    // any gif/image/video the user drops into media/ in the repo.
+    let cmsVisual = [], mediaSlides = [];
     try {
-      const r = await fetch('/api/africa-slides', { cache: 'no-store' });
-      if (r.ok) {
-        const d = await r.json();
-        if (Array.isArray(d.slides) && d.slides.length) {
-          // Merge: built-in patterns + CMS slides, but strip text-type
-          // slides from BOTH — home hero is visual-only (user rule).
-          const visualOnly = s => s && s.type !== 'text';
-          const cmsVisual  = d.slides.filter(visualOnly);
-          const merged     = interleave(BUILT_IN_SLIDES, cmsVisual);
-          slides = merged.length ? merged : [BIG_A_SLIDE];
-          repaint();
-        }
+      const [cms, media] = await Promise.all([
+        fetch('/api/africa-slides', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/media/list',    { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
+      ]);
+      if (cms && Array.isArray(cms.slides)) {
+        cmsVisual = cms.slides.filter(s => s && s.type !== 'text');
+      }
+      if (media && Array.isArray(media.files)) {
+        mediaSlides = media.files.map(f => ({
+          type: f.type,          // image | gif | video
+          src:  f.url,
+          duration: f.type === 'video' ? 6000 : 3500
+        }));
       }
     } catch {}
-    // If we didn't load anything from the API AND nothing changed,
-    // ensure we still have visuals-only (built-in patterns already are).
-    if (!slides || !slides.length) { slides = [BIG_A_SLIDE]; repaint(); }
+    // Media files from the /media/ folder come FIRST (user-curated
+    // wins over generative patterns), then the built-in vector patterns,
+    // then any CMS slides. Big-A stays as the anchor between blocks.
+    const merged = interleaveMulti(
+      [BIG_A_SLIDE],
+      mediaSlides,
+      BUILT_IN_SLIDES,
+      cmsVisual
+    );
+    slides = merged.length ? merged : [BIG_A_SLIDE];
+    repaint();
+  }
+
+  // Round-robin merge across multiple lists so no single source
+  // dominates the rotation.
+  function interleaveMulti (...lists) {
+    const out = [];
+    const maxLen = Math.max(...lists.map(l => l.length));
+    for (let i = 0; i < maxLen; i++) {
+      for (const l of lists) if (l[i]) out.push(l[i]);
+    }
+    return out;
   }
 
   function interleave (a, b) {

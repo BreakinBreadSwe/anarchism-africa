@@ -306,26 +306,24 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 .aa-hm-stage .aa-hm-slide.is-active { opacity: 1; }
 .aa-hm-stage .aa-hm-slide.aa-hm-huge { font-size: clamp(2.2rem, 6vw, 5rem); }
-/* Bold sans-serif A sized so the glyph's PAINTED pixels (not its
-   em-box) fill africa's vertical extent apex-to-Cape. Font metrics
-   render the actual A glyph at roughly 72-75% of the em-box height
-   (ascent + descent padding on top and bottom), so 140cqh font-size
-   yields a glyph ≈ 100cqh of actual paint. line-height:1 and
-   padding:0 kill leading + padding leftovers. Mask + overflow:hidden
-   clip anything that overshoots into the ocean. */
+/* Bold sans-serif A sized so painted glyph pixels fill africa apex-to-
+   Cape. Bumped to 180cqh because:
+   1. Arial Black cap-height is ~72% of em-size → 180cqh em ≈ 130cqh
+      cap-height, which after leading/rendering variance lands at ~
+      africa height.
+   2. The base .aa-hm-slide rule adds `padding: 6vw` — overridden here
+      to 0 so the glyph uses the full stage.
+   Mask + overflow:hidden on stage clip whatever overshoots into ocean. */
 .aa-hm-stage .aa-hm-slide.aa-hm-a {
   font-family: 'Arial Black', 'Helvetica Neue', Impact, Inter, system-ui, sans-serif;
   font-weight: 900;
-  font-size: 100vh;                 /* fallback (older Safari) */
-  font-size: 140cqh;                /* glyph paints ≈ africa height */
+  font-size: 130vh;                 /* fallback (older Safari) */
+  font-size: 180cqh;                /* glyph paints ≈ africa height */
   line-height: 1;
-  padding: 0;
+  padding: 0 !important;            /* override .aa-hm-slide's 6vw */
   color: #fff;
   background: #000;
   letter-spacing: -0.05em;
-  /* Center the glyph vertically inside the flex-centered slide. The
-     slide is already display:flex align-items:center — no extra
-     padding needed for the enlarged font-size to sit properly. */
   align-items: center;
   justify-content: center;
 }

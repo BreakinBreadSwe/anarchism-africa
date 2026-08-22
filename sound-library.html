@@ -113,6 +113,30 @@
     }
     .sl-count { font-size: .7rem; color: var(--muted, #666); white-space: nowrap; }
 
+    /* Mobile: collapse Shuffle + By-year to icon-only 28px squares, shrink
+       the sort dropdown, and let the whole toolbar swipe if it still
+       overflows. Fixes the case where the row pushed past the viewport
+       edge and wouldn't scroll. */
+    @media (max-width: 640px) {
+      .sl-sort-row {
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 0 12px 4px;
+      }
+      .sl-sort-row::-webkit-scrollbar { display: none; }
+      .sl-sort-btns { flex: 0 0 auto; flex-wrap: nowrap; }
+      /* Icon-only shuffle + by-year (text span hidden) */
+      #sl-random-btn, #sl-year-btn {
+        width: 28px; padding: 0; justify-content: center; gap: 0;
+      }
+      #sl-random-btn span, #sl-year-btn span { display: none; }
+      /* Slim the dropdown so it fits alongside three chip buttons + view toggle */
+      .sl-sort-select { max-width: 120px; padding: 0 6px; }
+      .sl-count { display: none; }
+    }
+
     /* Year header */
     .sl-year-hdr {
       display: flex; align-items: center; gap: 12px;

@@ -208,7 +208,11 @@
     const fx = Number.isFinite(+s.focalX) ? +s.focalX : 50;
     const fy = Number.isFinite(+s.focalY) ? +s.focalY : 50;
     const zm = Number.isFinite(+s.zoom)   ? +s.zoom   : 100;
-    const mediaStyle = `object-position:${fx}% ${fy}%;transform:scale(${(zm/100).toFixed(3)});transform-origin:${fx}% ${fy}%;`;
+    // Use CSS 'scale' property (not transform:scale) so the Ken Burns
+    // keyframe animation can own `transform` without overriding the
+    // per-slide zoom. transform-origin doubles as the animation's
+    // pivot point so KB pans around the user-chosen focal.
+    const mediaStyle = `object-position:${fx}% ${fy}%;scale:${(zm/100).toFixed(3)};transform-origin:${fx}% ${fy}%;`;
     switch (s.type) {
       case 'image':
       case 'gif':

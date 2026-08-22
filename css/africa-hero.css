@@ -282,14 +282,44 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
 }
-/* Media matches africa outline exactly (per user rule). No oversize
-   overshoot — image/video fills the stage 100% × 100%, positioned
-   flush with the mask boundary. */
+/* Media matches africa outline exactly (100% × 100%, mask-flush).
+   Ken Burns animation on top: slow linear scale + pan (~10s per
+   slide). Uses the `transform` property so the JS-supplied `scale`
+   property + `object-position` (focal point) stay independent —
+   they combine multiplicatively with the keyframe transform.
+   Varied direction per slide (nth-child cycle) for visual variety. */
 .aa-hm-stage .aa-hm-slide img,
 .aa-hm-stage .aa-hm-slide video {
   width: 100%; height: 100%;
   position: absolute; inset: 0;
   object-fit: cover;
+  animation: aa-hm-kb-a 10s ease-out infinite alternate both;
+  will-change: transform;
+}
+.aa-hm-stage .aa-hm-slide:nth-child(3n+2) img,
+.aa-hm-stage .aa-hm-slide:nth-child(3n+2) video {
+  animation-name: aa-hm-kb-b;
+}
+.aa-hm-stage .aa-hm-slide:nth-child(3n+3) img,
+.aa-hm-stage .aa-hm-slide:nth-child(3n+3) video {
+  animation-name: aa-hm-kb-c;
+}
+@keyframes aa-hm-kb-a {
+  0%   { transform: scale(1.00) translate3d( 0,  0, 0); }
+  100% { transform: scale(1.14) translate3d(-2%, -1%, 0); }
+}
+@keyframes aa-hm-kb-b {
+  0%   { transform: scale(1.14) translate3d( 2%, -1%, 0); }
+  100% { transform: scale(1.00) translate3d( 0,  0, 0); }
+}
+@keyframes aa-hm-kb-c {
+  0%   { transform: scale(1.00) translate3d(-1%,  1%, 0); }
+  100% { transform: scale(1.16) translate3d( 1%, -2%, 0); }
+}
+/* Users who prefer reduced motion — no Ken Burns, no reactive pulse. */
+@media (prefers-reduced-motion: reduce) {
+  .aa-hm-stage .aa-hm-slide img,
+  .aa-hm-stage .aa-hm-slide video { animation: none; }
 }
 .aa-hm-stage .aa-hm-slide {
   position: absolute; inset: 0;

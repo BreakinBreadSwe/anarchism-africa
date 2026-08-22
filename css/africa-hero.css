@@ -260,17 +260,17 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 /* Stage is sized to africa's aspect ratio (from the mask viewBox
    1019.99 x 1017.83 ≈ 1:1) and centered in the container. Mask fills
-   it EXACTLY (100% 100%, no 'contain' margins to leak through). The
-   container's black background paints the space around the stage.
-   Because the stage has zero transparent margin, the slideshow can
-   only ever render inside africa's silhouette. */
+   it EXACTLY so no transparent margin leaks the slideshow. Sized
+   slightly smaller than the viewport (88vh cap) so africa has
+   breathing room at the top/bottom instead of jamming into the
+   topbar and bottombar. */
 .aa-hm-stage {
   position: absolute;
-  top: 0; left: 50%;
-  transform: translateX(-50%);
-  height: 100%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  height: min(88dvh, calc(100dvh - 120px));
   aspect-ratio: 1020 / 1018;
-  max-width: 100%;
+  max-width: calc(100vw - 32px);
   overflow: hidden;
   background: #000;
   -webkit-mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
@@ -278,15 +278,21 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
 }
-/* If viewport is wider than tall, stage is limited by height (natural).
-   If viewport is TALLER than wide (portrait), the stage's max-width
-   caps it at container width, height then follows aspect. */
+/* Portrait viewport — max-width kicks in, height auto-follows aspect. */
 @media (max-aspect-ratio: 1020/1018) {
   .aa-hm-stage {
-    top: 50%; height: auto;
-    transform: translate(-50%, -50%);
-    width: 100%; height: auto;
+    height: auto;
+    width: calc(100vw - 24px);
   }
+}
+/* Background media (image/gif/video slides) slightly OVERSCALED beyond
+   the stage so it fills the mask edge-to-edge with a subtle cinematic
+   crop, and never leaves a black gap at the mask boundary. */
+.aa-hm-stage .aa-hm-slide img,
+.aa-hm-stage .aa-hm-slide video {
+  width: 108%; height: 108%;
+  position: absolute; top: -4%; left: -4%;
+  object-fit: cover;
 }
 .aa-hm-stage .aa-hm-slide {
   position: absolute; inset: 0;
@@ -354,12 +360,12 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 .aa-home-mask::before {
   content: '';
   position: absolute;
-  top: 0; left: 50%;
-  transform: translateX(-50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
-  height: 100%;
+  height: min(88dvh, calc(100dvh - 120px));
   aspect-ratio: 1020 / 1018;
-  max-width: 100%;
+  max-width: calc(100vw - 32px);
   pointer-events: none;
   z-index: 2;
   background: url('/icons/africa-outline.svg') center / 100% 100% no-repeat;
@@ -368,9 +374,8 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 @media (max-aspect-ratio: 1020/1018) {
   .aa-home-mask::before {
-    top: 50%; height: auto;
-    transform: translate(-50%, -50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
-    width: 100%;
+    height: auto;
+    width: calc(100vw - 24px);
   }
 }
 /* Slides brighten in sync with audio energy — mirrors the fullscreen

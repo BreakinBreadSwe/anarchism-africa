@@ -407,6 +407,13 @@
           can be deleted here; <b>repo</b> files (committed under /media/)
           are read-only and need a git commit to remove.
         </p>
+        <div style="display:flex;gap:8px;align-items:center;margin:0 0 10px;flex-wrap:wrap">
+          <label class="btn" style="cursor:pointer;margin:0">
+            + Upload files (multi-select)
+            <input type="file" data-hero-media-multi multiple accept="image/*,video/*" style="display:none" />
+          </label>
+          <span data-hero-media-upload-status style="font-size:.78rem;color:var(--fg-dim)"></span>
+        </div>
         <div class="aa-slides-cms" data-hero-media-grid><div style="color:var(--muted)">Loading…</div></div>
       </div>
 
@@ -481,6 +488,37 @@
       if (!r.ok) { alert('Save failed: ' + r.error); return; }
       alAdd.reset();
       paintAppLogoSlides(root);
+    });
+
+    // ---- Media library: multi-file bulk upload ----
+    // Accepts N files, uploads with concurrency=3 to stay under Vercel's
+    // per-request timeout while still being faster than serial. Progress
+    // renders inline; on completion, repaint the media grid so the new
+    // items show up without a page reload.
+    const multiInput  = root.querySelector('[data-hero-media-multi]');
+    const multiStatus = root.querySelector('[data-hero-media-upload-status]');
+    multiInput?.addEventListener('change', async () => {
+      const files = Array.from(multiInput.files || []);
+      if (!files.length) return;
+      multiStatus.textContent = `Uploading 0/${files.length}…`;
+      let done = 0, failed = 0;
+      const CONCURRENCY = 3;
+      let cursor = 0;
+      async function worker () {
+        while (cursor < files.length) {
+          const my = cursor++;
+          const f = files[my];
+          const up = await uploadFile(f);
+          if (!up.ok) failed++;
+          done++;
+          multiStatus.textContent = `Uploaded ${done}/${files.length}${failed ? ` · ${failed} failed` : ''}…`;
+        }
+      }
+      await Promise.all(Array.from({ length: Math.min(CONCURRENCY, files.length) }, worker));
+      multiStatus.textContent = `Done · ${done - failed} uploaded${failed ? ` · ${failed} failed` : ''}.`;
+      multiInput.value = '';   // reset input so re-selecting the same files re-fires change
+      await paintMediaLibrary(root);
+      setTimeout(() => { if (multiStatus) multiStatus.textContent = ''; }, 4000);
     });
 
     // ---- Add slide ----

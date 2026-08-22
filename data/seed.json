@@ -438,6 +438,79 @@
   ],
   "articles": [
     {
+      "id": "black-punk-pioneers-dazed-2015",
+      "title": "The black punk pioneers who made music history",
+      "author": "Daisy Jones",
+      "year": 2015,
+      "category": "essay",
+      "reading_time": 6,
+      "image": null,
+      "summary": "The rebel icons who defied cultural stereotypes to kickstart a musical revolution — X-Ray Spex, Don Letts, Pure Hell, Bad Brains, Death, and Mykki Blanco.",
+      "external_url": "https://www.dazeddigital.com/music/article/28419/1/the-black-punk-pioneers-who-made-music-history",
+      "source_url": "https://www.dazeddigital.com/music/article/28419/1/the-black-punk-pioneers-who-made-music-history",
+      "source": "Dazed",
+      "source_name": "Dazed",
+      "source_author": "Daisy Jones",
+      "published_at": "2015-11-19",
+      "language": "en",
+      "tags": [
+        "essay",
+        "music",
+        "punk",
+        "black-punk",
+        "afropunk",
+        "hardcore",
+        "rastafari",
+        "diaspora",
+        "x-ray-spex",
+        "don-letts",
+        "pure-hell",
+        "bad-brains",
+        "death",
+        "mykki-blanco",
+        "poly-styrene"
+      ],
+      "body": "The meaning of 'punk' is hard to define. Is it an attitude? A genre? A willingness not to conform? Despite such ambiguities, punk is stereotypically portrayed as the preserve of white, working-class musicians. As Charlie Brinkhurst-Cuff pointed out, \"Punk music is not the sole property of whiteness, even though to people of my generation it may appear that way at first glance\" — like many aspects of pop culture, its historical image has been whitewashed. To celebrate the true punk rebellion that has always existed in black culture, and continues to exist today, here are just a few punk pioneers who changed the game and made their mark.\n\n**X-Ray Spex.** Although the 1970s outfit were self-confessed underachievers and only managed to release one album, they created a beautifully discordant soundtrack to teen rebellion that remains relevant today. Spearheading the sound was **Poly Styrene** — one of the most effervescent and influential artists to emerge from the punk movement. \"I just want to be like me,\" she told NME at the time. \"I said that I wasn't a sex symbol, and that if anybody tried to make one I'd shave my head tomorrow.\"\n\n**Don Letts.** You can't talk about pioneering figures in punk without mentioning Don Letts, the creative polymath and subcultural icon often credited with injecting Jamaican reggae into the London punk scene. From spinning reggae records at the Roxy to managing The Slits and starting his own band The Electric Dread, Letts passed his musical obsessions on to a generation hungry for change. Designer Nicholas Daley put it plainly: \"Don will always be an influential figure for youth culture in Britain because he channels his experiences and history\" — and he continues to collaborate widely across the creative scene.\n\n**Pure Hell.** Leather-clad, tatted-up, brooding, four-piece — often cited as one of the first all-African-American punk bands. When they burst from Pennsylvania onto the NYC scene in 1974 they found kindred spirits in the New York Dolls. \"The Dolls took to us right away,\" they recalled, noting they \"tended to remind them of themselves when they were younger.\" Their first album 'Noise Addiction' arrived over thirty years later — better late than never.\n\n**Bad Brains.** Flung out of Washington in 1977, they sound like any given band you might find today in some sweaty basement — obviously, they came first. Lightning-quick drumbeats, intense guitar riffs, lacerating vocals: Bad Brains pushed sonic boundaries and redefined perceptions of what a group of Rastafarians in the '70s could be. \"I don't care what people listen to, really,\" bassist Darryl Jenifer once said. \"And I don't care if black people ever get Bad Brains; that's not on me.\"\n\n**Death.** Long before The Clash, the Sex Pistols or the Ramones came a proto-punk band from Detroit made up of three young black brothers — who started off as a soul band but quickly ditched that sound once they heard the hard, discordant rhythms of The Stooges. Their guitarist \"pushed the group in a hard-rock direction that presaged punk,\" which didn't help them find a following in the mid-'70s but makes them look like visionaries today. Their music has since been documented in the 2012 film 'A Band Called Death', which won them a cult following decades after they disbanded.\n\n**Mykki Blanco.** As an artist who's emerged in the past five years, Blanco might seem like an anomaly on this list, but the pioneering punk spirit of NYC's fearless riot-grrrl rapper shouldn't be downplayed. With a subversive attitude to gender, genre and artistic medium, Blanco has redefined what it means to be punk in the present day. \"I chose the name Mykki Blanco as an homage to Lil' Kim's persona Kimmy Blanco\" — and also for DeeDee Ramone. \"I did not grow up rapping; I grew up in the riot-grrrl queercore scene.\"",
+      "sources": [
+        {
+          "uri": "https://www.dazeddigital.com/music/article/28419/1/the-black-punk-pioneers-who-made-music-history",
+          "title": "Dazed — original coverage"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/X-Ray_Spex",
+          "title": "X-Ray Spex"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/Poly_Styrene",
+          "title": "Poly Styrene"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/Don_Letts",
+          "title": "Don Letts"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/Pure_Hell_(band)",
+          "title": "Pure Hell"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/Bad_Brains",
+          "title": "Bad Brains"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/Death_(protopunk_band)",
+          "title": "Death — proto-punk (Detroit)"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/A_Band_Called_Death",
+          "title": "A Band Called Death (2012 documentary)"
+        },
+        {
+          "uri": "https://en.wikipedia.org/wiki/Mykki_Blanco",
+          "title": "Mykki Blanco"
+        }
+      ]
+    },
+    {
       "id": "african-design-deep-dive-the-design-edit-2020",
       "title": "African Design — Deep Dive",
       "author": "Anna Sansom",

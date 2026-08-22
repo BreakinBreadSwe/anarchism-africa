@@ -182,6 +182,88 @@
 .aa-slides-cms .slide-preview video {
   max-width: 100%; max-height: 100%; object-fit: cover;
 }
+.aa-slides-cms .slide-preview { cursor: zoom-in; }
+
+/* ============================================================
+ * Media library fullscreen LIGHTBOX
+ * Click any thumbnail → this overlay opens over the CMS. Arrow
+ * keys / swipe navigate. Delete key removes blob media. Esc close.
+ * ============================================================ */
+.aa-lightbox {
+  position: fixed; inset: 0;
+  z-index: 9000;
+  background: rgba(0,0,0,.92);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px;
+  box-sizing: border-box;
+  animation: aa-lb-fade .2s ease;
+}
+@keyframes aa-lb-fade { from { opacity: 0 } to { opacity: 1 } }
+.aa-lightbox .aa-lb-stage {
+  max-width: 100%; max-height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.aa-lightbox .aa-lb-stage img,
+.aa-lightbox .aa-lb-stage video {
+  max-width: 100%; max-height: calc(100vh - 140px);
+  object-fit: contain; display: block;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 6px;
+}
+.aa-lightbox .aa-lb-close,
+.aa-lightbox .aa-lb-prev,
+.aa-lightbox .aa-lb-next {
+  position: absolute;
+  background: rgba(255,255,255,.08);
+  color: #fff; border: 1px solid rgba(255,255,255,.2);
+  cursor: pointer;
+  font: 300 28px/1 'Helvetica Neue', system-ui, sans-serif;
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, transform .15s;
+}
+.aa-lightbox .aa-lb-close { top: 16px; right: 16px; font-size: 26px; }
+.aa-lightbox .aa-lb-prev  { left:  16px; top: 50%; transform: translateY(-50%); }
+.aa-lightbox .aa-lb-next  { right: 16px; top: 50%; transform: translateY(-50%); }
+.aa-lightbox .aa-lb-close:hover,
+.aa-lightbox .aa-lb-prev:hover,
+.aa-lightbox .aa-lb-next:hover {
+  background: rgba(255,255,255,.18);
+}
+.aa-lightbox .aa-lb-prev:hover,
+.aa-lightbox .aa-lb-next:hover { transform: translateY(-50%) scale(1.08); }
+
+.aa-lightbox .aa-lb-meta {
+  position: absolute; left: 50%; bottom: 16px;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.75);
+  font: 500 .78rem 'JetBrains Mono', monospace;
+  letter-spacing: .06em;
+  background: rgba(0,0,0,.5);
+  padding: 6px 12px; border-radius: 99px;
+  max-width: calc(100vw - 260px);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.aa-lightbox .aa-lb-del {
+  position: absolute; right: 16px; bottom: 16px;
+  background: #b00020; color: #fff;
+  border: 0; border-radius: 8px;
+  padding: 10px 16px;
+  font: 700 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer;
+}
+.aa-lightbox .aa-lb-del:hover { background: #d0022a; }
+.aa-lightbox .aa-lb-del:disabled { background: #555; cursor: not-allowed; }
+@media (max-width: 640px) {
+  .aa-lightbox { padding: 20px; }
+  .aa-lightbox .aa-lb-close,
+  .aa-lightbox .aa-lb-prev,
+  .aa-lightbox .aa-lb-next { width: 40px; height: 40px; font-size: 22px; }
+  .aa-lightbox .aa-lb-meta { bottom: 68px; max-width: calc(100vw - 40px); }
+  .aa-lightbox .aa-lb-del  { left: 20px; right: 20px; bottom: 20px; }
+}
 .aa-slides-cms .slide-meta {
   color: var(--fg-dim); font-size: .72rem;
   display: flex; justify-content: space-between; gap: 8px;

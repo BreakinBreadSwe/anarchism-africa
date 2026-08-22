@@ -113,7 +113,6 @@
     grid.querySelectorAll('.slide-card').forEach(card => {
       card.querySelector('[data-media-add]')?.addEventListener('click', async () => {
         const url = card.dataset.mediaUrl;
-        const src = card.dataset.mediaSource;
         const item = items.find(x => x.url === url); if (!item) return;
         slides.push({ type: item.type, src: url, duration: css.advanceMs || 2000 });
         const r = await save();
@@ -121,7 +120,8 @@
         paintSlides(root);
         paintPreview(root);
       });
-      card.querySelector('[data-media-del]')?.addEventListener('click', async () => {
+      card.querySelector('[data-media-del]')?.addEventListener('click', async (ev) => {
+        ev.stopPropagation();
         const url = card.dataset.mediaUrl;
         if (!confirm('Delete this media from Blob storage? (Irreversible)')) return;
         try {
@@ -129,7 +129,94 @@
           await paintMediaLibrary(root);
         } catch (e) { alert('Delete failed: ' + e.message); }
       });
+      // Click on the preview thumb → open fullscreen lightbox at that item
+      card.querySelector('.slide-preview')?.addEventListener('click', () => {
+        const url = card.dataset.mediaUrl;
+        const idx = items.findIndex(x => x.url === url);
+        if (idx >= 0) openLightbox(items, idx, root);
+      });
     });
+  }
+
+  // ---- Fullscreen lightbox --------------------------------------------
+  // Opens over everything, keyboard (← → Esc Del) + swipe navigation,
+  // per-media delete button that hits /api/africa-slides/media and
+  // refreshes the surrounding grid.
+  function openLightbox (items, startIdx, root) {
+    if (!items?.length) return;
+    let idx = Math.max(0, Math.min(startIdx, items.length - 1));
+    // Kill any prior instance
+    document.getElementById('aa-lightbox')?.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'aa-lightbox';
+    overlay.className = 'aa-lightbox';
+    overlay.innerHTML = `
+      <button class="aa-lb-close"  aria-label="Close">×</button>
+      <button class="aa-lb-prev"   aria-label="Previous">‹</button>
+      <button class="aa-lb-next"   aria-label="Next">›</button>
+      <div    class="aa-lb-stage"></div>
+      <div    class="aa-lb-meta"></div>
+      <button class="aa-lb-del"    aria-label="Delete this media">Delete from library</button>
+    `;
+    document.body.appendChild(overlay);
+    const stage = overlay.querySelector('.aa-lb-stage');
+    const meta  = overlay.querySelector('.aa-lb-meta');
+    const delBtn= overlay.querySelector('.aa-lb-del');
+
+    function paint () {
+      const m = items[idx];
+      stage.innerHTML = m.type === 'video'
+        ? `<video src="${esc(m.url)}" controls autoplay muted loop playsinline></video>`
+        : `<img    src="${esc(m.url)}" alt="${esc(m.name)}">`;
+      meta.textContent  = `${idx + 1} / ${items.length}  ·  ${m.name}  ·  ${m.source}${m.size ? ' · ' + fmtSize(m.size) : ''}`;
+      delBtn.disabled   = (m.source !== 'blob');
+      delBtn.title      = (m.source === 'blob') ? '' : '/media/ files must be removed via git commit';
+      delBtn.style.opacity = delBtn.disabled ? '0.35' : '1';
+    }
+    function step (dir) {
+      idx = (idx + dir + items.length) % items.length;
+      paint();
+    }
+    function close () {
+      overlay.remove();
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey (e) {
+      if (e.key === 'ArrowRight')     { e.preventDefault(); step(+1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+      else if (e.key === 'Escape')    { e.preventDefault(); close(); }
+      else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); delBtn.click(); }
+    }
+    overlay.querySelector('.aa-lb-prev' ).addEventListener('click', () => step(-1));
+    overlay.querySelector('.aa-lb-next' ).addEventListener('click', () => step(+1));
+    overlay.querySelector('.aa-lb-close').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', onKey);
+    // Touch swipe
+    let sx = 0, sy = 0;
+    stage.addEventListener('touchstart', (e) => {
+      const t = e.touches[0]; sx = t.clientX; sy = t.clientY;
+    }, { passive: true });
+    stage.addEventListener('touchend', (e) => {
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? +1 : -1);
+    });
+    // Delete
+    delBtn.addEventListener('click', async () => {
+      const m = items[idx];
+      if (m.source !== 'blob') return;
+      if (!confirm(`Delete ${m.name} from Blob storage? (Irreversible)`)) return;
+      try {
+        await deleteBlobUrl(m.url);
+        items.splice(idx, 1);
+        if (!items.length) { close(); await paintMediaLibrary(root); return; }
+        if (idx >= items.length) idx = items.length - 1;
+        paint();
+        await paintMediaLibrary(root);
+      } catch (e) { alert('Delete failed: ' + e.message); }
+    });
+    paint();
   }
   function fmtSize (bytes) {
     if (bytes < 1024) return bytes + 'B';

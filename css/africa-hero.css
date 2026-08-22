@@ -262,6 +262,15 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   position: absolute; inset: 0;
   overflow: hidden;
   background: #000;
+  /* THIS is what constrains the slideshow to africa. The stage layer
+     itself is masked — any image/gif/video/A INSIDE it can only render
+     where the mask is opaque. Everything OUTSIDE africa can never draw
+     over the container's black background. Simpler + more reliable than
+     stacking a shutter overlay on top with mask-composite tricks. */
+  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+  -webkit-mask-mode: luminance;
+          mask-mode: luminance;
 }
 .aa-hm-stage .aa-hm-slide {
   position: absolute; inset: 0;
@@ -276,14 +285,18 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 .aa-hm-stage .aa-hm-slide.is-active { opacity: 1; }
 .aa-hm-stage .aa-hm-slide.aa-hm-huge { font-size: clamp(2.2rem, 6vw, 5rem); }
-/* Single big-A fallback — fills the mask with one glyph */
+/* Bold sans-serif A. Real font glyph, not hand-drawn geometry — user
+   asked: 'just take a Bold font A sans serif'. Sized big enough to
+   fill africa's vertical extent when masked (100vh basis). */
 .aa-hm-stage .aa-hm-slide.aa-hm-a {
-  font-size: clamp(20rem, 60vh, 60vw);
+  font-family: 'Arial Black', 'Helvetica Neue', Impact, Inter, system-ui, sans-serif;
   font-weight: 900;
+  font-size: 90vh;
   line-height: 0.85;
   padding: 0;
   color: #fff;
-  text-shadow: 0 0 60px rgba(255,255,255,.25);
+  background: #000;
+  letter-spacing: -0.05em;
 }
 .aa-hm-stage img,
 .aa-hm-stage video,
@@ -318,32 +331,8 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
    everywhere except inside africa (where it's transparent). Built as
    a data URL with the africa silhouette punched OUT of a large black
    rect via fill-rule=evenodd. Sits above the stage and below the UI. */
-.aa-home-mask::after {
-  content: '';
-  position: absolute; inset: 0;
-  pointer-events: none;
-  /* Solid black shutter that ACTUALLY covers the whole container. The
-     old approach used a cutout SVG at background-size:contain — but
-     'contain' leaves transparent margins around the SVG (whichever axis
-     is not limiting), and the slideshow leaked through those margins
-     as visible stripes/patterns outside africa.
-
-     Fix: paint solid black across inset:0, then MASK it with africa-
-     mask.svg (white africa on transparent) using mask-composite: exclude.
-     'exclude' inverts the mask: the black shows wherever the mask is
-     TRANSPARENT (ocean + contain-margins), and is hidden where the mask
-     is opaque (africa). Africa stays transparent = slideshow visible only
-     inside africa. Margins/ocean are guaranteed solid black. */
-  background: #000;
-  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
-          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
-  -webkit-mask-composite: source-out;   /* Safari legacy → same effect as exclude here */
-          mask-composite: exclude;
-  transform: scale(calc(1 + var(--aa-hm-level) * 0.05));
-  transform-origin: center center;
-  transition: transform 80ms linear;
-  will-change: transform;
-}
+/* Old ::after shutter is gone — the stage itself is masked now, so no
+   separate cutout overlay is needed. Keep ::before (outline stroke). */
 .aa-home-mask::before {
   content: '';
   position: absolute; inset: 0;

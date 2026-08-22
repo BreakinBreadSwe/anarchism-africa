@@ -82,20 +82,13 @@
     return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
   }
 
-  // Home hero shows VISUAL content only — no typographic slides.
-  // The BIG_A_SLIDE is the DEFAULT first slide (bold A inside the
-  // africa outline, matching the reference logo). It's classified as
-  // type=image so the text-filter doesn't strip it — the "text" is
-  // actually a hand-authored SVG glyph rendered inside the mask.
-  const BIG_A_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
-      <rect width="800" height="800" fill="#000"/>
-      <polygon fill="#fff" points="400,70 130,760 300,760"/>
-      <polygon fill="#fff" points="400,70 500,760 670,760"/>
-      <rect fill="#fff" x="180" y="410" width="440" height="56"/>
-    </svg>`
-  );
-  const BIG_A_SLIDE = { type: 'image', src: BIG_A_SVG, duration: 3600 };
+  // Big bold sans-serif A as the DEFAULT first slide. Rendered as a
+  // text-type slide with class 'aa-hm-a' — CSS provides the font
+  // (Arial Black / Helvetica Neue) + size. The stage is already masked
+  // to africa so the A auto-clips to the continent shape. Classified as
+  // 'a' type so the boot() text-filter passes it through (text-slides
+  // are stripped from CMS pool but this one is intentional).
+  const BIG_A_SLIDE = { type: 'a', text: 'A', duration: 3600, className: 'aa-hm-a' };
   const BUILT_IN_SLIDES = [
     BIG_A_SLIDE,
     { type: 'image', src: kentePattern(1),    duration: 3200 },
@@ -174,6 +167,7 @@
         return `<div class="${cls}" data-idx="${i}"><video src="${esc(s.src)}" muted loop autoplay playsinline></video></div>`;
       case 'iframe':
         return `<div class="${cls}" data-idx="${i}"><iframe src="${esc(s.src)}" frameborder="0" allow="autoplay; fullscreen"></iframe></div>`;
+      case 'a':
       case 'text':
       default:
         return `<div class="${cls}" data-idx="${i}">${esc(s.text || '')}</div>`;

@@ -267,7 +267,11 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: min(var(--aa-hm-size, 72vmin), calc(100vw - 40px), calc(100dvh - 140px));
+  /* Default size bumped 72 → 88vmin so africa reads as the hero
+     centrepiece with a small margin, not a floating card. Media
+     behind the mask scales with the stage automatically because
+     it's a % child. CMS knob still overrides via --aa-hm-size. */
+  width: min(var(--aa-hm-size, 88vmin), calc(100vw - 24px), calc(100dvh - 100px));
   aspect-ratio: 1020 / 1018;
   overflow: hidden;
   background: #000;
@@ -300,22 +304,26 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 .aa-hm-stage .aa-hm-slide.is-active { opacity: 1; }
 .aa-hm-stage .aa-hm-slide.aa-hm-huge { font-size: clamp(2.2rem, 6vw, 5rem); }
-/* Bold sans-serif A — sized in CONTAINER-QUERY units (cqh) so it's
-   relative to the STAGE height, not the viewport. Guarantees the A
-   fits inside africa regardless of viewport size. Fallback vh for
-   older engines (Safari <17) is slightly smaller to be safe. */
+/* Bold sans-serif A sized to actually FILL africa's usable interior.
+   Africa is roughly 1:1 but the interior height is dominated by the
+   vertical Nile→Cape run — an A rendered at 88% of stage barely
+   reached the crossbar's shoulder. Bumped to 128cqh so the glyph
+   overflows the stage box vertically; overflow:hidden + the mask
+   clip it back to africa's silhouette so nothing pokes past the
+   coast. Result: the A visually fills africa from apex to Cape. */
 .aa-hm-stage .aa-hm-slide.aa-hm-a {
   font-family: 'Arial Black', 'Helvetica Neue', Impact, Inter, system-ui, sans-serif;
   font-weight: 900;
-  font-size: 60vh;                  /* fallback */
-  font-size: 88cqh;                 /* 88% of stage height */
+  font-size: 82vh;                  /* fallback (older Safari) */
+  font-size: 128cqh;                /* 128% of stage height — clipped by mask */
   line-height: 0.85;
   padding: 0;
   color: #fff;
   background: #000;
   letter-spacing: -0.05em;
-  /* keep centered vertically on the small optical A baseline */
-  padding-top: 5cqh;
+  /* Nudge the glyph baseline so the crossbar lands mid-continent
+     rather than over the Sahara. */
+  padding-top: 8cqh;
 }
 .aa-hm-stage img,
 .aa-hm-stage video,
@@ -360,7 +368,7 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
-  width: min(var(--aa-hm-size, 72vmin), calc(100vw - 40px), calc(100dvh - 140px));
+  width: min(var(--aa-hm-size, 88vmin), calc(100vw - 24px), calc(100dvh - 100px));
   aspect-ratio: 1020 / 1018;
   pointer-events: none;
   z-index: 2;

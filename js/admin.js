@@ -41,6 +41,14 @@
   }, { passive: true });
   function setTab (name) {
     saveScroll();
+    // Leaving the Studio → autosave + close before painting the next
+    // tab. The Studio remembers what it was working on via the session
+    // id stashed in localStorage, so returning restores the design.
+    if (_currentTab === 'studio' && name !== 'studio') {
+      try { window.MerchStudio?.autosaveAndClose?.(); } catch {}
+      const view = document.getElementById('view-studio');
+      if (view) view.innerHTML = '';   // release DOM + canvas refs
+    }
     if (name !== 'studio') _lastTab = name;
     _currentTab = name;
     try { localStorage.setItem(TAB_KEY, name); } catch {}

@@ -1678,13 +1678,45 @@
   function escAttr (s) { return escHtml(s); }
 
   // ---- Public API ------------------------------------------------------
+  // Session-restore: MerchStudio stashes the currently-loaded session id
+  // in localStorage every time saveSession() completes. When the user
+  // returns to the Studio tab, mount() reads it back and auto-loads the
+  // session so their in-progress work is on-screen without a click.
+  const LAST_SESSION_KEY = 'aa.studio.lastSessionId';
+  function stashLastSession () {
+    try { if (state.sessionId) localStorage.setItem(LAST_SESSION_KEY, state.sessionId); } catch {}
+  }
+  function readLastSession () {
+    try { return localStorage.getItem(LAST_SESSION_KEY) || ''; } catch { return ''; }
+  }
+  // Hook stashLastSession into saveSession's success path.
+  const _origSaveSession = saveSession;
+  saveSession = async function () { await _origSaveSession(); stashLastSession(); };
+
   window.MerchStudio = {
     render (opts) {
       const prevTab = (opts && opts.prevTab) || 'dashboard';
       mount(prevTab);
+      // Auto-load the last session the user was working on. Falls back
+      // to the passed-in sessionId, then to whatever's stashed.
+      const wanted = (opts && opts.sessionId) || readLastSession();
+      if (wanted) {
+        setTimeout(() => { try { loadSession(wanted); } catch {} }, 60);
+      }
     },
-    addText: addTextLayer,
+    addText:  addTextLayer,
     addImage: addImageLayer,
+    // Called by admin.js setTab when the user clicks a different rail
+    // item. Autosaves any dirty state, then the caller unmounts the
+    // Studio view. Returns a Promise so the caller can await the flush
+    // before painting the next tab.
+    async autosaveAndClose () {
+      if (!state || !state.layers || !state.layers.length) return;
+      try { await saveSession(); } catch {}
+      stashLastSession();
+    },
+    // Read-only introspection for the router.
+    getSessionId () { return state?.sessionId || readLastSession() || ''; }
   };
 
 })();

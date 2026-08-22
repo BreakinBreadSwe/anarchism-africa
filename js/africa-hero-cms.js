@@ -348,7 +348,7 @@
       <div class="panel" style="margin-top:14px">
         <h3 style="margin:0 0 10px">Live preview</h3>
         <iframe data-hero-preview-iframe src="${PREVIEW_URL}"
-                style="width:100%;height:60vh;border:1px solid var(--line);border-radius:10px;background:#000"
+                style="width:100%;height:88vh;border:1px solid var(--line);border-radius:10px;background:#000"
                 title="Africa hero live preview"></iframe>
       </div>
     `;
@@ -446,11 +446,19 @@
       paintPreview(root);
     });
 
+    cmsRoot = root;    // used by openSlideEditor to re-paint after save/delete
     // ---- Slide list actions (up/down/delete/center) ----
     const listEl = root.querySelector('[data-hero-list]');
     listEl.addEventListener('click', async (e) => {
       const card = e.target.closest('.slide-card'); if (!card) return;
       const i = Number(card.dataset.idx);
+      // Click on the preview thumb (not on an action button) → open
+      // the fullscreen slide editor. Media slides get drag/zoom
+      // controls; text/A slides just show the preview.
+      if (e.target.closest('.slide-preview') && !e.target.closest('button')) {
+        openSlideEditor(i);
+        return;
+      }
       let changed = false;
       if (e.target.matches('[data-hero-del]')) {
         if (!confirm('Delete this slide?')) return;
@@ -509,6 +517,8 @@
     if (!slides.length) { list.innerHTML = '<div style="color:var(--muted)">No slides yet — add one above.</div>'; return; }
     list.innerHTML = slides.map(cardHtml).join('');
   }
+  // Wired below to make the whole slide-card open the Slide Editor.
+  let cmsRoot = null;
   function cardHtml (s, i) {
     const isMedia = s.type !== 'text' && s.type !== 'a';
     const fx = Number.isFinite(+s.focalX) ? +s.focalX : 50;
@@ -569,6 +579,185 @@
     // Bump the iframe src cache-buster so it re-fetches css + slides.
     const iframe = root.querySelector('[data-hero-preview-iframe]');
     if (iframe) iframe.src = PREVIEW_URL + '&t=' + Date.now();
+  }
+
+  // =====================================================================
+  // Fullscreen Slide Editor — real africa mask, drag to reposition, wheel
+  // to zoom, arrow-keys to change slide, delete inline. Shows exactly
+  // what the hero will render.
+  // =====================================================================
+  function openSlideEditor (startIdx) {
+    if (!slides.length) return;
+    let idx = Math.max(0, Math.min(startIdx, slides.length - 1));
+    // A single working copy of the slide's focal/zoom/duration that we
+    // mutate live, then commit to `slides[]` on Save.
+    let draft = { ...slides[idx] };
+
+    document.getElementById('aa-slide-editor')?.remove();
+    const overlay = document.createElement('div');
+    overlay.id        = 'aa-slide-editor';
+    overlay.className = 'aa-slide-editor';
+    overlay.innerHTML = `
+      <button class="aa-lb-close"  aria-label="Close">×</button>
+      <button class="aa-lb-prev"   aria-label="Previous slide">‹</button>
+      <button class="aa-lb-next"   aria-label="Next slide">›</button>
+      <div class="aa-se-frame">
+        <div class="aa-se-stage" id="aa-se-stage"></div>
+        <div class="aa-se-outline" aria-hidden="true"></div>
+      </div>
+      <div class="aa-se-panel">
+        <div class="aa-se-row">
+          <label>H focal <span data-se-val="focalX">50%</span>
+            <input type="range" min="0" max="100" step="1" data-se-in="focalX">
+          </label>
+          <label>V focal <span data-se-val="focalY">50%</span>
+            <input type="range" min="0" max="100" step="1" data-se-in="focalY">
+          </label>
+          <label>Zoom <span data-se-val="zoom">100%</span>
+            <input type="range" min="100" max="400" step="5" data-se-in="zoom">
+          </label>
+          <label>Duration ms <span data-se-val="duration">2000</span>
+            <input type="range" min="500" max="30000" step="100" data-se-in="duration">
+          </label>
+        </div>
+        <div class="aa-se-actions">
+          <button data-se-reset>Reset</button>
+          <button data-se-delete class="danger">Delete slide</button>
+          <button data-se-cancel>Cancel</button>
+          <button data-se-save class="primary">Save</button>
+        </div>
+        <div class="aa-se-meta" data-se-meta></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const stage   = overlay.querySelector('#aa-se-stage');
+    const meta    = overlay.querySelector('[data-se-meta]');
+    const inputs  = overlay.querySelectorAll('[data-se-in]');
+    const vals    = { focalX: 50, focalY: 50, zoom: 100, duration: 2000 };
+
+    function loadFromSlide () {
+      const s = slides[idx];
+      draft = { ...s };
+      vals.focalX   = Number.isFinite(+s.focalX)   ? +s.focalX   : 50;
+      vals.focalY   = Number.isFinite(+s.focalY)   ? +s.focalY   : 50;
+      vals.zoom     = Number.isFinite(+s.zoom)     ? +s.zoom     : 100;
+      vals.duration = Number.isFinite(+s.duration) ? +s.duration : 2000;
+      inputs.forEach(i => { i.value = vals[i.dataset.seIn]; });
+      renderStage();
+      renderLabels();
+      const isMedia = s.type !== 'text' && s.type !== 'a';
+      overlay.querySelectorAll('.aa-se-row label, [data-se-reset]').forEach(el => {
+        el.style.opacity = isMedia ? '1' : '.3';
+        el.querySelectorAll('input').forEach(i => i.disabled = !isMedia);
+      });
+      meta.textContent = `Slide ${idx + 1} / ${slides.length} · ${s.type}${s.src ? ' · ' + s.src.split('/').pop() : ''}`;
+    }
+    function renderStage () {
+      const s = slides[idx];
+      const style = `object-position:${vals.focalX}% ${vals.focalY}%;transform:scale(${(vals.zoom/100).toFixed(3)});transform-origin:${vals.focalX}% ${vals.focalY}%;`;
+      if (s.type === 'video' || s.type === 'mp4') {
+        stage.innerHTML = `<video src="${esc(s.src)}" muted loop autoplay playsinline style="${style}"></video>`;
+      } else if (s.type === 'image' || s.type === 'gif') {
+        stage.innerHTML = `<img src="${esc(s.src)}" alt="" style="${style}">`;
+      } else {
+        stage.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:'Arial Black',sans-serif;font-weight:900;font-size:70cqh;line-height:1">${esc(s.text || 'A')}</div>`;
+      }
+    }
+    function renderLabels () {
+      overlay.querySelector('[data-se-val="focalX"]').textContent  = vals.focalX + '%';
+      overlay.querySelector('[data-se-val="focalY"]').textContent  = vals.focalY + '%';
+      overlay.querySelector('[data-se-val="zoom"]').textContent    = vals.zoom + '%';
+      overlay.querySelector('[data-se-val="duration"]').textContent= vals.duration;
+    }
+
+    // Sliders → state
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        vals[input.dataset.seIn] = Number(input.value);
+        renderStage();
+        renderLabels();
+      });
+    });
+
+    // Drag on the stage → pan focal point. dx/dy in pixels map to
+    // percentage of stage size, inverted because dragging RIGHT moves
+    // the visible frame to look at content further LEFT.
+    let dragging = false, dragStart = null;
+    function toPct (dx, dy, rect) {
+      const px = (dx / rect.width)  * 100;
+      const py = (dy / rect.height) * 100;
+      return { dx: px, dy: py };
+    }
+    stage.addEventListener('pointerdown', (e) => {
+      const s = slides[idx];
+      if (s.type === 'text' || s.type === 'a') return;
+      dragging = true;
+      dragStart = { x: e.clientX, y: e.clientY, focalX: vals.focalX, focalY: vals.focalY, rect: stage.getBoundingClientRect() };
+      stage.setPointerCapture(e.pointerId);
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const { dx, dy } = toPct(e.clientX - dragStart.x, e.clientY - dragStart.y, dragStart.rect);
+      vals.focalX = Math.max(0, Math.min(100, dragStart.focalX - dx));
+      vals.focalY = Math.max(0, Math.min(100, dragStart.focalY - dy));
+      inputs.forEach(i => { if (i.dataset.seIn === 'focalX') i.value = vals.focalX; if (i.dataset.seIn === 'focalY') i.value = vals.focalY; });
+      renderStage(); renderLabels();
+    });
+    stage.addEventListener('pointerup',     () => { dragging = false; });
+    stage.addEventListener('pointercancel', () => { dragging = false; });
+
+    // Wheel → zoom
+    stage.addEventListener('wheel', (e) => {
+      const s = slides[idx];
+      if (s.type === 'text' || s.type === 'a') return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -5 : +5;
+      vals.zoom = Math.max(100, Math.min(400, vals.zoom + delta));
+      inputs.forEach(i => { if (i.dataset.seIn === 'zoom') i.value = vals.zoom; });
+      renderStage(); renderLabels();
+    }, { passive: false });
+
+    // Nav / actions
+    function step (dir) { idx = (idx + dir + slides.length) % slides.length; loadFromSlide(); }
+    function close ()   { overlay.remove(); document.removeEventListener('keydown', onKey); }
+    function onKey (e) {
+      if (e.target.matches('input')) return;   // don't hijack sliders
+      if (e.key === 'ArrowRight')     { e.preventDefault(); step(+1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+      else if (e.key === 'Escape')    { e.preventDefault(); close(); }
+      else if (e.key === 's' || e.key === 'S') { e.preventDefault(); overlay.querySelector('[data-se-save]').click(); }
+      else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); overlay.querySelector('[data-se-delete]').click(); }
+    }
+    document.addEventListener('keydown', onKey);
+    overlay.querySelector('.aa-lb-close').addEventListener('click', close);
+    overlay.querySelector('.aa-lb-prev' ).addEventListener('click', () => step(-1));
+    overlay.querySelector('.aa-lb-next' ).addEventListener('click', () => step(+1));
+
+    overlay.querySelector('[data-se-reset]').addEventListener('click', () => {
+      vals.focalX = 50; vals.focalY = 50; vals.zoom = 100;
+      inputs.forEach(i => { if (['focalX','focalY','zoom'].includes(i.dataset.seIn)) i.value = vals[i.dataset.seIn]; });
+      renderStage(); renderLabels();
+    });
+    overlay.querySelector('[data-se-cancel]').addEventListener('click', () => loadFromSlide());
+    overlay.querySelector('[data-se-save]').addEventListener('click', async () => {
+      const s = slides[idx];
+      s.focalX = vals.focalX; s.focalY = vals.focalY; s.zoom = vals.zoom; s.duration = vals.duration;
+      const r = await save();
+      if (!r.ok) { alert('Save failed: ' + r.error); return; }
+      if (cmsRoot) { paintSlides(cmsRoot); paintPreview(cmsRoot); }
+    });
+    overlay.querySelector('[data-se-delete]').addEventListener('click', async () => {
+      if (!confirm('Delete this slide from the hero rotation?')) return;
+      slides.splice(idx, 1);
+      const r = await save();
+      if (!r.ok) { alert('Delete failed: ' + r.error); return; }
+      if (cmsRoot) { paintSlides(cmsRoot); paintPreview(cmsRoot); }
+      if (!slides.length) { close(); return; }
+      if (idx >= slides.length) idx = slides.length - 1;
+      loadFromSlide();
+    });
+
+    loadFromSlide();
   }
 
   window.AfricaHeroCMS = { render };

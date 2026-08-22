@@ -47,28 +47,26 @@
   display: block;
 }
 
-/* The mask container. Height/width fill the viewport; the SVG mask
-   automatically scales to preserve the africa silhouette aspect ratio. */
-.aa-hero-mask {
-  position: absolute; inset: 0;
-  z-index: 1;
-  background: #000;
-  /* SVG-as-mask. luminance mode: white = opaque, black = transparent. */
-  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
-          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
-  -webkit-mask-mode: luminance;
-          mask-mode: luminance;
-  /* Woofer pulse — scale up subtly on audio energy */
-  transform: scale(calc(1 + var(--aa-hero-level) * 0.06));
-  transition: transform 80ms linear;
-  will-change: transform;
-}
+/* Legacy shutter element (deprecated). The mask now lives on
+   .aa-hero-stage below — same approach as .aa-home-mask — so slideshow
+   content only ever renders inside africa. Leaving this hidden ensures
+   any older cached CSS/HTML doesn't paint a phantom black overlay. */
+.aa-hero-mask { display: none !important; }
 
-/* Slideshow stage — sits under the mask so only africa-shaped area shows. */
+/* Slideshow stage — masked to africa's silhouette so the media only
+   ever paints inside the continent. Container's #000 background paints
+   the space around africa. */
 .aa-hero-stage {
   position: absolute; inset: 0;
   overflow: hidden;
   background: #000;
+  -webkit-mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+          mask: url('/icons/africa-mask.svg') center / contain no-repeat;
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
+  transform: scale(calc(1 + var(--aa-hero-level, 0) * 0.06));
+  transition: transform 80ms linear;
+  will-change: transform;
 }
 .aa-slide {
   position: absolute; inset: 0;
@@ -256,6 +254,127 @@
 }
 .aa-lightbox .aa-lb-del:hover { background: #d0022a; }
 .aa-lightbox .aa-lb-del:disabled { background: #555; cursor: not-allowed; }
+
+/* ============================================================
+ * Fullscreen Slide Editor — same africa mask geometry the hero
+ * uses, plus drag/zoom controls on the slide media. Lives on top
+ * of everything (z-index above lightbox).
+ * ============================================================ */
+.aa-slide-editor {
+  position: fixed; inset: 0;
+  z-index: 9200;
+  background: rgba(0,0,0,.94);
+  backdrop-filter: blur(6px);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 32px;
+  gap: 20px;
+  box-sizing: border-box;
+  animation: aa-lb-fade .18s ease;
+}
+.aa-slide-editor .aa-se-frame {
+  position: relative;
+  justify-self: center; align-self: center;
+  width:  min(78vmin, calc(100vw - 80px), calc(100vh - 260px));
+  aspect-ratio: 1020 / 1018;
+  background: #000;
+  border-radius: 4px;
+  container-type: size;
+}
+.aa-slide-editor .aa-se-stage {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  background: #000;
+  cursor: grab;
+  touch-action: none;
+  -webkit-mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
+          mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
+}
+.aa-slide-editor .aa-se-stage:active { cursor: grabbing; }
+.aa-slide-editor .aa-se-stage img,
+.aa-slide-editor .aa-se-stage video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  pointer-events: none;   /* let stage own drag events */
+}
+.aa-slide-editor .aa-se-outline {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: url('/icons/africa-outline.svg') center / 100% 100% no-repeat;
+}
+.aa-slide-editor .aa-lb-close,
+.aa-slide-editor .aa-lb-prev,
+.aa-slide-editor .aa-lb-next {
+  position: absolute;
+  background: rgba(255,255,255,.08);
+  color: #fff; border: 1px solid rgba(255,255,255,.2);
+  cursor: pointer;
+  font: 300 28px/1 'Helvetica Neue', system-ui, sans-serif;
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, transform .15s;
+  z-index: 1;
+}
+.aa-slide-editor .aa-lb-close { top: 20px; right: 20px; font-size: 26px; }
+.aa-slide-editor .aa-lb-prev  { left:  20px; top: 50%; transform: translateY(-50%); }
+.aa-slide-editor .aa-lb-next  { right: 20px; top: 50%; transform: translateY(-50%); }
+.aa-slide-editor .aa-lb-close:hover,
+.aa-slide-editor .aa-lb-prev:hover,
+.aa-slide-editor .aa-lb-next:hover { background: rgba(255,255,255,.18); }
+.aa-slide-editor .aa-se-panel {
+  background: rgba(15,15,15,.9);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: #fff;
+  display: grid; gap: 12px;
+}
+.aa-slide-editor .aa-se-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 14px;
+}
+.aa-slide-editor .aa-se-row label {
+  display: flex; flex-direction: column; gap: 4px;
+  font: 500 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .05em;
+  color: rgba(255,255,255,.7);
+}
+.aa-slide-editor .aa-se-row label span {
+  font-weight: 700; color: #fff;
+}
+.aa-slide-editor .aa-se-row input[type=range] {
+  width: 100%; accent-color: #ffd700;
+}
+.aa-slide-editor .aa-se-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.aa-slide-editor .aa-se-actions button {
+  background: rgba(255,255,255,.08);
+  color: #fff; border: 1px solid rgba(255,255,255,.2);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: 700 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer;
+}
+.aa-slide-editor .aa-se-actions button.primary  { background: #ffd700; color: #000; border-color: #ffd700; }
+.aa-slide-editor .aa-se-actions button.danger   { background: #b00020; border-color: #b00020; }
+.aa-slide-editor .aa-se-actions button:hover    { filter: brightness(1.1); }
+.aa-slide-editor .aa-se-meta {
+  color: rgba(255,255,255,.6);
+  font: 500 .72rem 'JetBrains Mono', monospace;
+  letter-spacing: .05em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .aa-slide-editor { padding: 16px; }
+  .aa-slide-editor .aa-se-row { grid-template-columns: 1fr 1fr; }
+}
 @media (max-width: 640px) {
   .aa-lightbox { padding: 20px; }
   .aa-lightbox .aa-lb-close,

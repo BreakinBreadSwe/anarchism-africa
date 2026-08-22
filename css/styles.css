@@ -424,6 +424,25 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
   display: block;
 }
 
+/* Article/film/etc card action row — source-chip on the left, share
+   button on the right. Wraps if the card is too narrow. */
+.card .card-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px; flex-wrap: wrap;
+  margin-top: 8px;
+}
+.card .card-actions .source-chip { margin: 0; }
+
+/* Share row on item pages — thin bar just below the hero thumb and again
+   above the item-actions row at the bottom. Right-aligned so it doesn't
+   compete with the leading heading. */
+.item-share-row {
+  display: flex; justify-content: flex-end;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+.item-share-row.item-share-bottom { margin-top: 20px; }
+
 /* FIXED BOTTOM BAR -------------------------------------------------------- */
 .bottombar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 35;

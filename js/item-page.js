@@ -85,6 +85,14 @@
         </div>
         ${renderCredit(it)}
         ${renderItemHero(it, type)}
+        <div class="item-share-row item-share-top">
+          ${window.AA?.share ? window.AA.share.buttonHtml({
+            url:   location.href,
+            title: it.title || '',
+            text:  it.summary || '',
+            kind:  'chip'
+          }) : ''}
+        </div>
         <h1 class="item-title">${escapeHTML(it.title || '')}</h1>
         ${it.deck ? `<p class="item-lede">${escapeHTML(it.deck)}</p>` : ''}
         ${it.summary ? `<p class="item-lede">${escapeHTML(it.summary)}</p>` : ''}
@@ -104,6 +112,14 @@
         ${renderVerify(it)}
         ${type === 'song' && it.audio ? `<audio controls style="width:100%;margin-top:16px" src="${escapeHTML(it.audio)}"></audio>` : ''}
         ${type === 'film' && it.embed ? `<video controls style="width:100%;border-radius:12px;margin-top:16px" src="${escapeHTML(it.embed)}"></video>` : ''}
+        <div class="item-share-row item-share-bottom">
+          ${window.AA?.share ? window.AA.share.buttonHtml({
+            url:   location.href,
+            title: it.title || '',
+            text:  it.summary || '',
+            kind:  'chip'
+          }) : ''}
+        </div>
         <div class="item-actions">
           ${safeExt ? `<a class="btn primary" href="${safeExt}" target="_blank" rel="noopener">Open source ↗</a>` : ''}
           ${type === 'event' ? `<button class="btn primary" onclick="window.AA_LIVE.rsvp('${escapeHTML(it.id)}', this)">RSVP</button>

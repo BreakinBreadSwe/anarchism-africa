@@ -230,6 +230,13 @@
     // A direct MP3/audio URL means we can play via the footer player.
     const hasDirectAudio = !!(track.audio || track.audioUrl || track.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i));
 
+    // Share URL for this track — deep-link that opens sound-library
+    // with the track pre-expanded.
+    const trackShareUrl = location.origin + '/sound-library.html?track=' + encodeURIComponent(track.id || track.slug || '');
+    const shareBtnHtml = window.AA?.share
+      ? window.AA.share.buttonHtml({ url: trackShareUrl, title: track.title || 'Track', text: (track.author || track.artist || '') })
+      : '';
+
     card.innerHTML = `
       <button class="sl-card-header" aria-expanded="${isExp}">
         <div class="sl-card-thumb">
@@ -247,10 +254,13 @@
             ${hasDirectAudio ? '<span class="sl-embed-chip" title="Direct audio">▶</span>' : embedChips}
           </div>
         </div>
-        <div class="sl-card-chevron">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            ${isExp ? '<path d="M18 15l-6-6-6 6"/>' : '<path d="M6 9l6 6 6-6"/>'}
-          </svg>
+        <div class="sl-card-actions">
+          ${shareBtnHtml}
+          <div class="sl-card-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              ${isExp ? '<path d="M18 15l-6-6-6 6"/>' : '<path d="M6 9l6 6 6-6"/>'}
+            </svg>
+          </div>
         </div>
       </button>
       ${isExp ? buildBody(track, embeds) : ''}

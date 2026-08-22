@@ -336,6 +336,11 @@
         });
       } catch {}
     }
+    // Share URL — deep-link into the item detail page.
+    const itemUrl = location.origin + '/item.html?type=' + encodeURIComponent(kind) + '&id=' + encodeURIComponent(it.id || '');
+    const shareBtn = window.AA?.share
+      ? window.AA.share.buttonHtml({ url: itemUrl, title: it.title || '', text: it.summary || '' })
+      : '';
     el.innerHTML = `
       <div class="thumb" style="background-image:url(${it.image})"><span class="badge">${kind}</span></div>
       <div class="body">
@@ -343,7 +348,7 @@
         <div class="meta">${secondaryLine(it, kind)}</div>
         ${it.summary ? `<p class="summary">${it.summary}</p>` : ''}
         ${kind === 'merch' ? merchBlock(it) : ''}
-        ${sourceChip(it)}
+        <div class="card-actions">${sourceChip(it)}${shareBtn}</div>
       </div>`;
     return el;
   }

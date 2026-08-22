@@ -115,6 +115,34 @@
     .aa-np-actions button:hover { background: var(--fg); color: var(--bg); }
     .aa-np-actions button.is-on { background: var(--accent); color: #000; border-color: var(--accent); }
 
+    .aa-np-details {
+      display: grid; grid-template-columns: max-content 1fr;
+      gap: 2px 12px;
+      margin: 8px 0 0;
+      font: 500 .75rem/1.5 'JetBrains Mono', monospace;
+      color: var(--fg-dim, #999);
+      text-align: left;
+    }
+    .aa-np-details > div { display: contents; }
+    .aa-np-details dt { text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+    .aa-np-details dd { margin: 0; color: var(--fg, #eee); overflow-wrap: anywhere; }
+    .aa-np-desc {
+      font: 400 .82rem/1.5 'Space Grotesk', sans-serif;
+      color: var(--fg, #eee);
+      margin: 10px 0 0;
+      max-height: 30vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .aa-np-ext {
+      display: inline-block; margin-top: 8px;
+      font: 500 .72rem 'JetBrains Mono', monospace; letter-spacing: .06em;
+      color: var(--accent, #ffd700);
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
+    .aa-np-ext:hover { color: var(--fg, #eee); }
+
     @media (max-width: 480px) {
       .aa-np-body { padding-top: calc(56px + env(safe-area-inset-top, 0px)); }
     }
@@ -146,9 +174,10 @@
         <div class="aa-np-meta">
           <p class="aa-np-title"  id="aa-np-title">—</p>
           <p class="aa-np-artist" id="aa-np-artist">—</p>
+          <div id="aa-np-meta-rich"></div>
           <div class="aa-np-actions">
             <button type="button" id="aa-np-like">Like</button>
-            <button type="button" id="aa-np-share">Share</button>
+            <button type="button" id="aa-np-share">Share · QR</button>
           </div>
         </div>
       </div>`;
@@ -163,13 +192,38 @@
   function paint () {
     const el = document.getElementById('aa-np');
     if (!el) return;
-    const cur = window.MP?.current;
+    const cur = window.MP?.current || {};
     const artSrc = document.getElementById('mp-art')?.style?.backgroundImage || '';
     el.querySelector('#aa-np-art').style.backgroundImage = artSrc;
-    el.querySelector('#aa-np-title').textContent  = cur?.title  || '—';
-    el.querySelector('#aa-np-artist').textContent = cur?.artist || '';
+    el.querySelector('#aa-np-title').textContent  = cur.title  || '—';
+    el.querySelector('#aa-np-artist').textContent = cur.artist || cur.author || '';
+    // Rich metadata block — populate from whatever's on MP.current.
+    // slToSong / random-radio both spread the raw track record now, so
+    // fields like description, year, category, duration, source,
+    // external url, tags, publishedAt are all available.
+    const meta = el.querySelector('#aa-np-meta-rich');
+    if (meta) {
+      const rows = [];
+      if (cur.year)         rows.push(['Year',        cur.year]);
+      if (cur.category)     rows.push(['Category',    cur.category]);
+      if (cur.duration && typeof cur.duration === 'number') {
+        const m = Math.floor(cur.duration / 60), s = Math.floor(cur.duration % 60);
+        rows.push(['Duration', `${m}:${String(s).padStart(2,'0')}`]);
+      }
+      if (cur.source_name || cur.source) rows.push(['Source', cur.source_name || cur.source]);
+      if (cur.publishedAt || cur.published_at) rows.push(['Published', String(cur.publishedAt || cur.published_at).slice(0, 10)]);
+      if (Array.isArray(cur.tags) && cur.tags.length) rows.push(['Tags', cur.tags.slice(0, 8).join(' · ')]);
+      const desc = cur.description || cur.summary || cur.notes;
+      const extUrl = cur.external_url || cur.url || cur.sourceUrl;
+      meta.innerHTML = `
+        ${rows.length ? `<dl class="aa-np-details">${rows.map(([k, v]) => `<div><dt>${escHTML(k)}</dt><dd>${escHTML(v)}</dd></div>`).join('')}</dl>` : ''}
+        ${desc ? `<p class="aa-np-desc">${escHTML(desc)}</p>` : ''}
+        ${extUrl ? `<a class="aa-np-ext" href="${escHTML(extUrl)}" target="_blank" rel="noopener">Open source ↗</a>` : ''}
+      `;
+    }
     syncLike();
   }
+  function escHTML (s) { return String(s || '').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
 
   function syncLike () {
     const btn = document.getElementById('aa-np-like');
@@ -189,7 +243,11 @@
   }
   async function onShare () {
     const cur = window.MP?.current; if (!cur) return;
-    const url = location.origin + '/item.html?type=song&id=' + encodeURIComponent(cur.id);
+    const url = location.origin + '/sound-library.html?track=' + encodeURIComponent(cur.id);
+    if (window.AA?.share) {
+      window.AA.share.open({ url, title: cur.title || 'Track', text: cur.artist || cur.author || '' });
+      return;
+    }
     try {
       if (navigator.share) await navigator.share({ title: cur.title, text: `${cur.title} — ${cur.artist || ''}`, url });
       else await navigator.clipboard.writeText(url);

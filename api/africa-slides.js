@@ -33,13 +33,23 @@ module.exports = async function handler (req, res) {
     if (!slides) return res.status(400).json({ error: 'body.slides must be an array' });
 
     // Sanitise each slide — accept only known fields.
+    const clamp = (v, min, max, def) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : def;
+    };
     const clean = slides.map(s => ({
       type:      String(s.type || 'text').toLowerCase(),
       text:      s.text ? String(s.text).slice(0, 500) : undefined,
       src:       s.src  ? String(s.src).slice(0, 2000) : undefined,
       alt:       s.alt  ? String(s.alt).slice(0, 200)  : undefined,
       className: s.className ? String(s.className).slice(0, 80) : undefined,
-      duration:  Math.max(500, Math.min(60000, Number(s.duration) || 3500))
+      duration:  Math.max(500, Math.min(60000, Number(s.duration) || 3500)),
+      // Per-slide focal point + zoom for centering within africa.
+      // focalX/Y in percent (0=left/top, 100=right/bottom, 50=center).
+      // zoom = 100..400 (100% = object-fit:cover natural).
+      focalX:    s.focalX !== undefined ? clamp(s.focalX, 0, 100, 50)   : undefined,
+      focalY:    s.focalY !== undefined ? clamp(s.focalY, 0, 100, 50)   : undefined,
+      zoom:      s.zoom   !== undefined ? clamp(s.zoom, 100, 400, 100)  : undefined
     }));
 
     // Optional background config for the OUTSIDE-africa layer.

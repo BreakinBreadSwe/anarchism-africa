@@ -201,13 +201,21 @@
   function renderSlide (s, i) {
     const cls = 'aa-hm-slide type-' + (s.type || 'text') + (s.className ? ' ' + s.className : '');
     const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    // Per-slide focal point + zoom → object-position + transform:scale on
+    // the media element. Renderer only injects these if the slide actually
+    // sets them, so uncustomised slides stay at the CSS default (50% 50%
+    // + no scale).
+    const fx = Number.isFinite(+s.focalX) ? +s.focalX : 50;
+    const fy = Number.isFinite(+s.focalY) ? +s.focalY : 50;
+    const zm = Number.isFinite(+s.zoom)   ? +s.zoom   : 100;
+    const mediaStyle = `object-position:${fx}% ${fy}%;transform:scale(${(zm/100).toFixed(3)});transform-origin:${fx}% ${fy}%;`;
     switch (s.type) {
       case 'image':
       case 'gif':
-        return `<div class="${cls}" data-idx="${i}"><img src="${esc(s.src)}" alt=""></div>`;
+        return `<div class="${cls}" data-idx="${i}"><img src="${esc(s.src)}" alt="" style="${mediaStyle}"></div>`;
       case 'video':
       case 'mp4':
-        return `<div class="${cls}" data-idx="${i}"><video src="${esc(s.src)}" muted loop autoplay playsinline></video></div>`;
+        return `<div class="${cls}" data-idx="${i}"><video src="${esc(s.src)}" muted loop autoplay playsinline style="${mediaStyle}"></video></div>`;
       case 'iframe':
         return `<div class="${cls}" data-idx="${i}"><iframe src="${esc(s.src)}" frameborder="0" allow="autoplay; fullscreen"></iframe></div>`;
       case 'a':

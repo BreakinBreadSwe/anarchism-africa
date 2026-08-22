@@ -352,7 +352,7 @@
       paintPreview(root);
     });
 
-    // ---- Slide list actions (up/down/delete) ----
+    // ---- Slide list actions (up/down/delete/center) ----
     const listEl = root.querySelector('[data-hero-list]');
     listEl.addEventListener('click', async (e) => {
       const card = e.target.closest('.slide-card'); if (!card) return;
@@ -365,12 +365,44 @@
         [slides[i-1], slides[i]] = [slides[i], slides[i-1]]; changed = true;
       } else if (e.target.matches('[data-hero-down]') && i < slides.length - 1) {
         [slides[i], slides[i+1]] = [slides[i+1], slides[i]]; changed = true;
+      } else if (e.target.matches('[data-hero-edit]')) {
+        const focal = card.querySelector('[data-hero-focal]');
+        if (focal) focal.style.display = (focal.style.display === 'none' ? 'block' : 'none');
+        return;
+      } else if (e.target.matches('[data-focal-reset]')) {
+        delete slides[i].focalX; delete slides[i].focalY; delete slides[i].zoom;
+        changed = true;
+      } else if (e.target.matches('[data-focal-save]')) {
+        const focal = card.querySelector('[data-hero-focal]'); if (!focal) return;
+        const fx = Number(focal.querySelector('[data-focal="focalX"]').value);
+        const fy = Number(focal.querySelector('[data-focal="focalY"]').value);
+        const zm = Number(focal.querySelector('[data-focal="zoom"]').value);
+        slides[i].focalX = fx; slides[i].focalY = fy; slides[i].zoom = zm;
+        changed = true;
       }
       if (changed) {
         const r = await save();
         if (!r.ok) { alert('Save failed: ' + r.error); return; }
         paintSlides(root);
         paintPreview(root);
+      }
+    });
+    // Live-update the preview inside the card as sliders move
+    listEl.addEventListener('input', (e) => {
+      if (!e.target.matches('[data-focal]')) return;
+      const card = e.target.closest('.slide-card');
+      const focal = card.querySelector('[data-hero-focal]');
+      const fx = focal.querySelector('[data-focal="focalX"]').value;
+      const fy = focal.querySelector('[data-focal="focalY"]').value;
+      const zm = focal.querySelector('[data-focal="zoom"]').value;
+      focal.querySelector('[data-focal-val="focalX"]').textContent = fx + '%';
+      focal.querySelector('[data-focal-val="focalY"]').textContent = fy + '%';
+      focal.querySelector('[data-focal-val="zoom"]').textContent   = zm + '%';
+      const media = card.querySelector('.slide-preview img, .slide-preview video');
+      if (media) {
+        media.style.objectPosition = fx + '% ' + fy + '%';
+        media.style.transform      = 'scale(' + (Number(zm) / 100) + ')';
+        media.style.transformOrigin= fx + '% ' + fy + '%';
       }
     });
   }
@@ -384,19 +416,37 @@
     list.innerHTML = slides.map(cardHtml).join('');
   }
   function cardHtml (s, i) {
-    const preview = s.type === 'text'
+    const isMedia = s.type !== 'text' && s.type !== 'a';
+    const fx = Number.isFinite(+s.focalX) ? +s.focalX : 50;
+    const fy = Number.isFinite(+s.focalY) ? +s.focalY : 50;
+    const zm = Number.isFinite(+s.zoom)   ? +s.zoom   : 100;
+    const mediaStyle = `object-position:${fx}% ${fy}%;transform:scale(${(zm/100).toFixed(2)});transform-origin:${fx}% ${fy}%;`;
+    const preview = s.type === 'text' || s.type === 'a'
       ? esc(s.text || '')
       : (s.type === 'video' || s.type === 'mp4')
-        ? `<video src="${esc(s.src)}" muted loop autoplay playsinline></video>`
-        : `<img src="${esc(s.src)}" alt="">`;
+        ? `<video src="${esc(s.src)}" muted loop autoplay playsinline style="${mediaStyle}"></video>`
+        : `<img src="${esc(s.src)}" alt="" style="${mediaStyle}">`;
     return `<div class="slide-card" data-idx="${i}">
       <div class="slide-preview">${preview}</div>
       <div class="slide-meta"><span>${esc(s.type)}</span><span>${s.duration}ms</span></div>
       <div class="slide-actions">
         <button data-hero-up>↑</button>
         <button data-hero-down>↓</button>
+        ${isMedia ? '<button data-hero-edit>Center…</button>' : ''}
         <button class="danger" data-hero-del>Delete</button>
-      </div></div>`;
+      </div>
+      ${isMedia ? `<div class="slide-focal" data-hero-focal hidden style="display:none;grid-column:1/-1;padding:10px;background:var(--bg-2);border-radius:8px;margin-top:6px;font-size:.75rem">
+        <div style="display:grid;gap:8px;grid-template-columns:60px 1fr 40px">
+          <label>H focal</label><input type="range" min="0" max="100" step="1" value="${fx}" data-focal="focalX"><span data-focal-val="focalX">${fx}%</span>
+          <label>V focal</label><input type="range" min="0" max="100" step="1" value="${fy}" data-focal="focalY"><span data-focal-val="focalY">${fy}%</span>
+          <label>Zoom</label>  <input type="range" min="100" max="400" step="5" value="${zm}" data-focal="zoom"><span data-focal-val="zoom">${zm}%</span>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end">
+          <button data-focal-reset>Reset</button>
+          <button data-focal-save class="primary">Save centering</button>
+        </div>
+      </div>` : ''}
+    </div>`;
   }
   function paintBg (root) {
     const el = root.querySelector('[data-hero-bg-current]');

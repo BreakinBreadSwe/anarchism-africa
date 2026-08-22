@@ -267,7 +267,7 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: min(72vmin, calc(100vw - 40px), calc(100dvh - 140px));
+  width: min(var(--aa-hm-size, 72vmin), calc(100vw - 40px), calc(100dvh - 140px));
   aspect-ratio: 1020 / 1018;
   overflow: hidden;
   background: #000;
@@ -288,11 +288,9 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 .aa-hm-stage .aa-hm-slide {
   position: absolute; inset: 0;
   opacity: 0;
-  /* 4s crossfade — new slide fades in while old one fades out over
-     the same window. Combined with the 2s advance rate below, two
-     slides are always mid-transition, giving a smooth continuous
-     blend rather than a hard hand-off. */
-  transition: opacity 4000ms ease;
+  /* Crossfade duration overridable from CMS via --aa-hm-crossfade.
+     4s default gives a smooth continuous blend against 2s advance. */
+  transition: opacity var(--aa-hm-crossfade, 4000ms) ease;
   display: flex; align-items: center; justify-content: center;
   color: #fff; text-align: center;
   font-family: 'Bebas Neue', Impact, sans-serif;
@@ -362,7 +360,7 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
-  width: min(72vmin, calc(100vw - 40px), calc(100dvh - 140px));
+  width: min(var(--aa-hm-size, 72vmin), calc(100vw - 40px), calc(100dvh - 140px));
   aspect-ratio: 1020 / 1018;
   pointer-events: none;
   z-index: 2;

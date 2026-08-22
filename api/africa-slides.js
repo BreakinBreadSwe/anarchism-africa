@@ -14,7 +14,13 @@ module.exports = async function handler (req, res) {
 
   if (req.method === 'GET') {
     const doc = await readDoc();
-    return res.status(200).json({ ok: true, slides: doc.slides, background: doc.background || null });
+    return res.status(200).json({
+      ok:         true,
+      slides:     doc.slides,
+      background: doc.background || null,
+      css:        doc.css        || null,
+      appLogo:    doc.appLogo    || null
+    });
   }
 
   if (req.method === 'POST') {
@@ -45,7 +51,25 @@ module.exports = async function handler (req, res) {
       };
     }
 
-    const wrote = await writeDoc({ slides: clean, background });
+    // Optional CSS knobs + app-logo config, persisted on the same doc.
+    let css = null;
+    if (body?.css && typeof body.css === 'object') {
+      css = {
+        heroSize:      clampNum(body.css.heroSize,      40, 100, 72),
+        outlineWidth:  clampNum(body.css.outlineWidth,   1,  80, 35),
+        crossfadeMs:   clampNum(body.css.crossfadeMs, 200, 10000, 4000),
+        advanceMs:     clampNum(body.css.advanceMs,   500,  30000, 2000)
+      };
+    }
+    let appLogo = null;
+    if (body?.appLogo && typeof body.appLogo === 'object') {
+      appLogo = {
+        showOutline:  body.appLogo.showOutline !== false,
+        rotateMs:     clampNum(body.appLogo.rotateMs, 1000, 60000, 4500)
+      };
+    }
+
+    const wrote = await writeDoc({ slides: clean, background, css, appLogo });
     if (!wrote.ok) return res.status(500).json({ error: wrote.error });
     return res.status(200).json({ ok: true, count: clean.length });
   }
@@ -65,7 +89,12 @@ async function readDoc () {
       const r = await fetch(f.url);
       if (r.ok) {
         const d = await r.json();
-        if (Array.isArray(d.slides) && d.slides.length) return { slides: d.slides, background: d.background || null };
+        if (Array.isArray(d.slides)) return {
+          slides: d.slides,
+          background: d.background || null,
+          css:        d.css        || null,
+          appLogo:    d.appLogo    || null
+        };
       }
     }
   } catch {}
@@ -75,10 +104,15 @@ async function readDoc () {
     const seed = path.join(process.cwd(), 'data', 'africa-slides.json');
     if (fs.existsSync(seed)) {
       const d = JSON.parse(fs.readFileSync(seed, 'utf8'));
-      if (Array.isArray(d.slides)) return { slides: d.slides, background: d.background || null };
+      if (Array.isArray(d.slides)) return { slides: d.slides, background: d.background || null, css: null, appLogo: null };
     }
   } catch {}
-  return { slides: [], background: null };
+  return { slides: [], background: null, css: null, appLogo: null };
+}
+function clampNum (v, min, max, def) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return def;
+  return Math.max(min, Math.min(max, n));
 }
 
 async function writeDoc (doc) {

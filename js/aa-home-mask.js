@@ -131,11 +131,13 @@
     // Parallel: fetch CMS slides + /media/ folder listing. Auto-picks up
     // any gif/image/video the user drops into media/ in the repo.
     let cmsVisual = [], mediaSlides = [];
+    let cmsCss = null;
     try {
       const [cms, media] = await Promise.all([
         fetch('/api/africa-slides', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
         fetch('/api/media/list',    { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
+      if (cms?.css) cmsCss = cms.css;
       if (cms && Array.isArray(cms.slides)) {
         cmsVisual = cms.slides.filter(s => s && s.type !== 'text');
       }
@@ -157,7 +159,22 @@
       cmsVisual
     );
     slides = merged.length ? merged : [BIG_A_SLIDE];
+    if (cmsCss) applyCss(cmsCss);
     repaint();
+  }
+
+  // Apply CSS-knob overrides from the CMS as custom properties on the
+  // mask element. The base stylesheet reads them via var() with defaults.
+  function applyCss (cssKnobs) {
+    const el = document.getElementById('aa-home-mask');
+    if (!el || !cssKnobs) return;
+    if (cssKnobs.heroSize)     el.style.setProperty('--aa-hm-size',       cssKnobs.heroSize + 'vmin');
+    if (cssKnobs.outlineWidth) el.style.setProperty('--aa-hm-outline-w',  cssKnobs.outlineWidth);
+    if (cssKnobs.crossfadeMs)  el.style.setProperty('--aa-hm-crossfade',  cssKnobs.crossfadeMs + 'ms');
+    // advanceMs handled in JS below
+    if (cssKnobs.advanceMs) {
+      slides = slides.map(s => ({ ...s, duration: cssKnobs.advanceMs }));
+    }
   }
 
   // Round-robin merge across multiple lists so no single source

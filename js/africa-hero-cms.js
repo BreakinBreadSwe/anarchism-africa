@@ -1,19 +1,26 @@
-/* ANARCHISM.AFRICA — CMS for the fullscreen Africa-shaped loading screen.
+/* ANARCHISM.AFRICA — CMS for the fullscreen Africa-shaped loading
+ * screen AND the little app-logo variant in the topbar.
  *
- * Renders into whatever container the caller provides. Loads current
- * slides from /api/africa-slides (falls back to seed on empty), lets
- * admin/publisher add/edit/delete, and POSTs the updated list back.
+ * Backed by /api/africa-slides for the JSON manifest + /api/africa-
+ * slides/upload for user-uploaded images/videos. All persisted to
+ * Vercel Blob — no filesystem writes, no committing to /media/.
  *
- * Public API: window.AfricaHeroCMS
- *   .render(container)     – paint the CMS into an HTMLElement
+ * Public API: window.AfricaHeroCMS.render(container).
  */
 (function () {
   'use strict';
 
-  const ENDPOINT = '/api/africa-slides';
-  let cachedSlides = null;
-  let cachedBackground = null;
+  const ENDPOINT       = '/api/africa-slides';
+  const UPLOAD_ENDPOINT= '/api/africa-slides/upload';
+  const PREVIEW_URL    = '/?hero=1';
 
+  let slides = [];
+  let background = null;
+  let css = defaultCss();
+  let appLogo = defaultAppLogo();
+
+  function defaultCss ()      { return { heroSize: 72, outlineWidth: 35, crossfadeMs: 4000, advanceMs: 2000 }; }
+  function defaultAppLogo ()  { return { showOutline: true, rotateMs: 4500 }; }
   function esc (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   async function load () {
@@ -21,46 +28,106 @@
       const r = await fetch(ENDPOINT, { cache: 'no-store' });
       if (r.ok) {
         const d = await r.json();
-        cachedBackground = d.background || null;
-        if (Array.isArray(d.slides)) return d.slides;
+        slides     = Array.isArray(d.slides) ? d.slides : [];
+        background = d.background || null;
+        css        = { ...defaultCss(),     ...(d.css     || {}) };
+        appLogo    = { ...defaultAppLogo(), ...(d.appLogo || {}) };
       }
     } catch {}
-    return [];
   }
 
-  async function save (slides, background) {
+  async function save () {
     const r = await fetch(ENDPOINT, {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slides, background })
+      body:    JSON.stringify({ slides, background, css, appLogo })
     });
     return r.ok ? { ok: true } : { ok: false, error: (await r.text()).slice(0, 200) };
   }
 
+  async function uploadFile (file) {
+    if (!file) return { ok: false, error: 'no file' };
+    const r = await fetch(UPLOAD_ENDPOINT, {
+      method:  'POST',
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-filename':   file.name || 'upload.bin'
+      },
+      body: file
+    });
+    if (!r.ok) return { ok: false, error: (await r.text()).slice(0, 200) };
+    return await r.json();
+  }
+
   async function render (container) {
     if (!container) return;
-    container.innerHTML = `
+    await load();
+    container.innerHTML = tpl();
+    wire(container);
+    paintSlides(container);
+    paintBg(container);
+    paintCss(container);
+    paintPreview(container);
+  }
+
+  // ---- template ---------------------------------------------------------
+  function tpl () {
+    return `
       <div class="panel">
-        <h2 style="margin:0 0 4px">Loading Screen</h2>
+        <h2 style="margin:0 0 4px">Loading Screen · CMS + CSS</h2>
         <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 14px;font-size:.86rem">
-          Fullscreen splash shown on first visit, cropped to the Africa continent
-          silhouette. Each slide is one of: <b>text</b> · <b>image</b> · <b>gif</b> ·
-          <b>video / mp4</b> · <b>iframe</b>. Every layer pulses in sync with the
-          media player audio (Web Audio → CSS variable).
-          <br>Changes are live for admin + publisher — POSTs to /api/africa-slides.
+          Fullscreen splash shown on first visit. Africa continent silhouette is a
+          window; the slideshow renders inside. All content stored in Vercel Blob —
+          upload directly from your machine, no folder pushes needed.
+          <br>Live preview beneath every panel. Changes save on click.
         </p>
-        <div style="display:flex;gap:8px;margin-bottom:10px">
-          <button class="btn" data-hero-preview>Preview fullscreen</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" data-hero-preview>Open fullscreen preview</button>
           <button class="btn ghost" data-hero-reload>Reload from server</button>
         </div>
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">Outside-africa background</h3>
+        <h3 style="margin:0 0 10px">Africa outline &amp; timing</h3>
+        <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
+          <label class="cms-slider">Africa size <span data-hero-css-heroSize-val>72%</span>
+            <input type="range" min="40" max="100" step="1" data-hero-css="heroSize" />
+          </label>
+          <label class="cms-slider">Outline stroke <span data-hero-css-outlineWidth-val>35</span>
+            <input type="range" min="1" max="80" step="1" data-hero-css="outlineWidth" />
+          </label>
+          <label class="cms-slider">Crossfade (ms) <span data-hero-css-crossfadeMs-val>4000</span>
+            <input type="range" min="200" max="10000" step="100" data-hero-css="crossfadeMs" />
+          </label>
+          <label class="cms-slider">Advance (ms) <span data-hero-css-advanceMs-val>2000</span>
+            <input type="range" min="500" max="30000" step="100" data-hero-css="advanceMs" />
+          </label>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn" data-hero-css-save>Save CSS</button>
+          <button class="btn ghost" data-hero-css-reset>Reset defaults</button>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <h3 style="margin:0 0 10px">App logo</h3>
         <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
-          Renders in the space AROUND the continent silhouette. Solid colour,
-          image, gif, mp4 loop, or iframe URL (YouTube/Vimeo embed).
+          Header (top-left) mini hero. Uses the same media pool, just smaller.
         </p>
+        <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
+          <label class="cms-slider">Slideshow rotation (ms) <span data-hero-al-rotateMs-val>4500</span>
+            <input type="range" min="1000" max="60000" step="500" data-hero-al="rotateMs" />
+          </label>
+          <label style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" data-hero-al="showOutline" />
+            Show africa outline stroke
+          </label>
+        </div>
+        <div style="margin-top:10px"><button class="btn" data-hero-al-save>Save app logo</button></div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <h3 style="margin:0 0 10px">Outside-africa background</h3>
         <form class="aa-slide-form" data-hero-bg>
           <label>Type
             <select name="type">
@@ -74,7 +141,7 @@
           <label class="wide">Value
             <input name="value" placeholder="#000000, https://…/img.jpg, https://youtube.com/embed/…" />
           </label>
-          <label>&nbsp;<button type="button" data-hero-bg-clear style="background:transparent;color:var(--fg-dim);border:1px solid var(--line)">Clear</button></label>
+          <label>&nbsp;<input type="file" data-hero-bg-file accept="image/*,video/*" /></label>
           <button type="submit">Save background</button>
         </form>
         <div data-hero-bg-current style="margin-top:8px;font-size:.75rem;color:var(--fg-dim)"></div>
@@ -84,7 +151,7 @@
         <h3 style="margin:0 0 10px">Add slide</h3>
         <form class="aa-slide-form" data-hero-add>
           <label>Type
-            <select name="type" required>
+            <select name="type">
               <option value="text">text</option>
               <option value="image">image</option>
               <option value="gif">gif</option>
@@ -93,129 +160,194 @@
             </select>
           </label>
           <label class="wide">Text / URL
-            <input name="value" placeholder="Slogan for text, https://… for media" required />
+            <input name="value" placeholder="Slogan for text, https://… for media, or upload →" />
           </label>
-          <label>Duration (ms)
-            <input name="duration" type="number" min="500" step="100" value="3500" />
-          </label>
+          <label>Upload<input type="file" data-hero-slide-file accept="image/*,video/*" /></label>
+          <label>Duration (ms)<input name="duration" type="number" min="500" step="100" value="3500" /></label>
           <button type="submit">Add</button>
         </form>
+        <div data-hero-add-status style="margin-top:6px;font-size:.72rem;color:var(--fg-dim)"></div>
       </div>
 
       <div class="panel" style="margin-top:14px">
         <h3 style="margin:0 0 10px">Current slides <span style="color:var(--fg-dim);font-weight:400" data-hero-count></span></h3>
         <div class="aa-slides-cms" data-hero-list><div style="color:var(--muted)">Loading…</div></div>
       </div>
+
+      <div class="panel" style="margin-top:14px">
+        <h3 style="margin:0 0 10px">Live preview</h3>
+        <iframe data-hero-preview-iframe src="${PREVIEW_URL}"
+                style="width:100%;height:60vh;border:1px solid var(--line);border-radius:10px;background:#000"
+                title="Africa hero live preview"></iframe>
+      </div>
     `;
+  }
 
-    const list  = container.querySelector('[data-hero-list]');
-    const count = container.querySelector('[data-hero-count]');
+  // ---- wire event handlers ---------------------------------------------
+  function wire (root) {
+    // Fullscreen preview button — opens hero in a new tab.
+    root.querySelector('[data-hero-preview]').addEventListener('click', () => {
+      if (window.AA?.hero) window.AA.hero.reload();
+      else window.open(PREVIEW_URL, '_blank');
+    });
+    root.querySelector('[data-hero-reload]').addEventListener('click', () => render(root));
 
-    async function paint () {
-      cachedSlides = await load();
-      count.textContent = '(' + cachedSlides.length + ')';
-      const bgCurrent = container.querySelector('[data-hero-bg-current]');
-      if (bgCurrent) {
-        bgCurrent.textContent = cachedBackground?.value
-          ? `Current: ${cachedBackground.type} — ${cachedBackground.value}`
-          : 'Current: solid black (default)';
-      }
-      // Pre-fill the bg form with the current values
-      const bgForm = container.querySelector('[data-hero-bg]');
-      if (bgForm && cachedBackground) {
-        bgForm.type.value  = cachedBackground.type  || 'color';
-        bgForm.value.value = cachedBackground.value || '';
-      }
-      if (!cachedSlides.length) {
-        list.innerHTML = '<div style="color:var(--muted)">No slides yet — add one above.</div>';
-        return;
-      }
-      list.innerHTML = cachedSlides.map((s, i) => cardHtml(s, i)).join('');
-    }
+    // ---- CSS sliders ----
+    root.querySelectorAll('[data-hero-css]').forEach(input => {
+      input.addEventListener('input', () => {
+        css[input.dataset.heroCss] = Number(input.value);
+        paintCssLabels(root);
+      });
+    });
+    root.querySelector('[data-hero-css-save]').addEventListener('click', async () => {
+      const r = await save();
+      if (!r.ok) alert('Save failed: ' + r.error);
+      paintPreview(root);
+    });
+    root.querySelector('[data-hero-css-reset]').addEventListener('click', async () => {
+      css = defaultCss();
+      paintCss(root);
+      await save();
+      paintPreview(root);
+    });
 
-    // Background config handlers
-    container.querySelector('[data-hero-bg]').addEventListener('submit', async (e) => {
+    // ---- App-logo sliders ----
+    root.querySelectorAll('[data-hero-al]').forEach(input => {
+      input.addEventListener('input', () => {
+        const key = input.dataset.heroAl;
+        appLogo[key] = input.type === 'checkbox' ? input.checked : Number(input.value);
+        paintAlLabels(root);
+      });
+    });
+    root.querySelector('[data-hero-al-save]').addEventListener('click', async () => {
+      const r = await save();
+      if (!r.ok) alert('Save failed: ' + r.error);
+      paintPreview(root);
+    });
+
+    // ---- Add slide ----
+    const addForm = root.querySelector('[data-hero-add]');
+    const addStatus = root.querySelector('[data-hero-add-status]');
+    const slideFileInput = root.querySelector('[data-hero-slide-file]');
+    slideFileInput.addEventListener('change', async () => {
+      const f = slideFileInput.files?.[0]; if (!f) return;
+      addStatus.textContent = 'Uploading ' + f.name + '…';
+      const up = await uploadFile(f);
+      if (!up.ok) { addStatus.textContent = 'Upload failed: ' + up.error; return; }
+      addForm.value.value = up.url;
+      addForm.type.value  = f.type.startsWith('video/') ? 'video' : (f.type === 'image/gif' ? 'gif' : 'image');
+      addStatus.textContent = 'Uploaded → ' + up.url;
+    });
+    addForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const f = e.currentTarget;
-      const bg = { type: f.type.value, value: f.value.value.trim() };
-      cachedSlides = cachedSlides || await load();
-      cachedBackground = bg.value ? bg : null;
-      const r = await save(cachedSlides, cachedBackground);
+      const type = addForm.type.value;
+      const value = addForm.value.value.trim();
+      const duration = Math.max(500, Number(addForm.duration.value) || 3500);
+      if (!value) return;
+      const slide = { type, duration };
+      if (type === 'text') slide.text = value; else slide.src = value;
+      slides.push(slide);
+      const r = await save();
       if (!r.ok) { alert('Save failed: ' + r.error); return; }
-      await paint();
-    });
-    container.querySelector('[data-hero-bg-clear]').addEventListener('click', async () => {
-      cachedSlides = cachedSlides || await load();
-      cachedBackground = null;
-      const r = await save(cachedSlides, null);
-      if (!r.ok) { alert('Save failed: ' + r.error); return; }
-      await paint();
+      addForm.reset();
+      addForm.duration.value = 3500;
+      paintSlides(root);
+      paintPreview(root);
     });
 
-    function cardHtml (s, i) {
-      const preview = s.type === 'text'
-        ? esc(s.text || '')
-        : (s.type === 'video' || s.type === 'mp4'
-            ? `<video src="${esc(s.src)}" muted loop autoplay playsinline></video>`
-            : `<img src="${esc(s.src)}" alt="">`);
-      return `
-        <div class="slide-card" data-idx="${i}">
-          <div class="slide-preview">${preview}</div>
-          <div class="slide-meta"><span>${esc(s.type)}</span><span>${s.duration}ms</span></div>
-          <div class="slide-actions">
-            <button data-hero-up>↑</button>
-            <button data-hero-down>↓</button>
-            <button class="danger" data-hero-del>Delete</button>
-          </div>
-        </div>`;
-    }
+    // ---- Background ----
+    const bgForm = root.querySelector('[data-hero-bg]');
+    const bgFileInput = root.querySelector('[data-hero-bg-file]');
+    bgFileInput.addEventListener('change', async () => {
+      const f = bgFileInput.files?.[0]; if (!f) return;
+      const up = await uploadFile(f);
+      if (!up.ok) { alert('Upload failed: ' + up.error); return; }
+      bgForm.value.value = up.url;
+      bgForm.type.value  = f.type.startsWith('video/') ? 'video' : (f.type === 'image/gif' ? 'gif' : 'image');
+    });
+    bgForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const bg = { type: bgForm.type.value, value: bgForm.value.value.trim() };
+      background = bg.value ? bg : null;
+      const r = await save();
+      if (!r.ok) { alert('Save failed: ' + r.error); return; }
+      paintBg(root);
+      paintPreview(root);
+    });
 
-    list.addEventListener('click', async (e) => {
-      const card = e.target.closest('.slide-card');
-      if (!card) return;
+    // ---- Slide list actions (up/down/delete) ----
+    const listEl = root.querySelector('[data-hero-list]');
+    listEl.addEventListener('click', async (e) => {
+      const card = e.target.closest('.slide-card'); if (!card) return;
       const i = Number(card.dataset.idx);
       let changed = false;
       if (e.target.matches('[data-hero-del]')) {
         if (!confirm('Delete this slide?')) return;
-        cachedSlides.splice(i, 1); changed = true;
+        slides.splice(i, 1); changed = true;
       } else if (e.target.matches('[data-hero-up]') && i > 0) {
-        [cachedSlides[i-1], cachedSlides[i]] = [cachedSlides[i], cachedSlides[i-1]]; changed = true;
-      } else if (e.target.matches('[data-hero-down]') && i < cachedSlides.length - 1) {
-        [cachedSlides[i], cachedSlides[i+1]] = [cachedSlides[i+1], cachedSlides[i]]; changed = true;
+        [slides[i-1], slides[i]] = [slides[i], slides[i-1]]; changed = true;
+      } else if (e.target.matches('[data-hero-down]') && i < slides.length - 1) {
+        [slides[i], slides[i+1]] = [slides[i+1], slides[i]]; changed = true;
       }
       if (changed) {
-        const r = await save(cachedSlides, cachedBackground);
-        if (!r.ok) alert('Save failed: ' + r.error);
-        await paint();
+        const r = await save();
+        if (!r.ok) { alert('Save failed: ' + r.error); return; }
+        paintSlides(root);
+        paintPreview(root);
       }
     });
+  }
 
-    container.querySelector('[data-hero-add]').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const f = e.currentTarget;
-      const type = f.type.value;
-      const value = f.value.value.trim();
-      const duration = Math.max(500, Number(f.duration.value) || 3500);
-      if (!value) return;
-      const slide = { type, duration };
-      if (type === 'text') slide.text = value;
-      else                 slide.src  = value;
-      cachedSlides = cachedSlides || await load();
-      cachedSlides.push(slide);
-      const r = await save(cachedSlides, cachedBackground);
-      if (!r.ok) { alert('Save failed: ' + r.error); return; }
-      f.reset();
-      f.duration.value = 3500;
-      await paint();
+  // ---- paint helpers ----------------------------------------------------
+  function paintSlides (root) {
+    const list  = root.querySelector('[data-hero-list]');
+    const count = root.querySelector('[data-hero-count]');
+    count.textContent = '(' + slides.length + ')';
+    if (!slides.length) { list.innerHTML = '<div style="color:var(--muted)">No slides yet — add one above.</div>'; return; }
+    list.innerHTML = slides.map(cardHtml).join('');
+  }
+  function cardHtml (s, i) {
+    const preview = s.type === 'text'
+      ? esc(s.text || '')
+      : (s.type === 'video' || s.type === 'mp4')
+        ? `<video src="${esc(s.src)}" muted loop autoplay playsinline></video>`
+        : `<img src="${esc(s.src)}" alt="">`;
+    return `<div class="slide-card" data-idx="${i}">
+      <div class="slide-preview">${preview}</div>
+      <div class="slide-meta"><span>${esc(s.type)}</span><span>${s.duration}ms</span></div>
+      <div class="slide-actions">
+        <button data-hero-up>↑</button>
+        <button data-hero-down>↓</button>
+        <button class="danger" data-hero-del>Delete</button>
+      </div></div>`;
+  }
+  function paintBg (root) {
+    const el = root.querySelector('[data-hero-bg-current]');
+    const form = root.querySelector('[data-hero-bg]');
+    el.textContent = background?.value ? `Current: ${background.type} — ${background.value}` : 'Current: solid black (default)';
+    if (form && background) { form.type.value = background.type || 'color'; form.value.value = background.value || ''; }
+  }
+  function paintCss (root) {
+    Object.keys(css).forEach(k => {
+      const inp = root.querySelector(`[data-hero-css="${k}"]`);
+      if (inp) inp.value = css[k];
     });
-
-    container.querySelector('[data-hero-preview]').addEventListener('click', () => {
-      if (window.AA?.hero) window.AA.hero.reload();
-      else window.open('/?hero=1', '_blank');
+    paintCssLabels(root);
+  }
+  function paintCssLabels (root) {
+    Object.keys(css).forEach(k => {
+      const lbl = root.querySelector(`[data-hero-css-${k}-val]`);
+      if (lbl) lbl.textContent = k === 'heroSize' ? css[k] + '%' : css[k];
     });
-    container.querySelector('[data-hero-reload]').addEventListener('click', paint);
-
-    await paint();
+  }
+  function paintAlLabels (root) {
+    const lbl = root.querySelector('[data-hero-al-rotateMs-val]');
+    if (lbl) lbl.textContent = appLogo.rotateMs;
+  }
+  function paintPreview (root) {
+    // Bump the iframe src cache-buster so it re-fetches css + slides.
+    const iframe = root.querySelector('[data-hero-preview-iframe]');
+    if (iframe) iframe.src = PREVIEW_URL + '&t=' + Date.now();
   }
 
   window.AfricaHeroCMS = { render };

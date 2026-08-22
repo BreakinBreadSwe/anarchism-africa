@@ -258,36 +258,27 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 @media (min-width: 769px) {
   body.mp-active .aa-home-mask { height: calc(100dvh - 68px); }
 }
-/* Stage is sized to africa's aspect ratio (from the mask viewBox
-   1019.99 x 1017.83 ≈ 1:1) and centered in the container. Mask fills
-   it EXACTLY so no transparent margin leaks the slideshow. Sized
-   slightly smaller than the viewport (88vh cap) so africa has
-   breathing room at the top/bottom instead of jamming into the
-   topbar and bottombar. */
+/* Stage sized via vmin so africa never exceeds ~72% of the smaller
+   viewport dimension — comfortable margin on ALL sides (landscape and
+   portrait). aspect-ratio locks height to width; no explicit height
+   avoids the taller-than-viewport bug. container-type: size lets
+   inner elements (the A) size relative to the stage, not the viewport. */
 .aa-hm-stage {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  height: min(88dvh, calc(100dvh - 120px));
+  width: min(72vmin, calc(100vw - 40px), calc(100dvh - 140px));
   aspect-ratio: 1020 / 1018;
-  max-width: calc(100vw - 32px);
   overflow: hidden;
   background: #000;
+  container-type: size;
+  container-name: aa-hm-stage;
   -webkit-mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
           mask: url('/icons/africa-mask.svg') center / 100% 100% no-repeat;
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
 }
-/* Portrait viewport — max-width kicks in, height auto-follows aspect. */
-@media (max-aspect-ratio: 1020/1018) {
-  .aa-hm-stage {
-    height: auto;
-    width: calc(100vw - 24px);
-  }
-}
-/* Background media (image/gif/video slides) slightly OVERSCALED beyond
-   the stage so it fills the mask edge-to-edge with a subtle cinematic
-   crop, and never leaves a black gap at the mask boundary. */
+/* Background media slightly oversized so it fills the mask flush. */
 .aa-hm-stage .aa-hm-slide img,
 .aa-hm-stage .aa-hm-slide video {
   width: 108%; height: 108%;
@@ -307,18 +298,22 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 .aa-hm-stage .aa-hm-slide.is-active { opacity: 1; }
 .aa-hm-stage .aa-hm-slide.aa-hm-huge { font-size: clamp(2.2rem, 6vw, 5rem); }
-/* Bold sans-serif A. Real font glyph, not hand-drawn geometry — user
-   asked: 'just take a Bold font A sans serif'. Sized big enough to
-   fill africa's vertical extent when masked (100vh basis). */
+/* Bold sans-serif A — sized in CONTAINER-QUERY units (cqh) so it's
+   relative to the STAGE height, not the viewport. Guarantees the A
+   fits inside africa regardless of viewport size. Fallback vh for
+   older engines (Safari <17) is slightly smaller to be safe. */
 .aa-hm-stage .aa-hm-slide.aa-hm-a {
   font-family: 'Arial Black', 'Helvetica Neue', Impact, Inter, system-ui, sans-serif;
   font-weight: 900;
-  font-size: 90vh;
+  font-size: 60vh;                  /* fallback */
+  font-size: 88cqh;                 /* 88% of stage height */
   line-height: 0.85;
   padding: 0;
   color: #fff;
   background: #000;
   letter-spacing: -0.05em;
+  /* keep centered vertically on the small optical A baseline */
+  padding-top: 5cqh;
 }
 .aa-hm-stage img,
 .aa-hm-stage video,
@@ -355,28 +350,21 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
    rect via fill-rule=evenodd. Sits above the stage and below the UI. */
 /* Old ::after shutter is gone — the stage itself is masked now, so no
    separate cutout overlay is needed. Keep ::before (outline stroke). */
-/* Outline overlay — positioned identically to the stage so the stroke
-   traces the same africa the mask uses. */
+/* Outline stroke overlay — identical sizing to the stage so the coast
+   traces the same africa. */
 .aa-home-mask::before {
   content: '';
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(calc(1 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
-  height: min(88dvh, calc(100dvh - 120px));
+  width: min(72vmin, calc(100vw - 40px), calc(100dvh - 140px));
   aspect-ratio: 1020 / 1018;
-  max-width: calc(100vw - 32px);
   pointer-events: none;
   z-index: 2;
   background: url('/icons/africa-outline.svg') center / 100% 100% no-repeat;
   transition: transform 80ms linear;
   will-change: transform;
-}
-@media (max-aspect-ratio: 1020/1018) {
-  .aa-home-mask::before {
-    height: auto;
-    width: calc(100vw - 24px);
-  }
 }
 /* Slides brighten in sync with audio energy — mirrors the fullscreen
    loading hero's woofer effect. Both use --aa-hm-level (local scope

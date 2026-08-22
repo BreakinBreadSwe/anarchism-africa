@@ -282,11 +282,13 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
 }
-/* Background media slightly oversized so it fills the mask flush. */
+/* Media matches africa outline exactly (per user rule). No oversize
+   overshoot — image/video fills the stage 100% × 100%, positioned
+   flush with the mask boundary. */
 .aa-hm-stage .aa-hm-slide img,
 .aa-hm-stage .aa-hm-slide video {
-  width: 108%; height: 108%;
-  position: absolute; top: -4%; left: -4%;
+  width: 100%; height: 100%;
+  position: absolute; inset: 0;
   object-fit: cover;
 }
 .aa-hm-stage .aa-hm-slide {

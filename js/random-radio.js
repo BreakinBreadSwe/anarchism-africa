@@ -76,35 +76,80 @@
     if (lbl) lbl.textContent = on ? 'FINDING…' : 'RANDOM RADIO';
   }
 
+  // Fetch the sound-library manifest and reduce to tracks with a
+  // directly-playable audio URL — the same predicate the sound-library
+  // page uses so what the button picks is guaranteed to be something
+  // MP can actually play. Cached in-module so repeat clicks are cheap.
+  let libraryPool = null;
+  async function loadLibrary () {
+    if (libraryPool) return libraryPool;
+    try {
+      const r = await fetch('/api/sound/list', { cache: 'no-store' });
+      if (!r.ok) return [];
+      const d = await r.json();
+      libraryPool = (d.tracks || [])
+        .map(t => ({
+          id:     t.id || t.slug || t.title || Math.random().toString(36).slice(2),
+          title:  t.title || 'Untitled',
+          artist: t.author || t.artist || '',
+          image:  t.coverImageUrl || t.image || '',
+          audio:  t.audio || t.audioUrl ||
+                  (t.url?.match?.(/\.(mp3|aac|ogg|flac|m4a)(\?|$)/i) ? t.url : null)
+        }))
+        .filter(t => t.audio);
+      return libraryPool;
+    } catch {
+      return [];
+    }
+  }
+
   async function playRandom (ev) {
     const btn = document.getElementById('aa-random-radio');
     setBusy(btn, true);
-    // Snapshot the pool minus session-dead, shuffle it, walk in order
-    // — first station that probes OK wins.
-    const pool = RADIO_STATIONS.filter(s => !dead.has(s.id));
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
+
+    // Primary: pick a random AUDIO FILE from the sound library. Every
+    // click reshuffles and walks in order, probing each until one loads.
+    // Failed tracks join the session-dead set — you won't get the same
+    // broken pick twice in one visit.
+    const library = await loadLibrary();
+    const libraryShuffled = library
+      .filter(t => !dead.has(t.id))
+      .map(t => [Math.random(), t])
+      .sort((a, b) => a[0] - b[0])
+      .map(([, t]) => t);
     let picked = null;
-    for (const s of pool) {
-      const ok = await probe(s.audio);
-      if (ok) { picked = s; break; }
-      dead.add(s.id);
+    // Cap the library scan to keep clicks snappy — 12 probes @ 5s max
+    // is the worst case (~60s), which is already too long. If none of
+    // the first 12 respond, fall through to stations.
+    for (const t of libraryShuffled.slice(0, 12)) {
+      const ok = await probe(t.audio);
+      if (ok) { picked = t; break; }
+      dead.add(t.id);
     }
+
+    // Fallback: live radio streams if nothing in the library loaded.
+    if (!picked) {
+      const pool = RADIO_STATIONS.filter(s => !dead.has(s.id));
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      for (const s of pool) {
+        const ok = await probe(s.audio);
+        if (ok) { picked = s; break; }
+        dead.add(s.id);
+      }
+    }
+
     setBusy(btn, false);
     if (!picked) {
-      toast('No radio stations available right now.');
-      // Hide the button for the rest of the session — if nothing's up
-      // there's no point taunting the user with a broken control.
+      toast('No random audio available right now.');
       if (btn) btn.style.display = 'none';
       return;
     }
     if (window.MP?.play) {
-      window.MP.play({ ...picked, image: '' });
+      window.MP.play({ ...picked, image: picked.image || '' });
     } else {
-      // No mini-player on this page — bounce to sound library with
-      // the picked id so its onload can pick it up.
       location.href = 'sound-library.html?play=' + encodeURIComponent(picked.id);
     }
   }

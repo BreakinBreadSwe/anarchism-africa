@@ -250,39 +250,151 @@
     startWooferLoop();
   }
 
-  // Audio reactivity — piggyback on window.AA.hero's Web Audio analyser
-  // (created by the loading hero) so we don't spin up a second AudioContext.
-  // Every 2s attach any newly-created <audio>/<video> so mini-player track
-  // changes and video slides feed the woofer too.
+  // Audio reactivity — TWO sources feed --aa-hm-level, whichever is
+  // louder wins:
+  //   (a) the loading hero's --aa-hero-level (only alive while the
+  //       loading overlay is up), and
+  //   (b) our own AudioContext + AnalyserNode wired to the mini-player's
+  //       currently-playing <audio> (survives after the loading hero
+  //       dismisses, so the outline woofer keeps reacting to whatever
+  //       MP is playing).
+  //
+  // Plus device-orientation tilt: gamma/beta drive --aa-hm-tx/--aa-hm-ty
+  // custom properties that offset each slide's object-position so you
+  // can peek behind the africa mask by tilting the phone.
   function startWooferLoop () {
-    // Prime: publish the loading hero's --aa-hero-level onto our local var.
-    // The loading hero already runs a rAF loop that reads the analyser and
-    // sets that variable on the .aa-hero element; we mirror it here.
     const el = document.getElementById('aa-home-mask');
     if (!el) return;
     const heroRoot = () => document.querySelector('.aa-hero');
+
+    // -- Own analyser wired to the mini-player audio element ----------
+    let ownCtx = null, ownAnalyser = null, ownBuf = null;
+    const attached = new WeakSet();
+    function ensureCtx () {
+      if (ownCtx) return true;
+      try {
+        const Ctor = window.AudioContext || window.webkitAudioContext;
+        if (!Ctor) return false;
+        ownCtx = new Ctor();
+        ownAnalyser = ownCtx.createAnalyser();
+        ownAnalyser.fftSize = 256;
+        ownAnalyser.smoothingTimeConstant = 0.7;
+        ownBuf = new Uint8Array(ownAnalyser.frequencyBinCount);
+        ownAnalyser.connect(ownCtx.destination);
+        return true;
+      } catch { return false; }
+    }
+    function attachEl (a) {
+      if (!a || attached.has(a)) return;
+      if (!ensureCtx()) return;
+      try {
+        // MediaElementAudioSourceNode requires cross-origin OK for
+        // remote streams. If it throws we swallow — the analyser
+        // just won't hear that specific element.
+        const src = ownCtx.createMediaElementSource(a);
+        src.connect(ownAnalyser);
+        attached.add(a);
+      } catch {}
+    }
+
+    // Level readout: RMS-ish average of the low-mid bins, published as
+    // 0..1. Max of loading-hero level + own level.
+    function readOwnLevel () {
+      if (!ownAnalyser) return 0;
+      ownAnalyser.getByteFrequencyData(ownBuf);
+      // First ~40% of bins (bass + low-mid) → the "woofer" range.
+      const cutoff = Math.floor(ownBuf.length * 0.4) || 1;
+      let sum = 0;
+      for (let i = 0; i < cutoff; i++) sum += ownBuf[i];
+      return Math.min(1, (sum / cutoff) / 180);
+    }
+
     function tick () {
-      // Prefer the loading hero's live level; fall back to 0.
+      let heroLvl = 0;
       const src = heroRoot();
-      let level = 0;
       if (src) {
         const v = getComputedStyle(src).getPropertyValue('--aa-hero-level');
         const n = parseFloat(v);
-        if (!Number.isNaN(n)) level = n;
+        if (!Number.isNaN(n)) heroLvl = n;
       }
+      const own = readOwnLevel();
+      const level = Math.max(heroLvl, own);
       el.style.setProperty('--aa-hm-level', level.toFixed(3));
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
-    // Also ask the loading hero to attach any <audio>/<video> on the page,
-    // in case it hasn't booted yet (order-of-load is non-deterministic).
+
+    // Scan for new <audio>/<video> every 2s. Also nudge the loading
+    // hero's analyser if it's up — belt-and-braces.
     setInterval(() => {
-      if (window.AA?.hero?.attachAudio) {
-        document.querySelectorAll('audio, video').forEach(a => {
-          try { window.AA.hero.attachAudio(a); } catch {}
-        });
-      }
+      document.querySelectorAll('audio, video').forEach(a => {
+        attachEl(a);
+        if (window.AA?.hero?.attachAudio) { try { window.AA.hero.attachAudio(a); } catch {} }
+      });
     }, 2000);
+
+    // Resume AudioContext on any user gesture (browsers suspend it
+    // until then). Once resumed, we're good for the session.
+    const wake = () => { if (ownCtx?.state === 'suspended') ownCtx.resume().catch(() => {}); };
+    ['click','touchstart','keydown'].forEach(ev => document.addEventListener(ev, wake, { once: false, passive: true }));
+
+    // -- Tilt parallax ------------------------------------------------
+    // gamma = left/right tilt (-90..90), beta = front/back tilt (-180..180).
+    // Map to a small ±14px offset published as CSS variables. The mask
+    // stage stays put (it's the mask); only the image content shifts,
+    // revealing more of what's behind the mask edge at extreme tilts.
+    let tx = 0, ty = 0, targetTx = 0, targetTy = 0;
+    function setTilt (gamma, beta) {
+      const MAX = 14;   // px of offset at full tilt
+      const CLAMP = 30; // degrees of tilt = full offset
+      targetTx = Math.max(-MAX, Math.min(MAX, (gamma / CLAMP) * MAX));
+      targetTy = Math.max(-MAX, Math.min(MAX, ((beta - 45) / CLAMP) * MAX));
+    }
+    function tiltTick () {
+      // Ease toward target so motion is buttery, not jittery.
+      tx += (targetTx - tx) * 0.15;
+      ty += (targetTy - ty) * 0.15;
+      el.style.setProperty('--aa-hm-tx', tx.toFixed(2) + 'px');
+      el.style.setProperty('--aa-hm-ty', ty.toFixed(2) + 'px');
+      requestAnimationFrame(tiltTick);
+    }
+    requestAnimationFrame(tiltTick);
+
+    function onOrient (e) {
+      const g = e.gamma; const b = e.beta;
+      if (typeof g !== 'number' || typeof b !== 'number') return;
+      setTilt(g, b);
+    }
+    function bindOrientation () {
+      // iOS 13+ needs an explicit permission request from a user gesture.
+      const Ctor = window.DeviceOrientationEvent;
+      if (!Ctor) return;
+      if (typeof Ctor.requestPermission === 'function') {
+        const askOnce = () => {
+          document.removeEventListener('click', askOnce);
+          document.removeEventListener('touchend', askOnce);
+          Ctor.requestPermission().then(state => {
+            if (state === 'granted') window.addEventListener('deviceorientation', onOrient);
+          }).catch(() => {});
+        };
+        document.addEventListener('click',   askOnce, { once: true, passive: true });
+        document.addEventListener('touchend',askOnce, { once: true, passive: true });
+      } else {
+        window.addEventListener('deviceorientation', onOrient);
+      }
+    }
+    bindOrientation();
+
+    // Desktop fallback: mousemove over the hero produces a tilt too, so
+    // the parallax isn't mobile-only.
+    document.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const px = ((e.clientX - r.left) / r.width) * 2 - 1;    // -1..1
+      const py = ((e.clientY - r.top)  / r.height) * 2 - 1;
+      // Fake gamma/beta from cursor position — same downstream code.
+      setTilt(px * 30, 45 + py * 30);
+    }, { passive: true });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);

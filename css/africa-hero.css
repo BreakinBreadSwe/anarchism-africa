@@ -322,12 +322,22 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   content: '';
   position: absolute; inset: 0;
   pointer-events: none;
-  /* contain preserves the entire africa silhouette without cropping.
-     The cutout SVG has africa tight to its viewBox, so 'contain'
-     fits africa to the viewport edge-to-edge in whichever axis limits. */
+  /* Layer 2 (::after): the black-ocean SHUTTER with africa punched out.
+     Layer 3 (::before, below): the thin white AFRICA OUTLINE stroke —
+     draws a coast bezel around africa so the shape reads even when the
+     inside-slide is a dark image. */
   background: url('/icons/africa-hero-cutout.svg') center / contain no-repeat;
-  /* Woofer pulse — subtle scale on audio energy, keeps the shutter locked
-     to the same rhythm as the slide stage brightness pulse below. */
+  transform: scale(calc(1 + var(--aa-hm-level) * 0.05));
+  transform-origin: center center;
+  transition: transform 80ms linear;
+  will-change: transform;
+}
+.aa-home-mask::before {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 2;                      /* above ::after (default 1) */
+  background: url('/icons/africa-outline.svg') center / contain no-repeat;
   transform: scale(calc(1 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
   transition: transform 80ms linear;

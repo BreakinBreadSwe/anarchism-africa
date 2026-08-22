@@ -82,15 +82,28 @@
     return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
   }
 
-  // Home hero shows VISUAL content only — no typographic slides. User
-  // asked: 'don't show text, just a large h1 A or images or films urls
-  // no text.' Text slides filtered out at merge time; a single big-A
-  // slide is included as a fallback so the hero is never blank.
-  const BIG_A_SLIDE = { type: 'text', text: 'A', duration: 2400, className: 'aa-hm-huge aa-hm-a' };
+  // Home hero shows VISUAL content only — no typographic slides.
+  // The BIG_A_SLIDE is the DEFAULT first slide (bold A inside the
+  // africa outline, matching the reference logo). It's classified as
+  // type=image so the text-filter doesn't strip it — the "text" is
+  // actually a hand-authored SVG glyph rendered inside the mask.
+  const BIG_A_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
+      <rect width="800" height="800" fill="#000"/>
+      <polygon fill="#fff" points="400,70 130,760 300,760"/>
+      <polygon fill="#fff" points="400,70 500,760 670,760"/>
+      <rect fill="#fff" x="180" y="410" width="440" height="56"/>
+    </svg>`
+  );
+  const BIG_A_SLIDE = { type: 'image', src: BIG_A_SVG, duration: 3600 };
   const BUILT_IN_SLIDES = [
+    BIG_A_SLIDE,
     { type: 'image', src: kentePattern(1),    duration: 3200 },
+    BIG_A_SLIDE,
     { type: 'image', src: adinkraPattern(7),  duration: 3200 },
+    BIG_A_SLIDE,
     { type: 'image', src: ndebelePattern(3),  duration: 3200 },
+    BIG_A_SLIDE,
     { type: 'image', src: mudclothPattern(5), duration: 3200 }
   ];
 

@@ -88,16 +88,19 @@
   // to africa so the A auto-clips to the continent shape. Classified as
   // 'a' type so the boot() text-filter passes it through (text-slides
   // are stripped from CMS pool but this one is intentional).
-  const BIG_A_SLIDE = { type: 'a', text: 'A', duration: 3600, className: 'aa-hm-a' };
+  // 2s advance rate — matches CSS 4s crossfade so consecutive slides
+  // are always mid-transition.
+  const SLIDE_MS   = 2000;
+  const BIG_A_SLIDE = { type: 'a', text: 'A', duration: SLIDE_MS, className: 'aa-hm-a' };
   const BUILT_IN_SLIDES = [
     BIG_A_SLIDE,
-    { type: 'image', src: kentePattern(1),    duration: 3200 },
+    { type: 'image', src: kentePattern(1),    duration: SLIDE_MS },
     BIG_A_SLIDE,
-    { type: 'image', src: adinkraPattern(7),  duration: 3200 },
+    { type: 'image', src: adinkraPattern(7),  duration: SLIDE_MS },
     BIG_A_SLIDE,
-    { type: 'image', src: ndebelePattern(3),  duration: 3200 },
+    { type: 'image', src: ndebelePattern(3),  duration: SLIDE_MS },
     BIG_A_SLIDE,
-    { type: 'image', src: mudclothPattern(5), duration: 3200 }
+    { type: 'image', src: mudclothPattern(5), duration: SLIDE_MS }
   ];
 
   // ---- component ---------------------------------------------------------
@@ -140,7 +143,7 @@
         mediaSlides = media.files.map(f => ({
           type: f.type,          // image | gif | video
           src:  f.url,
-          duration: f.type === 'video' ? 6000 : 3500
+          duration: SLIDE_MS
         }));
       }
     } catch {}

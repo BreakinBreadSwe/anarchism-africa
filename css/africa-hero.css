@@ -485,9 +485,12 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 }
 /* Mobile floor: never let the CMS heroSize knob shrink the africa
    below 88vmin on phones — small viewports need the hero as centrepiece,
-   not a floating card. Desktop still respects the CMS slider fully. */
+   not a floating card. Desktop still respects the CMS slider fully.
+   The outline stroke (::before) shares the same width formula so the
+   coast traces the same africa the stage is showing. */
 @media (max-width: 768px) {
-  .aa-hm-stage {
+  .aa-hm-stage,
+  .aa-home-mask::before {
     width: min(max(var(--aa-hm-size, 88vmin), 88vmin), calc(100vw - 24px), calc(100dvh - 100px));
   }
 }

@@ -19,7 +19,7 @@
   let css = defaultCss();
   let appLogo = defaultAppLogo();
 
-  function defaultCss ()      { return { heroSize: 72, outlineWidth: 35, crossfadeMs: 4000, advanceMs: 2000 }; }
+  function defaultCss ()      { return { heroSize: 88, outlineWidth: 35, crossfadeMs: 4000, advanceMs: 2000 }; }
   function defaultAppLogo ()  { return { showOutline: true, rotateMs: 4500, slides: [] }; }
   function esc (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 

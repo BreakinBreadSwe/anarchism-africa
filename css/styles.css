@@ -791,9 +791,10 @@ body.mp-active .chat-panel { bottom: 116px; }
 .mini-player {
   position: fixed;
   left: 0; right: 0;
-  /* Overlap the bottombar's border-top by 1px so no hairline seam shows
-     between the two semi-transparent surfaces. */
-  bottom: calc(67px + env(safe-area-inset-bottom, 0px));
+  /* Flush against the bottombar top edge — no gap, no visual seam.
+     Bottombar height is 68px + safe-area, so the player sits at exactly
+     that offset from the viewport bottom. */
+  bottom: calc(68px + env(safe-area-inset-bottom, 0px));
   z-index: 36;
   display: none; align-items: center; gap: 10px;
   padding: 8px 12px;

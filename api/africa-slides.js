@@ -17,9 +17,10 @@ module.exports = async function handler (req, res) {
     return res.status(200).json({
       ok:         true,
       slides:     doc.slides,
-      background: doc.background || null,
-      css:        doc.css        || null,
-      appLogo:    doc.appLogo    || null
+      background:  doc.background  || null,
+      css:         doc.css         || null,
+      appLogo:     doc.appLogo     || null,
+      hiddenMedia: doc.hiddenMedia || []
     });
   }
 
@@ -79,7 +80,14 @@ module.exports = async function handler (req, res) {
       };
     }
 
-    const wrote = await writeDoc({ slides: clean, background, css, appLogo });
+    // Hidden-media URLs — /media/ files can't be filesystem-deleted from
+    // the CMS (git-tracked), so we mask them via this list instead. Blob
+    // deletes go through the real DELETE endpoint.
+    const hiddenMedia = Array.isArray(body?.hiddenMedia)
+      ? body.hiddenMedia.map(s => String(s).slice(0, 2000)).slice(0, 500)
+      : undefined;
+
+    const wrote = await writeDoc({ slides: clean, background, css, appLogo, hiddenMedia });
     if (!wrote.ok) return res.status(500).json({ error: wrote.error });
     return res.status(200).json({ ok: true, count: clean.length });
   }
@@ -100,10 +108,11 @@ async function readDoc () {
       if (r.ok) {
         const d = await r.json();
         if (Array.isArray(d.slides)) return {
-          slides: d.slides,
-          background: d.background || null,
-          css:        d.css        || null,
-          appLogo:    d.appLogo    || null
+          slides:       d.slides,
+          background:   d.background   || null,
+          css:          d.css          || null,
+          appLogo:      d.appLogo      || null,
+          hiddenMedia:  Array.isArray(d.hiddenMedia) ? d.hiddenMedia : []
         };
       }
     }
@@ -114,10 +123,10 @@ async function readDoc () {
     const seed = path.join(process.cwd(), 'data', 'africa-slides.json');
     if (fs.existsSync(seed)) {
       const d = JSON.parse(fs.readFileSync(seed, 'utf8'));
-      if (Array.isArray(d.slides)) return { slides: d.slides, background: d.background || null, css: null, appLogo: null };
+      if (Array.isArray(d.slides)) return { slides: d.slides, background: d.background || null, css: null, appLogo: null, hiddenMedia: [] };
     }
   } catch {}
-  return { slides: [], background: null, css: null, appLogo: null };
+  return { slides: [], background: null, css: null, appLogo: null, hiddenMedia: [] };
 }
 function clampNum (v, min, max, def) {
   const n = Number(v);

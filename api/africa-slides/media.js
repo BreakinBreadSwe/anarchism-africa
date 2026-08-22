@@ -50,8 +50,13 @@ module.exports = async function handler (req, res) {
         }
       }
     } catch {}
-    items.sort((a, b) => a.name.localeCompare(b.name));
-    return res.status(200).json({ ok: true, items });
+    // Filter out hidden media (soft-deleted from CMS). Include the
+    // hidden list so the CMS can also render a "hidden" section
+    // for admins wanting to unhide.
+    const hidden = await readHiddenSet();
+    const visible = items.filter(m => !hidden.has(m.url));
+    visible.sort((a, b) => a.name.localeCompare(b.name));
+    return res.status(200).json({ ok: true, items: visible, hidden: [...hidden] });
   }
 
   if (req.method === 'DELETE') {
@@ -59,21 +64,94 @@ module.exports = async function handler (req, res) {
     if (!gate.ok) return res.status(gate.status).json({ error: gate.reason });
     const url = String(req.query?.url || req.headers['x-media-url'] || '');
     if (!url) return res.status(400).json({ error: 'url required' });
+    // /media/ files (git-tracked, can't fs-unlink from a serverless
+    // function) → soft-hide via the shared manifest's hiddenMedia list.
+    // The file stays in the repo; the CMS + hero library both filter
+    // it out. Undo by removing the URL from hiddenMedia.
     if (url.startsWith('/media/')) {
-      return res.status(400).json({ error: '/media/ files are git-tracked; delete via a commit that removes the file' });
+      const added = await addToHidden(url);
+      return res.status(200).json({ ok: true, hidden: url, mode: 'soft' });
     }
     try {
       const { del } = require('@vercel/blob');
       await del(url);
-      return res.status(200).json({ ok: true, deleted: url });
+      // Also strip from any hiddenMedia entry (defensive)
+      await removeFromHidden(url);
+      return res.status(200).json({ ok: true, deleted: url, mode: 'blob' });
     } catch (e) {
       return res.status(500).json({ ok: false, error: String(e.message || e).slice(0, 300) });
     }
   }
 
-  res.setHeader('Allow', 'GET, DELETE');
+  if (req.method === 'PATCH') {
+    // Unhide a previously soft-hidden /media/ URL. Body: { url: 'string' }.
+    const gate = await allowWrite(req);
+    if (!gate.ok) return res.status(gate.status).json({ error: gate.reason });
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
+    const url = String(body?.url || '');
+    if (!url) return res.status(400).json({ error: 'body.url required' });
+    await removeFromHidden(url);
+    return res.status(200).json({ ok: true, unhidden: url });
+  }
+
+  res.setHeader('Allow', 'GET, DELETE, PATCH');
   return res.status(405).json({ error: 'method not allowed' });
 };
+
+// The hidden list lives on the same manifest the CMS writes (Vercel
+// Blob 'africa-slides/manifest.json'). We read + write via HTTP against
+// the sibling endpoint so the schema stays single-source.
+async function readHiddenSet () {
+  try {
+    const { list } = require('@vercel/blob');
+    const { blobs } = await list({ prefix: 'africa-slides/manifest' });
+    const f = blobs.find(b => b.pathname === 'africa-slides/manifest.json');
+    if (f) {
+      const r = await fetch(f.url);
+      if (r.ok) {
+        const d = await r.json();
+        if (Array.isArray(d.hiddenMedia)) return new Set(d.hiddenMedia);
+      }
+    }
+  } catch {}
+  return new Set();
+}
+async function addToHidden (url) {
+  const doc = await loadFullDoc();
+  const set = new Set(doc.hiddenMedia || []);
+  set.add(url);
+  doc.hiddenMedia = [...set];
+  await putFullDoc(doc);
+}
+async function removeFromHidden (url) {
+  const doc = await loadFullDoc();
+  const set = new Set(doc.hiddenMedia || []);
+  if (!set.delete(url)) return;
+  doc.hiddenMedia = [...set];
+  await putFullDoc(doc);
+}
+async function loadFullDoc () {
+  try {
+    const { list } = require('@vercel/blob');
+    const { blobs } = await list({ prefix: 'africa-slides/manifest' });
+    const f = blobs.find(b => b.pathname === 'africa-slides/manifest.json');
+    if (f) {
+      const r = await fetch(f.url);
+      if (r.ok) return await r.json();
+    }
+  } catch {}
+  return { slides: [], hiddenMedia: [] };
+}
+async function putFullDoc (doc) {
+  try {
+    const { put } = require('@vercel/blob');
+    await put('africa-slides/manifest.json',
+      JSON.stringify({ updated_at: new Date().toISOString(), ...doc }, null, 2),
+      { access: 'public', contentType: 'application/json', addRandomSuffix: false, cacheControlMaxAge: 0 }
+    );
+  } catch {}
+}
 
 function guessType (name) {
   if (/\.(mp4|webm|mov|m4v)$/i.test(name)) return 'video';

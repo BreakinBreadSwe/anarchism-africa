@@ -104,9 +104,7 @@
         </div>
         <div class="slide-actions">
           <button data-media-add>+ Slide</button>
-          ${m.source === 'blob'
-            ? '<button class="danger" data-media-del>Delete</button>'
-            : '<button disabled title="Delete /media/ files via git commit" style="opacity:.4">Delete</button>'}
+          <button class="danger" data-media-del title="${m.source === 'blob' ? 'Delete this blob upload permanently' : 'Hide this /media/ file from the library (file stays in the repo — commit a git remove to delete for real)'}">${m.source === 'blob' ? 'Delete' : 'Hide'}</button>
         </div>
       </div>`).join('');
     // Bind row actions
@@ -123,7 +121,11 @@
       card.querySelector('[data-media-del]')?.addEventListener('click', async (ev) => {
         ev.stopPropagation();
         const url = card.dataset.mediaUrl;
-        if (!confirm('Delete this media from Blob storage? (Irreversible)')) return;
+        const src = card.dataset.mediaSource;
+        const prompt = src === 'blob'
+          ? 'Delete this blob upload permanently? (Irreversible)'
+          : 'Hide this /media/ file from the library?\n\nFile stays in the git repo — this only removes it from the CMS and hero rotation. To delete for real, commit a git remove.';
+        if (!confirm(prompt)) return;
         try {
           await deleteBlobUrl(url);
           await paintMediaLibrary(root);
@@ -156,7 +158,7 @@
       <button class="aa-lb-next"   aria-label="Next">›</button>
       <div    class="aa-lb-stage"></div>
       <div    class="aa-lb-meta"></div>
-      <button class="aa-lb-del"    aria-label="Delete this media">Delete from library</button>
+      <button class="aa-lb-del"    aria-label="Delete or hide this media"></button>
     `;
     document.body.appendChild(overlay);
     const stage = overlay.querySelector('.aa-lb-stage');
@@ -169,9 +171,12 @@
         ? `<video src="${esc(m.url)}" controls autoplay muted loop playsinline></video>`
         : `<img    src="${esc(m.url)}" alt="${esc(m.name)}">`;
       meta.textContent  = `${idx + 1} / ${items.length}  ·  ${m.name}  ·  ${m.source}${m.size ? ' · ' + fmtSize(m.size) : ''}`;
-      delBtn.disabled   = (m.source !== 'blob');
-      delBtn.title      = (m.source === 'blob') ? '' : '/media/ files must be removed via git commit';
-      delBtn.style.opacity = delBtn.disabled ? '0.35' : '1';
+      delBtn.disabled   = false;
+      delBtn.textContent = m.source === 'blob' ? 'Delete permanently' : 'Hide from library';
+      delBtn.title       = m.source === 'blob'
+        ? 'Delete this blob upload permanently'
+        : 'Hide from library. File stays in /media/ — commit a git remove to delete for real.';
+      delBtn.style.opacity = '1';
     }
     function step (dir) {
       idx = (idx + dir + items.length) % items.length;
@@ -202,11 +207,13 @@
       const dx = t.clientX - sx, dy = t.clientY - sy;
       if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? +1 : -1);
     });
-    // Delete
+    // Delete or hide — server routes /media/ to soft-hide, blobs to real delete
     delBtn.addEventListener('click', async () => {
       const m = items[idx];
-      if (m.source !== 'blob') return;
-      if (!confirm(`Delete ${m.name} from Blob storage? (Irreversible)`)) return;
+      const prompt = m.source === 'blob'
+        ? `Delete ${m.name} permanently? (Irreversible)`
+        : `Hide ${m.name} from the library?\n\nFile stays in the git repo — this only removes it from the CMS and hero rotation.`;
+      if (!confirm(prompt)) return;
       try {
         await deleteBlobUrl(m.url);
         items.splice(idx, 1);

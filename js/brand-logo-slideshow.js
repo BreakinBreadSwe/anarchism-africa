@@ -19,14 +19,23 @@
 
   async function load () {
     try {
-      const r = await fetch('/api/media/list', { cache: 'no-store' });
+      // Same source of truth as the fullscreen hero — the CMS
+      // 'Current slides' list. Only image/gif slides survive here
+      // (mp4 can't be a CSS background-image; text/A slides have
+      // no src). The app-logo rotation stays in step with what
+      // the hero is showing.
+      const r = await fetch('/api/africa-slides', { cache: 'no-store' });
       if (!r.ok) return;
       const d = await r.json();
-      // Only image / gif for the mini logo — mp4 doesn't play as a
-      // background-image, and animated gifs cycle on their own.
-      files = (d.files || []).filter(f => f && (f.type === 'image' || f.type === 'gif'));
+      const slides = Array.isArray(d?.slides) ? d.slides : [];
+      files = slides
+        .filter(s => s && s.src && (s.type === 'image' || s.type === 'gif'))
+        .map(s => ({ url: s.src, type: s.type }));
+      // Honour appLogo.rotateMs if the admin set it.
+      if (d?.appLogo?.rotateMs) intervalOverride = Math.max(1000, Math.min(60000, Number(d.appLogo.rotateMs)));
     } catch {}
   }
+  let intervalOverride = null;
 
   function tick () {
     if (!files.length) return;
@@ -41,7 +50,7 @@
     await load();
     if (files.length) {
       tick();
-      timer = setInterval(tick, INTERVAL_MS);
+      timer = setInterval(tick, intervalOverride || INTERVAL_MS);
     }
   }
 

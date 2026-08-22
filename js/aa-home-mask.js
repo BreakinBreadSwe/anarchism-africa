@@ -82,15 +82,16 @@
     return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
   }
 
+  // Home hero shows VISUAL content only — no typographic slides. User
+  // asked: 'don't show text, just a large h1 A or images or films urls
+  // no text.' Text slides filtered out at merge time; a single big-A
+  // slide is included as a fallback so the hero is never blank.
+  const BIG_A_SLIDE = { type: 'text', text: 'A', duration: 2400, className: 'aa-hm-huge aa-hm-a' };
   const BUILT_IN_SLIDES = [
     { type: 'image', src: kentePattern(1),    duration: 3200 },
-    { type: 'text',  text: 'ANARCHISM.AFRICA', duration: 2600, className: 'aa-hm-huge' },
     { type: 'image', src: adinkraPattern(7),  duration: 3200 },
-    { type: 'text',  text: 'no gods · no masters · no borders', duration: 3000 },
     { type: 'image', src: ndebelePattern(3),  duration: 3200 },
-    { type: 'text',  text: 'a living archive', duration: 2400 },
-    { type: 'image', src: mudclothPattern(5), duration: 3200 },
-    { type: 'text',  text: 'films · articles · sound · events · books', duration: 3200 }
+    { type: 'image', src: mudclothPattern(5), duration: 3200 }
   ];
 
   // ---- component ---------------------------------------------------------
@@ -123,12 +124,19 @@
       if (r.ok) {
         const d = await r.json();
         if (Array.isArray(d.slides) && d.slides.length) {
-          // Merge: built-in patterns FIRST, then CMS slides interleaved.
-          slides = interleave(BUILT_IN_SLIDES, d.slides);
+          // Merge: built-in patterns + CMS slides, but strip text-type
+          // slides from BOTH — home hero is visual-only (user rule).
+          const visualOnly = s => s && s.type !== 'text';
+          const cmsVisual  = d.slides.filter(visualOnly);
+          const merged     = interleave(BUILT_IN_SLIDES, cmsVisual);
+          slides = merged.length ? merged : [BIG_A_SLIDE];
           repaint();
         }
       }
     } catch {}
+    // If we didn't load anything from the API AND nothing changed,
+    // ensure we still have visuals-only (built-in patterns already are).
+    if (!slides || !slides.length) { slides = [BIG_A_SLIDE]; repaint(); }
   }
 
   function interleave (a, b) {

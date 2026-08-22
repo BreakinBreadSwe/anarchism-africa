@@ -232,33 +232,31 @@
  * everything visible through it is the slideshow beneath.
  * ============================================================ */
 .aa-home-mask {
-  /* Full-bleed hero: escape section.view's 16px top-padding AND its
-     var(--content-pad-x) horizontal padding, so the mask genuinely
-     reaches the edges of the main content area. */
+  /* TRUE full-viewport hero: the black shutter reaches every corner of
+     the visible viewport (behind the sticky topbar, past section.view's
+     padding, past the fixed rail on desktop). Africa is a WINDOW through
+     that shutter — the slideshow shows through africa only. */
   position: relative;
-  margin-top: -16px;
-  margin-left:  calc(-1 * var(--content-pad-x));
-  margin-right: calc(-1 * var(--content-pad-x));
+  /* Pull upward past the sticky topbar AND past section.view's 16px
+     top padding so the shutter starts flush with the viewport top. */
+  margin-top: calc(-1 * var(--topbar-h, 56px) - 16px);
+  /* Horizontal bleed to viewport edges regardless of rail offset. body
+     already has overflow-x:hidden so this can't create a scrollbar. */
+  width: 100vw;
+  margin-left:  calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
   margin-bottom: 32px;
-  /* Height = full viewport minus the sticky topbar (~56px) so africa fits
-     entirely in the visible zone without being cropped below the fold.
-     100dvh handles iOS Safari's dynamic URL-bar retraction. */
-  height: calc(100dvh - var(--topbar-h, 56px));
-  width: auto;
+  /* Height = full dynamic viewport (dvh handles Safari URL-bar retract). */
+  height: 100dvh;
   background: #000;
   overflow: hidden;
   border-radius: 0;
   --aa-hm-level: 0;              /* 0..1 audio energy, driven by JS */
 }
-/* When the mini-player is docked, subtract its height so the hero
-   doesn't hide behind it. */
-body.mp-active .aa-home-mask {
-  height: calc(100dvh - var(--topbar-h, 56px) - 116px);
-}
+/* When the mini-player is docked, keep africa fully visible above it. */
+body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 @media (min-width: 769px) {
-  body.mp-active .aa-home-mask {
-    height: calc(100dvh - var(--topbar-h, 56px) - 68px);
-  }
+  body.mp-active .aa-home-mask { height: calc(100dvh - 68px); }
 }
 .aa-hm-stage {
   position: absolute; inset: 0;
@@ -278,6 +276,15 @@ body.mp-active .aa-home-mask {
 }
 .aa-hm-stage .aa-hm-slide.is-active { opacity: 1; }
 .aa-hm-stage .aa-hm-slide.aa-hm-huge { font-size: clamp(2.2rem, 6vw, 5rem); }
+/* Single big-A fallback — fills the mask with one glyph */
+.aa-hm-stage .aa-hm-slide.aa-hm-a {
+  font-size: clamp(20rem, 60vh, 60vw);
+  font-weight: 900;
+  line-height: 0.85;
+  padding: 0;
+  color: #fff;
+  text-shadow: 0 0 60px rgba(255,255,255,.25);
+}
 .aa-hm-stage img,
 .aa-hm-stage video,
 .aa-hm-stage iframe {

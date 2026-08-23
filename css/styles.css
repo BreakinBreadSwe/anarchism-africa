@@ -321,11 +321,11 @@ body.has-rail .tabs { display: none; }
 .rail .rail-menu-toggle:hover { background: var(--bg-2); color: var(--fg); }
 .rail .rail-menu-toggle .logo {
   width: 28px; height: 28px; border-radius: 6px; flex: 0 0 auto;
-  /* Africa OUTLINE (same silhouette as the hero + bottombar + brand
-     logo), tinted with currentColor via mask. Was a filled AAlogo1.svg. */
+  /* Africa OUTLINE bold variant — the hero's thin stroke disappears
+     at 28px. currentColor via mask keeps hover/active tint. */
   background: currentColor;
-  -webkit-mask: url('/icons/africa-outline.svg') center / contain no-repeat;
-          mask: url('/icons/africa-outline.svg') center / contain no-repeat;
+  -webkit-mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat;
+          mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat;
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
 }
@@ -416,8 +416,8 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
   width: 100%; height: 100%;
   pointer-events: none;
   background: currentColor;
-  -webkit-mask: url('/icons/africa-outline.svg') center / contain no-repeat;
-          mask: url('/icons/africa-outline.svg') center / contain no-repeat;
+  -webkit-mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat;
+          mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat;
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
   border-radius: 8px;
@@ -2389,13 +2389,12 @@ section.view { padding: 16px; }
   width: 24px; height: 24px;
   border-radius: 4px;
   display: block;
-  /* Africa OUTLINE — same silhouette + coast stroke as the hero and the
-     header brand logo. Not the old filled-white AAlogo1.svg. Rendered as
-     currentColor via mask so it picks up the button colour (active/inactive)
-     just like the other bottombar glyph icons. */
+  /* Africa OUTLINE (bold variant — hero stroke=35 is invisibly thin at
+     24px; the bold SVG uses stroke-width=90 so the coast reads clearly
+     at icon sizes). currentColor + mask keeps active/inactive tint. */
   background: currentColor;
-  -webkit-mask: url('/icons/africa-outline.svg') center / contain no-repeat;
-          mask: url('/icons/africa-outline.svg') center / contain no-repeat;
+  -webkit-mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat;
+          mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat;
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
 }
@@ -2431,8 +2430,8 @@ section.view { padding: 16px; }
   width: 40px !important;
   height: 40px !important;
   background: currentColor !important;
-  -webkit-mask: url('/icons/africa-outline.svg') center / contain no-repeat !important;
-          mask: url('/icons/africa-outline.svg') center / contain no-repeat !important;
+  -webkit-mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat !important;
+          mask: url('/icons/africa-outline-bold.svg') center / contain no-repeat !important;
   -webkit-mask-mode: alpha !important;
           mask-mode: alpha !important;
   border-radius: 0 !important;

@@ -45,18 +45,35 @@
     return r.ok ? { ok: true } : { ok: false, error: (await r.text()).slice(0, 200) };
   }
 
+  // Uses @vercel/blob/client's `upload()` to stream the file DIRECTLY
+  // from the browser to Vercel Blob storage. Our /api/africa-slides/
+  // upload endpoint only issues a short-lived signed token — the bytes
+  // never traverse the serverless function, sidestepping the 4.5 MB
+  // FUNCTION_PAYLOAD_TOO_LARGE cap that blocked GIF/large-image uploads.
+  //
+  // Loaded lazily via ESM CDN (esm.sh) so we don't need a bundler.
+  let _blobClient = null;
+  async function loadBlobClient () {
+    if (_blobClient) return _blobClient;
+    _blobClient = await import('https://esm.sh/@vercel/blob@0.27.0/client');
+    return _blobClient;
+  }
+
   async function uploadFile (file) {
     if (!file) return { ok: false, error: 'no file' };
-    const r = await fetch(UPLOAD_ENDPOINT, {
-      method:  'POST',
-      headers: {
-        'Content-Type': file.type || 'application/octet-stream',
-        'x-filename':   file.name || 'upload.bin'
-      },
-      body: file
-    });
-    if (!r.ok) return { ok: false, error: (await r.text()).slice(0, 200) };
-    return await r.json();
+    try {
+      const { upload } = await loadBlobClient();
+      const safe = (file.name || 'upload.bin').replace(/[^\w.\-]+/g, '_').slice(0, 120);
+      const key  = `africa-hero/uploads/${Date.now()}-${safe}`;
+      const blob = await upload(key, file, {
+        access:           'public',
+        handleUploadUrl:  UPLOAD_ENDPOINT,
+        contentType:      file.type || undefined
+      });
+      return { ok: true, url: blob.url, pathname: blob.pathname };
+    } catch (e) {
+      return { ok: false, error: String(e.message || e).slice(0, 200) };
+    }
   }
 
   async function render (container) {

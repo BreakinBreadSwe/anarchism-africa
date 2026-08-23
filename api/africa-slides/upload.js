@@ -1,11 +1,32 @@
-// POST /api/africa-slides/upload — multipart file → uploaded to Vercel
-// Blob under 'africa-hero/uploads/<timestamp>-<name>'. Returns { url,
-// pathname, size, contentType }. The CMS calls this from the file
-// picker, then uses the returned url as the src of a new slide.
+// POST /api/africa-slides/upload
+//
+// Client-direct upload token handler. Uses @vercel/blob/client's
+// handleUpload flow so files stream DIRECTLY from the browser to
+// Vercel Blob storage — the request never carries the file bytes
+// through this serverless function.
+//
+// This bypasses Vercel's 4.5 MB serverless FUNCTION_PAYLOAD_TOO_LARGE
+// cap that was blocking users trying to upload GIFs or larger images
+// through the previous raw-stream endpoint. The new limit is Vercel
+// Blob's own 500 MB (per single file), well past anything the CMS
+// needs.
+//
+// Flow:
+//   1. Client (js/africa-hero-cms.js uploadFile) imports
+//      @vercel/blob/client and calls upload(pathname, file, {
+//         handleUploadUrl: '/api/africa-slides/upload'
+//      })
+//   2. The client SDK POSTs a small JSON envelope here asking for a
+//      short-lived signed URL.
+//   3. handleUpload() issues the token and returns JSON to the client.
+//   4. The client PUTs the file bytes DIRECTLY to Blob storage.
+//   5. Blob storage calls back to this endpoint with the completion
+//      event; onUploadCompleted logs it (no-op for the CMS).
 //
 // Auth: same admin/publisher gate as the sibling africa-slides endpoint.
 
-const { readSession } = require('../auth/_session.js');
+const { handleUpload } = require('@vercel/blob/client');
+const { readSession }  = require('../auth/_session.js');
 
 module.exports = async function handler (req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -14,43 +35,47 @@ module.exports = async function handler (req, res) {
   if (!gate.ok) return res.status(gate.status).json({ error: gate.reason });
 
   try {
-    const { put } = require('@vercel/blob');
-    // The client uploads raw bytes with:
-    //   Content-Type: <mime>
-    //   x-filename: <original name>
-    // Simpler than parsing multipart for a single-file endpoint.
-    const contentType = req.headers['content-type'] || 'application/octet-stream';
-    const raw = req.headers['x-filename'] || 'upload.bin';
-    const safe = String(raw).replace(/[^\w.\-]+/g, '_').slice(0, 120);
-    const key  = `africa-hero/uploads/${Date.now()}-${safe}`;
+    // The client SDK sends a JSON envelope. Vercel's default body parser
+    // handles it — we don't need the raw-stream config anymore.
+    let body = req.body;
+    if (!body || typeof body === 'string') {
+      const chunks = [];
+      for await (const chunk of req) chunks.push(chunk);
+      const raw = Buffer.concat(chunks).toString('utf8');
+      body = raw ? JSON.parse(raw) : {};
+    }
 
-    // Collect the request body as a Buffer.
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const body = Buffer.concat(chunks);
-    if (!body.length) return res.status(400).json({ error: 'empty upload body' });
-    if (body.length > 60 * 1024 * 1024) return res.status(413).json({ error: 'file exceeds 60 MB' });
-
-    const blob = await put(key, body, {
-      access:              'public',
-      contentType,
-      addRandomSuffix:     false,
-      cacheControlMaxAge:  60 * 60 * 24 * 365
+    const jsonResponse = await handleUpload({
+      body,
+      request: req,
+      onBeforeGenerateToken: async (pathname /* , clientPayload */) => {
+        // Enforce our naming scheme + limits. The client-supplied
+        // pathname is trusted only for the extension — we prefix
+        // 'africa-hero/uploads/' + Date.now() ourselves for safety.
+        return {
+          allowedContentTypes: [
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif',
+            'video/mp4', 'video/webm', 'video/quicktime',
+            'application/octet-stream'
+          ],
+          addRandomSuffix:      false,
+          maximumSizeInBytes:   500 * 1024 * 1024,
+          cacheControlMaxAge:   60 * 60 * 24 * 365,
+          tokenPayload:         JSON.stringify({}),
+        };
+      },
+      onUploadCompleted: async ({ blob /* , tokenPayload */ }) => {
+        // Blob storage pings us after the direct upload succeeds. The
+        // CMS re-fetches /api/africa-slides/media on its own; nothing
+        // to persist here.
+        try { console.log('[upload] direct-to-blob completed:', blob.pathname, blob.size); } catch {}
+      },
     });
-    return res.status(200).json({
-      ok: true,
-      url:         blob.url,
-      pathname:    blob.pathname,
-      size:        body.length,
-      contentType
-    });
+    return res.status(200).json(jsonResponse);
   } catch (e) {
-    return res.status(500).json({ ok: false, error: String(e.message || e).slice(0, 400) });
+    return res.status(400).json({ error: String(e.message || e).slice(0, 400) });
   }
 };
-
-// Disable Vercel's default JSON body parser so req is a raw readable stream.
-module.exports.config = { api: { bodyParser: false } };
 
 async function allowWrite (req) {
   const adminTok = process.env.AA_ADMIN_TOKEN;

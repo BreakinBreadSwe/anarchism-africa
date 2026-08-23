@@ -126,6 +126,10 @@
     const r = await fetch('/api/africa-slides/media?url=' + encodeURIComponent(url), { method: 'DELETE' });
     if (!r.ok) throw new Error((await r.text()).slice(0, 200));
   }
+  // Module-scoped multi-select state — Set of media URLs the admin has
+  // ticked. Preserved across re-renders within a session.
+  const mediaSelected = new Set();
+
   async function paintMediaLibrary (root) {
     const grid  = root.querySelector('[data-hero-media-grid]');
     const count = root.querySelector('[data-hero-media-count]');
@@ -133,8 +137,47 @@
     const items = await loadMediaLibrary();
     count.textContent = '(' + items.length + ')';
     if (!items.length) { grid.innerHTML = '<div style="color:var(--muted)">No media yet — upload above.</div>'; return; }
-    grid.innerHTML = items.map((m, i) => `
-      <div class="slide-card" data-media-idx="${i}" data-media-url="${esc(m.url)}" data-media-source="${esc(m.source)}">
+
+    // Set of URLs already used as a slide src — used to grey those out
+    // so admin can see at a glance what's already in the rotation.
+    const usedUrls = new Set((slides || []).map(s => s?.src).filter(Boolean));
+
+    // Group by (name+size) to detect duplicates. Same name AND same
+    // byte size = same file uploaded twice. Groups of size > 1 get
+    // .is-dup on every card in the group.
+    const dupGroups = new Map();
+    items.forEach((m) => {
+      const key = ((m.name || '').toLowerCase()) + '·' + (m.size || 0);
+      if (!dupGroups.has(key)) dupGroups.set(key, []);
+      dupGroups.get(key).push(m);
+    });
+    const dupUrls = new Set();
+    dupGroups.forEach(group => { if (group.length > 1) group.forEach(m => dupUrls.add(m.url)); });
+    const dupCount = [...dupGroups.values()].filter(g => g.length > 1).reduce((n, g) => n + (g.length - 1), 0);
+
+    // Toolbar — bulk actions on the tick-selected items + dedup button.
+    const toolbar = `
+      <div class="aa-ml-toolbar">
+        <label class="aa-ml-selall"><input type="checkbox" data-ml-selall><span>Select all</span></label>
+        <span class="aa-ml-sel-count" data-ml-sel-count>0 selected</span>
+        <span style="flex:1"></span>
+        <button type="button" class="btn" data-ml-bulk-add title="Add every selected item as a new slide">+ Add ${mediaSelected.size ? '(' + mediaSelected.size + ')' : ''} to slides</button>
+        <button type="button" class="btn" data-ml-bulk-remove title="Remove every selected item from the slideshow">− Remove from slides</button>
+        <button type="button" class="btn" data-ml-bulk-download title="Download every selected file">↓ Download</button>
+        <button type="button" class="btn ghost" data-ml-dedup title="Find and remove duplicate uploads (same filename + size)">Find doubles${dupCount ? ' (' + dupCount + ')' : ''}</button>
+        <button type="button" class="btn danger" data-ml-bulk-del title="Delete every selected item permanently (blob) or hide (repo)">Delete selected</button>
+      </div>`;
+
+    grid.innerHTML = toolbar + items.map((m, i) => {
+      const used = usedUrls.has(m.url);
+      const dup  = dupUrls.has(m.url);
+      const sel  = mediaSelected.has(m.url);
+      const cls  = ['slide-card', used ? 'is-used' : '', dup ? 'is-dup' : '', sel ? 'is-sel' : ''].filter(Boolean).join(' ');
+      return `
+      <div class="${cls}" data-media-idx="${i}" data-media-url="${esc(m.url)}" data-media-source="${esc(m.source)}">
+        <label class="aa-ml-pick"><input type="checkbox" data-media-pick ${sel ? 'checked' : ''}></label>
+        ${used ? '<span class="aa-ml-badge used" title="Already in the slideshow">In use</span>' : ''}
+        ${dup  ? '<span class="aa-ml-badge dup"  title="Same name+size as another upload">Double</span>' : ''}
         <div class="slide-preview">${
           m.type === 'video'
             ? `<video src="${esc(m.url)}" muted loop autoplay playsinline></video>`
@@ -145,24 +188,114 @@
           <span>${m.source}${m.size ? ' · ' + fmtSize(m.size) : ''}</span>
         </div>
         <div class="slide-actions">
-          <button data-media-add>+ Slide</button>
-          <button class="danger" data-media-del title="${m.source === 'blob' ? 'Delete this blob upload permanently' : 'Hide this /media/ file from the library (file stays in the repo — commit a git remove to delete for real)'}">${m.source === 'blob' ? 'Delete' : 'Hide'}</button>
+          <button data-media-add ${used ? 'title="Already in slideshow — click to add another copy"' : ''}>+ Slide</button>
+          <button data-media-dl title="Download this file">↓</button>
+          <button class="danger" data-media-del title="${m.source === 'blob' ? 'Delete this blob upload permanently' : 'Hide this /media/ file from the library (file stays in the repo — commit a git remove to delete for real)'}">${m.source === 'blob' ? 'Del' : 'Hide'}</button>
         </div>
-      </div>`).join('');
-    // Bind row actions
+      </div>`;
+    }).join('');
+
+    const paintSelCount = () => {
+      const el = grid.querySelector('[data-ml-sel-count]');
+      if (el) el.textContent = `${mediaSelected.size} selected`;
+      const addBtn = grid.querySelector('[data-ml-bulk-add]');
+      if (addBtn) addBtn.textContent = `+ Add${mediaSelected.size ? ' (' + mediaSelected.size + ')' : ''} to slides`;
+    };
+    paintSelCount();
+
+    // Toolbar actions ----
+    grid.querySelector('[data-ml-selall]')?.addEventListener('change', (e) => {
+      const on = e.target.checked;
+      grid.querySelectorAll('[data-media-pick]').forEach(cb => {
+        cb.checked = on;
+        const url = cb.closest('.slide-card').dataset.mediaUrl;
+        if (on) mediaSelected.add(url); else mediaSelected.delete(url);
+        cb.closest('.slide-card').classList.toggle('is-sel', on);
+      });
+      paintSelCount();
+    });
+    grid.querySelector('[data-ml-bulk-add]')?.addEventListener('click', async () => {
+      const picked = items.filter(m => mediaSelected.has(m.url));
+      if (!picked.length) { alert('No items selected.'); return; }
+      picked.forEach(m => slides.push({ type: m.type, src: m.url, duration: css.advanceMs || 2000 }));
+      const r = await save();
+      if (!r.ok) { alert('Save failed: ' + r.error); return; }
+      mediaSelected.clear();
+      paintSlides(root);
+      paintPreview(root);
+      await paintMediaLibrary(root);
+    });
+    grid.querySelector('[data-ml-bulk-remove]')?.addEventListener('click', async () => {
+      const picked = new Set([...mediaSelected]);
+      if (!picked.size) { alert('No items selected.'); return; }
+      const before = slides.length;
+      slides = slides.filter(s => !picked.has(s.src));
+      if (slides.length === before) { alert('Selected items are not in the slideshow.'); return; }
+      const r = await save();
+      if (!r.ok) { alert('Save failed: ' + r.error); return; }
+      paintSlides(root);
+      paintPreview(root);
+      await paintMediaLibrary(root);
+    });
+    grid.querySelector('[data-ml-bulk-download]')?.addEventListener('click', () => {
+      const picked = items.filter(m => mediaSelected.has(m.url));
+      if (!picked.length) { alert('No items selected.'); return; }
+      picked.forEach(m => triggerDownload(m.url, m.name));
+    });
+    grid.querySelector('[data-ml-bulk-del]')?.addEventListener('click', async () => {
+      const picked = items.filter(m => mediaSelected.has(m.url));
+      if (!picked.length) { alert('No items selected.'); return; }
+      if (!confirm(`Delete/hide ${picked.length} item${picked.length !== 1 ? 's' : ''}? Blob uploads are permanent; /media/ files are soft-hidden (git remove to fully delete).`)) return;
+      for (const m of picked) {
+        try { await deleteBlobUrl(m.url); } catch (e) { console.warn('del failed', m.url, e); }
+      }
+      mediaSelected.clear();
+      await paintMediaLibrary(root);
+    });
+    grid.querySelector('[data-ml-dedup]')?.addEventListener('click', async () => {
+      // For every group with >1 items, keep the OLDEST (first-encountered)
+      // and delete the rest. Only touches blob uploads — repo files
+      // (git-tracked) stay put.
+      const toDelete = [];
+      dupGroups.forEach(group => {
+        if (group.length <= 1) return;
+        // Sort by name so timestamped uploads stay in a stable order,
+        // then keep [0], delete [1..].
+        group.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        for (let i = 1; i < group.length; i++) if (group[i].source === 'blob') toDelete.push(group[i]);
+      });
+      if (!toDelete.length) { alert(dupCount ? 'Duplicates are all /media/ repo files — remove those with a git commit.' : 'No duplicates found.'); return; }
+      if (!confirm(`Found ${toDelete.length} duplicate blob upload${toDelete.length !== 1 ? 's' : ''}. Delete the extras? (Keeps the alphabetically-first copy of each group.)`)) return;
+      for (const m of toDelete) {
+        try { await deleteBlobUrl(m.url); } catch (e) { console.warn('del failed', m.url, e); }
+      }
+      await paintMediaLibrary(root);
+    });
+
+    // Row bindings ----
     grid.querySelectorAll('.slide-card').forEach(card => {
+      const url = card.dataset.mediaUrl;
+      card.querySelector('[data-media-pick]')?.addEventListener('change', (e) => {
+        if (e.target.checked) mediaSelected.add(url); else mediaSelected.delete(url);
+        card.classList.toggle('is-sel', e.target.checked);
+        paintSelCount();
+      });
       card.querySelector('[data-media-add]')?.addEventListener('click', async () => {
-        const url = card.dataset.mediaUrl;
         const item = items.find(x => x.url === url); if (!item) return;
         slides.push({ type: item.type, src: url, duration: css.advanceMs || 2000 });
         const r = await save();
         if (!r.ok) { alert('Save failed: ' + r.error); return; }
         paintSlides(root);
         paintPreview(root);
+        await paintMediaLibrary(root);
+      });
+      card.querySelector('[data-media-dl]')?.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const item = items.find(x => x.url === url); if (!item) return;
+        triggerDownload(item.url, item.name);
       });
       card.querySelector('[data-media-del]')?.addEventListener('click', async (ev) => {
         ev.stopPropagation();
-        const url = card.dataset.mediaUrl;
         const src = card.dataset.mediaSource;
         const prompt = src === 'blob'
           ? 'Delete this blob upload permanently? (Irreversible)'
@@ -170,16 +303,31 @@
         if (!confirm(prompt)) return;
         try {
           await deleteBlobUrl(url);
+          mediaSelected.delete(url);
           await paintMediaLibrary(root);
         } catch (e) { alert('Delete failed: ' + e.message); }
       });
-      // Click on the preview thumb → open fullscreen lightbox at that item
       card.querySelector('.slide-preview')?.addEventListener('click', () => {
-        const url = card.dataset.mediaUrl;
         const idx = items.findIndex(x => x.url === url);
         if (idx >= 0) openLightbox(items, idx, root);
       });
     });
+  }
+
+  // Kick off a browser download for a URL. Uses <a download> hint — for
+  // cross-origin blob URLs the browser may still open in a new tab
+  // depending on the response headers, but that's fine for our case.
+  function triggerDownload (url, filename) {
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || (url.split('/').pop() || 'download');
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (e) { window.open(url, '_blank'); }
   }
 
   // ---- Fullscreen lightbox --------------------------------------------

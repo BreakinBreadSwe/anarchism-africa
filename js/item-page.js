@@ -90,7 +90,7 @@
             url:   location.href,
             title: it.title || '',
             text:  it.summary || '',
-            kind:  'chip'
+            kind:  'icon'
           }) : ''}
         </div>
         <h1 class="item-title">${escapeHTML(it.title || '')}</h1>
@@ -117,7 +117,7 @@
             url:   location.href,
             title: it.title || '',
             text:  it.summary || '',
-            kind:  'chip'
+            kind:  'icon'
           }) : ''}
         </div>
         <div class="item-actions">

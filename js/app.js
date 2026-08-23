@@ -336,11 +336,9 @@
         });
       } catch {}
     }
-    // Share URL — deep-link into the item detail page.
-    const itemUrl = location.origin + '/item.html?type=' + encodeURIComponent(kind) + '&id=' + encodeURIComponent(it.id || '');
-    const shareBtn = window.AA?.share
-      ? window.AA.share.buttonHtml({ url: itemUrl, title: it.title || '', text: it.summary || '' })
-      : '';
+    // Share button lives next to the wish-heart (both overlays on the
+    // thumb — see js/wishlist.js attachHearts). No inline share button
+    // in the card body row.
     el.innerHTML = `
       <div class="thumb" style="background-image:url(${it.image})"><span class="badge">${kind}</span></div>
       <div class="body">
@@ -348,7 +346,7 @@
         <div class="meta">${secondaryLine(it, kind)}</div>
         ${it.summary ? `<p class="summary">${it.summary}</p>` : ''}
         ${kind === 'merch' ? merchBlock(it) : ''}
-        <div class="card-actions">${sourceChip(it)}${shareBtn}</div>
+        <div class="card-actions">${sourceChip(it)}</div>
       </div>`;
     return el;
   }

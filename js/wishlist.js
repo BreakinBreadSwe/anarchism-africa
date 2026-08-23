@@ -107,6 +107,29 @@
         });
         el.appendChild(btn);
         document.addEventListener('aa:wishlist:change', sync);
+
+        // Adjacent share button — same size as heart, icon-only, sits
+        // right beside it. Per user: 'the share and like button should
+        // be together and no need to write share, just the icon.'
+        if (window.AA?.share && !el.querySelector('.wish-share')) {
+          const sb = document.createElement('button');
+          sb.className = 'wish-heart wish-share';
+          sb.type = 'button';
+          sb.title = 'Share';
+          sb.setAttribute('aria-label', 'Share');
+          sb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-3.9M8.6 13.5l6.8 3.9"/></svg>';
+          const routeKind = ({ song: 'song' })[type] || type;
+          const routeId = id;
+          const title = el.querySelector('h3,h2,h4,.title,.sl-card-title')?.textContent?.trim() || id;
+          sb.addEventListener('click', e => {
+            e.stopPropagation(); e.preventDefault();
+            const url = routeKind === 'song'
+              ? location.origin + '/sound-library.html?track=' + encodeURIComponent(routeId)
+              : location.origin + '/item.html?type=' + encodeURIComponent(routeKind) + '&id=' + encodeURIComponent(routeId);
+            window.AA.share.open({ url, title });
+          });
+          el.appendChild(sb);
+        }
       });
     },
 

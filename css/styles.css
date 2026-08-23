@@ -219,8 +219,42 @@ h3 { font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; }
 @media (min-width: 600px) { .topbar-actions { gap: 10px; } }
 
 .brand { min-width: 0; flex: 1 1 auto; }
-.brand .logoword { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.brand .logoword .word { overflow: hidden; text-overflow: ellipsis; }
+.brand .logoword { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; }
+.brand .logoword .word { display: inline-block; }
+
+/* Mobile marquee — if the wordmark overflows the topbar, scroll it
+   horizontally end-to-end every 9 seconds. Desktop keeps the plain
+   ellipsis behaviour. Uses a duplicated shadow copy inside the .word
+   span so the loop is seamless (first copy scrolls out left, second
+   copy is already flush right). */
+@media (max-width: 768px) {
+  .brand .logoword {
+    overflow: hidden;
+    text-overflow: clip;
+  }
+  .brand .logoword .word {
+    /* Two visible copies side by side, second copy is a ::after clone
+       of the wordmark, so translateX(-50%) brings the second copy to
+       the starting position of the first — a perfect loop. */
+    animation: aa-brand-marquee 9s linear infinite;
+    padding-right: 3em;   /* gap between the two copies */
+  }
+  .brand .logoword .word::after {
+    content: attr(data-marquee);
+    padding-left: 3em;   /* matches padding-right on the base */
+  }
+}
+@keyframes aa-brand-marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+/* Pause the scroll if the wordmark actually fits — set by JS observing
+   the .word's scrollWidth vs its container. See js/logo-mark.js. */
+.brand .logoword.no-marquee .word { animation: none !important; padding-right: 0 !important; }
+.brand .logoword.no-marquee .word::after { content: '' !important; padding: 0 !important; }
+@media (prefers-reduced-motion: reduce) {
+  .brand .logoword .word { animation: none !important; }
+}
 
 /* Hide the role tag on phones — it's not actionable */
 @media (max-width: 540px) {
@@ -437,14 +471,28 @@ body.rail-open .rail-backdrop { opacity: 1; pointer-events: auto; }
   display: block;
 }
 
-/* Article/film/etc card action row — source-chip on the left, share
-   button on the right. Wraps if the card is too narrow. */
+/* Article/film/etc card action row — source-chip only. The share
+   button used to live here, but per user it now sits next to the
+   wish-heart (top-right of the thumb) via .wish-share in wishlist.js. */
 .card .card-actions {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex; justify-content: flex-start; align-items: center;
   gap: 8px; flex-wrap: wrap;
   margin-top: 8px;
 }
 .card .card-actions .source-chip { margin: 0; }
+/* Hide any legacy .aa-share-btn that still gets rendered inside
+   .card-actions — the wish-share sibling replaces it. */
+.card .card-actions .aa-share-btn { display: none; }
+
+/* wish-share — the share button that sits right next to the wish-heart.
+   Positioned relative to the card via .wish-heart's absolute anchor.
+   Sits 52px LEFT of the heart (44px heart + 8px gap). Same size, same
+   icon-only styling. currentColor inherits from card foreground. */
+.wish-share {
+  right: 60px !important;   /* heart is at right:8px + 44px + 8px gap */
+}
+.wish-share svg { width: 20px; height: 20px; }
+.wish-share.is-on { color: var(--accent, #ffd700); }
 
 /* Share row on item pages — thin bar just below the hero thumb and again
    above the item-actions row at the bottom. Right-aligned so it doesn't

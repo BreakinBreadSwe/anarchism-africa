@@ -650,8 +650,7 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 /* Media library UX — used/dup indicators, checkbox picker, bulk toolbar. */
 .aa-ml-toolbar {
   grid-column: 1 / -1;
-  display: flex; align-items: center; gap: 8px;
-  flex-wrap: wrap;
+  display: flex; flex-direction: column; gap: 8px;
   padding: 10px 12px;
   margin: 0 0 10px;
   background: var(--bg-2, #111);
@@ -660,9 +659,41 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   font: 500 .78rem 'JetBrains Mono', monospace;
   color: var(--fg-dim, #999);
 }
+.aa-ml-toolbar-row {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+}
 .aa-ml-toolbar .aa-ml-selall { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
 .aa-ml-toolbar .aa-ml-sel-count { opacity: .8; }
 .aa-ml-toolbar .btn { padding: 6px 10px; font-size: .72rem; letter-spacing: .04em; }
+.aa-ml-toolbar-sf { padding-top: 6px; border-top: 1px dashed var(--line, #333); }
+.aa-ml-toolbar-label { text-transform: uppercase; letter-spacing: .1em; opacity: .7; font-size: .68rem; margin-right: 4px; }
+.aa-ml-chip {
+  background: transparent;
+  border: 1px solid var(--line, #333);
+  color: var(--fg-dim, #999);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font: 500 .70rem 'JetBrains Mono', monospace;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.aa-ml-chip:hover { color: var(--fg, #eee); border-color: var(--fg-dim, #888); }
+.aa-ml-chip.is-on { background: var(--accent, #ffd700); color: #000; border-color: var(--accent, #ffd700); font-weight: 700; }
+.aa-ml-sortbox {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .72rem;
+}
+.aa-ml-sortbox select {
+  background: var(--bg, #0a0a0a);
+  color: var(--fg, #eee);
+  border: 1px solid var(--line, #333);
+  padding: 4px 6px;
+  border-radius: 4px;
+  font: 500 .72rem 'JetBrains Mono', monospace;
+  cursor: pointer;
+}
 
 .slide-card { position: relative; }
 .slide-card.is-used { opacity: .55; filter: grayscale(.7); }

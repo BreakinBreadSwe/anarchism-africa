@@ -126,15 +126,18 @@
     const r = await fetch('/api/africa-slides/media?url=' + encodeURIComponent(url), { method: 'DELETE' });
     if (!r.ok) throw new Error((await r.text()).slice(0, 200));
   }
-  // Module-scoped multi-select state — Set of media URLs the admin has
-  // ticked. Preserved across re-renders within a session.
+  // Module-scoped multi-select + sort/filter state. Preserved across
+  // re-renders within a session so the admin can drag through without
+  // losing their view.
   const mediaSelected = new Set();
+  let mediaSort   = 'newest';   // newest | oldest | az | za | size-desc | size-asc
+  let mediaFilter = 'all';      // all | used | unused | dup | blob | repo | image | video
 
   async function paintMediaLibrary (root) {
     const grid  = root.querySelector('[data-hero-media-grid]');
     const count = root.querySelector('[data-hero-media-count]');
     if (!grid) return;
-    const items = await loadMediaLibrary();
+    let items = await loadMediaLibrary();
     count.textContent = '(' + items.length + ')';
     if (!items.length) { grid.innerHTML = '<div style="color:var(--muted)">No media yet — upload above.</div>'; return; }
 
@@ -155,20 +158,96 @@
     dupGroups.forEach(group => { if (group.length > 1) group.forEach(m => dupUrls.add(m.url)); });
     const dupCount = [...dupGroups.values()].filter(g => g.length > 1).reduce((n, g) => n + (g.length - 1), 0);
 
-    // Toolbar — bulk actions on the tick-selected items + dedup button.
+    // Parse a Unix ms timestamp out of the blob key (africa-hero/uploads/
+    // <ts>-<name>). Repo /media/ files have no timestamp — fall back to 0
+    // so they sort at the end of newest-first.
+    const uploadTs = (m) => {
+      const m2 = (m.url || '').match(/africa-hero\/uploads\/(\d{10,15})-/);
+      return m2 ? Number(m2[1]) : 0;
+    };
+    const kindOf = (m) => (m.type === 'video') ? 'video' : (m.type === 'gif' ? 'image' : 'image');
+
+    // Apply filter to a fresh copy so 'all' still shows everything.
+    const filtered = items.filter(m => {
+      switch (mediaFilter) {
+        case 'used':   return usedUrls.has(m.url);
+        case 'unused': return !usedUrls.has(m.url);
+        case 'dup':    return dupUrls.has(m.url);
+        case 'blob':   return m.source === 'blob';
+        case 'repo':   return m.source === 'repo';
+        case 'image':  return kindOf(m) === 'image';
+        case 'video':  return kindOf(m) === 'video';
+        default:       return true;
+      }
+    });
+
+    // Sort in place.
+    const nameSort = (a, b) => (a.name || '').localeCompare(b.name || '');
+    filtered.sort((a, b) => {
+      switch (mediaSort) {
+        case 'oldest':    return uploadTs(a) - uploadTs(b);
+        case 'az':        return nameSort(a, b);
+        case 'za':        return nameSort(b, a);
+        case 'size-desc': return (b.size || 0) - (a.size || 0);
+        case 'size-asc':  return (a.size || 0) - (b.size || 0);
+        case 'newest':
+        default:          return uploadTs(b) - uploadTs(a);
+      }
+    });
+
+    // The rest of the render (cards, bindings) operates on the filtered
+    // + sorted list. `items` still points at the full raw dataset.
+    const displayItems = filtered;
+
+    // Toolbar — sort / filter / bulk actions on the tick-selected items
+    // + dedup button. Filter chips reflect current mediaFilter state.
+    const fchips = (opts) => opts.map(([k, label]) =>
+      `<button type="button" class="aa-ml-chip${mediaFilter === k ? ' is-on' : ''}" data-ml-filter="${k}">${label}</button>`
+    ).join('');
     const toolbar = `
       <div class="aa-ml-toolbar">
-        <label class="aa-ml-selall"><input type="checkbox" data-ml-selall><span>Select all</span></label>
-        <span class="aa-ml-sel-count" data-ml-sel-count>0 selected</span>
-        <span style="flex:1"></span>
-        <button type="button" class="btn" data-ml-bulk-add title="Add every selected item as a new slide">+ Add ${mediaSelected.size ? '(' + mediaSelected.size + ')' : ''} to slides</button>
-        <button type="button" class="btn" data-ml-bulk-remove title="Remove every selected item from the slideshow">− Remove from slides</button>
-        <button type="button" class="btn" data-ml-bulk-download title="Download every selected file">↓ Download</button>
-        <button type="button" class="btn ghost" data-ml-dedup title="Find and remove duplicate uploads (same filename + size)">Find doubles${dupCount ? ' (' + dupCount + ')' : ''}</button>
-        <button type="button" class="btn danger" data-ml-bulk-del title="Delete every selected item permanently (blob) or hide (repo)">Delete selected</button>
+        <div class="aa-ml-toolbar-row">
+          <label class="aa-ml-selall"><input type="checkbox" data-ml-selall><span>Select all (visible)</span></label>
+          <span class="aa-ml-sel-count" data-ml-sel-count>0 selected</span>
+          <span style="flex:1"></span>
+          <button type="button" class="btn" data-ml-bulk-add title="Add every selected item as a new slide">+ Add ${mediaSelected.size ? '(' + mediaSelected.size + ')' : ''} to slides</button>
+          <button type="button" class="btn" data-ml-bulk-remove title="Remove every selected item from the slideshow">− Remove from slides</button>
+          <button type="button" class="btn" data-ml-bulk-download title="Download every selected file">↓ Download</button>
+          <button type="button" class="btn ghost" data-ml-dedup title="Find and remove duplicate uploads (same filename + size)">Find doubles${dupCount ? ' (' + dupCount + ')' : ''}</button>
+          <button type="button" class="btn danger" data-ml-bulk-del title="Delete every selected item permanently (blob) or hide (repo)">Delete selected</button>
+        </div>
+        <div class="aa-ml-toolbar-row aa-ml-toolbar-sf">
+          <span class="aa-ml-toolbar-label">Filter</span>
+          ${fchips([
+            ['all',    `All (${items.length})`],
+            ['used',   `In slideshow`],
+            ['unused', `Not in slideshow`],
+            ['dup',    `Duplicates${dupCount ? ' (' + dupCount + ')' : ''}`],
+            ['image',  `Images`],
+            ['video',  `Videos`],
+            ['blob',   `Uploaded`],
+            ['repo',   `Repo /media/`]
+          ])}
+          <span style="flex:1"></span>
+          <label class="aa-ml-sortbox">Sort
+            <select data-ml-sort>
+              <option value="newest"    ${mediaSort==='newest'?'selected':''}>Newest first</option>
+              <option value="oldest"    ${mediaSort==='oldest'?'selected':''}>Oldest first</option>
+              <option value="az"        ${mediaSort==='az'?'selected':''}>Name A → Z</option>
+              <option value="za"        ${mediaSort==='za'?'selected':''}>Name Z → A</option>
+              <option value="size-desc" ${mediaSort==='size-desc'?'selected':''}>Largest first</option>
+              <option value="size-asc"  ${mediaSort==='size-asc'?'selected':''}>Smallest first</option>
+            </select>
+          </label>
+        </div>
       </div>`;
 
-    grid.innerHTML = toolbar + items.map((m, i) => {
+    if (!displayItems.length) {
+      grid.innerHTML = toolbar + `<div style="grid-column:1/-1;color:var(--muted);padding:24px;text-align:center">No media matches the current filter.</div>`;
+      wireToolbar();
+      return;
+    }
+    grid.innerHTML = toolbar + displayItems.map((m, i) => {
       const used = usedUrls.has(m.url);
       const dup  = dupUrls.has(m.url);
       const sel  = mediaSelected.has(m.url);
@@ -203,9 +282,26 @@
     };
     paintSelCount();
 
+    // Filter chips + sort — bind once (also used by the empty-state branch).
+    function wireToolbar () {
+      grid.querySelectorAll('[data-ml-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          mediaFilter = btn.dataset.mlFilter;
+          paintMediaLibrary(root);
+        });
+      });
+      const sortSel = grid.querySelector('[data-ml-sort]');
+      sortSel?.addEventListener('change', () => {
+        mediaSort = sortSel.value;
+        paintMediaLibrary(root);
+      });
+    }
+    wireToolbar();
+
     // Toolbar actions ----
     grid.querySelector('[data-ml-selall]')?.addEventListener('change', (e) => {
       const on = e.target.checked;
+      // 'Select all' operates on VISIBLE items only (respects filter).
       grid.querySelectorAll('[data-media-pick]').forEach(cb => {
         cb.checked = on;
         const url = cb.closest('.slide-card').dataset.mediaUrl;

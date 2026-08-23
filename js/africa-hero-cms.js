@@ -539,11 +539,23 @@
     return `
       <div class="panel">
         <h2 style="margin:0 0 4px">Logo &amp; Hero · CMS + CSS</h2>
-        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 14px;font-size:.86rem">
-          Fullscreen splash shown on first visit. Africa continent silhouette is a
-          window; the slideshow renders inside. All content stored in Vercel Blob —
-          upload directly from your machine, no folder pushes needed.
-          <br>Live preview beneath every panel. Changes save on click.
+        <p style="color:var(--fg-dim);max-width:75ch;margin:0 0 10px;font-size:.86rem">
+          Two africa surfaces share this admin page — <b>each has its own
+          slide list and its own settings</b>, so changing one never
+          touches the other:
+        </p>
+        <ul style="color:var(--fg-dim);max-width:75ch;margin:0 0 12px 18px;font-size:.82rem;line-height:1.55">
+          <li><b>Fullscreen hero</b> — the big africa on the home page.
+              Uses the detailed outline (with the interior lakes visible).</li>
+          <li><b>Top-left app logo</b> — the tiny 40px africa in every
+              page's header. Uses a bolder, cleaner outline with the
+              interior lakes removed for legibility at small size.</li>
+        </ul>
+        <p style="color:var(--fg-dim);max-width:75ch;margin:0 0 14px;font-size:.82rem">
+          All content stored in Vercel Blob. Uploads stream direct from
+          your machine (up to 500 MB/file). Autosave: sliders and text
+          fields save 700 ms after the last edit — watch the status pill
+          next to each Save button. Live preview iframe below.
         </p>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn" data-hero-preview>Open fullscreen preview</button>
@@ -552,7 +564,12 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">Africa outline &amp; timing</h3>
+        <h3 style="margin:0 0 4px">Fullscreen hero — appearance &amp; timing</h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 12px;font-size:.78rem">
+          Controls the BIG africa on the home page: its size relative to
+          the viewport, coast-stroke thickness, and how the slideshow
+          cross-fades and advances between images.
+        </p>
         <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
           <label class="cms-slider">
             <span class="cms-slider-head">Africa size
@@ -596,10 +613,12 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">App logo — outline &amp; timing</h3>
-        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
-          Header (top-left) mini hero. Curate the mini-slideshow separately below.
-          If the app-logo list is empty, it falls back to the hero's current slides.
+        <h3 style="margin:0 0 4px">Top-left app logo — appearance &amp; timing</h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 12px;font-size:.78rem">
+          Controls the tiny 40px africa in the header of every page.
+          Uses the bolder outline variant (interior lakes removed for
+          legibility at small size). Set the mini-slideshow's rotation
+          rate here; the images themselves go in the panel just below.
         </p>
         <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
           <label class="cms-slider">
@@ -621,10 +640,12 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">App logo · Current slides <span style="color:var(--fg-dim);font-weight:400" data-hero-al-count></span></h3>
-        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
-          Independent slide list for the header mini-hero (image / gif only —
-          video can't render as a background-image at 40px).
+        <h3 style="margin:0 0 4px">Top-left app logo — slideshow <span style="color:var(--fg-dim);font-weight:400" data-hero-al-count></span></h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 12px;font-size:.78rem">
+          Independent slide list that cycles INSIDE the tiny header
+          africa. Images and GIFs only — mp4/video can't render at 40px.
+          <br>Empty list → the header falls back to the fullscreen hero's
+          rotation (below), so you're never stuck with a blank icon.
         </p>
         <form class="aa-slide-form" data-hero-al-add>
           <label>Type
@@ -643,7 +664,12 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">Outside-africa background</h3>
+        <h3 style="margin:0 0 4px">Fullscreen hero — outside-africa background</h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 12px;font-size:.78rem">
+          The layer BEHIND the big africa on the home page — everything
+          around the continent. Solid colour, image, GIF, video, or an
+          embedded iframe. Solid black by default.
+        </p>
         <form class="aa-slide-form" data-hero-bg>
           <label>Type
             <select name="type">
@@ -664,7 +690,12 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">Add slide</h3>
+        <h3 style="margin:0 0 4px">Fullscreen hero — add slide</h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 12px;font-size:.78rem">
+          Push a new slide onto the BIG hero's rotation. Text, image, GIF,
+          video, or iframe. Duration is per-slide (ms). For the app-logo
+          slideshow, use the top panel instead.
+        </p>
         <form class="aa-slide-form" data-hero-add>
           <label>Type
             <select name="type">
@@ -686,16 +717,24 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">Current slides <span style="color:var(--fg-dim);font-weight:400" data-hero-count></span></h3>
+        <h3 style="margin:0 0 4px">Fullscreen hero — current slides <span style="color:var(--fg-dim);font-weight:400" data-hero-count></span></h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 12px;font-size:.78rem">
+          Everything the big home-page hero cycles through, in load order
+          (the site itself shuffles them on every visit). Reorder, remove,
+          or open the fullscreen editor per slide.
+        </p>
         <div class="aa-slides-cms" data-hero-list><div style="color:var(--muted)">Loading…</div></div>
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">Media library <span style="color:var(--fg-dim);font-weight:400" data-hero-media-count></span></h3>
-        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.82rem">
-          Every image / gif / video managed for the hero. Blob uploads
-          can be deleted here; <b>repo</b> files (committed under /media/)
-          are read-only and need a git commit to remove.
+        <h3 style="margin:0 0 4px">Media library <span style="color:var(--fg-dim);font-weight:400" data-hero-media-count></span></h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 12px;font-size:.78rem">
+          Every image / GIF / video available to the site — anything you
+          upload here, plus the files committed under <code>/media/</code>
+          in the repo. Filter, sort, multi-select, bulk-add to the hero,
+          find duplicates, download, delete.
+          <br><b>Uploaded</b> files can be deleted permanently. <b>Repo</b>
+          files are read-only — a git commit is the only way to remove them.
         </p>
         <div style="display:flex;gap:8px;align-items:center;margin:0 0 10px;flex-wrap:wrap">
           <label class="btn" style="cursor:pointer;margin:0">
@@ -708,7 +747,11 @@
       </div>
 
       <div class="panel" style="margin-top:14px">
-        <h3 style="margin:0 0 10px">Live preview</h3>
+        <h3 style="margin:0 0 4px">Live preview</h3>
+        <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 10px;font-size:.78rem">
+          The home page rendered live below. Refreshes on save (autosave
+          fires 700 ms after your last edit).
+        </p>
         <iframe data-hero-preview-iframe src="${PREVIEW_URL}"
                 style="width:100%;height:88vh;border:1px solid var(--line);border-radius:10px;background:#000"
                 title="Africa hero live preview"></iframe>

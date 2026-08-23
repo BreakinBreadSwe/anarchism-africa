@@ -880,9 +880,10 @@ body.mp-active .mp-vu { display: block; }
   .mini-player {
     gap: 8px;
     padding: 8px 10px;
-    /* Mobile bottombar is 56px tall (not 68px). Match it exactly so
-       the player sits flush on top of the footer menu — no gap. */
-    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    /* Mobile bottombar is 60px tall (was 56px, bumped for taller icons).
+       Match it exactly so the player sits flush on top of the footer
+       menu — no gap. */
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   }
   .mini-player .mp-info    { flex: 1 1 auto; min-width: 0; }
   .mini-player .mp-info b  { font-size: .82rem; }
@@ -896,7 +897,7 @@ body.mp-active .mp-vu { display: block; }
   .mini-player .mp-play    { width: 36px; height: 36px; }
   .mini-player .mp-close   { width: 30px; height: 30px; margin-left: auto; }
   .mp-vu { display: none !important; }
-  body.mp-active { padding-bottom: calc(56px + 56px + env(safe-area-inset-bottom, 0px)); }
+  body.mp-active { padding-bottom: calc(56px + 60px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* artwork thumbnail */
@@ -2671,20 +2672,23 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
   }
   .bottombar::-webkit-scrollbar { display: none; }
 
-  /* Every button: SQUARE, fixed width = row height, no flex grow,
-     no dividers between buttons (only the logo cell has a separator). */
+  /* Every button: same 60px square, tight together, no dividers
+     (only the logo cell has a separator). Icons render at 26px to
+     match the desktop rail exactly — same visual weight everywhere. */
   .bottombar button {
     flex: 0 0 auto;
-    width: 56px; height: 56px;
-    min-width: 56px;
-    aspect-ratio: 1 / 1;
-    padding: 6px 2px;
-    gap: 2px;
+    width: 52px; height: 60px;
+    min-width: 52px;
+    padding: 6px 0;
+    gap: 3px;
     font-size: .58rem;
     letter-spacing: .08em;
     border: 0;
     scroll-snap-align: start;
   }
+  /* Adjust the row height to fit the taller buttons + retain safe-area. */
+  .bottombar { height: calc(60px + env(safe-area-inset-bottom, 0px)); }
+  body.has-rail { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
 
   /* The label text gets clipped to one tight line */
   .bottombar button > span:not(.glyph) {
@@ -2693,8 +2697,11 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /* All icons — including the africa app-logo mask — render at 26px,
+     the same size as desktop rail glyphs. Same stroke-width via the
+     base .bottombar button .glyph svg * rule (2), so weight matches too. */
   .bottombar button .glyph,
-  .bottombar button .glyph svg { width: 20px; height: 20px; }
+  .bottombar button .glyph svg { width: 26px; height: 26px; }
 
   /* LOGO BUTTON STAYS PINNED at bottom-left while the rest scrolls.
      position:sticky inside a horizontally-scrolling flex container
@@ -2708,14 +2715,14 @@ body:not(.has-rail) .item-body { max-width: 72ch; margin: 0 auto; }
     box-shadow: 6px 0 10px -6px color-mix(in srgb, var(--bg) 60%, transparent);
   }
   .bottombar .bottombar-logo .logo-glyph {
-    width: 30px; height: 30px;
+    width: 26px; height: 26px;
   }
+  /* Africa app icon matches the other bottombar glyphs at 26px — same
+     visual size as siblings, per user's 'need to be the same size'. */
   .bottombar .bottombar-logo .logo-glyph .logo {
-    width: 28px; height: 28px;
+    width: 26px; height: 26px;
   }
 
-  /* Reserve a tiny bit less room since the row is shorter now */
-  body.has-rail { padding-bottom: 56px; }
   .chat-fab { bottom: 70px; }
 
 }

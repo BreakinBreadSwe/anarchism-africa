@@ -293,19 +293,37 @@
       <div class="panel" style="margin-top:14px">
         <h3 style="margin:0 0 10px">Africa outline &amp; timing</h3>
         <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
-          <label class="cms-slider">Africa size <span data-hero-css-heroSize-val>72%</span>
+          <label class="cms-slider">
+            <span class="cms-slider-head">Africa size
+              <input type="number" min="40" max="100" step="1" class="cms-num" data-hero-css-num="heroSize" />
+              <span class="cms-slider-unit">%</span>
+            </span>
             <input type="range" min="40" max="100" step="1" data-hero-css="heroSize" />
           </label>
-          <label class="cms-slider">Outline stroke <span data-hero-css-outlineWidth-val>35</span>
+          <label class="cms-slider">
+            <span class="cms-slider-head">Outline stroke
+              <input type="number" min="1" max="80" step="1" class="cms-num" data-hero-css-num="outlineWidth" />
+            </span>
             <input type="range" min="1" max="80" step="1" data-hero-css="outlineWidth" />
           </label>
-          <label class="cms-slider">Crossfade (ms) <span data-hero-css-crossfadeMs-val>4000</span>
+          <label class="cms-slider">
+            <span class="cms-slider-head">Crossfade
+              <input type="number" min="200" max="10000" step="100" class="cms-num" data-hero-css-num="crossfadeMs" />
+              <span class="cms-slider-unit">ms</span>
+            </span>
             <input type="range" min="200" max="10000" step="100" data-hero-css="crossfadeMs" />
           </label>
-          <label class="cms-slider">Big-A every N slides <span data-hero-css-aFrequency-val>6</span>
+          <label class="cms-slider">
+            <span class="cms-slider-head">Big-A every N slides
+              <input type="number" min="1" max="50" step="1" class="cms-num" data-hero-css-num="aFrequency" />
+            </span>
             <input type="range" min="1" max="50" step="1" data-hero-css="aFrequency" />
           </label>
-          <label class="cms-slider">Advance (ms) <span data-hero-css-advanceMs-val>2000</span>
+          <label class="cms-slider">
+            <span class="cms-slider-head">Advance
+              <input type="number" min="500" max="30000" step="100" class="cms-num" data-hero-css-num="advanceMs" />
+              <span class="cms-slider-unit">ms</span>
+            </span>
             <input type="range" min="500" max="30000" step="100" data-hero-css="advanceMs" />
           </label>
         </div>
@@ -322,7 +340,11 @@
           If the app-logo list is empty, it falls back to the hero's current slides.
         </p>
         <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
-          <label class="cms-slider">Slideshow rotation (ms) <span data-hero-al-rotateMs-val>4500</span>
+          <label class="cms-slider">
+            <span class="cms-slider-head">Slideshow rotation
+              <input type="number" min="1000" max="60000" step="500" class="cms-num" data-hero-al-num="rotateMs" />
+              <span class="cms-slider-unit">ms</span>
+            </span>
             <input type="range" min="1000" max="60000" step="500" data-hero-al="rotateMs" />
           </label>
           <label style="display:flex;gap:8px;align-items:center">
@@ -438,12 +460,31 @@
     });
     root.querySelector('[data-hero-reload]').addEventListener('click', () => render(root));
 
-    // ---- CSS sliders ----
+    // ---- CSS sliders + companion number inputs ----
+    // Slider drives the state on 'input'; number input drives it on both
+    // 'input' and 'change' (change fires when the user commits a typed
+    // value with Enter/blur, catches the case where the value equals the
+    // current one but was invalid mid-typing). Both directions repaint
+    // via paintCssLabels which keeps the OTHER control in sync.
     root.querySelectorAll('[data-hero-css]').forEach(input => {
       input.addEventListener('input', () => {
         css[input.dataset.heroCss] = Number(input.value);
         paintCssLabels(root);
       });
+    });
+    root.querySelectorAll('[data-hero-css-num]').forEach(num => {
+      const commit = () => {
+        const key = num.dataset.heroCssNum;
+        const min = Number(num.min), max = Number(num.max);
+        let v = Number(num.value);
+        if (!Number.isFinite(v)) return;
+        if (Number.isFinite(min)) v = Math.max(min, v);
+        if (Number.isFinite(max)) v = Math.min(max, v);
+        css[key] = v;
+        paintCssLabels(root);
+      };
+      num.addEventListener('input', commit);
+      num.addEventListener('change', commit);
     });
     root.querySelector('[data-hero-css-save]').addEventListener('click', async () => {
       const r = await save();
@@ -457,13 +498,27 @@
       paintPreview(root);
     });
 
-    // ---- App-logo sliders ----
+    // ---- App-logo sliders + companion number inputs ----
     root.querySelectorAll('[data-hero-al]').forEach(input => {
       input.addEventListener('input', () => {
         const key = input.dataset.heroAl;
         appLogo[key] = input.type === 'checkbox' ? input.checked : Number(input.value);
         paintAlLabels(root);
       });
+    });
+    root.querySelectorAll('[data-hero-al-num]').forEach(num => {
+      const commit = () => {
+        const key = num.dataset.heroAlNum;
+        const min = Number(num.min), max = Number(num.max);
+        let v = Number(num.value);
+        if (!Number.isFinite(v)) return;
+        if (Number.isFinite(min)) v = Math.max(min, v);
+        if (Number.isFinite(max)) v = Math.min(max, v);
+        appLogo[key] = v;
+        paintAlLabels(root);
+      };
+      num.addEventListener('input', commit);
+      num.addEventListener('change', commit);
     });
     root.querySelector('[data-hero-al-save]').addEventListener('click', async () => {
       const r = await save();
@@ -695,11 +750,22 @@
   }
   function paintCssLabels (root) {
     Object.keys(css).forEach(k => {
+      // Sync BOTH the slider and its companion number input so either
+      // control can be the authoritative editor without losing focus.
+      const slider = root.querySelector(`[data-hero-css="${k}"]`);
+      const num    = root.querySelector(`[data-hero-css-num="${k}"]`);
+      if (slider && document.activeElement !== slider) slider.value = css[k];
+      if (num    && document.activeElement !== num)    num.value    = css[k];
+      // Legacy display span (kept for any tpl variant still using it).
       const lbl = root.querySelector(`[data-hero-css-${k}-val]`);
       if (lbl) lbl.textContent = k === 'heroSize' ? css[k] + '%' : css[k];
     });
   }
   function paintAlLabels (root) {
+    const slider = root.querySelector('[data-hero-al="rotateMs"]');
+    const num    = root.querySelector('[data-hero-al-num="rotateMs"]');
+    if (slider && document.activeElement !== slider) slider.value = appLogo.rotateMs;
+    if (num    && document.activeElement !== num)    num.value    = appLogo.rotateMs;
     const lbl = root.querySelector('[data-hero-al-rotateMs-val]');
     if (lbl) lbl.textContent = appLogo.rotateMs;
   }

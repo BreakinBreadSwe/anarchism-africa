@@ -643,6 +643,34 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
    back later; just visually removed. */
 .aa-hm-progress { display: none !important; }
 
+/* CMS slider labels — companion number input beside every range so
+   the admin can type a value directly instead of dragging a jittery
+   handle. Slider still there; typed value snaps into it. */
+.cms-slider {
+  display: flex; flex-direction: column; gap: 6px;
+  font: 500 .78rem 'JetBrains Mono', monospace;
+  letter-spacing: .04em;
+  color: var(--fg-dim, #999);
+}
+.cms-slider .cms-slider-head {
+  display: inline-flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+  color: var(--fg, #eee);
+}
+.cms-slider .cms-num {
+  width: 80px;
+  padding: 4px 6px;
+  background: var(--bg-2, #111);
+  color: var(--fg, #eee);
+  border: 1px solid var(--line, #333);
+  border-radius: 4px;
+  font: 600 .78rem 'JetBrains Mono', monospace;
+  text-align: right;
+}
+.cms-slider .cms-num:focus { outline: 1px solid var(--accent, #ffd700); }
+.cms-slider .cms-slider-unit { opacity: .7; }
+.cms-slider input[type="range"] { width: 100%; }
+
 /* ============================================================
  * FOOTER — RANDOM RADIO button (js/random-radio.js)
  * Bottom-left floating pill, above the bottombar on mobile.

@@ -176,14 +176,41 @@
         </div>
 
         <div class="panel">
-          <h3 style="margin:0 0 4px">AI article composer (research + draft)</h3>
+          <h3 style="margin:0 0 4px">AI article composer (topic → full draft)</h3>
           <p style="color:var(--fg-dim);margin:0 0 10px;font-size:.82rem">
-            Give a topic + optional angle. The article-lab pipeline runs end-to-end: outline → grounded research → draft → polish → headline → media suggestions. Result opens in the editor for review before publishing. Requires OPENROUTER_API_KEY or GEMINI_API_KEY.
+            Feed the AI everything you know about the topic — a short brief, the URLs it should read, and any images / gifs / videos you want attached. It runs outline → grounded research → draft → polish → headline → media, then opens the result in the editor for you to review, tighten and publish.
           </p>
-          <form id="ai-compose-form" style="display:grid;gap:8px">
-            <input name="topic" placeholder="e.g. Neptune Frost — queer Pan-African cyberpunk cinema" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
-            <input name="angle" placeholder="Optional angle (e.g. 'through the lens of coltan extraction')" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <form id="ai-compose-form" style="display:grid;gap:10px">
+            <label style="display:grid;gap:4px">
+              <span style="font:600 .74rem 'JetBrains Mono',monospace;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.08em">Topic <span style="color:var(--fg-dim);font-weight:400;text-transform:none">— what's the piece about?</span></span>
+              <input name="topic" required placeholder="e.g. Neptune Frost — queer Pan-African cyberpunk cinema" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
+            </label>
+
+            <label style="display:grid;gap:4px">
+              <span style="font:600 .74rem 'JetBrains Mono',monospace;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.08em">Angle <span style="color:var(--fg-dim);font-weight:400;text-transform:none">— optional lens</span></span>
+              <input name="angle" placeholder="e.g. 'through the lens of coltan extraction'" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
+            </label>
+
+            <label style="display:grid;gap:4px">
+              <span style="font:600 .74rem 'JetBrains Mono',monospace;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.08em">Brief <span style="color:var(--fg-dim);font-weight:400;text-transform:none">— key points, facts, quotes, the story you want told</span></span>
+              <textarea name="brief" rows="5" placeholder="e.g. Founded in Kigali 2018 by X and Y. Uses coltan supply chain as central metaphor. Reference Saul Williams's history with the Panthers. Emphasise queer intersex protagonist — not incidental but structural. Avoid framing as 'African sci-fi' — call it what it is: cyberpunk with actual politics." style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px;font-family:inherit;line-height:1.4"></textarea>
+            </label>
+
+            <label style="display:grid;gap:4px">
+              <span style="font:600 .74rem 'JetBrains Mono',monospace;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.08em">Source links <span style="color:var(--fg-dim);font-weight:400;text-transform:none">— URLs the AI should read + cite (one per line)</span></span>
+              <textarea name="links" rows="4" placeholder="https://en.wikipedia.org/wiki/Neptune_Frost&#10;https://daily.bandcamp.com/features/neptune-frost-saul-williams&#10;…" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px;font:500 .78rem 'JetBrains Mono',monospace"></textarea>
+            </label>
+
+            <div style="display:grid;gap:4px">
+              <span style="font:600 .74rem 'JetBrains Mono',monospace;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.08em">Media <span style="color:var(--fg-dim);font-weight:400;text-transform:none">— images / gifs / videos to attach (first = hero)</span></span>
+              <label class="btn" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;width:fit-content;margin:2px 0">
+                + Upload files
+                <input type="file" id="ai-compose-media" multiple accept="image/*,video/*" style="display:none" />
+              </label>
+              <div id="ai-compose-media-list" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"></div>
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:4px;border-top:1px dashed var(--line);margin-top:2px">
               <select name="length" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px">
                 <option value="short">Short (~500 words)</option>
                 <option value="medium" selected>Medium (~1200 words)</option>
@@ -192,7 +219,7 @@
               <label style="display:inline-flex;gap:6px;align-items:center;color:var(--fg-dim);font-size:.78rem">
                 <input type="checkbox" name="grounded" checked /> Grounded research (Gemini)
               </label>
-              <button class="btn primary" type="submit">Compose draft</button>
+              <button class="btn primary" type="submit">Compose draft →</button>
               <span class="aa-cms-status" id="ai-compose-status"></span>
             </div>
           </form>

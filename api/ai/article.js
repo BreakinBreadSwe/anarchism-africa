@@ -274,11 +274,29 @@ Return ONLY valid JSON.`;
 // End-to-end article composer. Runs every stage server-side and returns the
 // complete article record ready for the publisher to review and persist.
 async function stepCompose (p, provider, model) {
-  const { topic, angle = '', length = 1500, audience = 'general afro-anarchist reader', voice = VOICE, grounded = false } = p;
+  const {
+    topic, angle = '', length = 1500,
+    audience = 'general afro-anarchist reader',
+    voice = VOICE, grounded = false,
+    brief = '',              // human-written brief — key facts, quotes, framing
+    references = [],         // URLs the author wants cited
+    media = []               // pre-uploaded { url, type, name } — first = hero
+  } = p;
   const ts = Date.now();
 
+  // Compose a supplementary context string that the LLM prepends to every
+  // stage. Facts + framing from the human editor take priority over the
+  // model's general knowledge, and cited URLs get woven into research +
+  // sources verbatim.
+  const briefBlock = brief ? `\n\nEDITOR BRIEF (authoritative context — prefer these facts and framing over your own general knowledge):\n${brief}` : '';
+  const refsBlock  = references.length
+    ? `\n\nREFERENCE URLS (cite these where they support the piece; assume the reader can click them for the primary source):\n${references.map((u, i) => `[${i+1}] ${u}`).join('\n')}`
+    : '';
+  const contextSuffix = briefBlock + refsBlock;
+  const enrichedTopic = topic + contextSuffix;
+
   // 1. Outline
-  const { outline } = await stepOutline({ topic, angle, length, audience }, provider, model);
+  const { outline } = await stepOutline({ topic: enrichedTopic, angle, length, audience }, provider, model);
   if (!outline) return { article: null, error: 'outline failed' };
 
   // 2. Research — PARALLEL across sections, capped at 3 for the end-to-end
@@ -292,7 +310,7 @@ async function stepCompose (p, provider, model) {
   const sections = (outline.sections || []).slice(0, 3);
   const researchResults = await Promise.allSettled(
     sections.map(sec => stepResearch(
-      { topic, sectionHeading: sec.heading, beats: sec.beats || [], grounded },
+      { topic: enrichedTopic, sectionHeading: sec.heading, beats: sec.beats || [], grounded },
       provider, model
     ))
   );
@@ -306,8 +324,11 @@ async function stepCompose (p, provider, model) {
   });
   const notes = allNotes.join('\n\n');
 
-  // 3. Draft
-  const { draft } = await stepDraft({ outline, notes }, provider, model);
+  // 3. Draft — pass the human brief as extra notes so it's woven into the body
+  const enrichedNotes = brief
+    ? `EDITOR BRIEF:\n${brief}\n\n---\n\n${notes}`
+    : notes;
+  const { draft } = await stepDraft({ outline, notes: enrichedNotes }, provider, model);
 
   // 4. Polish
   const { polished } = await stepPolish({ draft, voice }, provider, model);
@@ -315,7 +336,7 @@ async function stepCompose (p, provider, model) {
 
   // 5+6. Headlines and Media — PARALLEL (both depend on the polished body
   //      but neither depends on the other).
-  const [head, media] = await Promise.all([
+  const [head, aiMedia] = await Promise.all([
     stepHeadline({ draft: body }, provider, model).catch(() => ({ titles: [], deck: '', blurb: '' })),
     stepMedia({ topic, draft: body, sections: outline.sections }, provider, model)
       .catch(() => ({ hero_image: null, gallery: [], embeds: [], pull_quotes: [], stats: [], related_topics: [] }))
@@ -324,6 +345,23 @@ async function stepCompose (p, provider, model) {
   const id = (head?.titles?.[0] || outline.title || topic)
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) + '-' + ts;
 
+  // Attach admin-uploaded media. First image = hero; extras go into gallery;
+  // videos become embeds. Falls back to AI suggestions when the human didn't
+  // upload anything.
+  const uploadedImages = media.filter(m => m?.url && (m.type || '').startsWith('image/'));
+  const uploadedVideos = media.filter(m => m?.url && (m.type || '').startsWith('video/'));
+  const heroFromUpload = uploadedImages[0]?.url || null;
+  const galleryFromUpload = uploadedImages.slice(1).map(m => ({ url: m.url, caption: m.name || '' }));
+  const embedsFromUpload  = uploadedVideos.map(m => ({ url: m.url, kind: 'video-upload', platform: 'ANARCHISM.AFRICA', why: m.name || '' }));
+
+  // Merge editor URLs (references) into the sources list — verified by hand
+  // rather than by grounded search but still cited.
+  const humanSources = (references || []).map(u => ({ uri: u, title: u, origin: 'editor' }));
+  const mergedSources = [];
+  for (const s of [...allSources, ...humanSources]) {
+    if (s?.uri && !mergedSources.find(x => x.uri === s.uri)) mergedSources.push(s);
+  }
+
   const article = {
     id,
     kind: 'article',
@@ -331,16 +369,20 @@ async function stepCompose (p, provider, model) {
     title_alts: head?.titles || [],
     deck: head?.deck || outline.hook || '',
     blurb: head?.blurb || '',
-    body,                                  // markdown
-    hero_image: media?.hero_image || null,
-    gallery:    media?.gallery    || [],
-    embeds:     media?.embeds     || [],
-    pull_quotes: media?.pull_quotes || [],
-    stats:      media?.stats      || [],
-    related_topics: media?.related_topics || [],
-    sources:    allSources,                // grounded URLs when available
+    body,                                             // markdown
+    hero_image: heroFromUpload || aiMedia?.hero_image || null,
+    gallery:    [...galleryFromUpload, ...(aiMedia?.gallery || [])],
+    embeds:     [...embedsFromUpload,  ...(aiMedia?.embeds  || [])],
+    pull_quotes: aiMedia?.pull_quotes || [],
+    stats:      aiMedia?.stats      || [],
+    related_topics: aiMedia?.related_topics || [],
+    sources:    mergedSources,                        // grounded + editor URLs
     verify:     outline?.verify_before_publishing || [],
     grounded:   !!allSources.length,
+    // Editor inputs preserved on the record for provenance + re-runs.
+    editor_brief:      brief || null,
+    editor_references: references || [],
+    editor_media:      media || [],
     topic, angle, audience,
     ts,
     status: 'draft'

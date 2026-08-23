@@ -266,34 +266,90 @@
     }
   });
 
-  // ---- AI compose form (end-to-end draft) ------------------------------
+  // ---- AI compose form (end-to-end draft with brief + links + media) ---
+  // Media state — files the user picked but haven't uploaded yet, and
+  // the Blob URLs once they're up. Re-rendered into the tag list on
+  // every change.
   const composeForm = $('#ai-compose-form');
+  const composeMediaInput = $('#ai-compose-media');
+  const composeMediaList  = $('#ai-compose-media-list');
+  let composeMedia = [];   // array of { name, type, url? , error? }
+
+  function paintComposeMedia () {
+    if (!composeMediaList) return;
+    if (!composeMedia.length) { composeMediaList.innerHTML = ''; return; }
+    composeMediaList.innerHTML = composeMedia.map((m, i) => `
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 8px;background:${m.error?'#3a1010':'var(--bg-2)'};border:1px solid ${m.error?'#ef4444':'var(--line)'};font-size:.72rem;max-width:220px">
+        <span style="color:${m.error?'#ef4444':'var(--fg)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${m.error?'✗ ':''}${escapeHtml(m.name)}</span>
+        ${m.url ? '<span style="color:#22c55e">✓</span>' : m.error ? `<span title="${escapeAttr(m.error)}" style="color:#ef4444">!</span>` : '<span style="color:var(--fg-dim)">…</span>'}
+        <button type="button" data-compose-media-rm="${i}" style="background:none;border:0;color:var(--fg-dim);cursor:pointer;padding:0 2px">×</button>
+      </div>`).join('');
+    composeMediaList.querySelectorAll('[data-compose-media-rm]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        composeMedia.splice(Number(btn.dataset.composeMediaRm), 1);
+        paintComposeMedia();
+      });
+    });
+  }
+  composeMediaInput?.addEventListener('change', async () => {
+    const files = Array.from(composeMediaInput.files || []);
+    if (!files.length) return;
+    // Reuse the direct-to-Blob uploader the hero-CMS uses. Load it once.
+    if (!window._aaBlobClient) {
+      try { window._aaBlobClient = await import('https://esm.sh/@vercel/blob@0.27.0/client'); }
+      catch (e) { alert('Could not load Blob uploader: ' + (e.message || e)); return; }
+    }
+    const { upload } = window._aaBlobClient;
+    for (const f of files) {
+      const idx = composeMedia.push({ name: f.name, type: f.type || 'application/octet-stream' }) - 1;
+      paintComposeMedia();
+      const safe = (f.name || 'upload.bin').replace(/[^\w.\-]+/g, '_').slice(0, 120);
+      const key  = `article-media/${Date.now()}-${safe}`;
+      try {
+        const blob = await upload(key, f, { access: 'public', handleUploadUrl: '/api/africa-slides/upload', contentType: f.type });
+        composeMedia[idx].url = blob.url;
+      } catch (e) {
+        composeMedia[idx].error = String(e.message || e).slice(0, 120);
+      }
+      paintComposeMedia();
+    }
+    composeMediaInput.value = '';
+  });
+
   composeForm?.addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const status = $('#ai-compose-status');
     const topic  = composeForm.topic.value.trim();
     const angle  = composeForm.angle.value.trim();
+    const brief  = composeForm.brief.value.trim();
+    const links  = composeForm.links.value.split(/\r?\n/).map(s => s.trim()).filter(s => /^https?:\/\//.test(s));
     const length = composeForm.length.value;
     const grounded = composeForm.grounded.checked;
+    const media = composeMedia.filter(m => m.url).map(m => ({ url: m.url, type: m.type, name: m.name }));
     if (!topic) { statusPill(status, 'Enter a topic', 'err'); return; }
+    if (composeMedia.some(m => !m.url && !m.error)) {
+      statusPill(status, 'Media still uploading — wait a moment', 'err');
+      return;
+    }
     statusPill(status, 'Composing (~30–90s)…', 'busy');
     try {
       const r = await fetch('/api/ai/article', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 'compose', payload: { topic, angle, length, grounded } })
+        body: JSON.stringify({
+          step: 'compose',
+          payload: { topic, angle, brief, references: links, media, length, grounded }
+        })
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) { statusPill(status, `Failed: ${d?.error || r.status}`, 'err'); return; }
       const art = d.article;
       if (!art) { statusPill(status, 'No article returned', 'err'); return; }
       statusPill(status, 'Draft ready — opening editor', 'ok');
-      // Hand off to AdminEditor with the AI-generated fields pre-filled.
       if (window.AdminEditor?.openDraft) {
         window.AdminEditor.openDraft('article', art, () => renderContent('article'));
       } else if (window.AdminEditor?.open) {
         window.AdminEditor.open('article', null, () => renderContent('article'), art);
       } else {
-        // Fallback: copy the article JSON to clipboard so nothing is lost.
         try { await navigator.clipboard.writeText(JSON.stringify(art, null, 2)); statusPill(status, 'Draft copied to clipboard (editor not available)', 'ok'); } catch {}
       }
     } catch (e) {

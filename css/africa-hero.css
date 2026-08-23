@@ -637,18 +637,11 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
 .aa-home-mask .aa-hm-slide {
   filter: brightness(calc(1 + var(--aa-hm-level) * 0.35));
 }
-.aa-hm-progress {
-  position: absolute; left: 4%; right: 4%; bottom: 14px;
-  display: flex; gap: 4px; z-index: 3;
-}
-.aa-hm-progress span {
-  flex: 1 1 0; height: 2px;
-  background: rgba(255,255,255,.2);
-  border-radius: 2px; overflow: hidden;
-  position: relative;
-}
-.aa-hm-progress span.is-done    { background: #fff; }
-.aa-hm-progress span.is-active  { background: color-mix(in srgb, #fff 60%, transparent); }
+/* Slideshow progress bar/dots hidden at user's request — the hero is
+   already a rotating slideshow; the dots were visual noise. Element
+   still rendered by JS so the code path stays intact if we want it
+   back later; just visually removed. */
+.aa-hm-progress { display: none !important; }
 
 /* ============================================================
  * FOOTER — RANDOM RADIO button (js/random-radio.js)

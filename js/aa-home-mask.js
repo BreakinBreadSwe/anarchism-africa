@@ -143,10 +143,14 @@
           aFreq = Math.max(1, Math.min(50, Number(cms.css.aFrequency)));
         }
       }
-      const cmsSlides = Array.isArray(cms?.slides) ? cms.slides : [];
-      // Shuffle so the hero rotation feels fresh on every visit —
-      // admin's list ORDER in the CMS becomes just a curation, not a
-      // playback sequence. Big-A still injected every N slides.
+      // Filter to IMAGES ONLY (image/gif). Video/iframe/text slides in
+      // the CMS pool are dropped for the hero rotation — the user's
+      // report of glitches ('top half only', 'goes black after a while')
+      // was caused by mounting videos/iframes into the DOM concurrently
+      // (memory pressure, autoplay conflicts). Images render cleanly.
+      const cmsSlides = (Array.isArray(cms?.slides) ? cms.slides : [])
+        .filter(s => s && (s.type === 'image' || s.type === 'gif') && s.src);
+      // Shuffle for fresh rotation every visit, interleave Big-A every N.
       slides = cmsSlides.length ? interleaveA(shuffle(cmsSlides.slice()), aFreq) : [BIG_A_SLIDE];
     } catch {
       slides = [BIG_A_SLIDE];
@@ -242,26 +246,78 @@
     }
   }
 
+  // Double-buffered slideshow: only TWO slide elements live in the DOM
+  // at any time. Advancing swaps the 'is-active' class between them
+  // while the next image preloads into the hidden slot. Fixes the
+  // 'top half only' glitches (partial image render during transition)
+  // and the 'black after a while' failure (memory pressure from having
+  // N images/videos mounted simultaneously).
   function repaint () {
     const stage = document.getElementById('aa-hm-stage');
     const prog  = document.getElementById('aa-hm-progress');
     if (!stage) return;
-    stage.innerHTML = slides.map(renderSlide).join('');
-    prog.innerHTML  = slides.map(() => '<span></span>').join('');
-    activate(0);
+    if (!slides.length) { stage.innerHTML = ''; return; }
+    // Two persistent slots: slot A + slot B. Renderer paints into
+    // whichever is currently HIDDEN, then swaps active class.
+    stage.innerHTML = `
+      <div class="aa-hm-slide type-slot is-active" data-slot="a"></div>
+      <div class="aa-hm-slide type-slot"           data-slot="b"></div>`;
+    if (prog) prog.innerHTML = slides.map(() => '<span></span>').join('');
+    idx = 0;
+    mountInto('a', slides[0]);
+    // Preload next image into the hidden slot so it's ready when we swap.
+    if (slides.length > 1) mountInto('b', slides[1 % slides.length]);
+  }
+
+  function mountInto (slot, slide) {
+    if (!slide) return;
+    const el = document.querySelector(`.aa-hm-slide[data-slot="${slot}"]`);
+    if (!el) return;
+    // Preserve any class-swap for the Big-A (aa-hm-a) so its font-size
+    // + padding overrides still apply.
+    el.className = 'aa-hm-slide type-slot' + (slide.className ? ' ' + slide.className : '') + (el.classList.contains('is-active') ? ' is-active' : '');
+    el.innerHTML = renderSlideInner(slide);
+  }
+
+  function renderSlideInner (s) {
+    const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fx = Number.isFinite(+s.focalX) ? +s.focalX : 50;
+    const fy = Number.isFinite(+s.focalY) ? +s.focalY : 50;
+    const zm = Number.isFinite(+s.zoom)   ? +s.zoom   : 100;
+    const mediaStyle = `object-position:${fx}% ${fy}%;scale:${(zm/100).toFixed(3)};transform-origin:${fx}% ${fy}%;`;
+    switch (s.type) {
+      case 'image':
+      case 'gif':
+        return `<img src="${esc(s.src)}" alt="" loading="eager" decoding="async" style="${mediaStyle}">`;
+      case 'a':
+      case 'text':
+      default:
+        return esc(s.text || '');
+    }
   }
 
   function activate (i) {
     idx = i;
     const stage = document.getElementById('aa-hm-stage');
     if (!stage) return;
-    stage.querySelectorAll('.aa-hm-slide').forEach(el => {
-      el.classList.toggle('is-active', Number(el.dataset.idx) === i);
-    });
+    // Whichever slot is currently active becomes the OUTGOING one;
+    // the other slot has the incoming slide already mounted.
+    const a = stage.querySelector('.aa-hm-slide[data-slot="a"]');
+    const b = stage.querySelector('.aa-hm-slide[data-slot="b"]');
+    if (!a || !b) return;
+    a.classList.toggle('is-active', a.dataset.slotActive === '1' ? false : (i % 2 === 0));
+    b.classList.toggle('is-active', i % 2 !== 0);
+    // After the swap, preload the NEXT slide into the now-hidden slot
+    // so it's ready for the next advance.
+    const hiddenSlot = (i % 2 === 0) ? 'b' : 'a';
+    const nextIdx = (i + 1) % slides.length;
+    mountInto(hiddenSlot, slides[nextIdx]);
+    // Update progress bars (kept for the code path even though CSS
+    // hides them — aa-hm-progress { display: none } elsewhere).
     const bars = document.querySelectorAll('#aa-hm-progress span');
-    bars.forEach((b, j) => {
-      b.classList.toggle('is-done', j < i);
-      b.classList.toggle('is-active', j === i);
+    bars.forEach((bar, j) => {
+      bar.classList.toggle('is-done', j < i);
+      bar.classList.toggle('is-active', j === i);
     });
   }
 

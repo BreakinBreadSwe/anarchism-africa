@@ -521,7 +521,7 @@
   function tpl () {
     return `
       <div class="panel">
-        <h2 style="margin:0 0 4px">Loading Screen · CMS + CSS</h2>
+        <h2 style="margin:0 0 4px">Logo &amp; Hero · CMS + CSS</h2>
         <p style="color:var(--fg-dim);max-width:70ch;margin:0 0 14px;font-size:.86rem">
           Fullscreen splash shown on first visit. Africa continent silhouette is a
           window; the slideshow renders inside. All content stored in Vercel Blob —

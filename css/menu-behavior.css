@@ -139,24 +139,54 @@ body.aa-mm-open { overflow: hidden; }
   color: #fff;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+/* Empty-state card lives INSIDE the .aa-mm-favs grid but spans the
+   full grid width so the text isn't crushed into a 1-column cell
+   (which was breaking to one word per row on mobile). */
 .aa-mm-empty {
-  margin: 0;
-  padding: 18px 6px;
-  font-size: .85rem;
-  color: var(--muted);
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  padding: 28px 20px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  color: var(--fg-dim);
   text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.aa-mm-empty .aa-mm-empty-heart {
+  width: 56px; height: 56px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--accent, #ff3860);
+  animation: aa-mm-empty-pulse 2.4s ease-in-out infinite;
+}
+.aa-mm-empty .aa-mm-empty-heart svg {
+  width: 56px; height: 56px;
+  fill: none; stroke: currentColor; stroke-width: 1.6;
+}
+.aa-mm-empty p {
+  margin: 0;
+  font: 500 .92rem/1.45 'Space Grotesk', sans-serif;
+  max-width: 32ch;
+}
+.aa-mm-empty p .aa-mm-empty-inline-heart {
+  color: var(--accent, #ff3860);
+  font-weight: 900;
+  padding: 0 2px;
+}
+@keyframes aa-mm-empty-pulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.08); }
 }
 
 /* ====== Bottombar — square borderless buttons on mobile/tablet ====
    No dividing lines between buttons. The row scrolls horizontally so all
-   eight buttons fit on any screen width while staying square (56×56). */
+   eight buttons fit on any screen width. Sizing (width/height/icon size)
+   is owned by the base mobile block in styles.css so all icons — glyphs
+   AND the africa app-logo mask — stay the same size (26px). Don't add
+   .glyph width/height here or it will override the styles.css unification. */
 @media (max-width: 1023px) {
   .bottombar button {
-    aspect-ratio: 1 / 1;
-    max-height: 64px;
     border-radius: 0;
     border: 0;
     flex-direction: column; gap: 2px;
   }
-  .bottombar button .glyph { width: 22px; height: 22px; }
 }

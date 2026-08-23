@@ -128,7 +128,13 @@
     const list = (window.AA?.wishlist?.list?.() || []);
     document.getElementById('aa-mm-fav-count').textContent = list.length ? `${list.length}` : '';
     if (!list.length) {
-      host.innerHTML = `<p class="aa-mm-empty">Tap any ♥ on the platform to save things here.</p>`;
+      host.innerHTML = `
+        <div class="aa-mm-empty">
+          <span class="aa-mm-empty-heart" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.35-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.65 12 21 12 21z" stroke-linejoin="round"/></svg>
+          </span>
+          <p>Tap any <span class="aa-mm-empty-inline-heart">♥</span> across the platform to save it here.</p>
+        </div>`;
       return;
     }
     host.innerHTML = list.map(x => {

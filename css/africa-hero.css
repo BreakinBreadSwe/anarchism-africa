@@ -647,6 +647,31 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
    back later; just visually removed. */
 .aa-hm-progress { display: none !important; }
 
+/* Save-now button — extra contrast + outline so it doesn't get lost
+   next to the ghost 'Reset defaults' button. Overrides the .btn base
+   styling for this specific CMS action. */
+[data-hero-css-save],
+[data-hero-al-save] {
+  background: var(--accent, #ffd700) !important;
+  color: #000 !important;
+  border: 2px solid var(--fg, #eee) !important;
+  font-weight: 800 !important;
+  letter-spacing: .08em !important;
+  padding: 8px 16px !important;
+  box-shadow: 3px 3px 0 0 rgba(0,0,0,.35) !important;
+  transition: transform .12s ease, box-shadow .12s ease !important;
+}
+[data-hero-css-save]:hover,
+[data-hero-al-save]:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,.35) !important;
+}
+[data-hero-css-save]:active,
+[data-hero-al-save]:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 0 rgba(0,0,0,.35) !important;
+}
+
 /* CMS autosave status pill — sits inline with the Save button and
    shows Editing… / Saving… / Saved ✓ / error text. */
 .aa-cms-status {

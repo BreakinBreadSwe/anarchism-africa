@@ -607,7 +607,7 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   content: '';
   position: absolute;
   top: 50%; left: 50%;
-  transform: translate(-50%, -50%) scale(calc(1.02 + var(--aa-hm-level) * 0.05));
+  transform: translate(-50%, -50%) scale(calc(1.005 + var(--aa-hm-level) * 0.05));
   transform-origin: center center;
   width: min(var(--aa-hm-size, 88vmin), calc(100vw - 24px), calc(100dvh - 100px));
   aspect-ratio: 1020 / 1018;

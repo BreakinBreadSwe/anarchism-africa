@@ -147,15 +147,68 @@
         <button data-content="song">Music</button>
         <button data-content="book">Books</button>
       </aside>
-      <div class="panel">
-        <div class="row-flex" style="justify-content:space-between;align-items:center;margin-bottom:14px">
-          <h2 style="margin:0" id="content-title">Films</h2>
-          <button class="btn primary" id="content-new">+ New</button>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <!-- Research + ingest toolbar (above the list) -->
+        <div class="panel">
+          <h3 style="margin:0 0 4px">Ingest URLs</h3>
+          <p style="color:var(--fg-dim);margin:0 0 10px;font-size:.82rem">
+            Paste one URL per line. Each gets scraped for its og:title / og:description / og:image and inserted into the library.
+          </p>
+          <textarea id="ingest-urls-input" rows="4" style="width:100%;background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px;font:500 .78rem 'JetBrains Mono',monospace" placeholder="https://africasacountry.com/…&#10;https://en.wikipedia.org/wiki/…"></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn primary" id="ingest-urls-fire">Ingest URLs</button>
+            <span class="aa-cms-status" id="ingest-urls-status"></span>
+          </div>
         </div>
-        <table>
-          <thead><tr><th>Title</th><th>Meta</th><th>Status</th><th></th></tr></thead>
-          <tbody id="content-rows"></tbody>
-        </table>
+
+        <div class="panel">
+          <h3 style="margin:0 0 4px">Scrape topic (AI-assisted URL discovery)</h3>
+          <p style="color:var(--fg-dim);margin:0 0 10px;font-size:.82rem">
+            Give a topic. The AI proposes N authoritative source URLs, you review them, and the ones you keep get scraped + ingested. No mystery scraping — every URL passes your eyes first.
+          </p>
+          <form id="scrape-topic-form" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <input name="topic" placeholder="e.g. afrofuturism nigeria contemporary" style="flex:1;min-width:220px;background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
+            <input name="count" type="number" min="1" max="20" value="8" style="width:80px;background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
+            <button class="btn primary" type="submit">Find URLs →</button>
+            <span class="aa-cms-status" id="scrape-topic-status"></span>
+          </form>
+          <div id="scrape-topic-results" style="margin-top:10px"></div>
+        </div>
+
+        <div class="panel">
+          <h3 style="margin:0 0 4px">AI article composer (research + draft)</h3>
+          <p style="color:var(--fg-dim);margin:0 0 10px;font-size:.82rem">
+            Give a topic + optional angle. The article-lab pipeline runs end-to-end: outline → grounded research → draft → polish → headline → media suggestions. Result opens in the editor for review before publishing. Requires OPENROUTER_API_KEY or GEMINI_API_KEY.
+          </p>
+          <form id="ai-compose-form" style="display:grid;gap:8px">
+            <input name="topic" placeholder="e.g. Neptune Frost — queer Pan-African cyberpunk cinema" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
+            <input name="angle" placeholder="Optional angle (e.g. 'through the lens of coltan extraction')" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px" />
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <select name="length" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line);padding:8px">
+                <option value="short">Short (~500 words)</option>
+                <option value="medium" selected>Medium (~1200 words)</option>
+                <option value="long">Long (~2500 words)</option>
+              </select>
+              <label style="display:inline-flex;gap:6px;align-items:center;color:var(--fg-dim);font-size:.78rem">
+                <input type="checkbox" name="grounded" checked /> Grounded research (Gemini)
+              </label>
+              <button class="btn primary" type="submit">Compose draft</button>
+              <span class="aa-cms-status" id="ai-compose-status"></span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Existing list view -->
+        <div class="panel">
+          <div class="row-flex" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+            <h2 style="margin:0" id="content-title">Films</h2>
+            <button class="btn primary" id="content-new">+ New</button>
+          </div>
+          <table>
+            <thead><tr><th>Title</th><th>Meta</th><th>Status</th><th></th></tr></thead>
+            <tbody id="content-rows"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>

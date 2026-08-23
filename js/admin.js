@@ -179,6 +179,131 @@
     window.AdminEditor && window.AdminEditor.open(contentKind, b.dataset.edit, () => renderContent(contentKind));
   });
 
+  // ---- Ingest URLs form -------------------------------------------------
+  function statusPill (el, msg, cls) {
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'aa-cms-status' + (cls ? ' ' + cls : '');
+    if (cls === 'ok') setTimeout(() => { if (el.classList.contains('ok')) { el.textContent = ''; el.className = 'aa-cms-status'; } }, 3200);
+  }
+  const ingestFireBtn = $('#ingest-urls-fire');
+  ingestFireBtn?.addEventListener('click', async () => {
+    const input = $('#ingest-urls-input');
+    const status = $('#ingest-urls-status');
+    const urls = (input?.value || '').split(/\r?\n/).map(s => s.trim()).filter(s => /^https?:\/\//.test(s));
+    if (!urls.length) { statusPill(status, 'Paste at least one URL', 'err'); return; }
+    statusPill(status, `Ingesting ${urls.length} URL${urls.length !== 1 ? 's' : ''}…`, 'busy');
+    try {
+      const r = await fetch('/api/content/ingest-urls', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls, kind: contentKind === 'song' ? 'song' : contentKind === 'film' ? 'film' : 'article' })
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { statusPill(status, `Failed: ${d?.error || r.status}`, 'err'); return; }
+      statusPill(status, `Inserted ${d.inserted || 0}, skipped ${d.skipped_existing || 0}${d.errors?.length ? `, ${d.errors.length} errors` : ''}`, 'ok');
+      input.value = '';
+      renderContent(contentKind);
+    } catch (e) {
+      statusPill(status, 'Network error: ' + (e.message || e).slice(0, 80), 'err');
+    }
+  });
+
+  // ---- Scrape-topic form (AI-assisted URL discovery + review) ----------
+  const scrapeForm = $('#scrape-topic-form');
+  scrapeForm?.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const status  = $('#scrape-topic-status');
+    const results = $('#scrape-topic-results');
+    const topic   = scrapeForm.topic.value.trim();
+    const count   = Number(scrapeForm.count.value) || 8;
+    if (!topic) { statusPill(status, 'Enter a topic', 'err'); return; }
+    statusPill(status, 'Asking AI for source URLs…', 'busy');
+    results.innerHTML = '';
+    try {
+      const r = await fetch('/api/admin/find-urls', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic, count })
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { statusPill(status, `Failed: ${d?.error || r.status}`, 'err'); return; }
+      const list = d.urls || [];
+      if (!list.length) { statusPill(status, 'AI returned no URLs — try a different topic', 'err'); return; }
+      statusPill(status, `${list.length} candidates ready`, 'ok');
+      results.innerHTML = `
+        <div style="border:1px solid var(--line);padding:10px;background:var(--bg-2);margin-top:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap">
+            <label style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="scrape-selectall" checked /> Select all</label>
+            <button class="btn primary" id="scrape-ingest-selected" type="button">Ingest selected →</button>
+          </div>
+          ${list.map((u, i) => `
+            <label style="display:flex;gap:8px;padding:6px 4px;border-top:1px dashed var(--line);align-items:flex-start">
+              <input type="checkbox" data-scrape-url="${escapeAttr(u.url)}" checked style="margin-top:3px" />
+              <div style="flex:1;min-width:0">
+                <a href="${escapeAttr(u.url)}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;word-break:break-all">${escapeHtml(u.url)}</a>
+                <div style="color:var(--fg-dim);font-size:.78rem;margin-top:2px">${escapeHtml(u.why || '')}</div>
+              </div>
+            </label>`).join('')}
+        </div>`;
+      $('#scrape-selectall').addEventListener('change', (e) => {
+        results.querySelectorAll('[data-scrape-url]').forEach(cb => { cb.checked = e.target.checked; });
+      });
+      $('#scrape-ingest-selected').addEventListener('click', async () => {
+        const picked = [...results.querySelectorAll('[data-scrape-url]:checked')].map(cb => cb.dataset.scrapeUrl);
+        if (!picked.length) { statusPill(status, 'Nothing selected', 'err'); return; }
+        statusPill(status, `Ingesting ${picked.length}…`, 'busy');
+        const r2 = await fetch('/api/content/ingest-urls', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ urls: picked, kind: 'article' })
+        });
+        const d2 = await r2.json().catch(() => ({}));
+        if (!r2.ok) { statusPill(status, `Failed: ${d2?.error || r2.status}`, 'err'); return; }
+        statusPill(status, `Inserted ${d2.inserted || 0}${d2.errors?.length ? `, ${d2.errors.length} errors` : ''}`, 'ok');
+        results.innerHTML = '';
+        renderContent(contentKind);
+      });
+    } catch (e) {
+      statusPill(status, 'Network error: ' + (e.message || e).slice(0, 80), 'err');
+    }
+  });
+
+  // ---- AI compose form (end-to-end draft) ------------------------------
+  const composeForm = $('#ai-compose-form');
+  composeForm?.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const status = $('#ai-compose-status');
+    const topic  = composeForm.topic.value.trim();
+    const angle  = composeForm.angle.value.trim();
+    const length = composeForm.length.value;
+    const grounded = composeForm.grounded.checked;
+    if (!topic) { statusPill(status, 'Enter a topic', 'err'); return; }
+    statusPill(status, 'Composing (~30–90s)…', 'busy');
+    try {
+      const r = await fetch('/api/ai/article', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 'compose', payload: { topic, angle, length, grounded } })
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { statusPill(status, `Failed: ${d?.error || r.status}`, 'err'); return; }
+      const art = d.article;
+      if (!art) { statusPill(status, 'No article returned', 'err'); return; }
+      statusPill(status, 'Draft ready — opening editor', 'ok');
+      // Hand off to AdminEditor with the AI-generated fields pre-filled.
+      if (window.AdminEditor?.openDraft) {
+        window.AdminEditor.openDraft('article', art, () => renderContent('article'));
+      } else if (window.AdminEditor?.open) {
+        window.AdminEditor.open('article', null, () => renderContent('article'), art);
+      } else {
+        // Fallback: copy the article JSON to clipboard so nothing is lost.
+        try { await navigator.clipboard.writeText(JSON.stringify(art, null, 2)); statusPill(status, 'Draft copied to clipboard (editor not available)', 'ok'); } catch {}
+      }
+    } catch (e) {
+      statusPill(status, 'Network error: ' + (e.message || e).slice(0, 80), 'err');
+    }
+  });
+
+  function escapeHtml (s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escapeAttr (s) { return escapeHtml(s); }
+
   // ---- MERCH -------------------------------------------------------------
   // Single merged POD view: combines the curated eco metadata from
   // AA_CONFIG.pod_providers (eco score, certifications, marketing name)

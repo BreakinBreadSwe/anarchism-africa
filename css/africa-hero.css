@@ -483,17 +483,8 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   -webkit-mask-mode: alpha;
           mask-mode: alpha;
 }
-/* Mobile floor: never let the CMS heroSize knob shrink the africa
-   below 88vmin on phones — small viewports need the hero as centrepiece,
-   not a floating card. Desktop still respects the CMS slider fully.
-   The outline stroke (::before) shares the same width formula so the
-   coast traces the same africa the stage is showing. */
-@media (max-width: 768px) {
-  .aa-hm-stage,
-  .aa-home-mask::before {
-    width: min(max(var(--aa-hm-size, 88vmin), 88vmin), calc(100vw - 24px), calc(100dvh - 100px));
-  }
-}
+/* Mobile floor is applied AFTER the .aa-home-mask::before base rule
+   below — see the media query near the end of this section. */
 /* Media matches africa outline exactly (100% × 100%, mask-flush).
    Ken Burns animation on top: slow linear scale + pan (~10s per
    slide). Uses the `transform` property so the JS-supplied `scale`
@@ -625,6 +616,19 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   background: url('/icons/africa-outline.svg') center / 100% 100% no-repeat;
   transition: transform 80ms linear;
   will-change: transform;
+}
+
+/* Mobile floor — MUST come AFTER the base .aa-hm-stage and
+   .aa-home-mask::before declarations above, or their plain-width rules
+   would override this at equal specificity. Floors both stage AND
+   outline to a min of 88vmin so tiny CMS heroSize values (e.g. 72)
+   can't shrink the hero on phones AND can't decouple the outline from
+   the mask (they must always share the same width to stay aligned). */
+@media (max-width: 768px) {
+  .aa-hm-stage,
+  .aa-home-mask::before {
+    width: min(max(var(--aa-hm-size, 88vmin), 88vmin), calc(100vw - 24px), calc(100dvh - 100px)) !important;
+  }
 }
 /* Slides brighten in sync with audio energy — mirrors the fullscreen
    loading hero's woofer effect. Both use --aa-hm-level (local scope

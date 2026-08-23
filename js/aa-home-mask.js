@@ -296,24 +296,42 @@
     }
   }
 
+  // Read the crossfade duration from the CSS var so JS + CSS stay in
+  // lock-step even when the CMS knob changes.
+  function crossfadeMs () {
+    const el = document.getElementById('aa-home-mask');
+    if (!el) return 1200;
+    const v = getComputedStyle(el).getPropertyValue('--aa-hm-crossfade').trim();
+    const n = parseFloat(v);
+    if (!Number.isFinite(n)) return 1200;
+    return v.includes('ms') ? n : (v.includes('s') ? n * 1000 : n);
+  }
+
+  let mountTimer = null;
   function activate (i) {
     idx = i;
     const stage = document.getElementById('aa-hm-stage');
     if (!stage) return;
-    // Whichever slot is currently active becomes the OUTGOING one;
-    // the other slot has the incoming slide already mounted.
     const a = stage.querySelector('.aa-hm-slide[data-slot="a"]');
     const b = stage.querySelector('.aa-hm-slide[data-slot="b"]');
     if (!a || !b) return;
-    a.classList.toggle('is-active', a.dataset.slotActive === '1' ? false : (i % 2 === 0));
-    b.classList.toggle('is-active', i % 2 !== 0);
-    // After the swap, preload the NEXT slide into the now-hidden slot
-    // so it's ready for the next advance.
-    const hiddenSlot = (i % 2 === 0) ? 'b' : 'a';
+    // Even indexes → slot A is active, odd → slot B.
+    const aActive = (i % 2 === 0);
+    a.classList.toggle('is-active', aActive);
+    b.classList.toggle('is-active', !aActive);
+    // Preload the NEXT slide into the now-hidden slot — BUT wait until
+    // the current crossfade has actually finished. If we mount immediately
+    // (as the previous version did) the outgoing slot's image is swapped
+    // to the next-next slide MID-FADE, producing the visible 'blink'
+    // the user reported.
+    const hiddenSlot = aActive ? 'b' : 'a';
     const nextIdx = (i + 1) % slides.length;
-    mountInto(hiddenSlot, slides[nextIdx]);
-    // Update progress bars (kept for the code path even though CSS
-    // hides them — aa-hm-progress { display: none } elsewhere).
+    if (mountTimer) clearTimeout(mountTimer);
+    mountTimer = setTimeout(() => {
+      mountInto(hiddenSlot, slides[nextIdx]);
+      mountTimer = null;
+    }, crossfadeMs() + 60);   // +60ms buffer so transitionend has landed
+    // Progress bars (kept for the code path — CSS hides them elsewhere).
     const bars = document.querySelectorAll('#aa-hm-progress span');
     bars.forEach((bar, j) => {
       bar.classList.toggle('is-done', j < i);
@@ -327,7 +345,12 @@
     let last = performance.now();
     timer = setInterval(() => {
       const s = slides[idx];
-      const dur = Math.max(1200, s?.duration || 3000);
+      // Force the advance to be at least a bit longer than the crossfade
+      // so the transition always fully completes before the next one
+      // starts. Otherwise (advance < crossfade) the two overlap and the
+      // hero looks choppy.
+      const xfade = crossfadeMs();
+      const dur = Math.max(xfade + 300, s?.duration || 3000);
       if (performance.now() - last > dur) {
         activate((idx + 1) % slides.length);
         last = performance.now();

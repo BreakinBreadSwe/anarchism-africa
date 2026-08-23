@@ -533,8 +533,12 @@ body.mp-active .aa-home-mask { height: calc(100dvh - 116px); }
   position: absolute; inset: 0;
   opacity: 0;
   /* Crossfade duration overridable from CMS via --aa-hm-crossfade.
-     4s default gives a smooth continuous blend against 2s advance. */
-  transition: opacity var(--aa-hm-crossfade, 4000ms) ease;
+     1200ms default reads as a smooth blend and safely finishes before
+     the 3s advance interval — the JS advance loop also floors dur to
+     crossfade+300ms so admin can't accidentally set advance < crossfade
+     and get overlap-chop. */
+  transition: opacity var(--aa-hm-crossfade, 1200ms) ease;
+  will-change: opacity;
   display: flex; align-items: center; justify-content: center;
   color: #fff; text-align: center;
   font-family: 'Bebas Neue', Impact, sans-serif;

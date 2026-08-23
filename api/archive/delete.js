@@ -5,7 +5,7 @@
 import { list, put } from '@vercel/blob';
 
 const MANIFEST    = 'archive/manifest.json';
-const ADMIN_TOKEN = process.env.AA_ADMIN_TOKEN || '';
+const ADMIN_TOKEN = (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN) || '';
 
 export default async function handler (req, res) {
   if (req.method !== 'DELETE') return res.status(405).json({ error: 'DELETE only' });

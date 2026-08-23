@@ -16,7 +16,7 @@
 const sb = require('../../lib/supabase');
 
 function authed (req) {
-  const adminToken = process.env.ADMIN_TOKEN;
+  const adminToken = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   const cronSecret = process.env.CRON_SECRET;
   const tok = req.headers['x-admin-token'] || req.headers['authorization'];
   const ck  = (req.headers.cookie || '').match(/aa_role=([^;]+)/)?.[1];
@@ -131,15 +131,15 @@ function checkEnv () {
     id: 'env-admin',
     group: 'Setup',
     label: 'Admin token set',
-    status: process.env.ADMIN_TOKEN ? 'pass' : 'warn',
-    detail: process.env.ADMIN_TOKEN ? 'ADMIN_TOKEN set' : 'ADMIN_TOKEN missing — admin endpoints (autopilot, blob writes) accept any caller',
+    status: (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN)) ? 'pass' : 'warn',
+    detail: (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN)) ? 'ADMIN_TOKEN set' : 'ADMIN_TOKEN missing — admin endpoints (autopilot, blob writes) accept any caller',
     help: [
       'WHAT IT DOES: A separate password that protects the "Fire autopilot now" button and the manual generate-article buttons. Only YOU should be able to push these.',
       'WHY YOU NEED IT: Without it, anyone could click an admin button by guessing the URL and waste your AI credits.',
       'HOW TO FIX (3 minutes): 1) Open Terminal. 2) Type: openssl rand -hex 32 and press Enter. 3) Copy the result. 4) In Vercel: project → Settings → Environment Variables → Add. 5) Name = ADMIN_TOKEN. Value = paste. Apply to all environments. Save.',
       'CHECK: Refresh. Row turns green.'
     ].join('\n'),
-    action: process.env.ADMIN_TOKEN ? null : { label: 'Open Vercel env vars ↗', type: 'link', url: 'https://vercel.com/dashboard' }
+    action: (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN)) ? null : { label: 'Open Vercel env vars ↗', type: 'link', url: 'https://vercel.com/dashboard' }
   });
 
   items.push({

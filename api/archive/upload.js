@@ -17,7 +17,7 @@ import { put, list } from '@vercel/blob';
 import { randomUUID } from 'node:crypto';
 
 const MANIFEST = 'archive/manifest.json';
-const ADMIN_TOKEN = process.env.AA_ADMIN_TOKEN || '';
+const ADMIN_TOKEN = (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN) || '';
 
 function isAuthorized (req) {
   if (!ADMIN_TOKEN) return false;

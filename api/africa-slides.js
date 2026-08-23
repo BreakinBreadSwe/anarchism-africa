@@ -166,7 +166,7 @@ async function writeDoc (doc) {
 
 /* ------- auth gate ------- */
 async function allowWrite (req) {
-  const adminTok = process.env.AA_ADMIN_TOKEN;
+  const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   const cronSec  = process.env.CRON_SECRET;
   // Setup mode: no admin token set yet → allow (rescue path used by other
   // endpoints in this codebase — same convention).

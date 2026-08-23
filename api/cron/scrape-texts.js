@@ -185,7 +185,7 @@ async function writeManifest (data) {
 // ── Handler ────────────────────────────────────────────────────────────────────
 export default async function handler (req, res) {
   const cronSecret = process.env.CRON_SECRET;
-  const adminToken = process.env.AA_ADMIN_TOKEN || '';
+  const adminToken = (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN) || '';
   const isCron     = !!req.headers['x-vercel-cron-signature'];
   const isAdmin    = adminToken && req.headers['x-aa-admin-token'] === adminToken;
 

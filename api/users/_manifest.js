@@ -10,7 +10,7 @@ import { randomUUID } from 'node:crypto';
 import { readSession } from '../auth/_session.js';
 
 const MANIFEST    = 'users/manifest.json';
-const ADMIN_TOKEN = process.env.AA_ADMIN_TOKEN || '';
+const ADMIN_TOKEN = (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN) || '';
 
 export const VALID_ROLES = ['admin', 'publisher', 'merch', 'partner', 'ambassador', 'consumer'];
 

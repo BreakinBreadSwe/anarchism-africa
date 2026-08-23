@@ -7,7 +7,7 @@
 
 import { put, list } from '@vercel/blob';
 
-const ADMIN_TOKEN = process.env.AA_ADMIN_TOKEN || '';
+const ADMIN_TOKEN = (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN) || '';
 const TTL_MS = 15 * 60 * 1000;
 
 function isAdmin (req) {

@@ -18,7 +18,7 @@ const sb = require('../../lib/supabase');
 const { isPublicScheme } = require('../../lib/url-safety');
 
 function authed (req, allowCron = false) {
-  const adminTok = process.env.ADMIN_TOKEN;
+  const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   const cronSec  = process.env.CRON_SECRET;
   if (adminTok) {
     const tok = req.headers['x-admin-token'] || req.headers['authorization'];

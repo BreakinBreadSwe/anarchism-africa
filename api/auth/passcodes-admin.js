@@ -12,7 +12,7 @@ import crypto from 'node:crypto';
 import { readSession } from './_session.js';
 
 const PASSCODES_KEY = 'auth/role-passcodes.json';
-const ADMIN_TOKEN   = process.env.AA_ADMIN_TOKEN || '';
+const ADMIN_TOKEN   = (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN) || '';
 const VALID_ROLES   = ['admin', 'publisher', 'merch', 'partner', 'ambassador', 'consumer'];
 
 function isAdmin (req) {

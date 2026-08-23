@@ -24,7 +24,7 @@ const sb = require('../../lib/supabase');
 const { isSafeToFetch } = require('../../lib/url-safety');
 
 function authed (req) {
-  const adminTok = process.env.ADMIN_TOKEN;
+  const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   const cronSec  = process.env.CRON_SECRET;
   // Vercel Cron always sends x-vercel-cron-signature — accept that even with
   // no shared CRON_SECRET so the platform-managed schedule still works.

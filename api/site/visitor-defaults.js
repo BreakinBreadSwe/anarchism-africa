@@ -50,7 +50,7 @@ export default async function handler (req, res) {
 
   // Admin auth: ADMIN_TOKEN env (rotate via Vercel) — set the token in the admin
   // user-settings panel and stored in localStorage; server compares.
-  const need = process.env.ADMIN_TOKEN;
+  const need = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   if (need && req.headers['x-aa-admin-token'] !== need) {
     return res.status(401).json({ error: 'admin token required' });
   }

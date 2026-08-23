@@ -52,7 +52,7 @@ const VARS = [
 ];
 
 function gate (req) {
-  const adminTok = process.env.ADMIN_TOKEN;
+  const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   if (adminTok && req.headers['x-aa-admin-token'] === adminTok) return true;
   const cookie = req.headers.cookie || '';
   if (/aa_role=(admin|publisher)/.test(cookie)) return true;

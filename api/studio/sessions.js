@@ -31,7 +31,7 @@ function callerOf (req) {
   const user = readSession(req);
   if (user?.email) return { email: user.email, role: user.role || 'consumer' };
   // Honour a manual x-aa-admin-token override for CLI / cron / scripts.
-  const adminTok = process.env.AA_ADMIN_TOKEN;
+  const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   if (adminTok && req.headers['x-aa-admin-token'] === adminTok) {
     return { email: 'admin@aa', role: 'admin' };
   }

@@ -7,7 +7,7 @@
 const sb = require('../../lib/supabase');
 
 function authed (req) {
-  const adminTok = process.env.ADMIN_TOKEN;
+  const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   if (adminTok) {
     const tok = req.headers['x-admin-token'] || req.headers['authorization'];
     if (tok === adminTok || tok === 'Bearer ' + adminTok) return true;

@@ -78,7 +78,7 @@ module.exports = async function handler (req, res) {
 };
 
 async function allowWrite (req) {
-  const adminTok = process.env.AA_ADMIN_TOKEN;
+  const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
   const cronSec  = process.env.CRON_SECRET;
   if (!adminTok && !cronSec) return { ok: true };
   const hdrTok = req.headers['x-admin-token'] || req.headers['x-aa-admin-token'];

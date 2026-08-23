@@ -444,7 +444,7 @@
       "year": 2023,
       "category": "essay",
       "reading_time": 5,
-      "image": "http://www.afrikanizm.com/cdn/shop/articles/the-current-state-of-contemporary-african-art-trends-and-challenges-afrikanizm.jpg?v=1699133620",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/afrikanizm-current-state-contemporary-african-art-1787494042948.jpg",
       "summary": "Contemporary African art is gaining global recognition and collector interest — but infrastructure, funding access, and under-representation in major international institutions still constrain the market.",
       "external_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/the-current-state-of-contemporary-african-art-trends-and-challenges",
       "source_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/the-current-state-of-contemporary-african-art-trends-and-challenges",
@@ -473,7 +473,8 @@
           "uri": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/the-current-state-of-contemporary-african-art-trends-and-challenges",
           "title": "Afrikanizm — original coverage"
         }
-      ]
+      ],
+      "image_source": "http://www.afrikanizm.com/cdn/shop/articles/the-current-state-of-contemporary-african-art-trends-and-challenges-afrikanizm.jpg?v=1699133620"
     },
     {
       "id": "afrikanizm-art-is-not-neutral-community-led",
@@ -482,7 +483,7 @@
       "year": 2026,
       "category": "essay",
       "reading_time": 5,
-      "image": "http://www.afrikanizm.com/cdn/shop/articles/LEARNINGTOREMAIN_9bf031ff-4230-454b-bf22-fd08ab8af3fa.jpg?v=1776760904",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/afrikanizm-art-is-not-neutral-community-led-1787494043893.jpg",
       "summary": "From Invisible Borders in Lagos to The Nest Collective in Nairobi to CHR in Johannesburg, artists across the continent are shifting from the solitary-creator model to collaborative practices that build dialogue, refuse commodification, and treat art as lived experience rather than object.",
       "external_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/art-is-not-neutral-community-led-art-in-africa-rising",
       "source_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/art-is-not-neutral-community-led-art-in-africa-rising",
@@ -521,7 +522,8 @@
           "uri": "https://www.nestcollective.org/",
           "title": "The Nest Collective (Kenya)"
         }
-      ]
+      ],
+      "image_source": "http://www.afrikanizm.com/cdn/shop/articles/LEARNINGTOREMAIN_9bf031ff-4230-454b-bf22-fd08ab8af3fa.jpg?v=1776760904"
     },
     {
       "id": "afrikanizm-training-the-ancestors-ai-sovereign-datasets",
@@ -530,7 +532,7 @@
       "year": 2026,
       "category": "essay",
       "reading_time": 4,
-      "image": "http://www.afrikanizm.com/cdn/shop/articles/Design_sem_nome_31_08586294-3a0c-4cb5-a368-41309c211e44.png?v=1783510212",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/afrikanizm-training-the-ancestors-ai-sovereign-datasets-1787494044309.png",
       "summary": "By 2026, African technologists and artists are moving beyond copyright complaints about AI to build sovereign, closed-source neural networks — trained on curated Adire, Zulu beadwork and family archives — that treat the dataset itself as the artwork and machines as collaborators, not extractors.",
       "external_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/training-the-ancestors-how-african-artists-are-reclaiming-ai-and-sovereign-datasets",
       "source_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/training-the-ancestors-how-african-artists-are-reclaiming-ai-and-sovereign-datasets",
@@ -559,7 +561,8 @@
           "uri": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/training-the-ancestors-how-african-artists-are-reclaiming-ai-and-sovereign-datasets",
           "title": "Afrikanizm — original coverage"
         }
-      ]
+      ],
+      "image_source": "http://www.afrikanizm.com/cdn/shop/articles/Design_sem_nome_31_08586294-3a0c-4cb5-a368-41309c211e44.png?v=1783510212"
     },
     {
       "id": "afrikanizm-textile-is-the-text",
@@ -568,7 +571,7 @@
       "year": 2026,
       "category": "essay",
       "reading_time": 5,
-      "image": "http://www.afrikanizm.com/cdn/shop/articles/04-Mahlangu-by-Clint-Strydom-1200x800_db557ca9-0f07-4662-95b7-938ca1b843d9.jpg?v=1779213119",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/afrikanizm-textile-is-the-text-1787494045184.jpg",
       "summary": "Kente, Bogolanfini, Kanga, Ndebele beadwork — African textiles are structured linguistic systems, not decoration. Contemporary artists (El Anatsui, Abdoulaye Konaté, Igshaan Adams) reactivate those grammars to speak on consumption, migration and post-apartheid memory.",
       "external_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/the-textile-is-the-text-how-african-weaving-traditions-code-knowledge-and-power",
       "source_url": "https://www.afrikanizm.com/blogs/afrikanizm-art-news/the-textile-is-the-text-how-african-weaving-traditions-code-knowledge-and-power",
@@ -610,7 +613,8 @@
           "uri": "https://en.wikipedia.org/wiki/Igshaan_Adams",
           "title": "Igshaan Adams"
         }
-      ]
+      ],
+      "image_source": "http://www.afrikanizm.com/cdn/shop/articles/04-Mahlangu-by-Clint-Strydom-1200x800_db557ca9-0f07-4662-95b7-938ca1b843d9.jpg?v=1779213119"
     },
     {
       "id": "dailyart-6-contemporary-african-artists",
@@ -619,7 +623,7 @@
       "year": 2025,
       "category": "portrait",
       "reading_time": 6,
-      "image": "https://www.dailyartmagazine.com/wp-content/uploads/2022/07/amoako-boafo_hands-up_AID517055-scaled-e1657804386507.jpeg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/dailyart-6-contemporary-african-artists-1787494045583.jpg",
       "summary": "Six portraits from across the continent and diaspora: Julie Mehretu (Ethiopia/NYC), Yinka Shonibare (Nigeria/UK), Wangechi Mutu (Kenya), Abdoulaye Konaté (Mali), Tracey Rose (South Africa), Amoako Boafo (Ghana) — spanning abstract cartographies, colonial textiles, hybrid figures, dyed cotton, performance, and finger-painted portraiture.",
       "external_url": "https://www.dailyartmagazine.com/6-contemporary-african-artists/",
       "source_url": "https://www.dailyartmagazine.com/6-contemporary-african-artists/",
@@ -671,7 +675,8 @@
           "uri": "https://en.wikipedia.org/wiki/Amoako_Boafo",
           "title": "Amoako Boafo"
         }
-      ]
+      ],
+      "image_source": "https://www.dailyartmagazine.com/wp-content/uploads/2022/07/amoako-boafo_hands-up_AID517055-scaled-e1657804386507.jpeg"
     },
     {
       "id": "afropunk-history-wikipedia",
@@ -745,7 +750,7 @@
       "year": 1997,
       "category": "portrait",
       "reading_time": 11,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/1/12/Fela_Kuti_circa_1986.jpg?utm_source=en.wikipedia.org&amp;utm_campaign=index&amp;utm_content=thumbnail_unscaled",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/fela-kuti-afrobeat-kalakuta-1787494046053.jpg",
       "summary": "Fela Aníkúlápó Kútì (1938–1997) — Nigerian musician and political activist who created Afrobeat, founded the autonomous Kalakuta Republic, endured military raids and imprisonment, and never stopped using the stage as a weapon against colonial and military power.",
       "external_url": "https://en.wikipedia.org/wiki/Fela_Kuti",
       "source_url": "https://en.wikipedia.org/wiki/Fela_Kuti",
@@ -795,7 +800,8 @@
           "uri": "https://en.wikipedia.org/wiki/Seun_Kuti",
           "title": "Seun Kuti"
         }
-      ]
+      ],
+      "image_source": "https://upload.wikimedia.org/wikipedia/commons/1/12/Fela_Kuti_circa_1986.jpg?utm_source=en.wikipedia.org&amp;utm_campaign=index&amp;utm_content=thumbnail_unscaled"
     },
     {
       "id": "zanele-muholi-visual-activist",
@@ -804,7 +810,7 @@
       "year": 2023,
       "category": "portrait",
       "reading_time": 8,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Zanele_Muholi%2C_2011_%28cropped%29.JPG?utm_source=en.wikipedia.org&amp;utm_campaign=index&amp;utm_content=thumbnail_unscaled",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/zanele-muholi-visual-activist-1787494046504.jpg",
       "summary": "South African photographer and activist Zanele Muholi documents Black LGBTQ+ life through Faces and Phases (2006–), the 365-self-portrait Somnyama Ngonyama (2014–), and institutions — Forum for the Empowerment of Women, Inkanyiso — built to sustain queer visual activism.",
       "external_url": "https://en.wikipedia.org/wiki/Zanele_Muholi",
       "source_url": "https://en.wikipedia.org/wiki/Zanele_Muholi",
@@ -846,7 +852,8 @@
           "uri": "https://www.hasselbladfoundation.org/",
           "title": "Hasselblad Foundation Award"
         }
-      ]
+      ],
+      "image_source": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Zanele_Muholi%2C_2011_%28cropped%29.JPG?utm_source=en.wikipedia.org&amp;utm_campaign=index&amp;utm_content=thumbnail_unscaled"
     },
     {
       "id": "black-punk-pioneers-dazed-2015",
@@ -855,7 +862,7 @@
       "year": 2015,
       "category": "essay",
       "reading_time": 6,
-      "image": "https://images-prod.dazeddigital.com/551/0-91-551-367/azure/dazed-prod/1150/0/1150132.jpg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/black-punk-pioneers-dazed-2015-1787494046697.jpg",
       "summary": "The rebel icons who defied cultural stereotypes to kickstart a musical revolution — X-Ray Spex, Don Letts, Pure Hell, Bad Brains, Death, and Mykki Blanco.",
       "external_url": "https://www.dazeddigital.com/music/article/28419/1/the-black-punk-pioneers-who-made-music-history",
       "source_url": "https://www.dazeddigital.com/music/article/28419/1/the-black-punk-pioneers-who-made-music-history",
@@ -919,7 +926,8 @@
           "uri": "https://en.wikipedia.org/wiki/Mykki_Blanco",
           "title": "Mykki Blanco"
         }
-      ]
+      ],
+      "image_source": "https://images-prod.dazeddigital.com/551/0-91-551-367/azure/dazed-prod/1150/0/1150132.jpg"
     },
     {
       "id": "african-design-deep-dive-the-design-edit-2020",
@@ -928,7 +936,7 @@
       "year": 2020,
       "category": "architecture-design",
       "reading_time": 10,
-      "image": "https://thedesignedit.com/wp-content/uploads/2020/03/african-design-facebook-thumbnail@2x.jpg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/african-design-deep-dive-the-design-edit-2020-1787494047026.jpg",
       "summary": "From Kossi Aguessy's retrospective at Togo's Palais de Lomé to Jean Servais Somian's coconut-palm furniture and Cheick Diallo's 30-year mission out of Bamako — a wide-angle look at contemporary African design's rise, its shared reuse-and-reinvent ethos, and the galleries (Cécile Fakhoury, 50 Golborne, Southern Guild) and fairs (AKAA, Collect, Beirut) making the market.",
       "external_url": "https://thedesignedit.com/deep-dive/african-design/",
       "source_url": "https://thedesignedit.com/deep-dive/african-design/",
@@ -993,7 +1001,8 @@
           "uri": "https://www.ikea.com/us/en/customer-service/product-support/recall/overallt/",
           "title": "IKEA — Överallt collection"
         }
-      ]
+      ],
+      "image_source": "https://thedesignedit.com/wp-content/uploads/2020/03/african-design-facebook-thumbnail@2x.jpg"
     },
     {
       "id": "african-design-stars-elle-decoration-2024",
@@ -1002,7 +1011,7 @@
       "year": 2024,
       "category": "architecture-design",
       "reading_time": 8,
-      "image": "https://hips.hearstapps.com/hmg-prod/images/ldi779858-66688e4fa9e17.jpg?crop=0.998xw:0.703xh;0.00160xw,0.171xh&amp;resize=1200:*",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/african-design-stars-elle-decoration-2024-1787494047228.jpg",
       "summary": "African design has long been overlooked internationally, but emerging designers are now gaining recognition for championing the continent's rich heritage of craft.",
       "external_url": "https://www.elledecoration.co.uk/design/a61073958/african-design-stars/",
       "source_url": "https://www.elledecoration.co.uk/design/a61073958/african-design-stars/",
@@ -1064,7 +1073,8 @@
           "uri": "https://www.southernguild.com/artists/chuma-maweni",
           "title": "Chuma Maweni — Southern Guild"
         }
-      ]
+      ],
+      "image_source": "https://hips.hearstapps.com/hmg-prod/images/ldi779858-66688e4fa9e17.jpg?crop=0.998xw:0.703xh;0.00160xw,0.171xh&amp;resize=1200:*"
     },
     {
       "id": "dakar-asymmetrical-parallelism-wainwright",
@@ -1207,10 +1217,11 @@
       "year": 1986,
       "category": "essay",
       "reading_time": 50,
-      "image": "https://www.jamesblackshaw.com/wp-content/uploads/2020/04/Screenshot_31.png",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/a8-1787494048653.png",
       "summary": "Why Ngũgĩ stopped writing in English — the politics of language as the politics of mind.",
       "external_url": "https://www.jamesblackshaw.com/",
-      "published_at": "2025-07-04T09:00:00Z"
+      "published_at": "2025-07-04T09:00:00Z",
+      "image_source": "https://www.jamesblackshaw.com/wp-content/uploads/2020/04/Screenshot_31.png"
     },
     {
       "id": "a9",
@@ -1255,7 +1266,7 @@
       "year": 2026,
       "category": "profile",
       "reading_time": 8,
-      "image": "https://freight.cargo.site/w/1000/i/Q3078341593366100281576928021983/screenshot-2017124206.jpg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/a12-1787494049193.jpg",
       "summary": "Born of Togolese and Mozambican roots in the whiteness of provincial Sweden, Paul Adamah makes music that functions as riot and ritual — a genre-demolishing collision of ancestral memory, punk rebellion, vodún reclamation, and radical self-making.",
       "tags": [
         "diaspora",
@@ -1296,7 +1307,8 @@
         }
       ],
       "body": "Paul Adamah was born in 1998 in Örebro, a mid-sized Swedish city that appears in statistical surveys and little else. His father came from Togo. His mother from Mozambique. In a city where Protestantism and whiteness shaped the ambient culture, Adamah learned early what diaspora children learn: how to shapeshift. How to shrink. How to translate yourself into whatever register a room demands.\n\nIt is from this quiet labour of self-erasure that Boko Yout was born.\n\n**The Griot Tradition**\n\nIn West African culture, the griot is not merely a musician. The griot is a living archive — keeper of genealogy, political commentator, praise-singer and elegist. Their knowledge is preserved not in libraries but in the body, in the breath, in the performance. To be a griot is to be a node in a network that spans centuries, carrying what colonialism tried to silence in the one register that cannot be fully colonised: song.\n\nAdamah named his 2024 collaborative EP _Griot_ without irony. The project, recorded with Stockholm-based producer boerd (Bård Ericson), fuses trip-hop electronics with raw vocal confessional — Ericson's lush, melodic textures holding space for Adamah's unflinching honesty. The EP arrived as both an exercise in cross-diaspora collaboration and a statement of method: this is music as ancestral conversation. The two met at a Way Out West gig, bonded over a shared reverence for British trip-hop's emotional directness, and retreated to build something intimate and strange. What emerged feels simultaneously ancient and immediate — as if the 1990s Portishead archives had been passed through a West African mouth and given new teeth.\n\n**Afro-Grunge as Refusal**\n\nBoko Yout's self-coined genre tag — Afro-Grunge — is not marketing. It is a refusal.\n\nGrunge, as a form, was always about refusing polish. About breaking the guitar in ways that weren't fashionable. About using distortion not for stadium spectacle but to excavate discomfort. Boko Yout takes that same formal refusal and runs it through a different history — not the white working-class Pacific Northwest, but the Black European diaspora, the children of colonised nations navigating the metropoles of their former colonisers.\n\nAfro-Grunge is what happens when the emotional rawness of punk meets the sonic memory of the African continent. It is what happens when a child of Togo and Mozambique picks up a distorted guitar in Sweden and refuses to make it sound like anything other than exactly what it is. The band — now a full four-piece with Joel Kiviaho, Kevin Stierne and guitarist Lionel Turner alongside Adamah — approaches guitar chaos with the mindset of a cinematographer: every sound a visual choice, every riff a narrative decision.\n\n**GUSTO and the Therapy of Becoming**\n\nThe debut album _GUSTO_, released September 5, 2025, is framed as a series of therapy sessions. The fictional Dr. Gusto is the analyst. Adamah's alter ego Mordecai is the patient. The 13 tracks are the sessions — self-interrogation conducted at full volume, clocking in at just under 35 minutes.\n\nThis framing is not accidental. The language of therapy — interiority, excavation, the naming of what hurts — is a deeply political act for a Black artist navigating white cultural space. Frantz Fanon understood this when he wrote that the colonised subject internalises the coloniser's gaze until it becomes their own inner voice. The work of decolonisation is always also psychological: the work of distinguishing your own voice from the one that was installed in you.\n\n_GUSTO_ performs this work noisily. The title track has been described as a collision between Queens of the Stone Age, Nine Inch Nails, and The Prodigy — but that description only captures the texture. The content is stranger and more specific: a man demanding the right to take up space, to expand, to be ungovernable in his own body and imagination. _9-2-5_ takes the grammar of the labour anthem and warps it into something more destabilising. _DEMOLITION MAN_ is exactly what it sounds like.\n\n\"I like the term joyful expansion,\" Adamah said in 2025. \"Always acting out of your greatest desire or greatest joy. That's what I'm doing now.\"\n\n**Vodún and the Reclamation of Fear**\n\nPart of what makes Boko Yout's project distinctly post-colonial is its relationship to vodún — the spiritual tradition his Togolese father practiced. Adamah has spoken about fearing it as a child, shaped by the ambient Protestant culture of Örebro into suspicion of his own inheritance. That fear has given way to understanding and deliberate reclamation.\n\nThis is an old story, replayed in every diaspora: the child who grows into the parent's tradition after being taught to fear it. Colonialism's most effective tool was not the gun but the shame — the coding of African spiritual life as primitive, dangerous, backwards. The reclamation of vodún is therefore not merely spiritual. It is political. It is the refusal of that shame.\n\n**The Body as Stage**\n\nLive, Boko Yout is kinetic and generous. Adamah has described overcoming a deep fear of moving his body onstage — of taking up space physically. \"I used to be scared to move a certain way,\" he has said. \"As soon as I embraced that I was just me, this queer superstar, people started moshing and dancing naturally.\"\n\nThe body onstage is always political. For a Black queer artist performing in predominantly white European venues, to refuse to shrink — to mosh, to expand, to be ungovernable — is to enact the same politics that Boko Yout encodes in the music itself. It is the same politics the griot enacted, village to village, century to century: refusing to disappear.\n\n**Griot, Again**\n\nBoko Yout has received Newcomer of the Year nominations at the Swedish Grammis and Artist of the Future recognition at the P3 Guld Awards. These institutions are mainstream European music infrastructure — precisely the apparatus one might expect to misread what Boko Yout is doing.\n\nAnd yet visibility matters. Not because institutions validate art, but because visibility creates lineage. It ensures that the next child of Togo and Mozambique growing up in Örebro or Gothenburg or Rotterdam will be able to point at something and say: this is possible. This is what it can look like. The griot's role is not only to preserve the past. It is to name what the future might become.\n\n_GUSTO_ is, in the end, an album about exactly that: the possibility of becoming something you were told you couldn't be, in the exact register you were told to suppress.\n\nBoko Yout is the noise that makes that possible.",
-      "published_at": "2026-05-12T09:00:00Z"
+      "published_at": "2026-05-12T09:00:00Z",
+      "image_source": "https://freight.cargo.site/w/1000/i/Q3078341593366100281576928021983/screenshot-2017124206.jpg"
     },
     {
       "id": "a13",
@@ -1305,7 +1317,7 @@
       "year": 2017,
       "category": "essay",
       "reading_time": 6,
-      "image": "https://image.okayafrica.com/1208871.jpg?imageId=1208871&panox=0&panoy=0&panow=0&panoh=0&width=1200&height=683",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/a13-1787494049648.jpg",
       "summary": "Behind Mandela and Nkrumah stand generations of women, poets, prisoners, and organisers whose contributions were as decisive — and far less remembered. Seven pan-African figures worth learning by name.",
       "external_url": "https://www.okayafrica.com/7-underrated-african-heroes-you-should-know-about/140207",
       "source_url": "https://www.okayafrica.com/7-underrated-african-heroes-you-should-know-about/140207",
@@ -1330,7 +1342,8 @@
           "author": "Jacqueline Traoré",
           "note": "Original list & framing"
         }
-      ]
+      ],
+      "image_source": "https://image.okayafrica.com/1208871.jpg?imageId=1208871&panox=0&panoy=0&panow=0&panoh=0&width=1200&height=683"
     },
     {
       "id": "a14",
@@ -1339,7 +1352,7 @@
       "year": 2021,
       "category": "essay",
       "reading_time": 8,
-      "image": "https://panausug.org/wp-content/uploads/2021/09/Martin-Luther-King-h1.jpg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/a14-1787494049923.jpg",
       "summary": "A working roll-call from the Pan-African Unity Summit Group — twelve figures across the continent and the diaspora whose lives argue that the freedom of one Black nation is bound up with the freedom of all.",
       "external_url": "https://panausug.org/pan-african-heroes/",
       "source_url": "https://panausug.org/pan-african-heroes/",
@@ -1364,7 +1377,8 @@
           "author": "PANAUSUG",
           "note": "Original list & framing"
         }
-      ]
+      ],
+      "image_source": "https://panausug.org/wp-content/uploads/2021/09/Martin-Luther-King-h1.jpg"
     },
     {
       "id": "a15",
@@ -1373,7 +1387,7 @@
       "year": 2023,
       "category": "essay",
       "reading_time": 10,
-      "image": "https://irp.cdn-website.com//61f7de9d/dms3rep/multi/opt/mother-1920w.jpg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/a15-1787494050171.jpg",
       "summary": "Twenty-four figures whose lives turned on refusing to trade their beliefs for safety — from Mandela and Sankara to Amina of Zazzau, Njinga, Mansa Musa, Fela, and Chimamanda. A roll-call adapted from AfroBiz Africa.",
       "external_url": "https://www.afrobiz.africa/24-african-heroes-who-stood-by-their-beliefs",
       "source_url": "https://www.afrobiz.africa/24-african-heroes-who-stood-by-their-beliefs",
@@ -1397,7 +1411,8 @@
           "publisher": "AfroBiz Africa",
           "note": "Original roll-call of names + framing"
         }
-      ]
+      ],
+      "image_source": "https://irp.cdn-website.com//61f7de9d/dms3rep/multi/opt/mother-1920w.jpg"
     },
     {
       "id": "a16",
@@ -1406,7 +1421,7 @@
       "year": 2016,
       "category": "essay",
       "reading_time": 3,
-      "image": "https://samilhistory.com/wp-content/uploads/2016/10/11999061_497281893774881_5625917834720283033_n.jpg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/a16-1787494050528.jpg",
       "summary": "Corporal William Cloete of the Cape Coloured Corps won the Military Medal for carrying ten wounded comrades out of German fire in the Italian campaign, then was blinded by a sniper at 24. He spent the rest of his life as a basket-maker in Bellville and died in 1993 — barely mentioned in South African military histories.",
       "external_url": "https://samilhistory.com/2016/10/31/an-unsung-south-african-hero-cpl-w-cloete/",
       "source_url": "https://samilhistory.com/2016/10/31/an-unsung-south-african-hero-cpl-w-cloete/",
@@ -1430,7 +1445,8 @@
           "publisher": "SAMIL History",
           "note": "Primary source"
         }
-      ]
+      ],
+      "image_source": "https://samilhistory.com/wp-content/uploads/2016/10/11999061_497281893774881_5625917834720283033_n.jpg"
     },
     {
       "id": "a17",
@@ -1515,7 +1531,7 @@
       "year": 2023,
       "category": "profile",
       "reading_time": 5,
-      "image": "https://f4.bcbits.com/img/0023659231_20.jpg",
+      "image": "https://ptz5lwxtfjcunuul.public.blob.vercel-storage.com/article-hero/a18-1787494050810.jpg",
       "summary": "Nashville guitarist Sydney Lyndella Ward — Sunny War — navigates a binary as old as Black American music itself, blending gospel with blues, country and rock n' roll. Bandcamp Daily's John Morrison called Anarchist Gospel a significant statement — proof that emotional, political and spiritual wholeness is still available if you're willing to work for it.",
       "external_url": "https://daily.bandcamp.com/album-of-the-day/sunny-war-anarchist-gospel-review",
       "source_url": "https://daily.bandcamp.com/album-of-the-day/sunny-war-anarchist-gospel-review",
@@ -1562,7 +1578,8 @@
           "publisher": "Bandcamp",
           "note": "Artist page + album stream"
         }
-      ]
+      ],
+      "image_source": "https://f4.bcbits.com/img/0023659231_20.jpg"
     }
   ],
   "events": [

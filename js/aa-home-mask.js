@@ -144,12 +144,24 @@
         }
       }
       const cmsSlides = Array.isArray(cms?.slides) ? cms.slides : [];
-      slides = cmsSlides.length ? interleaveA(cmsSlides, aFreq) : [BIG_A_SLIDE];
+      // Shuffle so the hero rotation feels fresh on every visit —
+      // admin's list ORDER in the CMS becomes just a curation, not a
+      // playback sequence. Big-A still injected every N slides.
+      slides = cmsSlides.length ? interleaveA(shuffle(cmsSlides.slice()), aFreq) : [BIG_A_SLIDE];
     } catch {
       slides = [BIG_A_SLIDE];
     }
     if (cmsCss) applyCss(cmsCss);
     repaint();
+  }
+
+  // Fisher-Yates in place, returns the same array for chaining.
+  function shuffle (a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 
   // Inject BIG_A_SLIDE every `n` slides. n=6 → A, X, X, X, X, X, A, X, X ...

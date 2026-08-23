@@ -572,8 +572,9 @@
           </label>
         </div>
         <div style="margin-top:10px;display:flex;gap:8px">
-          <button class="btn" data-hero-css-save>Save CSS</button>
+          <button class="btn" data-hero-css-save title="Save immediately (also auto-saves 700ms after your last edit)">Save now</button>
           <button class="btn ghost" data-hero-css-reset>Reset defaults</button>
+          <span class="aa-cms-status" data-hero-cms-status></span>
         </div>
       </div>
 
@@ -596,7 +597,10 @@
             Show africa outline stroke
           </label>
         </div>
-        <div style="margin-top:10px"><button class="btn" data-hero-al-save>Save app logo</button></div>
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+          <button class="btn" data-hero-al-save title="Save immediately (also auto-saves 700ms after your last edit)">Save now</button>
+          <span style="color:var(--fg-dim);font-size:.72rem">Auto-saves as you edit — status pill above</span>
+        </div>
       </div>
 
       <div class="panel" style="margin-top:14px">
@@ -704,16 +708,39 @@
     });
     root.querySelector('[data-hero-reload]').addEventListener('click', () => render(root));
 
+    // Autosave: any change to css/appLogo state schedules a save 700ms
+    // after the last edit. A small status pill next to the Save button
+    // shows 'Saving…' / 'Saved ✓' / 'Failed'. Manual Save button still
+    // works and cancels the pending debounce (immediate save).
+    let saveTimer = null;
+    function status (msg, cls) {
+      const el = root.querySelector('[data-hero-cms-status]');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'aa-cms-status' + (cls ? ' ' + cls : '');
+    }
+    async function autosave () {
+      status('Saving…', 'busy');
+      const r = await save();
+      if (r.ok) { status('Saved ✓', 'ok'); paintPreview(root); }
+      else      { status('Save failed: ' + (r.error || 'unknown'), 'err'); }
+      setTimeout(() => { if (root.querySelector('.aa-cms-status.ok')) status('', ''); }, 2200);
+    }
+    function scheduleSave () {
+      if (saveTimer) clearTimeout(saveTimer);
+      status('Editing…', 'dirty');
+      saveTimer = setTimeout(() => { saveTimer = null; autosave(); }, 700);
+    }
+    // Expose for other blocks (app-logo, add-slide) to reuse.
+    root.__aaScheduleSave = scheduleSave;
+    root.__aaAutosaveNow  = () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; } return autosave(); };
+
     // ---- CSS sliders + companion number inputs ----
-    // Slider drives the state on 'input'; number input drives it on both
-    // 'input' and 'change' (change fires when the user commits a typed
-    // value with Enter/blur, catches the case where the value equals the
-    // current one but was invalid mid-typing). Both directions repaint
-    // via paintCssLabels which keeps the OTHER control in sync.
     root.querySelectorAll('[data-hero-css]').forEach(input => {
       input.addEventListener('input', () => {
         css[input.dataset.heroCss] = Number(input.value);
         paintCssLabels(root);
+        scheduleSave();
       });
     });
     root.querySelectorAll('[data-hero-css-num]').forEach(num => {
@@ -726,28 +753,25 @@
         if (Number.isFinite(max)) v = Math.min(max, v);
         css[key] = v;
         paintCssLabels(root);
+        scheduleSave();
       };
       num.addEventListener('input', commit);
       num.addEventListener('change', commit);
     });
-    root.querySelector('[data-hero-css-save]').addEventListener('click', async () => {
-      const r = await save();
-      if (!r.ok) alert('Save failed: ' + r.error);
-      paintPreview(root);
-    });
+    root.querySelector('[data-hero-css-save]').addEventListener('click', () => root.__aaAutosaveNow?.());
     root.querySelector('[data-hero-css-reset]').addEventListener('click', async () => {
       css = defaultCss();
       paintCss(root);
-      await save();
-      paintPreview(root);
+      await root.__aaAutosaveNow?.();
     });
 
-    // ---- App-logo sliders + companion number inputs ----
+    // ---- App-logo sliders + companion number inputs (autosaved too) ----
     root.querySelectorAll('[data-hero-al]').forEach(input => {
       input.addEventListener('input', () => {
         const key = input.dataset.heroAl;
         appLogo[key] = input.type === 'checkbox' ? input.checked : Number(input.value);
         paintAlLabels(root);
+        root.__aaScheduleSave?.();
       });
     });
     root.querySelectorAll('[data-hero-al-num]').forEach(num => {
@@ -760,15 +784,12 @@
         if (Number.isFinite(max)) v = Math.min(max, v);
         appLogo[key] = v;
         paintAlLabels(root);
+        root.__aaScheduleSave?.();
       };
       num.addEventListener('input', commit);
       num.addEventListener('change', commit);
     });
-    root.querySelector('[data-hero-al-save]').addEventListener('click', async () => {
-      const r = await save();
-      if (!r.ok) alert('Save failed: ' + r.error);
-      paintPreview(root);
-    });
+    root.querySelector('[data-hero-al-save]').addEventListener('click', () => root.__aaAutosaveNow?.());
     // ---- App-logo add-slide form + upload ----
     const alAdd = root.querySelector('[data-hero-al-add]');
     const alFileInput = root.querySelector('[data-hero-al-file]');

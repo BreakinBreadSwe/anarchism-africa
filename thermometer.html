@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>FairPlay Thermometer · ANARCHISM.AFRICA</title>
+  <meta name="description" content="The FairPlay Thermometer — read the planetary and social heat of any football event, from a World Cup final to a Sunday youth match." />
+  <meta property="og:title" content="FairPlay Thermometer" />
+  <meta property="og:description" content="Read the heat of any football event — World Cup to grassroots. A FairPlay tool." />
+  <meta property="og:image" content="/icons/AAlogo1.svg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .tm-wrap { display:grid; grid-template-columns: 1fr; gap:16px; max-width:980px; margin:0 auto; }
+    @media (min-width:780px){ .tm-wrap { grid-template-columns: 320px 1fr; align-items:start; } }
+    .tm-gauge { display:flex; gap:18px; align-items:center; }
+    .tm-tube { width:46px; height:240px; border-radius:99px; background:var(--bg); border:1px solid var(--line); position:relative; overflow:hidden; flex:none; }
+    .tm-tube i { position:absolute; left:0; right:0; bottom:0; height:40%; transition:height .35s ease, background .35s ease; }
+    .tm-temp { font-family:'Bebas Neue',sans-serif; font-size:4.4rem; line-height:.9; }
+    .tm-verdict { color:var(--fg-dim); margin:.4rem 0 0; max-width:34ch; }
+    .tm-field { display:grid; gap:5px; margin-bottom:12px; }
+    .tm-field span { font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+    .tm-field input, .tm-field select { padding:9px 13px; border:1px solid var(--line); background:var(--bg); color:var(--fg); border-radius:12px; font:inherit; }
+    .tm-mix { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+    .tm-mix label { display:grid; gap:3px; }
+    .tm-mix span { font-size:.62rem; }
+    .tm-dials { display:grid; gap:10px; margin-top:6px; }
+    .tm-dial { display:grid; gap:4px; }
+    .tm-dial-head { display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:.72rem; }
+    .tm-dial-track { height:10px; border-radius:99px; background:var(--bg); border:1px solid var(--line); overflow:hidden; }
+    .tm-dial-fill { height:100%; width:0; transition:width .35s ease, background .35s ease; }
+    .tm-checks { display:flex; flex-wrap:wrap; gap:12px; margin-top:4px; }
+    .tm-checks label { display:flex; gap:7px; align-items:center; font-size:.82rem; color:var(--fg-dim); }
+    .tm-presets { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px; }
+    .tm-warn { color:#e6553b; font-family:'JetBrains Mono',monospace; font-size:.7rem; min-height:1em; }
+    .tm-num { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--fg-dim); }
+  </style>
+</head>
+<body class="has-rail" data-role="public">
+
+<header class="topbar">
+  <a class="brand" href="index.html" style="flex:1;min-width:0">
+    <span class="logoword"><span class="word">FAIRPLAY<span class="dot">·</span>THERMOMETER</span></span>
+  </a>
+  <a class="btn primary" href="index.html">Public site</a>
+</header>
+
+<main style="padding:22px var(--content-pad-x);width:100%;max-width:100%;box-sizing:border-box">
+  <div class="panel" style="max-width:980px;margin:0 auto 14px">
+    <h1 style="margin:0 0 6px;font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.01em">The FairPlay Thermometer</h1>
+    <p style="color:var(--fg-dim);max-width:70ch;margin:0">Read the planetary and social <em>heat</em> of any football event — a World Cup final or a Sunday youth match. Same instrument, any caliber, because every score is <strong>per attendee</strong>. Pick a preset or enter your own match. <span class="tm-num">v0 — figures are benchmark estimates; see the spec.</span></p>
+  </div>
+
+  <div id="tm-root" class="tm-wrap">
+
+    <!-- LEFT: the reading -->
+    <section class="panel">
+      <div class="tm-gauge">
+        <div class="tm-tube"><i id="tm-mercury"></i></div>
+        <div>
+          <div id="tm-temp" class="tm-temp">–</div>
+          <div class="tm-num" id="tm-kg">–</div>
+          <div class="tm-num" id="tm-total">–</div>
+        </div>
+      </div>
+      <p id="tm-verdict" class="tm-verdict"></p>
+      <p id="tm-lever" class="tm-num" style="margin:.2rem 0 14px"></p>
+
+      <div class="tm-dials">
+        <div class="tm-dial" id="tm-dial-planet"><div class="tm-dial-head"><span>Planet · carbon</span><span class="tm-dial-val">0</span></div><div class="tm-dial-track"><i class="tm-dial-fill"></i></div></div>
+        <div class="tm-dial" id="tm-dial-transport"><div class="tm-dial-head"><span>Transport · fan travel</span><span class="tm-dial-val">0</span></div><div class="tm-dial-track"><i class="tm-dial-fill"></i></div></div>
+        <div class="tm-dial" id="tm-dial-youth"><div class="tm-dial-head"><span>Youth & health</span><span class="tm-dial-val">0</span></div><div class="tm-dial-track"><i class="tm-dial-fill"></i></div></div>
+        <div class="tm-dial" id="tm-dial-society"><div class="tm-dial-head"><span>Society</span><span class="tm-dial-val">0</span></div><div class="tm-dial-track"><i class="tm-dial-fill"></i></div></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: the inputs -->
+    <section class="panel">
+      <div class="tm-presets">
+        <button class="btn" data-preset="grassroots">Sunday youth match</button>
+        <button class="btn" data-preset="league">National league</button>
+        <button class="btn" data-preset="worldcup">World Cup match</button>
+      </div>
+
+      <div class="tm-field"><span>Attendance</span><input id="tm-attendance" type="number" min="0" value="20000" /></div>
+      <div class="tm-field"><span>Avg one-way travel distance (km)</span><input id="tm-distance" type="number" min="0" value="30" /></div>
+
+      <span class="tm-field" style="margin-bottom:4px"><span>Transport mode mix (% — should total 100)</span></span>
+      <div class="tm-mix">
+        <label><span>Walk / cycle</span><input id="tm-mix-walk" type="number" min="0" max="100" value="5" /></label>
+        <label><span>Car</span><input id="tm-mix-car" type="number" min="0" max="100" value="45" /></label>
+        <label><span>Bus</span><input id="tm-mix-bus" type="number" min="0" max="100" value="20" /></label>
+        <label><span>Coach</span><input id="tm-mix-coach" type="number" min="0" max="100" value="5" /></label>
+        <label><span>National rail</span><input id="tm-mix-natRail" type="number" min="0" max="100" value="25" /></label>
+        <label><span>Intl rail</span><input id="tm-mix-intlRail" type="number" min="0" max="100" value="0" /></label>
+        <label><span>Flight</span><input id="tm-mix-flight" type="number" min="0" max="100" value="0" /></label>
+      </div>
+      <p id="tm-mixwarn" class="tm-warn"></p>
+
+      <div class="tm-field"><span>Gambling-ad density</span>
+        <select id="tm-gambling"><option value="none">None</option><option value="light">Light</option><option value="moderate">Moderate</option><option value="heavy" selected>Heavy</option></select>
+      </div>
+      <div class="tm-field"><span>Alcohol ads (% of broadcast)</span><input id="tm-alcohol" type="number" min="0" max="100" value="8" /></div>
+      <div class="tm-field"><span>Crowd under 18 (%)</span><input id="tm-youth" type="number" min="0" max="100" value="15" /></div>
+
+      <div class="tm-checks">
+        <label><input id="tm-newbuild" type="checkbox" /> New-build venue</label>
+        <label><input id="tm-vendors" type="checkbox" checked /> Local vendors allowed</label>
+        <label><input id="tm-accessible" type="checkbox" /> Accessible pricing</label>
+        <label><input id="tm-grassroots" type="checkbox" /> Grassroots participation</label>
+      </div>
+    </section>
+  </div>
+
+  <p style="max-width:980px;margin:16px auto 0;color:var(--muted);font-size:.72rem" class="mono">
+    Method: per-attendee travel carbon (DEFRA-style factors) + three social dials. Calibrated on UEFA EURO 2024 (audited) and peer-reviewed per-spectator benchmarks. A FairPlay tool · <a href="https://fairplayfoot.com" style="color:inherit">fairplayfoot.com</a>. Full spec: docs/SPEC-fairplay-thermometer.md.
+  </p>
+</main>
+
+<footer class="footer">
+  <p class="mono" style="margin:0;color:var(--muted);font-size:.7rem;text-align:center">ANARCHISM.AFRICA — built by <a href="https://luvlab.io" style="color:inherit">LUVLAB</a> · <a href="https://fairplayfoot.com" style="color:inherit">FairPlay</a></p>
+</footer>
+
+<script src="js/thermometer.js"></script>
+</body>
+</html>

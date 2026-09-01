@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <g id="mark">
+    <rect width="48" height="48" rx="11" fill="#0c0a08"/>
+    <!-- loaf of bread -->
+    <path d="M11 27c0-6.6 5.6-11 13-11s13 4.4 13 11v6.5c0 1.4-1.1 2.5-2.5 2.5h-21A2.5 2.5 0 0 1 11 33.5z"
+          fill="#e9a93c"/>
+    <path d="M11 27c0-6.6 5.6-11 13-11s13 4.4 13 11" fill="none" stroke="#f0b84a" stroke-width="2.2"/>
+    <!-- score lines (the 'break') -->
+    <path d="M18.5 17.5 16 24M24 16v8.5M29.5 17.5 32 24" stroke="#0c0a08" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+    <!-- play triangle (cinema) -->
+    <path d="M21.5 26.5 30 31l-8.5 4.5z" fill="#e0533d"/>
+  </g>
+</svg>

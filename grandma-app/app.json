@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Grandma",
+    "slug": "grandma",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "scheme": "grandma",
+    "backgroundColor": "#FDF8F2",
+    "primaryColor": "#8C5A3C",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FDF8F2"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "io.luvlab.grandma"
+    },
+    "android": {
+      "package": "io.luvlab.grandma",
+      "edgeToEdgeEnabled": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FDF8F2"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

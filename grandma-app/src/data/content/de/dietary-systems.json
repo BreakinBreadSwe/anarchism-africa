@@ -1,0 +1,153 @@
+{
+  "category": "dietarySystems",
+  "remedies": [
+    {
+      "id": "mediterranean-pattern",
+      "title": "Die mediterrane Tischtradition",
+      "ailments": ["Unterstützung der Herzgesundheit", "allgemeines Wohlbefinden", "Langlebigkeit"],
+      "ingredients": [
+        { "name": "Olivenöl", "quantity": "als Hauptfett" },
+        { "name": "Gemüse und Hülsenfrüchte", "quantity": "zu den meisten Mahlzeiten" },
+        { "name": "Vollkorngetreide" },
+        { "name": "Fisch", "quantity": "2-mal pro Woche oder öfter" },
+        { "name": "Obst und Nüsse", "quantity": "als tägliche Zwischenmahlzeit" }
+      ],
+      "instructions": [
+        "Mit Olivenöl statt mit Butter oder harten Fetten kochen.",
+        "Mahlzeiten um Gemüse, Bohnen und Vollkorn herum aufbauen, Fleisch als Beilage statt als Mittelpunkt.",
+        "Ein paarmal pro Woche Fisch essen; rotes Fleisch bleibt die Ausnahme.",
+        "Mahlzeiten mit Obst statt mit Süßem abschließen.",
+        "Wenn möglich in Gesellschaft essen — der geteilte Tisch gehört zur Tradition."
+      ],
+      "region": "Mediterranean",
+      "origin": "Das alltägliche Essverhalten Kretas, Süditaliens und der spanischen Küste, wie es Mitte des 20. Jahrhunderts dokumentiert wurde.",
+      "disclaimer": "Ein Ernährungsmuster, keine Behandlung. Bei Vorerkrankungen mit Arzt oder Ernährungsberatung anpassen."
+    },
+    {
+      "id": "fermented-foods",
+      "title": "Täglich fermentierte Lebensmittel",
+      "ailments": ["Verdauungskomfort", "Unterstützung der Darmgesundheit"],
+      "ingredients": [
+        { "name": "Joghurt, Kefir oder Laban mit lebenden Kulturen" },
+        { "name": "fermentiertes Gemüse (Sauerkraut, Kimchi, Torshi)" },
+        { "name": "fermentiertes Getreide (Ogi, Injera, Sauerteig)" }
+      ],
+      "instructions": [
+        "Jeden Tag eine kleine Portion eines fermentierten Lebensmittels zu einer Mahlzeit geben.",
+        "Über die Woche zwischen Milch-, Gemüse- und Getreidefermenten abwechseln.",
+        "Wo es sicher und verfügbar ist, rohe, nicht pasteurisierte Fermente wählen — Hitze tötet die lebenden Kulturen ab.",
+        "Langsam einführen, wenn Sie sie nicht gewohnt sind."
+      ],
+      "region": "Global",
+      "origin": "Fast jede Esskultur kennt ein Ferment: Kimchi in Korea, Sauerkraut in Mitteleuropa, Ogi in Nigeria, Laban in der Levante.",
+      "disclaimer": "Menschen mit geschwächtem Immunsystem sollten vor dem Verzehr nicht pasteurisierter Fermente ärztlichen Rat einholen."
+    },
+    {
+      "id": "bitter-greens",
+      "title": "Bitteres Grün vor dem Essen",
+      "ailments": ["träge Verdauung", "wenig Appetit"],
+      "ingredients": [
+        { "name": "bittere Blätter (Rucola, Löwenzahn, Endivie oder gut zubereitetes afrikanisches Bitterblatt)", "quantity": "eine kleine Handvoll" },
+        { "name": "Olivenöl und Zitrone", "quantity": "ein Spritzer" }
+      ],
+      "instructions": [
+        "Die Hauptmahlzeit mit einem kleinen Salat aus bitteren Blättern beginnen, nur mit Öl und Zitrone angemacht.",
+        "Langsam kauen — der bittere Geschmack selbst regt die Verdauungssäfte an.",
+        "Machen Sie es zur Gewohnheit bei Ihrer größten Mahlzeit des Tages."
+      ],
+      "region": "West Africa",
+      "origin": "Vom italienischen Amaro bis zur nigerianischen Bitterblattsuppe: Viele Traditionen öffnen die Verdauung mit Bitterkeit.",
+      "disclaimer": "Wildkräuter müssen zweifelsfrei bestimmt werden; im Zweifel Marktware verwenden."
+    },
+    {
+      "id": "eat-the-rainbow",
+      "title": "Der Regenbogen-Teller",
+      "ailments": ["Energiemangel", "allgemeines Wohlbefinden", "Unterstützung der Abwehrkräfte"],
+      "ingredients": [
+        { "name": "Gemüse und Obst in mindestens 4 verschiedenen Farben", "quantity": "täglich" }
+      ],
+      "instructions": [
+        "Schauen Sie bei jeder Hauptmahlzeit auf den Teller und zählen Sie die natürlichen Farben.",
+        "Streben Sie über den Tag vier oder mehr Farben an: Blattgrün, Rot/Orange, Violett/Blau, Weiß/Gelb.",
+        "Kaufen Sie saisonal ein — auf traditionellen Märkten folgt die Farbvielfalt den Jahreszeiten."
+      ],
+      "region": "Global",
+      "origin": "Eine moderne Formulierung eines alten Markttag-Instinkts: Ein bunter Korb ist ein nährender Korb.",
+      "disclaimer": "Allgemeine Orientierung, kein Behandlungsplan."
+    },
+    {
+      "id": "okinawan-hara-hachi-bu",
+      "title": "Hara Hachi Bu — bis acht Zehntel essen",
+      "ailments": ["zu viel essen", "Unterstützung beim Gewicht", "Verdauungskomfort"],
+      "ingredients": [
+        { "name": "kleinere Schalen und Teller" },
+        { "name": "Gemüse, Süßkartoffel, Tofu und Suppe", "quantity": "der Hauptteil der Mahlzeit" }
+      ],
+      "instructions": [
+        "In kleine Schalen statt auf einen großen Teller anrichten und nicht automatisch nachfüllen.",
+        "Langsam essen und das Besteck zwischen den Bissen ablegen.",
+        "Aufhören, wenn Sie sich zu etwa achtzig Prozent satt fühlen — angenehm, nicht vollgestopft.",
+        "Zwanzig Minuten warten, bevor Sie entscheiden, dass Sie mehr wollen; das Sättigungsgefühl kommt verzögert."
+      ],
+      "region": "East Asia",
+      "origin": "Eine konfuzianisch geprägte Formel, die auf Okinawa vor dem Essen gesprochen wird und als Teil einer ungewöhnlich langlebigen Esskultur gilt.",
+      "disclaimer": "Nicht geeignet für Kinder, Schwangere, untergewichtige Personen oder Menschen mit Essstörungen in der Vorgeschichte."
+    },
+    {
+      "id": "ayurvedic-six-tastes",
+      "title": "Die sechs Geschmacksrichtungen bei jeder Mahlzeit",
+      "ailments": ["Heißhunger", "wenig Appetit", "Verdauungsgleichgewicht"],
+      "ingredients": [
+        { "name": "süß (Getreide, Wurzelgemüse, Milch)" },
+        { "name": "sauer (Zitrone, Joghurt, Tamarinde)" },
+        { "name": "salzig (Salz, Algen)" },
+        { "name": "scharf (Ingwer, Chili, Pfeffer)" },
+        { "name": "bitter (Blattgemüse, Kurkuma, Bockshornklee)" },
+        { "name": "zusammenziehend (Linsen, Bohnen, Granatapfel)" }
+      ],
+      "instructions": [
+        "Versuchen Sie, in einer Hauptmahlzeit etwas aus jeder der sechs Geschmacksrichtungen unterzubringen: ein Spritzer Zitrone, eine Prise Salz, ein bitteres Blatt, ein gewürztes Dal.",
+        "Traditionell beginnt die Mahlzeit süß und endet mit den leichteren, zusammenziehenden Geschmacksrichtungen.",
+        "Achten Sie darauf, welche Geschmacksrichtungen Sie gewohnheitsmäßig auslassen — meist sind es die, auf die der Heißhunger zeigt."
+      ],
+      "region": "South Asia",
+      "origin": "Die Shadrasa des klassischen Ayurveda, bis heute das Ordnungsprinzip eines traditionellen indischen Thali.",
+      "disclaimer": "Ein Rahmen zum Zusammenstellen von Mahlzeiten, keine Behandlung irgendeiner Erkrankung."
+    },
+    {
+      "id": "hydration-with-food",
+      "title": "Um die Mahlzeit herum trinken, nicht währenddessen",
+      "ailments": ["Blähungen", "Verdauungsbeschwerden", "Sodbrennen"],
+      "ingredients": [
+        { "name": "Wasser", "quantity": "ein Glas 30 Min. vor dem Essen" },
+        { "name": "warmer Kräutertee", "quantity": "nach der Mahlzeit" }
+      ],
+      "instructions": [
+        "Trinken Sie etwa eine halbe Stunde vor der Mahlzeit ein volles Glas Wasser.",
+        "Nehmen Sie zum Essen selbst nur kleine Mengen zu sich.",
+        "Warten Sie, bis sich die Mahlzeit gesetzt hat, und schließen Sie mit warmem Kräutertee statt einem kalten Getränk ab.",
+        "Kaltes Wasser gehört zwischen die Mahlzeiten, nicht auf den Tisch."
+      ],
+      "region": "South Asia",
+      "origin": "Gängige Praxis in ayurvedischen wie mediterranen Haushalten, wo kalte Getränke am Tisch als verdauungshemmend gelten.",
+      "disclaimer": "Wenn Sie Medikamente zu den Mahlzeiten einnehmen, nehmen Sie diese weiterhin wie ärztlich verordnet ein."
+    },
+    {
+      "id": "seasonal-eating",
+      "title": "Mit der Jahreszeit essen",
+      "ailments": ["allgemeines Wohlbefinden", "Energiemangel", "Jahreszeitenwechsel"],
+      "ingredients": [
+        { "name": "wovon der lokale Markt in dieser Woche am meisten und am günstigsten hat" }
+      ],
+      "instructions": [
+        "Kaufen Sie das Erzeugnis, das am höchsten gestapelt und am günstigsten ist — das hat gerade lokal Saison.",
+        "Setzen Sie in den heißen Monaten auf kühlende, wasserreiche Lebensmittel und in den kalten auf langsam Gegartes, Wärmendes.",
+        "Bewahren Sie etwas von einem Überfluss auf — trocknen, fermentieren oder einfrieren —, wie es ein Haushalt ohne Supermarkt täte.",
+        "Lassen Sie den Teller sich viermal im Jahr verändern, statt gleich zu bleiben."
+      ],
+      "region": "Global",
+      "origin": "Weniger eine Diät als der Normalzustand des Essens vor dem ganzjährigen Warentransport — bis heute das Rückgrat des japanischen Shun und der mediterranen Marktküche.",
+      "disclaimer": "Allgemeine Orientierung. Der Nährstoffbedarf in Schwangerschaft oder Krankheit folgt nicht unbedingt der Jahreszeit."
+    }
+  ]
+}

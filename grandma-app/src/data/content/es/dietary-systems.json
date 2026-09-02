@@ -1,0 +1,153 @@
+{
+  "category": "dietarySystems",
+  "remedies": [
+    {
+      "id": "mediterranean-pattern",
+      "title": "La mesa mediterránea",
+      "ailments": ["apoyo cardiovascular", "bienestar general", "longevidad"],
+      "ingredients": [
+        { "name": "aceite de oliva", "quantity": "como grasa principal" },
+        { "name": "verduras y legumbres", "quantity": "en casi todas las comidas" },
+        { "name": "cereales integrales" },
+        { "name": "pescado", "quantity": "2 o más veces por semana" },
+        { "name": "fruta y frutos secos", "quantity": "como tentempié diario" }
+      ],
+      "instructions": [
+        "Cocina con aceite de oliva en lugar de mantequilla o grasas duras.",
+        "Construye las comidas en torno a verduras, legumbres y cereales integrales, con la carne como acompañamiento y no como centro.",
+        "Come pescado un par de veces por semana; deja la carne roja para ocasiones puntuales.",
+        "Termina las comidas con fruta en lugar de dulces.",
+        "Come acompañado cuando puedas: la mesa compartida es parte de la tradición."
+      ],
+      "region": "Mediterranean",
+      "origin": "El patrón alimentario cotidiano de Creta, el sur de Italia y la costa española documentado a mediados del siglo XX.",
+      "disclaimer": "Es un patrón alimentario, no un tratamiento. Adáptalo con un médico o dietista si tienes alguna afección."
+    },
+    {
+      "id": "fermented-foods",
+      "title": "Fermentados a diario",
+      "ailments": ["confort digestivo", "apoyo a la salud intestinal"],
+      "ingredients": [
+        { "name": "yogur, kéfir o laban con cultivos vivos" },
+        { "name": "verduras fermentadas (chucrut, kimchi, torshi)" },
+        { "name": "cereales fermentados (ogi, injera, masa madre)" }
+      ],
+      "instructions": [
+        "Añade una ración pequeña de algún fermentado a una comida cada día.",
+        "Alterna entre fermentados lácteos, vegetales y de cereal a lo largo de la semana.",
+        "Elige fermentados crudos y sin pasteurizar cuando sea seguro: el calor mata los cultivos vivos.",
+        "Introdúcelos poco a poco si no estás acostumbrado."
+      ],
+      "region": "Global",
+      "origin": "Casi toda cultura alimentaria guarda un fermentado: kimchi en Corea, chucrut en Europa central, ogi en Nigeria, laban en el Levante.",
+      "disclaimer": "Las personas inmunodeprimidas deben consultar a su médico antes de tomar fermentados sin pasteurizar."
+    },
+    {
+      "id": "bitter-greens",
+      "title": "Verduras amargas antes de comer",
+      "ailments": ["digestión lenta", "falta de apetito"],
+      "ingredients": [
+        { "name": "hojas amargas (rúcula, diente de león, endivia o bitterleaf africano bien preparado)", "quantity": "un puñado pequeño" },
+        { "name": "aceite de oliva y limón", "quantity": "un chorrito" }
+      ],
+      "instructions": [
+        "Empieza la comida principal con una ensalada pequeña de hojas amargas aliñada solo con aceite y limón.",
+        "Mastica despacio: el propio sabor amargo estimula los jugos digestivos.",
+        "Conviértelo en costumbre en tu comida más copiosa del día."
+      ],
+      "region": "West Africa",
+      "origin": "Del 'amaro' italiano a la sopa de bitterleaf nigeriana, muchas tradiciones abren la digestión con amargor.",
+      "disclaimer": "Las hojas silvestres deben identificarse con total seguridad; ante la duda, usa verduras de mercado."
+    },
+    {
+      "id": "eat-the-rainbow",
+      "title": "El plato del arcoíris",
+      "ailments": ["falta de energía", "bienestar general", "apoyo inmunitario"],
+      "ingredients": [
+        { "name": "verduras y frutas de al menos 4 colores distintos", "quantity": "a diario" }
+      ],
+      "instructions": [
+        "En cada comida principal, mira tu plato y cuenta los colores naturales.",
+        "Busca cuatro o más colores a lo largo del día: verde de hoja, rojo/naranja, morado/azul, blanco/amarillo.",
+        "Compra de temporada: la variedad de color sigue las estaciones en los mercados tradicionales."
+      ],
+      "region": "Global",
+      "origin": "Una formulación moderna de un viejo instinto de día de mercado: una cesta colorida es una cesta nutritiva.",
+      "disclaimer": "Orientación general, no un plan de tratamiento."
+    },
+    {
+      "id": "okinawan-hara-hachi-bu",
+      "title": "Hara hachi bu: comer hasta ocho partes",
+      "ailments": ["comer en exceso", "apoyo al control del peso", "confort digestivo"],
+      "ingredients": [
+        { "name": "cuencos y platos más pequeños" },
+        { "name": "verduras, boniato, tofu y sopa", "quantity": "el grueso de la comida" }
+      ],
+      "instructions": [
+        "Sirve en cuencos pequeños en vez de un plato grande, y no repitas de forma automática.",
+        "Come despacio y deja los cubiertos entre bocado y bocado.",
+        "Para cuando te sientas lleno en torno a un ochenta por ciento: cómodo, no repleto.",
+        "Espera veinte minutos antes de decidir que quieres más; la saciedad llega con retraso."
+      ],
+      "region": "East Asia",
+      "origin": "Una frase de raíz confuciana que se dice antes de comer en Okinawa, considerada parte de una cultura alimentaria excepcionalmente longeva.",
+      "disclaimer": "No es adecuado para niños, embarazadas, personas con bajo peso ni con antecedentes de trastornos alimentarios."
+    },
+    {
+      "id": "ayurvedic-six-tastes",
+      "title": "Los seis sabores en cada comida",
+      "ailments": ["antojos", "falta de apetito", "equilibrio digestivo"],
+      "ingredients": [
+        { "name": "dulce (cereales, tubérculos, leche)" },
+        { "name": "ácido (limón, yogur, tamarindo)" },
+        { "name": "salado (sal, algas)" },
+        { "name": "picante (jengibre, chile, pimienta)" },
+        { "name": "amargo (hojas verdes, cúrcuma, fenogreco)" },
+        { "name": "astringente (lentejas, alubias, granada)" }
+      ],
+      "instructions": [
+        "Intenta incluir algo de cada uno de los seis sabores en una comida principal: un chorro de limón, una pizca de sal, una hoja amarga, un dal especiado.",
+        "Tradicionalmente la comida se abre con lo dulce y termina con los sabores más ligeros y astringentes.",
+        "Fíjate en qué sabores sueles saltarte: suelen ser los que señalan tus antojos."
+      ],
+      "region": "South Asia",
+      "origin": "Los shadrasa del ayurveda clásico, aún la idea que organiza un thali indio tradicional.",
+      "disclaimer": "Un marco para componer comidas, no un tratamiento para ninguna afección."
+    },
+    {
+      "id": "hydration-with-food",
+      "title": "Beber alrededor de la comida, no durante",
+      "ailments": ["hinchazón", "indigestión", "reflujo"],
+      "ingredients": [
+        { "name": "agua", "quantity": "un vaso 30 min antes de comer" },
+        { "name": "infusión templada", "quantity": "después de la comida" }
+      ],
+      "instructions": [
+        "Bebe un vaso lleno de agua una media hora antes de la comida.",
+        "Toma solo pequeñas cantidades con la comida en sí.",
+        "Espera a que la comida asiente y termina con una infusión templada en vez de una bebida fría.",
+        "Deja el agua fría para entre comidas, no para la mesa."
+      ],
+      "region": "South Asia",
+      "origin": "Práctica común tanto en hogares ayurvédicos como mediterráneos, donde se cree que las bebidas frías apagan la digestión.",
+      "disclaimer": "Si tomas medicación con las comidas, sigue tomándola como te indicó tu médico."
+    },
+    {
+      "id": "seasonal-eating",
+      "title": "Comer con la estación",
+      "ailments": ["bienestar general", "falta de energía", "cambios de estación"],
+      "ingredients": [
+        { "name": "lo que el mercado local tenga en más cantidad y más barato esa semana" }
+      ],
+      "instructions": [
+        "Compra el producto que esté más apilado y más barato: eso es lo que está de temporada.",
+        "Apóyate en alimentos frescos y acuosos en los meses de calor, y en guisos que calientan en los de frío.",
+        "Conserva parte de un excedente —secándolo, fermentándolo o congelándolo— como haría una casa sin supermercado.",
+        "Deja que el plato cambie cuatro veces al año en lugar de quedarse idéntico."
+      ],
+      "region": "Global",
+      "origin": "Más que una dieta, la condición por defecto de comer antes del transporte de alimentos todo el año; sigue siendo la base del shun japonés y de la cocina de mercado mediterránea.",
+      "disclaimer": "Orientación general. Las necesidades nutricionales en el embarazo o la enfermedad pueden no seguir la estación."
+    }
+  ]
+}

@@ -48,15 +48,40 @@
     if (type === 'song') return Math.floor(d/60) + ':' + String(d%60).padStart(2,'0');
     return d + ' min';
   }
+  // Markdown-lite renderer for article bodies. Handles the subset the
+  // enrichment scraper emits: paragraphs, ## / ### headings, bulleted
+  // lists (- item), blockquotes (> line), bold **, italic _, and inline
+  // links. Deliberately no full markdown parser — the input is already
+  // sanitised HTML→markdown from our own extractor.
   function formatBody (body) {
-    return body.split(/\n\s*\n/).map(p => {
-      const html = escapeHTML(p)
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/_(.+?)_/g, '<em>$1</em>')
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, l, u) => /^https?:|^mailto:/.test(u) ? `<a href="${escapeHTML(u)}" target="_blank" rel="noopener">${escapeHTML(l)}</a>` : escapeHTML(l))
-        .replace(/\n/g, '<br>');
-      return `<p>${html}</p>`;
+    return body.split(/\n\s*\n/).map(block => {
+      const trimmed = block.trim();
+      if (!trimmed) return '';
+      // Headings — ## Foo / ### Foo (## default because scraper emits ## for h1)
+      const h = trimmed.match(/^(#{2,4})\s+(.+)$/s);
+      if (h) {
+        const level = Math.min(h[1].length, 4);
+        return `<h${level}>${inline(h[2].trim())}</h${level}>`;
+      }
+      // Blockquote — > line (multi-line ok)
+      if (trimmed.startsWith('>')) {
+        const inner = trimmed.split('\n').map(l => l.replace(/^>\s?/, '')).join('\n');
+        return `<blockquote>${inline(inner)}</blockquote>`;
+      }
+      // Bulleted list — every line starts with `- `
+      const lines = trimmed.split('\n');
+      if (lines.every(l => /^-\s+/.test(l.trim()))) {
+        return `<ul>${lines.map(l => `<li>${inline(l.replace(/^-\s+/, '').trim())}</li>`).join('')}</ul>`;
+      }
+      // Default: paragraph
+      return `<p>${inline(trimmed).replace(/\n/g, '<br>')}</p>`;
     }).join('');
+  }
+  function inline (s) {
+    return escapeHTML(s)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/_(.+?)_/g, '<em>$1</em>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, l, u) => /^https?:|^mailto:/.test(u) ? `<a href="${escapeHTML(u)}" target="_blank" rel="noopener">${escapeHTML(l)}</a>` : escapeHTML(l));
   }
 
   function fmtDate (it) {

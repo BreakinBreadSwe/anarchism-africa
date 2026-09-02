@@ -1711,6 +1711,12 @@
     // Studio view. Returns a Promise so the caller can await the flush
     // before painting the next tab.
     async autosaveAndClose () {
+      // Always release the overlay first — the router calls this when the
+      // admin clicks any OTHER rail item, and the .ms-overlay is fixed-
+      // positioned outside #view-studio so clearing that container alone
+      // leaves the overlay covering the new tab. User: 'close this window
+      // when clicking on other menu items.'
+      try { document.getElementById('ms-overlay')?.classList.remove('open'); } catch {}
       if (!state || !state.layers || !state.layers.length) return;
       try { await saveSession(); } catch {}
       stashLastSession();

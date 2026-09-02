@@ -16,6 +16,7 @@
  */
 const sb = require('../../lib/supabase');
 const { isPublicScheme } = require('../../lib/url-safety');
+const { relevance } = require('../../lib/relevance');
 
 function authed (req, allowCron = false) {
   const adminTok = (process.env.ADMIN_TOKEN || (process.env.ADMIN_TOKEN || process.env.AA_ADMIN_TOKEN));
@@ -66,6 +67,23 @@ module.exports = async function handler (req, res) {
       }
       if (item.source_url && !isPublicScheme(item.source_url)) {
         return res.status(400).json({ ok: false, error: 'item.source_url must be http(s)' });
+      }
+      // Topical relevance filter — every scraped item MUST relate to
+      // Africa, Pan-Africa, the African diaspora, afro-anarchism, or
+      // Africa-facing militant/artist practice. Off-topic items (e.g.
+      // Billy Bragg interviews about UK Labour, generic anarchist news
+      // from Nordic squats) are dropped BEFORE they land in the queue.
+      // Set SKIP_RELEVANCE_FILTER=1 in env to bypass (useful for
+      // one-off manual imports the admin has already vetted).
+      if (process.env.SKIP_RELEVANCE_FILTER !== '1') {
+        const rel = relevance(item);
+        if (!rel.isRelevant) {
+          return res.status(200).json({
+            ok: true, queued: 0, filtered: true,
+            reason: 'off-topic: ' + rel.reason,
+            title: String(item.title).slice(0, 120)
+          });
+        }
       }
       // Try insert; if duplicate URL hash, return deduped:true.
       try {

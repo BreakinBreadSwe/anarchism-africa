@@ -48,6 +48,10 @@
       try { window.MerchStudio?.autosaveAndClose?.(); } catch {}
       const view = document.getElementById('view-studio');
       if (view) view.innerHTML = '';   // release DOM + canvas refs
+      // Belt-and-braces: force-hide the fixed overlay in case autosaveAndClose
+      // fails (e.g. no layers → early return). Studio overlay lives OUTSIDE
+      // view-studio so clearing the view container doesn't unmount it.
+      try { document.getElementById('ms-overlay')?.classList.remove('open'); } catch {}
     }
     if (name !== 'studio') _lastTab = name;
     _currentTab = name;

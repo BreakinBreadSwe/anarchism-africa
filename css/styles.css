@@ -1279,6 +1279,48 @@ body.admin #view-settings .admin-grid select,
 body.admin #view-settings .admin-grid input,
 body.admin #view-settings .admin-grid textarea { max-width: 100%; box-sizing: border-box; }
 @media (min-width: 900px) { body.admin .admin-grid { grid-template-columns: 240px 1fr; } }
+
+/* Content view — two-column split (list left, edit/new forms right)
+   on desktop, with INDEPENDENT vertical scrolling per column so the
+   admin can browse a long list on the left while filling out the
+   composer on the right without one moving the other. Mobile keeps
+   the panels stacked. */
+body.admin #view-content .content-cols {
+  display: flex; flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+body.admin #view-content .content-list-col,
+body.admin #view-content .content-form-col {
+  display: flex; flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+@media (min-width: 1100px) {
+  /* Pin the Content view's second grid cell to the viewport height so
+     children with overflow-y:auto actually paginate instead of pushing
+     the whole page. --topbar-h ~ 56px; leave 24px bottom breathing room. */
+  body.admin #view-content { min-height: 0; }
+  body.admin #view-content .admin-grid {
+    max-height: calc(100vh - var(--topbar-h, 56px) - 24px);
+    align-items: stretch;
+  }
+  body.admin #view-content .admin-grid > aside.sidenav { overflow-y: auto; }
+  body.admin #view-content .content-cols {
+    flex-direction: row;
+    height: 100%;
+    gap: 16px;
+  }
+  body.admin #view-content .content-list-col,
+  body.admin #view-content .content-form-col {
+    flex: 1 1 0;
+    overflow-y: auto;
+    height: 100%;
+    padding-right: 4px;   /* scrollbar breathing room */
+  }
+  body.admin #view-content .content-list-col { flex: 1 1 46%; }
+  body.admin #view-content .content-form-col { flex: 1 1 54%; }
+}
 /* Pin admin topbar to exactly 56px so fixed overlays (top:56px) align flush */
 body.admin .topbar { height: 56px !important; min-height: 56px !important; max-height: 56px !important; overflow: hidden !important; }
 body.admin .sidenav { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; height: fit-content; position: sticky; top: 60px; }

@@ -147,7 +147,23 @@
         <button data-content="song">Music</button>
         <button data-content="book">Books</button>
       </aside>
-      <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="content-cols">
+        <!-- LEFT column — content listing (independent scroll) -->
+        <div class="content-list-col">
+          <div class="panel">
+            <div class="row-flex" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+              <h2 style="margin:0" id="content-title">Films</h2>
+              <button class="btn primary" id="content-new">+ New</button>
+            </div>
+            <table>
+              <thead><tr><th>Title</th><th>Meta</th><th>Status</th><th></th></tr></thead>
+              <tbody id="content-rows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT column — new / edit forms + research tools (independent scroll) -->
+        <div class="content-form-col">
         <!-- Research + ingest toolbar (above the list) -->
         <div class="panel">
           <h3 style="margin:0 0 4px">Ingest URLs</h3>
@@ -225,18 +241,8 @@
           </form>
         </div>
 
-        <!-- Existing list view -->
-        <div class="panel">
-          <div class="row-flex" style="justify-content:space-between;align-items:center;margin-bottom:14px">
-            <h2 style="margin:0" id="content-title">Films</h2>
-            <button class="btn primary" id="content-new">+ New</button>
-          </div>
-          <table>
-            <thead><tr><th>Title</th><th>Meta</th><th>Status</th><th></th></tr></thead>
-            <tbody id="content-rows"></tbody>
-          </table>
-        </div>
-      </div>
+        </div><!-- /content-form-col -->
+      </div><!-- /content-cols -->
     </div>
   </section>
 

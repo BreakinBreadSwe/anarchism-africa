@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>HOUSE LAB — sketch → 3D → budget → city pitch · ANARCHISM.AFRICA</title>
+  <meta name="description" content="Upload a hand-drawn house sketch and notes, get a 3D massing model, a line-item construction budget for Detroit (or any city), and a funding pitch to the city." />
+  <meta property="og:title" content="HOUSE LAB — sketch to 3D to city pitch" />
+  <meta property="og:description" content="Dad's sketches → 3D model → budget → pitch to Detroit. Mutual-aid home building tool." />
+  <meta property="og:image" content="https://anarchism.africa/icons/og-image.png" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/house-lab.css" />
+  <script type="importmap">
+    { "imports": { "three": "/lib/vendor/three/three.module.min.js" } }
+  </script>
+</head>
+<body>
+
+<header class="hl-topbar">
+  <a class="brand" href="index.html">ANARCHISM<span class="dot">.</span>AFRICA <span class="hl-tag">/ house lab</span></a>
+  <nav>
+    <span class="theme-toggle">
+      <button type="button" data-mode="dark" title="Dark">◐</button>
+      <button type="button" data-mode="light" title="Light">○</button>
+    </span>
+    <a href="index.html#community">← Community</a>
+  </nav>
+</header>
+
+<main class="hl-wrap">
+  <section class="hl-hero">
+    <h1>HOUSE <span>LAB</span></h1>
+    <p>Dad's sketches and notes go in. A 3D model, a line-item budget for Detroit (or any city) and a pitch to the housing department come out. Nothing here is a contractor quote — it is the thing you bring to the first meeting.</p>
+    <div class="hl-steps">
+      <a href="#s1">1 · Sketch & notes</a><a href="#s2">2 · Plan</a><a href="#s3">3 · 3D model</a><a href="#s4">4 · Budget</a><a href="#s5">5 · Pitch</a><a href="#s6">Save</a>
+    </div>
+  </section>
+
+  <div class="hl-grid">
+    <div>
+      <!-- 1 · SKETCH & NOTES -->
+      <section class="hl-panel" id="s1">
+        <h2><span class="n">1</span> Sketch & notes <span class="hint">photos of the drawing + what he wrote next to it</span></h2>
+        <label class="hl-drop" id="drop">
+          <input type="file" id="files" accept="image/*" multiple capture="environment" />
+          <strong>Tap to photograph or upload the sketch</strong><br /><span>PNG / JPG / WEBP · up to 4 images · drag &amp; drop works too</span>
+        </label>
+        <div class="hl-thumbs" id="thumbs"></div>
+        <div class="hl-field">
+          <label for="notes">Notes (one idea per line — the parser reads counts, rooms, sizes, porches, AC units, roof, stories)</label>
+          <textarea id="notes" placeholder="e.g. 3 bed 2 bath, 24x36, front porch 20x8, 2 car garage, hip roof">2 air conditioners back porch</textarea>
+        </div>
+        <div class="hl-row tight">
+          <div class="hl-field"><label for="units">Sketch units</label><select id="units"><option value="ft">feet</option><option value="m">metres</option></select></div>
+          <div class="hl-field"><label for="planName">Project name</label><input id="planName" value="Dad's house" /></div>
+        </div>
+        <div class="hl-inline">
+          <button class="hl-btn" id="btnParse">Read sketch → build plan</button>
+          <button class="hl-btn ghost" id="btnNotesOnly" title="Skip the AI and only use the notes parser">Notes only</button>
+        </div>
+        <div class="hl-status" id="parseStatus"></div>
+      </section>
+
+      <!-- 2 · PLAN -->
+      <section class="hl-panel" id="s2">
+        <h2><span class="n">2</span> Plan <span class="hint">edit anything — the model and budget follow</span></h2>
+        <div class="hl-chips" id="chips"></div>
+        <div class="hl-row tight">
+          <div class="hl-field"><label for="stories">Stories</label><input id="stories" type="number" min="1" max="4" step="1" /></div>
+          <div class="hl-field"><label for="wallH">Wall height (ft)</label><input id="wallH" type="number" min="7" max="14" step="0.5" /></div>
+          <div class="hl-field"><label for="roofType">Roof</label><select id="roofType"><option value="gable">gable</option><option value="hip">hip</option><option value="flat">flat</option><option value="shed">shed</option></select></div>
+          <div class="hl-field"><label for="roofPitch">Pitch (x / 12)</label><input id="roofPitch" type="number" min="0" max="12" step="1" /></div>
+        </div>
+        <h3>Rooms</h3>
+        <div class="hl-tablewrap"><table class="hl-table" id="roomsTable">
+          <thead><tr><th>Name</th><th>Type</th><th class="num">W ft</th><th class="num">D ft</th><th class="num">X</th><th class="num">Y</th><th>Lvl</th><th>Side</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <div class="hl-inline">
+          <button class="hl-btn sm ghost" id="btnAddRoom">+ Room</button>
+          <button class="hl-btn sm ghost" id="btnRelayout" title="Drop all coordinates and pack rooms again">Auto-layout</button>
+          <button class="hl-btn sm ghost" id="btnJson">JSON</button>
+        </div>
+        <h3>Air conditioning &amp; extras</h3>
+        <div class="hl-tablewrap"><table class="hl-table" id="acTable">
+          <thead><tr><th class="num">Count</th><th>Type</th><th>Where</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <div class="hl-inline">
+          <button class="hl-btn sm ghost" id="btnAddAc">+ AC unit</button>
+          <label class="hl-check"><input type="checkbox" id="fSolar" /> solar</label>
+          <label class="hl-check"><input type="checkbox" id="fBasement" /> basement</label>
+        </div>
+        <div class="hl-field hl-hidden" id="jsonWrap">
+          <label for="jsonBox">Plan JSON (paste to import, then "Apply")</label>
+          <textarea id="jsonBox" style="min-height:220px"></textarea>
+          <div class="hl-inline"><button class="hl-btn sm" id="btnApplyJson">Apply JSON</button><button class="hl-btn sm ghost" id="btnCopyJson">Copy</button></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="hl-sticky">
+      <!-- 3 · 3D -->
+      <section class="hl-panel" id="s3">
+        <h2><span class="n">3</span> 3D model <span class="hint">drag to orbit · scroll to zoom · right-drag to pan</span></h2>
+        <div class="hl-viewer" id="viewer">
+          <div class="hl-viewbar">
+            <button data-view="iso">3D</button><button data-view="top">Top</button><button data-view="front">Front</button><button data-view="back">Back</button>
+            <button id="btnRoof">Roof off</button><button id="btnLabels">Labels off</button>
+          </div>
+          <div class="hl-legend" id="legend">1 unit = 1 ft</div>
+        </div>
+        <div class="hl-inline hl-no-print">
+          <button class="hl-btn sm ghost" id="btnObj">Download .OBJ</button>
+          <button class="hl-btn sm ghost" id="btnPng">Download .PNG</button>
+          <span class="hl-fine">OBJ opens in SketchUp, Blender, FreeCAD, Fusion.</span>
+        </div>
+        <div class="hl-status" id="viewerStatus"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- 4 · BUDGET -->
+  <section class="hl-panel" id="s4">
+    <h2><span class="n">4</span> Budget <span class="hint">line items × city cost index · planning-grade, ±25%</span></h2>
+    <div class="hl-row">
+      <div class="hl-field"><label for="city">City</label><select id="city"></select></div>
+      <div class="hl-field" id="customCityWrap" style="display:none"><label for="customIndex">Custom cost index (1.00 = US avg)</label><input id="customIndex" type="number" step="0.01" min="0.3" max="3" value="1.00" /></div>
+      <div class="hl-field"><label for="quality">Finish level</label><select id="quality"><option value="basic">basic</option><option value="standard" selected>standard</option><option value="premium">premium</option></select></div>
+      <div class="hl-field"><label for="sweat">Family sweat equity: <b id="sweatLabel">30%</b> of labor</label><input id="sweat" type="range" min="0" max="60" step="5" value="30" /></div>
+      <div class="hl-field"><label for="equity">Owner cash + materials on hand (USD)</label><input id="equity" type="number" min="0" step="500" value="15000" /></div>
+      <div class="hl-field"><label for="land">Land cost (USD)</label><input id="land" type="number" min="0" step="500" value="1000" /></div>
+    </div>
+    <div class="hl-big" id="bigNumbers"></div>
+    <div class="hl-tablewrap"><table class="hl-table" id="budgetTable"><thead><tr><th>Line</th><th class="num">Qty</th><th>Unit</th><th class="num">Rate</th><th class="num">Cost</th></tr></thead><tbody></tbody></table></div>
+    <h3>Phasing (what a lender or the city can fund in stages)</h3>
+    <ol id="phases"></ol>
+    <h3>City programs to name in the pitch</h3>
+    <ul class="hl-programs" id="programs"></ul>
+    <p class="hl-fine" id="disclaimer"></p>
+  </section>
+
+  <!-- 5 · PITCH -->
+  <section class="hl-panel" id="s5">
+    <h2><span class="n">5</span> Pitch to the city <span class="hint">a letter the housing department can act on</span></h2>
+    <div class="hl-row">
+      <div class="hl-field"><label for="applicant">Applicant</label><input id="applicant" placeholder="The Okafor family" /></div>
+      <div class="hl-field"><label for="site">Site</label><input id="site" placeholder="a Land Bank lot on Van Dyke, east side" /></div>
+      <div class="hl-field"><label for="tone">Tone</label><select id="tone"><option value="warm" selected>warm</option><option value="formal">formal</option><option value="punchy">punchy</option></select></div>
+    </div>
+    <div class="hl-field"><label for="story">The story (optional — why this house, why this block, who builds it)</label><textarea id="story" placeholder="Dad has framed houses for 30 years. We want to build on the block where he grew up…"></textarea></div>
+    <div class="hl-inline">
+      <button class="hl-btn" id="btnPitch">Write the pitch</button>
+      <button class="hl-btn ghost" id="btnPitchEdit">Edit text</button>
+      <button class="hl-btn ghost sm" id="btnCopyPitch">Copy</button>
+      <button class="hl-btn ghost sm" id="btnMd">Download .md</button>
+      <button class="hl-btn ghost sm" id="btnPrint">Print / PDF</button>
+    </div>
+    <div class="hl-status" id="pitchStatus"></div>
+    <div class="hl-pitch" id="pitch"><em>Build the plan and set the city, then write the pitch. A template pitch is generated even with no AI keys configured.</em></div>
+    <div class="hl-pitch hl-hidden" id="pitchEditWrap"><textarea id="pitchEdit"></textarea></div>
+  </section>
+
+  <!-- SAVE -->
+  <section class="hl-panel hl-no-print" id="s6">
+    <h2><span class="n">★</span> Save &amp; load <span class="hint">always saved in this browser · also to the cloud when signed in</span></h2>
+    <div class="hl-projects">
+      <select id="projects"><option value="">— saved projects —</option></select>
+      <button class="hl-btn sm" id="btnSave">Save</button>
+      <button class="hl-btn sm ghost" id="btnLoad">Load</button>
+      <button class="hl-btn sm danger" id="btnDelete">Delete</button>
+    </div>
+    <div class="hl-status" id="saveStatus"></div>
+  </section>
+</main>
+
+<script src="js/theme.js"></script>
+<script src="lib/house-estimator.js"></script>
+<script type="module" src="js/house-lab.js"></script>
+</body>
+</html>

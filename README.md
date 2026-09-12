@@ -46,6 +46,47 @@ The Studio is at **/admin.html**.
 
 ---
 
+## House Lab — sketch → 3D → budget → city pitch
+
+`/house.html` is a self-contained tool for the mutual-aid home-building thread: photograph a hand-drawn
+house sketch, add the notes written next to it (for example `2 air conditioners back porch`), and get:
+
+1. **A floor plan** — read from the sketch by a vision model (`/api/house/parse`), merged with a
+   deterministic notes parser (`lib/house-estimator.js › parseNotes`) that understands beds/baths,
+   `24x36`, stories, porches, garages, roof type, AC units, solar, basement. No API key → notes only.
+2. **A 3D massing model** — Three.js (vendored in `lib/vendor/three/`), walls, roof (gable/hip/flat/shed),
+   porch with posts, garage, and the AC units placed where the notes say. Orbit, top/front/back views,
+   `.OBJ` export (opens in SketchUp / Blender / FreeCAD) and `.PNG` snapshots.
+3. **A line-item budget** — `estimateBudget()` × a per-city cost index (Detroit default; Cleveland,
+   Baltimore, Pittsburgh, St. Louis, Atlanta, Chicago, Houston, LA, NYC, Kingston, Accra, Lagos, Nairobi,
+   Johannesburg, or a custom index), finish level, family sweat-equity share, owner cash, land cost →
+   total, per-sqft, three funding phases, and the **ask** to the city. Planning-grade (±25 %), says so.
+4. **A pitch to the city** — `/api/house/pitch` writes a markdown letter to the city housing department
+   naming real programs (Detroit Land Bank, NEZ abatement, MSHDA…); the model only rewrites a
+   deterministic template so it can't invent numbers. Copy, download `.md`, or print to PDF.
+5. **Save / load** — always in the browser (`localStorage`); also to the cloud when signed in
+   (`/api/house/projects` → Supabase table `house_projects`, else Vercel Blob `house/…`).
+
+```
+house.html                 page
+css/house-lab.css
+js/house-lab.js            controller (ES module)
+js/house-3d.js             Three.js builder + OBJ export
+lib/house-estimator.js     shared core: parseNotes, normalizePlan, estimateBudget, pitchTemplate, CITIES
+lib/house-ai.js            server-side vision/text chain (Claude → Gemini → OpenAI → OpenRouter …)
+api/house/parse.js         POST sketch images + notes → plan
+api/house/budget.js        GET cities · POST plan + options → budget
+api/house/pitch.js         POST plan + budget → markdown pitch
+api/house/projects.js      GET / POST / DELETE saved projects (needs aa_session)
+db/migrations/2026-09-house-projects.sql
+bin/house-test.mjs         npm run test:house
+```
+
+Env: any of `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY` enables sketch
+reading; the pitch uses the same chain as `/api/ai/chat`. Everything degrades gracefully with no keys.
+
+---
+
 ## Roles
 
 | Role | Who | Powers |

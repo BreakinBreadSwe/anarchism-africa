@@ -7,7 +7,7 @@
  *   - Static assets (CSS/JS/SVG/PNG/fonts): stale-while-revalidate.
  *   - /api/* + POSTs: never intercepted (live-only).
  */
-const CACHE = 'aa-shell-v110';   // bump on every shell change (v31: home-mask + random-radio)
+const CACHE = 'aa-shell-v111';   // v111: House Lab   // bump on every shell change (v31: home-mask + random-radio)
 
 const SHELL = [
   '/',
@@ -20,6 +20,7 @@ const SHELL = [
   '/market.html',
   '/partner.html',
   '/anarchist.html',
+  '/house.html',
 
   '/css/styles.css',
   '/css/auth-page.css',
@@ -29,6 +30,7 @@ const SHELL = [
   '/css/menu-behavior.css',
   '/css/logo-generator.css',
   '/css/admin-editor.css',
+  '/css/house-lab.css',
 
   '/js/config.js',
   '/js/api.js',
@@ -57,6 +59,12 @@ const SHELL = [
   '/js/thumb.js',
   '/js/afro-books.js',
   '/js/beta-popup.js',
+  '/js/house-lab.js',
+  '/js/house-3d.js',
+  '/lib/house-estimator.js',
+  '/lib/vendor/three/three.module.min.js',
+  '/lib/vendor/three/OrbitControls.js',
+  '/lib/vendor/three/OBJExporter.js',
 
   '/manifest.webmanifest',
   '/manifest.admin.webmanifest',
